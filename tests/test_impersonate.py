@@ -80,7 +80,7 @@ def test_impersonate_aligns_ua_family_over_default():
         browser=BrowserConfig(browser="firefox", platform="windows", mobile=False),
     )
     s = Scraper(config=config)
-    assert "Chrome/" in s.headers["User-Agent"]
+    assert "Chrome/" in str(s.headers["User-Agent"])
     assert s.headers.get("sec-ch-ua")
     assert s._impersonate is not None
 
@@ -93,7 +93,7 @@ def test_impersonate_firefox_target():
         browser=BrowserConfig(platform="windows", mobile=False),
     )
     s = Scraper(config=config)
-    assert "Firefox/" in s.headers["User-Agent"]
+    assert "Firefox/" in str(s.headers["User-Agent"])
     assert "sec-ch-ua" not in s.headers
 
 

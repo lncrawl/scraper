@@ -1,5 +1,7 @@
 """Tests for internal utilities (URL helpers, atomic writes, exceptions)."""
 
+import os
+
 import pytest
 
 from scraper import AbortedException, CloudflareException
@@ -23,6 +25,17 @@ def test_extract_base(url, expected):
 def test_extract_host_strips_www_and_keeps_port():
     assert extract_host("https://www.example.com/x") == "example.com"
     assert extract_host("https://example.com:8443/x") == "example.com:8443"
+
+
+def test_extract_host_without_scheme_uses_path_fallback():
+    # No scheme → urlparse yields no hostname; host/port come from the path.
+    assert extract_host("1.2.3.4:8080/x") == "1.2.3.4:8080"  # host:port split
+    assert extract_host("example.com") == "example.com"  # bare host, no colon
+
+
+def test_extract_host_empty_returns_empty():
+    assert extract_host("") == ""
+    assert extract_host("/just/a/path") == ""
 
 
 def test_validate_url():
@@ -59,6 +72,19 @@ def test_atomic_write_rolls_back_on_error(tmp_path):
     # original is untouched and no temp files remain
     assert target.read_text() == "original"
     assert list(tmp_path.iterdir()) == [target]
+
+
+def test_atomic_write_swallows_unlink_error(tmp_path, monkeypatch):
+    # If cleanup of the temp file fails, the original error still propagates.
+    def boom_unlink(_):
+        raise OSError("cannot unlink")
+
+    monkeypatch.setattr(os, "unlink", boom_unlink)
+    target = tmp_path / "out.txt"
+    with pytest.raises(ValueError):
+        with atomic_write(target, mode="w") as f:
+            f.write("partial")
+            raise ValueError("boom")
 
 
 # --- exception hierarchy --------------------------------------------------

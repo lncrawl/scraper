@@ -183,6 +183,58 @@ def test_get_image_from_data_uri(fast_config):
     assert img.size == (4, 4)
 
 
+def test_get_image_retries_on_unidentified(fast_config):
+    # First response isn't a valid image → UnidentifiedImageError → retry with
+    # an explicit Accept header, second response is a real PNG.
+    from PIL import Image
+
+    buf = io.BytesIO()
+    Image.new("RGB", (5, 5), "green").save(buf, format="PNG")
+    with responses.RequestsMock() as rsps:
+        rsps.add(rsps.GET, f"{BASE}/img", body=b"not-an-image")
+        rsps.add(rsps.GET, f"{BASE}/img", body=buf.getvalue(), content_type="image/png")
+        s = make(fast_config)
+        img = s.get_image(f"{BASE}/img")
+        assert img.size == (5, 5)
+        # the retry sent an explicit image Accept header
+        assert "image/" in str(rsps.calls[1].request.headers["Accept"])
+
+
+def test_get_file_accepts_str_path(fast_config, tmp_path):
+    out = tmp_path / "via_str.bin"
+    with responses.RequestsMock() as rsps:
+        rsps.add(rsps.GET, f"{BASE}/f.bin", body=b"abc")
+        s = make(fast_config)
+        s.get_file(f"{BASE}/f.bin", output_file=str(out))  # str, not Path
+        assert out.read_bytes() == b"abc"
+
+
+def test_get_file_aborts_mid_stream(fast_config, tmp_path, monkeypatch):
+    from scraper import AbortedException
+
+    s = make(fast_config)
+
+    class _StreamResp:
+        def iter_content(self, chunk_size):
+            yield b"first"
+            s.abort()  # signal set after the first chunk is written
+            yield b"second"
+
+        def close(self):
+            pass
+
+    # Bypass the network: the throttle pre-send check would otherwise trip first.
+    monkeypatch.setattr(s, "get", lambda *a, **k: _StreamResp())
+    with pytest.raises(AbortedException):
+        s.get_file(f"{BASE}/stream", output_file=tmp_path / "partial.bin")
+
+
+def test_set_header_decodes_bytes(fast_config):
+    s = make(fast_config)
+    s.set_header("X-Token", b"bytes-value")
+    assert s.headers["X-Token"] == "bytes-value"
+
+
 # --- make_soup ------------------------------------------------------------
 
 
