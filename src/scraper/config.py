@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from .cloudscraper.config import (
+from ._engine.config import (
     BrowserConfig,
-    CloudScraperConfig,
     ProxyConfig,
+    ScraperConfig,
     StealthConfig,
 )
 
 __all__ = [
-    "CloudScraperConfig",
+    "ScraperConfig",
     "BrowserConfig",
     "ProxyConfig",
     "StealthConfig",
@@ -16,14 +16,14 @@ __all__ = [
 ]
 
 
-def default_config() -> CloudScraperConfig:
-    """Build a fresh :class:`CloudScraperConfig` with the library's tuned defaults.
+def default_config() -> ScraperConfig:
+    """Build a fresh :class:`ScraperConfig` with the library's tuned defaults.
 
     A new instance is returned on every call so that each :class:`~scraper.Scraper`
     owns its config (and nested proxy/stealth objects) instead of sharing a single
     mutable module-level instance.
     """
-    return CloudScraperConfig(
+    return ScraperConfig(
         min_request_interval=2.0,
         min_request_interval_fast=0.1,
         max_concurrent_requests=1,

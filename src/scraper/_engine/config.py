@@ -43,7 +43,7 @@ class ProxyConfig:
 
 
 @dataclass
-class CloudScraperConfig:
+class ScraperConfig:
     # Challenge handling
     disable_v1: bool = False
     disable_v2: bool = False
@@ -81,7 +81,7 @@ class CloudScraperConfig:
     proxy: ProxyConfig = field(default_factory=ProxyConfig)
 
     # Hooks — invoked as pre_hook(scraper, method, url, *args, **kwargs) and
-    # post_hook(scraper, response); both receive the CloudScraper instance.
+    # post_hook(scraper, response); both receive the scraper engine instance.
     pre_hook: Callable[..., tuple] | None = None
     post_hook: Callable[..., Response] | None = None
 

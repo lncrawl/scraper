@@ -1,11 +1,10 @@
 from importlib.metadata import PackageNotFoundError, version
 
-from .cloudscraper import CloudScraper
-from .cloudscraper.exceptions import AbortedException, CloudflareException
+from ._engine.exceptions import AbortedException, CloudflareException
 from .config import (
     BrowserConfig,
-    CloudScraperConfig,
     ProxyConfig,
+    ScraperConfig,
     StealthConfig,
     default_config,
 )
@@ -20,9 +19,8 @@ except PackageNotFoundError:  # pragma: no cover - running from a source tree
 __all__ = [
     "Scraper",
     "PageSoup",
-    "CloudScraper",
     "default_config",
-    "CloudScraperConfig",
+    "ScraperConfig",
     "BrowserConfig",
     "ProxyConfig",
     "StealthConfig",

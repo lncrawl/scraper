@@ -4,8 +4,8 @@ import threading
 import time
 
 
-class CloudscraperSessionState:
-    """Thread-safe container for CloudScraper's mutable per-session counters.
+class SessionState:
+    """Thread-safe container for the scraper engine's mutable per-session counters.
 
     All compound read-modify-write operations are performed under a single lock so
     the scraper can be driven from multiple threads (e.g. an abort thread) safely.

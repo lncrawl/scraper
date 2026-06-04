@@ -2,7 +2,7 @@ from __future__ import annotations
 
 
 class CloudflareException(Exception):
-    """Base exception for all cloudscraper Cloudflare errors."""
+    """Base exception for all Cloudflare-related scraper errors."""
 
 
 class CloudflareLoopProtection(CloudflareException):

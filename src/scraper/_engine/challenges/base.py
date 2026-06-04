@@ -9,7 +9,7 @@ from requests import Response
 class ChallengeHandler(ABC):
     """Stateless Cloudflare challenge handler.
 
-    Handlers store only static config in __init__ — no back-reference to CloudScraper.
+    Handlers store only static config in __init__ — no back-reference to the engine.
     Everything needed to solve a challenge is passed at call time via handle().
     """
 
@@ -31,7 +31,7 @@ class ChallengeHandler(ABC):
 
         Args:
             response: The challenge response from the server.
-            request: The full CloudScraper.request callable — use this for POSTing challenge
+            request: The full engine request callable — use this for POSTing challenge
                 answers and fetching the final redirect destination so secondary challenges
                 are handled automatically.
             perform_request: The raw Session.request callable — use this only for the

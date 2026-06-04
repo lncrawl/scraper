@@ -1,7 +1,7 @@
 from threading import Event, Semaphore
 from typing import Optional
 
-from ..cloudscraper.exceptions import AbortedException
+from .._engine.exceptions import AbortedException
 
 
 class EventLock:

@@ -78,7 +78,7 @@ _LANGUAGES = [
 
 
 class StealthMode:
-    """Stateless stealth helper — no back-reference to CloudScraper.
+    """Stateless stealth helper — no back-reference to the scraper engine.
 
     Receives only what it needs at call time via apply().
     """

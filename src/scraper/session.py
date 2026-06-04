@@ -7,23 +7,23 @@ from typing import Any, MutableMapping, Optional, Tuple, Union
 from requests import Response
 from requests.structures import CaseInsensitiveDict
 
+from ._engine import ScraperEngine
+from ._engine.config import ScraperConfig
+from ._engine.exceptions import AbortedException
 from ._utils.file_tools import atomic_write
 from ._utils.url_tools import extract_base
-from .cloudscraper import CloudScraper
-from .cloudscraper.config import CloudScraperConfig
-from .cloudscraper.exceptions import AbortedException
 from .config import default_config
 from .soup import PageSoup
 
 logger = logging.getLogger(__name__)
 
 
-class Scraper(CloudScraper):
+class Scraper(ScraperEngine):
     def __init__(
         self,
         origin: Optional[str] = None,
         parser: Optional[str] = None,
-        config: Optional[CloudScraperConfig] = None,
+        config: Optional[ScraperConfig] = None,
         **kwargs,
     ) -> None:
         super().__init__(config=config or default_config())

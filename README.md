@@ -42,13 +42,13 @@ img = s.get_image("https://example.com/cover.jpg")
 
 ## Configuration
 
-Pass a `CloudScraperConfig` for full control:
+Pass a `ScraperConfig` for full control:
 
 ```python
 from scraper import Scraper
-from scraper.config import CloudScraperConfig, ProxyConfig, StealthConfig
+from scraper.config import ScraperConfig, ProxyConfig, StealthConfig, BrowserConfig
 
-config = CloudScraperConfig(
+config = ScraperConfig(
     min_request_interval=2.0,
     max_concurrent_requests=1,
     rotate_tls_ciphers=True,
@@ -64,9 +64,19 @@ config = CloudScraperConfig(
         proxy_urls=["http://proxy1:8080", "http://proxy2:8080"],
         fallback_to_direct=True,
     ),
-    browser={"browser": "firefox", "platform": "windows", "desktop": True},
+    browser=BrowserConfig(browser="firefox", platform="windows", desktop=True),
 )
 
+s = Scraper(origin="https://example.com", config=config)
+```
+
+Or start from the library's tuned defaults and tweak:
+
+```python
+from scraper import Scraper, default_config
+
+config = default_config()
+config.max_concurrent_requests = 4
 s = Scraper(origin="https://example.com", config=config)
 ```
 

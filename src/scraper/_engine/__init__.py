@@ -14,15 +14,13 @@ from .challenges import (
     CloudflareV3Handler,
     TurnstileHandler,
 )
-from .config import CloudScraperConfig
+from .config import ScraperConfig
 from .exceptions import AbortedException, CloudflareLoopProtection
 from .proxy_manager import ProxyManager
-from .session import CloudscraperSessionState
+from .session import SessionState
 from .stealth import StealthMode
 from .tls import CipherRotator, CipherSuiteAdapter
 from .user_agent import UserAgent
-
-__version__ = "3.2.0"
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +44,7 @@ class _RequestChain:
         self.request_depth = 0
 
 
-class CloudScraper(requests.Session):
+class ScraperEngine(requests.Session):
     """A requests.Session subclass that transparently handles Cloudflare challenges.
 
     The request pipeline layers adaptive throttling, TLS cipher rotation, session
@@ -54,14 +52,14 @@ class CloudScraper(requests.Session):
     registry on top of a normal session.
     """
 
-    def __init__(self, config: CloudScraperConfig | None = None) -> None:
-        self.config = config or CloudScraperConfig()
+    def __init__(self, config: ScraperConfig | None = None) -> None:
+        self.config = config or ScraperConfig()
 
         # Cross-thread abort signal — public so callers can swap in a shared Event.
         self.signal = threading.Event()
 
         self._local = threading.local()
-        self._state = CloudscraperSessionState()
+        self._state = SessionState()
         self._slots = threading.BoundedSemaphore(max(1, self.config.max_concurrent_requests))
 
         self.user_agent = UserAgent(
