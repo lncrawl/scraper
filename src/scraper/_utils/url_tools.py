@@ -2,25 +2,32 @@ import unicodedata
 from urllib.parse import urlparse
 
 
+def _format_and_parse(url: str):
+    if not (url.startswith("//") or "://" in url):
+        url = f"//{url}"
+    return urlparse(url)
+
+
 def extract_base(url: str) -> str:
-    parsed = urlparse(url)
-    return f"{parsed.scheme}://{parsed.netloc}/"
+    parsed = _format_and_parse(url)
+    scheme = parsed.scheme or "http"
+    return f"{scheme}://{parsed.netloc}/"
 
 
 def extract_host(url: str) -> str:
-    parsed = urlparse(url)
-
+    parsed = _format_and_parse(url)
     host = parsed.hostname
     port = str(parsed.port or "")
     if not host:
-        host = parsed.path.split("/")[0]
-        if ":" in host:
-            host, port = host.split(":")
-    if not host:
         return ""
 
-    normalized = unicodedata.normalize("NFKD", host).casefold()
-    host = normalized.encode("idna").decode("ascii")
+    # Normalize and IDNA encode
+    host = unicodedata.normalize("NFKD", host).casefold()
+    try:
+        host = host.encode("idna").decode("ascii")
+    except UnicodeError:
+        pass  # Failsafe in case of garbage data that breaks IDNA encoding
+
     if host.startswith("www."):
         host = host[4:]
     if port:
@@ -29,5 +36,5 @@ def extract_host(url: str) -> str:
 
 
 def validate_url(url: str, allowed_schemes=["http", "https"]) -> bool:
-    parsed = urlparse(url)
+    parsed = _format_and_parse(url)
     return all([parsed.scheme, parsed.netloc, parsed.scheme in allowed_schemes])

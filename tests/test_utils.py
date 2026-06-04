@@ -16,6 +16,7 @@ from scraper._utils.url_tools import extract_base, extract_host, validate_url
     [
         ("https://example.com/path/page?q=1", "https://example.com/"),
         ("http://sub.example.com:8080/x", "http://sub.example.com:8080/"),
+        ("1.2.3.4:8080/x", "http://1.2.3.4:8080/"),
     ],
 )
 def test_extract_base(url, expected):
