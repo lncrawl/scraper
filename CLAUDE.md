@@ -21,17 +21,21 @@ uv sync                 # install deps + editable package into .venv
 uv run poe lint         # ruff check + ruff format --check + pyright
 uv run poe lint-fix     # ruff check --fix + ruff format
 uv run poe test         # pytest
+uv run poe cov          # pytest with coverage (term-missing + html + xml)
 uv run poe build        # lint + test + uv build (wheel/sdist)
 uv run poe publish      # build + uv publish
 ```
 
-Always run `uv run poe lint` before considering a change done — CI (`.github/workflows/ci.yml`) runs it across Python 3.9–3.14, and pyright is part of it.
+Always run `uv run poe lint` before considering a change done. CI
+(`.github/workflows/ci.yml`) runs three jobs: `lint` (ruff + pyright), a
+`build` matrix testing on Python 3.9–3.14, and `coverage` (which posts a PR
+comment + badge via `python-coverage-comment-action` and a job-summary table).
 
 ## Architecture
 
 The package is a thin, ergonomic layer over an in-house Cloudflare-bypass engine.
 
-```
+```text
 src/scraper/
 ├── __init__.py         # public API + __version__ (via importlib.metadata)
 ├── session.py          # Scraper — the main class (subclasses ScraperEngine)
@@ -120,15 +124,49 @@ s = Scraper(origin="https://site.com", config=cfg)
   combine-as-imports. **`pyright`** runs in `standard` mode over `src` + `tests`
   — keep it clean (use real `isinstance` narrowing rather than `is_dataclass`,
   which pyright doesn't narrow on).
-- **Dependencies**: core runtime deps live in `[project.dependencies]`; `Pillow`
-  is an optional extra (`pip install lncrawl-scraper[image]`) and `get_image`
-  imports it lazily. Add deps via `uv add` / `uv add --dev`.
+- **Dependencies**: core runtime deps live in `[project.dependencies]`. Optional
+  extras: `image` (`Pillow`, for `get_image`) and `impersonate` (`curl_cffi`,
+  for `ScraperConfig.impersonate`) — both imported lazily so the package works
+  without them. Add deps via `uv add` / `uv add --dev`.
 - **Public API** is whatever `src/scraper/__init__.py` exports in `__all__`.
   Update it (and the README) when adding user-facing surface.
+
+## Commit messages
+
+Match the existing history (`git log`):
+
+- **No type prefix.** Do NOT use Conventional Commits (`feat:`, `fix:`,
+  `docs:`, …) — subjects are plain capitalized text.
+- **Imperative mood**, capitalized first word, no trailing period, subject
+  ≤ ~60 chars (e.g. `Add coverage reporting to CI`, `Restructure into src layout`).
+- **Body only for non-trivial changes**: a blank line, then a short rationale
+  paragraph and/or `-` bullets covering *what* changed and *why* (wrap at ~72
+  chars). Small changes are subject-only.
+- **Do NOT append a `Co-Authored-By` trailer** — this overrides the default
+  Claude Code behaviour; the maintainer's commits never carry it.
 
 ## Testing
 
 `pytest` under [tests/](tests/). The src/ layout means tests import the
-*installed* package, so run them via `uv run poe test` (which uses the editable
-install). Prefer the `responses` library for mocking HTTP rather than hitting
-the network.
+*installed* package, so run them via `uv run poe test` / `uv run poe cov` (which
+use the editable install).
+
+- **Tests must be offline and fast.** [conftest.py](tests/conftest.py) provides
+  an autouse fixture that stubs `scraper._engine.user_agent._load_ua_data` to
+  `None` (forces the deterministic embedded UA generator, no network), plus
+  `fast_config` / `make_fast_config()` which disable stealth delays, throttling,
+  and session refresh. Use these in any test that constructs a `Scraper`.
+- **Mock HTTP with `responses`** (`responses.RequestsMock()`), never real
+  requests. It patches `HTTPAdapter.send`, so it intercepts the mounted TLS
+  adapter too. Note: a set abort signal trips the pre-send check, so the request
+  never fires — use `assert_all_requests_are_fired=False` in that case.
+- **UA-family gotcha**: the offline generator can pick iOS, where Chrome's UA is
+  `CriOS/…` and Firefox's is `FxiOS/…` (neither contains `Chrome/` / `Firefox/`).
+  When asserting on UA family, pin a desktop platform
+  (`BrowserConfig(platform="windows", mobile=False)`).
+- `curl_cffi`-dependent tests use `pytest.importorskip("curl_cffi")`.
+- **Coverage** config is in `pyproject.toml` (`[tool.coverage]`, `source =
+  ["scraper"]`, `relative_files = true`). `uv run poe cov` writes `htmlcov/`,
+  `coverage.xml`, and a terminal report (all coverage artifacts are gitignored).
+  The deep CF challenge solvers (`cloudflare_v1/v2/v3`, `interpreter`) are
+  integration-only and stay low-coverage without live Cloudflare traffic.

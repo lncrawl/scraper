@@ -50,6 +50,7 @@ packages = ["src/scraper"]
 [dependency-groups]
 dev = [
     "pytest>=8.0",
+    "pytest-cov>=5.0",
     "responses>=0.25",
     "pyright>=1.1",
     "ruff>=0.15.15",
@@ -69,6 +70,7 @@ lint-fix = [
     { cmd = "ruff format" },
 ]
 test = "pytest"
+cov = "pytest --cov --cov-report=term-missing --cov-report=html --cov-report=xml"
 build = [
     { ref = "lint" },
     { ref = "test" },
@@ -81,6 +83,21 @@ publish = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["scraper"]
+relative_files = true
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "@(abc\\.)?abstractmethod",
+]
 
 [tool.pyright]
 pythonVersion = "3.9"
