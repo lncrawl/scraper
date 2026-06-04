@@ -1,7 +1,6 @@
 # LNCrawl Scraper
 
-[![CI](https://github.com/lncrawl/scraper/actions/workflows/ci.yml/badge.svg)](https://github.com/lncrawl/scraper/actions/workflows/ci.yml)
-[![Coverage](https://raw.githubusercontent.com/lncrawl/scraper/python-coverage-comment-action-data/badge.svg)](https://github.com/lncrawl/scraper/tree/python-coverage-comment-action-data)
+[![CI](https://github.com/lncrawl/scraper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lncrawl/scraper/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/lncrawl-scraper.svg)](https://pypi.org/project/lncrawl-scraper/)
 
 HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth mode, proxy support, and a null-safe BeautifulSoup wrapper.
