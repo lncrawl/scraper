@@ -1,0 +1,39 @@
+name: Bump Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version part to bump
+        required: true
+        default: patch
+        type: choice
+        options: [patch, minor, major]
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  bump:
+    needs: ci
+    name: Bump version and push tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Bump version
+        run: uv version --bump '${{ inputs.bump }}'
+
+      - name: Read new version
+        id: version
+        run: echo "value=$(uv version | awk '{print $NF}')" >> $GITHUB_OUTPUT
+
+      - name: Commit and tag
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "pyproject.toml uv.lock"
+          tag: "v${{ steps.version.outputs.value }}"
+          message: "Bump version to v${{ steps.version.outputs.value }}"

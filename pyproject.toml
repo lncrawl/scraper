@@ -1,0 +1,88 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lncrawl-scraper"
+version = "0.0.1"
+description = "HTTP scraper with Cloudflare bypass, stealth mode, TLS rotation, proxy support, and a null-safe BeautifulSoup wrapper."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+authors = [{ name = "Sudipta Chandra", email = "dipu.sudipta@gmail.com" }]
+keywords = ["scraper", "cloudflare", "beautifulsoup", "http", "stealth"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "requests>=2.28",
+    "beautifulsoup4>=4.12",
+    "lxml>=4.9",
+]
+
+[project.optional-dependencies]
+image = ["Pillow>=10.0"]
+
+[project.urls]
+Homepage = "https://github.com/lncrawl/scraper"
+Repository = "https://github.com/lncrawl/scraper"
+Issues = "https://github.com/lncrawl/scraper/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["scraper"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "responses>=0.25",
+    "pyright>=1.1",
+    "ruff>=0.15.15",
+    "poethepoet>=0.29",
+]
+
+[tool.poe.tasks]
+lint = [
+    { cmd = "ruff check" },
+    { cmd = "ruff format --check" },
+    { cmd = "pyright" },
+]
+lint-fix = [
+    { cmd = "ruff check --fix" },
+    { cmd = "ruff format" },
+]
+test = "pytest"
+build = [
+    { ref = "lint" },
+    { ref = "test" },
+    { cmd = "uv build" },
+]
+publish = [
+    { ref = "build" },
+    { cmd = "uv publish" },
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.pyright]
+pythonVersion = "3.9"
+typeCheckingMode = "standard"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
