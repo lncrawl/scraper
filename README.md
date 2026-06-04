@@ -1,12 +1,16 @@
 # scraper
 
-HTTP scraper with Cloudflare bypass, stealth mode, TLS rotation, proxy support, and a null-safe BeautifulSoup wrapper.
+HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth mode, proxy support, and a null-safe BeautifulSoup wrapper.
 
 ## Features
 
 - **Cloudflare bypass** — handles CF challenges v1, v2, v3, and Turnstile transparently
+- **Browser fingerprint impersonation** — optional `curl_cffi` transport that
+  reproduces a real Chrome/Firefox TLS (JA3/JA4) **and** HTTP/2 fingerprint
+- **Browser-assisted clearance** — reuse a `cf_clearance` cookie solved by a real
+  browser for managed-challenge / Turnstile sites
+- **Accurate Client Hints** — `sec-ch-ua` / `sec-fetch-*` derived from the chosen UA
 - **Stealth mode** — human-like delays, randomized headers, browser quirks
-- **TLS cipher rotation** — cycles cipher suites to avoid TLS fingerprinting
 - **Proxy support** — round-robin proxy rotation with Tor integration and direct fallback
 - **Rate limiting** — configurable per-request intervals and concurrency cap
 - **`PageSoup`** — null-safe BeautifulSoup wrapper; selection methods never return `None`
@@ -16,6 +20,9 @@ HTTP scraper with Cloudflare bypass, stealth mode, TLS rotation, proxy support, 
 
 ```bash
 pip install lncrawl-scraper
+
+# with browser fingerprint impersonation (curl_cffi)
+pip install "lncrawl-scraper[impersonate]"
 ```
 
 ## Quick start
@@ -78,6 +85,39 @@ from scraper import Scraper, default_config
 config = default_config()
 config.max_concurrent_requests = 4
 s = Scraper(origin="https://example.com", config=config)
+```
+
+## Browser fingerprint impersonation
+
+A plain `requests` stack has a fixed OpenSSL TLS fingerprint and only speaks
+HTTP/1.1 — both of which modern Cloudflare detects. Set `impersonate` (requires
+the `impersonate` extra) to route requests through `curl_cffi`, reproducing a
+real browser's TLS (JA3/JA4) and HTTP/2 fingerprint:
+
+```python
+from scraper import Scraper, default_config
+
+config = default_config()
+config.impersonate = "chrome"   # or "firefox", "chrome124", "safari", …
+s = Scraper(origin="https://example.com", config=config)
+```
+
+The spoofed User-Agent family and Client Hints are aligned with the
+impersonation target automatically.
+
+## Browser-assisted clearance
+
+For managed challenges / Turnstile that can't be solved headlessly, solve the
+challenge once in a real browser (e.g. `nodriver`/Playwright), then hand the
+`cf_clearance` cookie and the browser's **exact** User-Agent to the session:
+
+```python
+s.apply_browser_clearance(
+    "https://protected.example.com",
+    cf_clearance="<value from the browser>",
+    user_agent="<the browser's exact UA>",
+    cookies={"__cf_bm": "<optional>"},
+)
 ```
 
 ## `Scraper` API

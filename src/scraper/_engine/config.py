@@ -77,6 +77,13 @@ class ScraperConfig:
     browser: BrowserConfig | dict | None = None
     allow_brotli: bool = True
 
+    # Network fingerprint impersonation (requires the `impersonate` extra).
+    # When set to a curl-impersonate target (e.g. "chrome", "firefox",
+    # "chrome124"), requests are routed through curl_cffi to reproduce a real
+    # browser's TLS (JA3/JA4) and HTTP/2 fingerprint instead of the urllib3
+    # default. None keeps the standard transport.
+    impersonate: str | None = None
+
     # Proxy
     proxy: ProxyConfig = field(default_factory=ProxyConfig)
 

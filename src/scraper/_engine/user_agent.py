@@ -222,6 +222,43 @@ def _browser_from_ua(ua: str) -> str:
     return "firefox" if "Firefox/" in ua else "chrome"
 
 
+def _ch_platform(ua: str) -> str:
+    """Map a UA string to a Sec-CH-UA-Platform value."""
+    if "Android" in ua:
+        return "Android"
+    if "iPhone" in ua or "iPad" in ua:
+        return "iOS"
+    if "Windows" in ua:
+        return "Windows"
+    if "Mac OS X" in ua or "Macintosh" in ua:
+        return "macOS"
+    if "CrOS" in ua:
+        return "Chrome OS"
+    return "Linux"
+
+
+def _client_hints(ua: str) -> Dict[str, str]:
+    """Build Sec-CH-UA Client Hints matching *ua*.
+
+    Only Chromium-based browsers send these; Firefox does not, so an empty dict
+    is returned for it. The brand version is taken from the UA so the hints and
+    the User-Agent always agree.
+    """
+    if "Firefox/" in ua:
+        return {}
+    match = re.search(r"Chrome/(\d+)", ua)
+    if not match:
+        return {}
+    version = match.group(1)
+    return {
+        "sec-ch-ua": (
+            f'"Chromium";v="{version}", "Google Chrome";v="{version}", "Not_A Brand";v="24"'
+        ),
+        "sec-ch-ua-mobile": "?1" if "Mobile" in ua else "?0",
+        "sec-ch-ua-platform": f'"{_ch_platform(ua)}"',
+    }
+
+
 def _filter_ua_data(
     data: list[dict],
     browser: str | None,
@@ -362,3 +399,8 @@ class UserAgent:
                 for enc in self.headers["Accept-Encoding"].split(",")
                 if enc.strip() != "br"
             )
+
+        # Client Hints must match the chosen User-Agent (version + platform),
+        # otherwise the mismatch is itself a bot signal.
+        for name, value in _client_hints(self.headers["User-Agent"]).items():
+            self.headers[name] = value

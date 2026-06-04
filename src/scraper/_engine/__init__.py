@@ -14,8 +14,9 @@ from .challenges import (
     CloudflareV3Handler,
     TurnstileHandler,
 )
-from .config import ScraperConfig
+from .config import BrowserConfig, ScraperConfig
 from .exceptions import AbortedException, CloudflareLoopProtection
+from .impersonate import ImpersonateTransport, build_transport
 from .proxy_manager import ProxyManager
 from .session import SessionState
 from .stealth import StealthMode
@@ -32,6 +33,11 @@ _CF_COOKIE_NAMES = (
     "cf_turnstile",
     "__cf_bm",
 )
+
+
+def _impersonate_family(target: str | None) -> str:
+    """Map a curl-impersonate target (e.g. ``"chrome124"``) to a UA family."""
+    return "firefox" if (target or "").lower().startswith("firefox") else "chrome"
 
 
 class _RequestChain:
@@ -62,9 +68,19 @@ class ScraperEngine(requests.Session):
         self._state = SessionState()
         self._slots = threading.BoundedSemaphore(max(1, self.config.max_concurrent_requests))
 
+        # When impersonating, route requests through curl_cffi for a real
+        # browser TLS/HTTP-2 fingerprint, and keep the spoofed UA family aligned
+        # with the impersonation target so headers and TLS tell the same story.
+        self._impersonate: ImpersonateTransport | None = build_transport(
+            self.config.impersonate, self.config.verify_ssl
+        )
+        browser = self.config.browser
+        if self._impersonate is not None and browser is None:
+            browser = BrowserConfig(browser=_impersonate_family(self.config.impersonate))
+
         self.user_agent = UserAgent(
             allow_brotli=self.config.allow_brotli,
-            browser=self.config.browser,
+            browser=browser,
         )
         self._stealth = StealthMode(self.config.stealth)
         self.proxy_manager = ProxyManager(self.config.proxy)
@@ -139,11 +155,14 @@ class ScraperEngine(requests.Session):
                         self.cookies.clear(domain, "/", name)
                     except Exception:
                         pass
+            if self._impersonate is not None:
+                for name in _CF_COOKIE_NAMES:
+                    self._impersonate.clear_cookie(name)
             self._state.reset_session_clock()
             self.user_agent.load(allow_brotli=self.config.allow_brotli, browser=self.config.browser)
             self.headers.update(self.user_agent.headers)
             parsed = urlparse(url)
-            resp = super().request("GET", f"{parsed.scheme}://{parsed.netloc}", timeout=30)
+            resp = self.perform_request("GET", f"{parsed.scheme}://{parsed.netloc}", timeout=30)
             return resp.status_code in (200, 301, 302, 304)
         except Exception:
             return False
@@ -248,8 +267,29 @@ class ScraperEngine(requests.Session):
     # -- Core request override ----------------------------------------------------
 
     def perform_request(self, method: str, url: str, *args, **kwargs) -> requests.Response:
-        """Raw HTTP request, bypassing the challenge pipeline."""
+        """Raw HTTP request, bypassing the challenge pipeline.
+
+        Routed through the curl_cffi transport when impersonation is enabled,
+        otherwise through the standard urllib3 transport.
+        """
+        if self._impersonate is not None:
+            # Session headers aren't auto-merged by the curl_cffi transport, so
+            # fold them under the per-request headers (request wins on conflict).
+            merged = dict(self.headers)
+            merged.update(kwargs.get("headers") or {})
+            kwargs["headers"] = merged
+            response = self._impersonate.request(method, url, **kwargs)
+            self._mirror_transport_cookies()
+            return response
         return super().request(method, url, *args, **kwargs)
+
+    def _mirror_transport_cookies(self) -> None:
+        """Reflect the curl_cffi cookie jar (authoritative) into self.cookies."""
+        if self._impersonate is None:
+            return
+        self.cookies.clear()
+        for cookie in self._impersonate.cookies.jar:
+            self.cookies.set_cookie(cookie)
 
     def request(self, method: str, url: str, *args, **kwargs) -> requests.Response:  # type: ignore[override]
         if self.signal.is_set():
@@ -262,7 +302,7 @@ class ScraperEngine(requests.Session):
         nested = chain.request_depth > 0
         if not nested:
             self._throttle()
-            if self.config.rotate_tls_ciphers:
+            if self.config.rotate_tls_ciphers and self._impersonate is None:
                 self._rotate_tls_cipher_suite()
             if self._state.needs_refresh(self.config.session_refresh_interval):
                 self._refresh_session(url)
@@ -306,3 +346,42 @@ class ScraperEngine(requests.Session):
     def abort(self) -> None:
         """Signal all pending and in-progress requests (incl. streaming downloads) to stop."""
         self.signal.set()
+
+    def put_cookie(self, name: str, value: str, domain: str = "", path: str = "/") -> None:
+        """Set a cookie on this session (and the impersonation jar, if active)."""
+        self.cookies.set(name, value, domain=domain or None, path=path)
+        if self._impersonate is not None:
+            self._impersonate.set_cookie(name, value, domain=domain, path=path)
+
+    def apply_browser_clearance(
+        self,
+        domain: str,
+        *,
+        cf_clearance: str | None = None,
+        user_agent: str | None = None,
+        cookies: dict | None = None,
+    ) -> None:
+        """Reuse a Cloudflare challenge solved by a real browser.
+
+        Drive an external browser (e.g. ``nodriver``/Playwright) to pass the
+        managed challenge or Turnstile, then hand the resulting ``cf_clearance``
+        cookie and the browser's exact User-Agent here so this lightweight
+        session can keep using the cleared session.
+
+        Args:
+            domain: Cookie domain or a URL to derive the host from.
+            cf_clearance: The ``cf_clearance`` cookie value from the browser.
+            user_agent: The browser's User-Agent. It MUST match the one used to
+                obtain the clearance, or Cloudflare will reject the cookie.
+            cookies: Any other cookies harvested from the browser (e.g.
+                ``__cf_bm``), as a ``{name: value}`` mapping.
+        """
+        host = urlparse(domain).hostname or domain.split("/")[0]
+        if user_agent:
+            self.headers["User-Agent"] = user_agent
+            self.user_agent.headers["User-Agent"] = user_agent
+        jar = dict(cookies or {})
+        if cf_clearance:
+            jar["cf_clearance"] = cf_clearance
+        for name, value in jar.items():
+            self.put_cookie(name, value, domain=host)

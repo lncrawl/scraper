@@ -28,10 +28,10 @@ _CHROME_QUIRKS: Dict[str, Any] = {
         "Accept-Language",
         "Cookie",
     ],
+    # sec-ch-ua / mobile / platform are derived from the actual User-Agent in
+    # UserAgent._client_hints and live in the session headers; only the
+    # non-version-specific navigation hints are defaulted here.
     "headers": {
-        "sec-ch-ua": '"Google Chrome";v="117", "Not;A=Brand";v="8", "Chromium";v="117"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": '"Windows"',
         "Sec-Fetch-Site": "none",
         "Sec-Fetch-Mode": "navigate",
         "Sec-Fetch-User": "?1",

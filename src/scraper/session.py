@@ -34,6 +34,8 @@ class Scraper(ScraperEngine):
     def reset(self) -> None:
         """Reset the scraper to its initial state."""
         self.cookies.clear()
+        if self._impersonate is not None:
+            self._impersonate.cookies.clear()
         self.headers.clear()
         self.last_soup_url = ""
 
@@ -44,10 +46,10 @@ class Scraper(ScraperEngine):
         self.headers[key] = str(value)
 
     def set_cookie(self, name: str, value: Union[str, bytes]) -> None:
-        """Set a session cookie."""
+        """Set a session cookie (also propagated to the impersonation jar)."""
         if isinstance(value, bytes):
             value = value.decode()
-        self.cookies.set(name, str(value))
+        self.put_cookie(name, str(value))
 
     def request(self, method, url, *args, **kwargs):
         origin_url = extract_base(self.last_soup_url or self.origin or url)

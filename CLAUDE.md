@@ -60,6 +60,29 @@ src/scraper/
   here is part of the public API except what `config.py`/`__init__.py`
   re-export.
 
+### Cloudflare-bypass surface
+
+The realistic ceiling of a `requests`-based engine is its TLS (JA3/JA4) and
+HTTP/1.1 fingerprint — `set_ciphers()` in [tls.py](src/scraper/_engine/tls.py)
+only reorders ciphers, so the ClientHello still reads as Python. Three features
+push past that:
+
+- **Impersonation transport** ([_engine/impersonate.py](src/scraper/_engine/impersonate.py)):
+  when `ScraperConfig.impersonate` is set (e.g. `"chrome"`), `ScraperEngine.perform_request`
+  routes through `curl_cffi` (curl-impersonate) for a real browser TLS + HTTP/2
+  fingerprint, and adapts the result back into a `requests.Response`. The
+  curl_cffi session is the cookie authority and is mirrored into `self.cookies`
+  after each request (`_mirror_transport_cookies`). Cipher rotation is skipped
+  while impersonating. Requires the `impersonate` extra (`curl_cffi`).
+- **Client Hints** are derived from the actual UA in
+  `UserAgent._client_hints` (Chromium only; Firefox sends none) so `sec-ch-ua`
+  version/platform always match the User-Agent. `stealth.py` no longer hardcodes
+  them — it only defaults the non-version-specific `Sec-Fetch-*` nav hints.
+- **`apply_browser_clearance(domain, cf_clearance=, user_agent=, cookies=)`**
+  injects a clearance solved by an external real browser; the UA must match the
+  one that obtained it. `put_cookie` keeps the requests jar and the impersonation
+  jar in sync.
+
 ### Configuration
 
 All config flows through `ScraperConfig` (a dataclass with nested

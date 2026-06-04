@@ -36,6 +36,7 @@ dependencies = [
 
 [project.optional-dependencies]
 image = ["Pillow>=10.0"]
+impersonate = ["curl_cffi>=0.7"]
 
 [project.urls]
 Homepage = "https://github.com/lncrawl/scraper"
@@ -52,6 +53,8 @@ dev = [
     "pyright>=1.1",
     "ruff>=0.15.15",
     "poethepoet>=0.29",
+    "Pillow>=10.0",
+    "curl-cffi>=0.7",
 ]
 
 [tool.poe.tasks]
