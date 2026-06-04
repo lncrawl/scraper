@@ -10,40 +10,12 @@ from requests.structures import CaseInsensitiveDict
 from ._utils.file_tools import atomic_write
 from ._utils.url_tools import extract_base
 from .cloudscraper import CloudScraper
-from .cloudscraper.config import CloudScraperConfig, ProxyConfig, StealthConfig
+from .cloudscraper.config import CloudScraperConfig
 from .cloudscraper.exceptions import AbortedException
+from .config import default_config
 from .soup import PageSoup
 
 logger = logging.getLogger(__name__)
-
-_DEFAULT_CONFIG = CloudScraperConfig(
-    min_request_interval=2.0,
-    min_request_interval_fast=0.1,
-    max_concurrent_requests=1,
-    rotate_tls_ciphers=True,
-    auto_refresh_on_403=False,
-    max_403_retries=3,
-    session_refresh_interval=300,
-    stealth=StealthConfig(
-        enabled=True,
-        min_delay=1.0,
-        max_delay=3.0,
-        min_delay_fast=0.0,
-        max_delay_fast=0.1,
-        human_like_delays=True,
-        randomize_headers=True,
-        browser_quirks=True,
-    ),
-    browser={
-        "browser": "firefox",
-        "platform": "windows",
-        "desktop": True,
-        "mobile": False,
-    },
-    proxy=ProxyConfig(
-        fallback_to_direct=True,
-    ),
-)
 
 
 class Scraper(CloudScraper):
@@ -54,7 +26,7 @@ class Scraper(CloudScraper):
         config: Optional[CloudScraperConfig] = None,
         **kwargs,
     ) -> None:
-        super().__init__(config=config or _DEFAULT_CONFIG)
+        super().__init__(config=config or default_config())
         self.origin = origin or ""
         self.parser = parser or "lxml"
         self.last_soup_url = self.origin

@@ -15,10 +15,13 @@ import random
 import re
 import tempfile
 import time
+from dataclasses import asdict
 from pathlib import Path
 from typing import Dict
 
 from requests.structures import CaseInsensitiveDict
+
+from .config import BrowserConfig
 
 logger = logging.getLogger(__name__)
 
@@ -288,14 +291,20 @@ class UserAgent:
     validation). Falls back to an embedded generator on network failure.
     """
 
-    def __init__(self, allow_brotli: bool = False, browser: dict | None = None) -> None:
+    def __init__(
+        self,
+        allow_brotli: bool = False,
+        browser: BrowserConfig | dict | None = None,
+    ) -> None:
         self.headers: CaseInsensitiveDict = CaseInsensitiveDict()
         self.cipher_suite: list[str] = []
         self.load(allow_brotli=allow_brotli, browser=browser)
 
-    def load(self, allow_brotli: bool = False, browser: dict | None = None) -> None:
+    def load(self, allow_brotli: bool = False, browser: BrowserConfig | dict | None = None) -> None:
         rng = random.SystemRandom()
         cfg = browser or {}
+        if isinstance(cfg, BrowserConfig):
+            cfg = asdict(cfg)
         if isinstance(cfg, str):
             cfg = {"browser": cfg}
 

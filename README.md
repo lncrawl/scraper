@@ -135,7 +135,7 @@ el.append(child)
 ```bash
 git clone https://github.com/lncrawl/scraper.git
 cd scraper
-uv sync --all-groups
+uv sync --all-groups --all-extras
 ```
 
 Tasks are managed with [poethepoet](https://poethepoet.natn.io/):

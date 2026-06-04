@@ -43,7 +43,7 @@ Repository = "https://github.com/lncrawl/scraper"
 Issues = "https://github.com/lncrawl/scraper/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["scraper"]
+packages = ["src/scraper"]
 
 [dependency-groups]
 dev = [
@@ -81,6 +81,7 @@ testpaths = ["tests"]
 [tool.pyright]
 pythonVersion = "3.9"
 typeCheckingMode = "standard"
+include = ["src", "tests"]
 
 [tool.ruff]
 line-length = 100

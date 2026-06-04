@@ -22,6 +22,18 @@ class StealthConfig:
 
 
 @dataclass
+class BrowserConfig:
+    # Browser engine to spoof: "chrome" | "firefox" | None (random choice).
+    browser: str | None = None
+    # Target platform: "windows" | "darwin" | "linux" | "android" | "ios" | None.
+    platform: str | None = None
+    desktop: bool = True
+    mobile: bool = True
+    # Explicit User-Agent string; when set, it overrides browser/platform.
+    custom: str | None = None
+
+
+@dataclass
 class ProxyConfig:
     proxy_urls: list[str] = field(default_factory=list)
     fallback_to_direct: bool = True
@@ -62,7 +74,7 @@ class CloudScraperConfig:
     stealth: StealthConfig = field(default_factory=StealthConfig)
 
     # Browser / User-Agent
-    browser: dict | None = None
+    browser: BrowserConfig | dict | None = None
     allow_brotli: bool = True
 
     # Proxy
