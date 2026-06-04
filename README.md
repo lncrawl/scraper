@@ -1,4 +1,4 @@
-# scraper
+# LNCrawl Scraper
 
 HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth mode, proxy support, and a null-safe BeautifulSoup wrapper.
 
@@ -21,8 +21,9 @@ HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth 
 ```bash
 pip install lncrawl-scraper
 
-# with browser fingerprint impersonation (curl_cffi)
-pip install "lncrawl-scraper[impersonate]"
+# optional extras:
+pip install "lncrawl-scraper[impersonate]"   # browser TLS/HTTP-2 impersonation (curl_cffi)
+pip install "lncrawl-scraper[image]"         # get_image() support (Pillow)
 ```
 
 ## Quick start
@@ -46,6 +47,25 @@ s.get_file("https://example.com/file.zip", output_file="file.zip")
 # Image (returns PIL.Image)
 img = s.get_image("https://example.com/cover.jpg")
 ```
+
+## Examples
+
+Runnable examples live in [`examples/`](examples/) — run any with
+`uv run python examples/<file>.py`.
+
+| Example | Shows |
+| ------- | ----- |
+| [01_basic_html.py](examples/01_basic_html.py) | Fetch a page and extract data with `get_soup` / `PageSoup` |
+| [02_pagesoup_parsing.py](examples/02_pagesoup_parsing.py) | PageSoup tour: CSS select, attrs, navigation, XPath |
+| [03_json_api.py](examples/03_json_api.py) | `get_json` / `post_json` and raw `Response` access |
+| [04_files_and_images.py](examples/04_files_and_images.py) | `get_file` (streamed, atomic) and `get_image` (Pillow) |
+| [05_forms_cookies_headers.py](examples/05_forms_cookies_headers.py) | `submit_form`, `set_header`, `set_cookie`, `reset` |
+| [06_configuration.py](examples/06_configuration.py) | `ScraperConfig`, `default_config()`, stealth, browser identity |
+| [07_impersonation.py](examples/07_impersonation.py) | Real browser TLS/HTTP-2 fingerprint via `impersonate` |
+| [08_browser_clearance.py](examples/08_browser_clearance.py) | Reuse a `cf_clearance` solved by a real browser |
+| [09_proxies_and_tor.py](examples/09_proxies_and_tor.py) | Proxy rotation and Tor identity refresh |
+| [10_concurrency_and_abort.py](examples/10_concurrency_and_abort.py) | Threaded fetches and cooperative `abort()` |
+| [11_error_handling.py](examples/11_error_handling.py) | HTTP, Cloudflare, and abort error handling |
 
 ## Configuration
 
@@ -207,11 +227,11 @@ uv run poe test
 
 # or directly
 uv run pytest
-uv run pytest tests/test_soup.py   # single file
 uv run pytest -v                   # verbose
+uv run pytest tests/test_dummy.py  # a single file
 ```
 
-HTTP-dependent tests use [responses](https://github.com/getsentry/responses) to mock requests — no real network calls are made.
+Mock HTTP with [responses](https://github.com/getsentry/responses) (a dev dependency) so tests make no real network calls.
 
 ## License
 

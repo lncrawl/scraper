@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import threading
 import time
+from dataclasses import replace
 from urllib.parse import urlparse
 
 import requests
@@ -75,8 +76,18 @@ class ScraperEngine(requests.Session):
             self.config.impersonate, self.config.verify_ssl
         )
         browser = self.config.browser
-        if self._impersonate is not None and browser is None:
-            browser = BrowserConfig(browser=_impersonate_family(self.config.impersonate))
+        if self._impersonate is not None:
+            # The UA family MUST match the impersonation target, or the TLS
+            # fingerprint and the User-Agent contradict each other. The target
+            # wins over a configured browser family (a custom UA is respected).
+            family = _impersonate_family(self.config.impersonate)
+            if browser is None:
+                browser = BrowserConfig(browser=family)
+            elif isinstance(browser, BrowserConfig):
+                if not browser.custom:
+                    browser = replace(browser, browser=family)
+            elif isinstance(browser, dict) and not browser.get("custom"):
+                browser = {**browser, "browser": family}
 
         self.user_agent = UserAgent(
             allow_brotli=self.config.allow_brotli,
@@ -349,7 +360,7 @@ class ScraperEngine(requests.Session):
 
     def put_cookie(self, name: str, value: str, domain: str = "", path: str = "/") -> None:
         """Set a cookie on this session (and the impersonation jar, if active)."""
-        self.cookies.set(name, value, domain=domain or None, path=path)
+        self.cookies.set(name, value, domain=domain, path=path)
         if self._impersonate is not None:
             self._impersonate.set_cookie(name, value, domain=domain, path=path)
 
