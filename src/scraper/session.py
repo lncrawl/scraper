@@ -1,3 +1,10 @@
+"""The :class:`Scraper` session — the library's main entry point.
+
+Wraps the Cloudflare-bypass engine with ergonomic helpers for HTML, JSON, file,
+and image retrieval, automatic Origin/Referer injection, and sensible default
+timeouts.
+"""
+
 import base64
 import logging
 from io import BytesIO
@@ -19,6 +26,19 @@ logger = logging.getLogger(__name__)
 
 
 class Scraper(ScraperEngine):
+    """HTTP scraper with Cloudflare bypass and HTML/JSON/file helpers.
+
+    Subclasses :class:`requests.Session` (via the engine), so any standard
+    session call works, while adding higher-level methods such as
+    :meth:`get_soup`, :meth:`get_json`, :meth:`get_file`, and :meth:`get_image`.
+
+    Args:
+        origin: Base site URL; used to set default Origin/Referer headers.
+        parser: BeautifulSoup parser feature (default ``"lxml"``).
+        config: A :class:`~scraper.ScraperConfig`. Defaults to
+            :func:`~scraper.default_config` (a fresh instance per scraper).
+    """
+
     def __init__(
         self,
         origin: Optional[str] = None,
@@ -52,6 +72,7 @@ class Scraper(ScraperEngine):
         self.put_cookie(name, str(value))
 
     def request(self, method, url, *args, **kwargs):
+        """Issue a request with auto Origin/Referer, then raise on HTTP errors."""
         origin_url = extract_base(self.last_soup_url or self.origin or url)
 
         headers = CaseInsensitiveDict(kwargs.pop("headers", {}) or {})
@@ -67,13 +88,16 @@ class Scraper(ScraperEngine):
         return response
 
     def ping(self, url: str, timeout=5, **kwargs):
+        """Send a HEAD request — a lightweight reachability check."""
         return self.request("head", url, **kwargs, timeout=timeout)
 
     def get(self, url, **kwargs) -> Response:  # type: ignore[override]
+        """GET ``url`` with a default ``(connect, read)`` timeout."""
         kwargs.setdefault("timeout", (15, 301))
         return super().get(url, **kwargs)
 
     def post(self, url, **kwargs) -> Response:  # type: ignore[override]
+        """POST to ``url`` with a default ``(connect, read)`` timeout."""
         kwargs.setdefault("timeout", (15, 301))
         return super().post(url, **kwargs)
 

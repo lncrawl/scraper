@@ -1,3 +1,10 @@
+""":class:`PageSoup` — a null-safe BeautifulSoup wrapper.
+
+Selection methods always return :class:`PageSoup` instances (never ``None``) and
+text/HTML accessors always return ``str``, so chained access is safe even when a
+selector matches nothing.
+"""
+
 from __future__ import annotations
 
 from functools import cached_property

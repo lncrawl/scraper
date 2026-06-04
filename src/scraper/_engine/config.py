@@ -9,6 +9,8 @@ from requests import Response
 
 @dataclass
 class StealthConfig:
+    """Anti-detection behaviour: pacing, header randomisation, and browser quirks."""
+
     enabled: bool = True
     # Delays when Cloudflare is active
     min_delay: float = 1.0
@@ -23,6 +25,8 @@ class StealthConfig:
 
 @dataclass
 class BrowserConfig:
+    """Identity to spoof — drives the User-Agent and matching Client Hints."""
+
     # Browser engine to spoof: "chrome" | "firefox" | None (random choice).
     browser: str | None = None
     # Target platform: "windows" | "darwin" | "linux" | "android" | "ios" | None.
@@ -35,6 +39,8 @@ class BrowserConfig:
 
 @dataclass
 class ProxyConfig:
+    """Proxy rotation and optional Tor control-port settings."""
+
     proxy_urls: list[str] = field(default_factory=list)
     fallback_to_direct: bool = True
     tor_control_host: str = "127.0.0.1"
@@ -44,6 +50,13 @@ class ProxyConfig:
 
 @dataclass
 class ScraperConfig:
+    """Top-level scraper configuration.
+
+    Groups challenge-handling, TLS, session, throttling, stealth, browser, and
+    proxy settings. Use :func:`scraper.default_config` for tuned defaults rather
+    than constructing this directly when you only need a few overrides.
+    """
+
     # Challenge handling
     disable_v1: bool = False
     disable_v2: bool = False

@@ -1,3 +1,10 @@
+"""Public configuration surface.
+
+Re-exports the config dataclasses (:class:`ScraperConfig`, :class:`BrowserConfig`,
+:class:`ProxyConfig`, :class:`StealthConfig`) and provides :func:`default_config`,
+the recommended way to obtain tuned defaults.
+"""
+
 from __future__ import annotations
 
 from ._engine.config import (

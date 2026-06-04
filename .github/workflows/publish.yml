@@ -13,8 +13,16 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
         with:
-          name: dist-3.11
-          path: dist/
-      - uses: pypa/gh-action-pypi-publish@release/v1
+          python-version: "3.9"
+
+      - name: Build distributions
+        run: uv build
+
+      - name: Check metadata renders on PyPI
+        run: uvx twine check dist/*
+
+      - name: Publish to PyPI (trusted publishing)
+        uses: pypa/gh-action-pypi-publish@release/v1

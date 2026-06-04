@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "lncrawl-scraper"
-version = "0.0.1"
-description = "HTTP scraper with Cloudflare bypass, stealth mode, TLS rotation, proxy support, and a null-safe BeautifulSoup wrapper."
+version = "0.1.0"
+description = "HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth mode, proxy support, and a null-safe BeautifulSoup wrapper."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.9"
@@ -42,6 +42,7 @@ impersonate = ["curl_cffi>=0.7"]
 Homepage = "https://github.com/lncrawl/scraper"
 Repository = "https://github.com/lncrawl/scraper"
 Issues = "https://github.com/lncrawl/scraper/issues"
+Changelog = "https://github.com/lncrawl/scraper/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/scraper"]
