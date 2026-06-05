@@ -133,6 +133,14 @@ s = Scraper(origin="https://site.com", config=cfg)
 - **Never `git push` automatically.** Commit locally and stop; let the user
   push when ready. This applies even when asked to "make a commit" — stop
   after the commit unless a push is explicitly requested.
+- **Never commit automatically after making changes.** Always stop after
+  editing files and wait for the user to explicitly ask for a commit.
+
+## Before every commit
+
+Run the **`pre-commit-review`** skill before creating any commit — no
+exceptions, including "small" fixes. It covers lint, tests, diff review, and
+the staging checklist.
 
 ## Commit messages
 
