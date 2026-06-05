@@ -196,8 +196,8 @@ def test_get_image_retries_on_unidentified(fast_config):
         s = make(fast_config)
         img = s.get_image(f"{BASE}/img")
         assert img.size == (5, 5)
-        # the retry sent an explicit image Accept header
-        assert "image/" in str(rsps.calls[1].request.headers["Accept"])
+        # the retry sent without explicit image Accept header
+        assert "Accept" not in rsps.calls[1].request.headers
 
 
 def test_get_file_accepts_str_path(fast_config, tmp_path):

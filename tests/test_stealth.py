@@ -1,7 +1,7 @@
 """Tests for the stealth header/delay layer."""
 
 from scraper import StealthConfig
-from scraper._engine.stealth import StealthMode
+from scraper.engine.stealth import StealthMode
 
 CHROME_UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"

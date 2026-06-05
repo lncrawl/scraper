@@ -2,6 +2,7 @@
 
 from scraper import (
     BrowserConfig,
+    ImpersonateConfig,
     ProxyConfig,
     ScraperConfig,
     StealthConfig,
@@ -18,6 +19,7 @@ def test_default_config_returns_fresh_instances():
     assert a.browser is not b.browser
     assert a.stealth is not b.stealth
     assert a.proxy is not b.proxy
+    assert a.impersonate is not b.impersonate
 
 
 def test_default_config_values():
@@ -27,7 +29,9 @@ def test_default_config_values():
     assert cfg.browser.browser is None
     assert cfg.browser.desktop is True
     assert cfg.stealth.enabled is True
-    assert cfg.impersonate is None
+    # Impersonation is enabled by default (curl_cffi primary transport).
+    assert isinstance(cfg.impersonate, ImpersonateConfig)
+    assert cfg.impersonate.target == "chrome"
 
 
 def test_default_config_reexported_from_config_module():
@@ -47,4 +51,6 @@ def test_dataclass_defaults():
     assert StealthConfig().enabled is True
     assert ProxyConfig().fallback_to_direct is True
     assert BrowserConfig().browser is None
-    assert ScraperConfig().impersonate is None
+    # A bare ScraperConfig defaults to no impersonation target (urllib fallback).
+    assert isinstance(ScraperConfig().impersonate, ImpersonateConfig)
+    assert ScraperConfig().impersonate.target is None

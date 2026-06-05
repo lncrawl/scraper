@@ -4,7 +4,7 @@ import ssl
 
 from requests.adapters import HTTPAdapter
 
-from scraper._engine.tls import CipherRotator, CipherSuiteAdapter
+from scraper.engine.tls import CipherRotator, CipherSuiteAdapter
 
 # --- CipherRotator -------------------------------------------------------
 

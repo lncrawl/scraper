@@ -50,8 +50,8 @@ def main() -> None:
     # Subsequent requests reuse the cleared session:
     #   soup = s.get_soup(f"{target}/novel/123")
 
-    # Tip: pair this with impersonate="chrome" so the TLS fingerprint also
-    # matches the browser that obtained the clearance.
+    # Tip: impersonation is on by default (impersonate.target="chrome"), so the
+    # TLS fingerprint already matches a real Chrome that obtained the clearance.
 
 
 if __name__ == "__main__":

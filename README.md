@@ -8,8 +8,12 @@ HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth 
 ## Features
 
 - **Cloudflare bypass** — handles CF challenges v1, v2, v3, and Turnstile transparently
-- **Browser fingerprint impersonation** — optional `curl_cffi` transport that
-  reproduces a real Chrome/Firefox TLS (JA3/JA4) **and** HTTP/2 fingerprint
+- **Browser fingerprint impersonation (on by default)** — a `curl_cffi` transport
+  reproduces a real Chrome/Firefox TLS (JA3/JA4) **and** HTTP/2 fingerprint, with an
+  automatic fallback to the legacy urllib3 transport
+- **Composable engine** — a middleware pipeline over a pluggable transport
+  (`scraper.engine`), so throttling, stealth, proxy, challenge solving, and retries
+  are independent, swappable stages
 - **Browser-assisted clearance** — reuse a `cf_clearance` cookie solved by a real
   browser for managed-challenge / Turnstile sites
 - **Accurate Client Hints** — `sec-ch-ua` / `sec-fetch-*` derived from the chosen UA
@@ -22,17 +26,18 @@ HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth 
 ## Installation
 
 ```bash
-pip install lncrawl-scraper
+pip install lncrawl-scraper   # includes curl_cffi for browser fingerprint impersonation
 
 # optional extras:
-pip install "lncrawl-scraper[brotli]"        # decode brotli (br) responses (brotli)
-pip install "lncrawl-scraper[impersonate]"   # browser TLS/HTTP-2 impersonation (curl_cffi)
-pip install "lncrawl-scraper[image]"         # get_image() support (Pillow)
-pip install "lncrawl-scraper[all]"           # all of the above
+pip install "lncrawl-scraper[brotli]"   # decode brotli (br) responses (brotli)
+pip install "lncrawl-scraper[image]"    # get_image() support (Pillow)
+pip install "lncrawl-scraper[all]"      # all of the above
 ```
 
-All extras are optional and degrade gracefully when absent — without `brotli`,
-the scraper simply stops advertising `br` encoding so responses stay decodable.
+`curl_cffi` ships as a core dependency so impersonation works out of the box; the
+remaining extras are optional and degrade gracefully when absent — without
+`brotli`, the scraper simply stops advertising `br` encoding so responses stay
+decodable.
 
 ## Quick start
 
@@ -126,20 +131,26 @@ s = Scraper(origin="https://example.com", config=config)
 ## Browser fingerprint impersonation
 
 A plain `requests` stack has a fixed OpenSSL TLS fingerprint and only speaks
-HTTP/1.1 — both of which modern Cloudflare detects. Set `impersonate` (requires
-the `impersonate` extra) to route requests through `curl_cffi`, reproducing a
-real browser's TLS (JA3/JA4) and HTTP/2 fingerprint:
+HTTP/1.1 — both of which modern Cloudflare detects. The `curl_cffi` transport
+reproduces a real browser's TLS (JA3/JA4) and HTTP/2 fingerprint, and
+**`default_config()` enables it (`impersonate.target = "chrome"`)** out of the box.
+Pick a different target, or disable impersonation to force the legacy urllib3
+transport:
 
 ```python
 from scraper import Scraper, default_config
 
 config = default_config()
-config.impersonate = "chrome"   # or "firefox", "chrome124", "safari", …
+config.impersonate.target = "firefox"   # or "chrome124", "safari17_0", "edge", …
 s = Scraper(origin="https://example.com", config=config)
+
+# disable impersonation → urllib3 transport
+config.impersonate.target = None
 ```
 
-The spoofed User-Agent family and Client Hints are aligned with the
-impersonation target automatically.
+The spoofed User-Agent family and Client Hints are aligned with the impersonation
+target automatically. If `curl_cffi` cannot be imported, the engine transparently
+falls back to the urllib3 transport.
 
 ## Browser-assisted clearance
 
@@ -173,7 +184,14 @@ s.apply_browser_clearance(
 | `make_soup(data, encoding, ...)`  | Parse `Response`, `bytes`, or `str` into `PageSoup` |
 | `set_header(key, value)`          | Set a default session header                        |
 | `set_cookie(name, value)`         | Set a session cookie                                |
+| `put_cookie(name, value, ...)`    | Set a cookie on session + jar                       |
+| `apply_browser_clearance(...)`    | Reuse a browser cf_clearance                        |
+| `abort()`                         | Stop pending/in-flight requests                     |
 | `reset()`                         | Clear cookies, headers, and state                   |
+
+`Scraper` composes a `scraper.engine.Engine` (available as `scraper.engine`); it is
+not a `requests.Session` subclass, but mirrors the common verb methods (`get`,
+`post`, `head`, `put`, `patch`, `delete`, `options`) plus `headers`/`cookies`.
 
 ## `PageSoup` API
 

@@ -2,7 +2,8 @@
 
 import pytest
 
-from scraper import BrowserConfig, Scraper
+from scraper import BrowserConfig, ImpersonateConfig, Scraper
+from scraper.engine.transport.curl import CurlCffiTransport
 
 from .conftest import make_fast_config
 
@@ -43,19 +44,26 @@ def test_apply_browser_clearance_accepts_bare_host(fast_config):
 pytest.importorskip("curl_cffi")
 
 
-def test_cookies_propagate_to_impersonation_jar():
-    config = make_fast_config(impersonate="chrome", browser=BrowserConfig(browser="chrome"))
-    s = Scraper(config=config)
+def _impersonate_config():
+    return make_fast_config(
+        impersonate=ImpersonateConfig(target="chrome"),
+        browser=BrowserConfig(browser="chrome"),
+    )
+
+
+def test_cookies_propagate_to_transport_jar():
+    s = Scraper(config=_impersonate_config())
+    assert isinstance(s.engine.transport, CurlCffiTransport)
     s.set_cookie("sid", "xyz")
-    assert s._impersonate is not None
-    assert s._impersonate.cookies.get("sid") == "xyz"
+    # written to both the canonical jar and the curl_cffi authoritative jar
+    assert s.cookies.get("sid") == "xyz"
+    assert s.engine.transport._session.cookies.get("sid") == "xyz"
 
 
-def test_reset_clears_impersonation_jar():
-    config = make_fast_config(impersonate="chrome", browser=BrowserConfig(browser="chrome"))
-    s = Scraper(config=config)
+def test_reset_clears_transport_jar():
+    s = Scraper(config=_impersonate_config())
+    assert isinstance(s.engine.transport, CurlCffiTransport)
     s.set_cookie("sid", "xyz")
     s.reset()
     assert list(s.cookies) == []
-    assert s._impersonate is not None
-    assert s._impersonate.cookies.get("sid") is None
+    assert s.engine.transport._session.cookies.get("sid") is None

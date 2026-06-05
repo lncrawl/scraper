@@ -1,11 +1,9 @@
 """Tests for the EventLock concurrency primitive."""
 
-import threading
-
 import pytest
 
 from scraper import AbortedException
-from scraper._utils.event_lock import EventLock
+from scraper.utils import EventLock
 
 
 def test_context_manager_acquires_and_releases():
@@ -30,29 +28,20 @@ def test_abort_sets_signal_and_blocks_acquire():
     assert lock.acquire() is False
 
 
-def test_using_external_signal():
-    signal = threading.Event()
-    lock = EventLock(concurrency=1)
-    returned = lock.using(signal)
-    assert returned is lock
-    signal.set()
-    assert lock.acquire() is False
-
-
-def test_using_none_keeps_default_signal():
-    lock = EventLock(concurrency=1)
-    assert lock.using(None) is lock  # falsy signal → default is kept
-    assert lock.acquire() is True
-    lock.release()
-
-
 def test_enter_raises_when_signalled():
-    signal = threading.Event()
-    signal.set()
     lock = EventLock(concurrency=1)
+    lock.abort()
     with pytest.raises(AbortedException):
-        with lock.using(signal):
+        with lock:
             pass
+
+
+def test_reset():
+    lock = EventLock(concurrency=1)
+    lock.abort()
+    assert lock.acquire() is False
+    lock.reset()
+    assert lock.acquire() is True
 
 
 def test_acquire_loops_when_semaphore_unavailable():

@@ -1,42 +1,49 @@
 """Tests for User-Agent selection and Client Hints derivation."""
 
 import random
+import re
 
-from scraper._engine.config import BrowserConfig
-from scraper._engine.user_agent.agent import UserAgent
-from scraper._engine.user_agent.fallback import generate_ua_fallback
-from scraper._engine.user_agent.filter import (
+from scraper.config import BrowserConfig
+from scraper.engine.user_agent.agent import build_ua_headers
+from scraper.engine.user_agent.fallback import generate_ua_fallback
+from scraper.engine.user_agent.filter import (
     filter_ua_data,
-    infer_ch_platform,
-    infer_platform,
     weighted_choice,
 )
+from scraper.engine.user_agent.helper import (
+    infer_ch_platform,
+    infer_platform,
+)
+
+from .conftest import make_fast_config
 
 # --- Client Hints (tested via UserAgent headers) --------------------------
 
 
 def test_client_hints_match_chrome_version():
-    import re
-
-    ua = UserAgent(cfg=BrowserConfig(browser="chrome", platform="windows", mobile=False))
-    assert "Chrome/" in ua.headers["User-Agent"]
-    match = re.search(r"Chrome/(\d+)", ua.headers["User-Agent"])
+    cfg = BrowserConfig(browser="chrome", platform="windows", mobile=False)
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    assert headers["User-Agent"]
+    assert "Chrome/" in headers["User-Agent"]
+    match = re.search(r"Chrome/(\d+)", headers["User-Agent"])
     assert match is not None
-    assert f'v="{match.group(1)}"' in ua.headers["sec-ch-ua"]
-    assert ua.headers["sec-ch-ua-platform"] == '"Windows"'
-    assert ua.headers["sec-ch-ua-mobile"] == "?0"
+    assert f'v="{match.group(1)}"' in headers["sec-ch-ua"]
+    assert headers["sec-ch-ua-platform"] == '"Windows"'
+    assert headers["sec-ch-ua-mobile"] == "?0"
 
 
 def test_client_hints_mobile_flag():
-    ua = UserAgent(cfg=BrowserConfig(browser="chrome", platform="android", desktop=False))
-    assert ua.headers["sec-ch-ua-mobile"] == "?1"
-    assert ua.headers["sec-ch-ua-platform"] == '"Android"'
+    cfg = BrowserConfig(browser="chrome", platform="android", desktop=False)
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    assert headers["sec-ch-ua-mobile"] == "?1"
+    assert headers["sec-ch-ua-platform"] == '"Android"'
 
 
 def test_firefox_sends_no_client_hints():
-    ua = UserAgent(cfg=BrowserConfig(browser="firefox", platform="windows", mobile=False))
-    assert "Firefox/" in ua.headers["User-Agent"]
-    assert "sec-ch-ua" not in ua.headers
+    cfg = BrowserConfig(browser="firefox", platform="windows", mobile=False)
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    assert "Firefox/" in headers["User-Agent"]
+    assert "sec-ch-ua" not in headers
 
 
 def test_ch_platform_mapping():
@@ -51,54 +58,59 @@ def test_ch_platform_mapping():
 
 
 def test_chrome_ua_has_matching_client_hints():
-    import re
 
-    ua = UserAgent(cfg=BrowserConfig(browser="chrome", platform="windows"))
-    assert "Chrome/" in ua.headers["User-Agent"]
-    match = re.search(r"Chrome/(\d+)", ua.headers["User-Agent"])
+    cfg = BrowserConfig(browser="chrome", platform="windows")
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    assert "Chrome/" in headers["User-Agent"]
+    match = re.search(r"Chrome/(\d+)", headers["User-Agent"])
     assert match is not None
-    assert f'v="{match.group(1)}"' in ua.headers["sec-ch-ua"]
+    assert f'v="{match.group(1)}"' in headers["sec-ch-ua"]
 
 
 def test_firefox_ua_has_no_client_hints():
-    ua = UserAgent(cfg=BrowserConfig(browser="firefox", platform="windows", mobile=False))
-    assert "Firefox/" in ua.headers["User-Agent"]
-    assert "sec-ch-ua" not in ua.headers
+    cfg = BrowserConfig(browser="firefox", platform="windows", mobile=False)
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    assert "Firefox/" in headers["User-Agent"]
+    assert "sec-ch-ua" not in headers
 
 
 def test_custom_user_agent_is_respected():
     custom = "MyCustomBot/1.0"
-    ua = UserAgent(cfg=BrowserConfig(custom=custom))
-    assert ua.headers["User-Agent"] == custom
+    cfg = BrowserConfig(custom=custom)
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    assert headers["User-Agent"] == custom
 
 
 def test_invalid_browser_raises():
     import pytest
 
     with pytest.raises(RuntimeError):
-        UserAgent(cfg=BrowserConfig(browser="netscape"))  # type: ignore
+        cfg = BrowserConfig(browser="netscape")  # type: ignore
+        build_ua_headers(make_fast_config(browser=cfg))
 
 
 def test_allow_brotli_toggle(monkeypatch):
-    import scraper._engine.user_agent.cache as ua_mod
+    import scraper.engine.user_agent.cache as ua_mod
 
     monkeypatch.setattr(ua_mod, "is_brotli_available", lambda: True)
-
-    without = UserAgent(cfg=BrowserConfig(browser="chrome", allow_brotli=False))
-    assert "br" not in without.headers.get("Accept-Encoding", "")
-    with_br = UserAgent(cfg=BrowserConfig(browser="chrome", allow_brotli=True))
-    assert "br" in with_br.headers.get("Accept-Encoding", "")
+    cfg = BrowserConfig(browser="chrome", allow_brotli=False)
+    without = build_ua_headers(make_fast_config(browser=cfg))
+    assert "br" not in without.get("Accept-Encoding", "")
+    cfg = BrowserConfig(browser="chrome", allow_brotli=True)
+    with_br = build_ua_headers(make_fast_config(browser=cfg))
+    assert "br" in with_br.get("Accept-Encoding", "")
 
 
 def test_brotli_stripped_when_unavailable(monkeypatch):
     # The `brotli` extra may not be installed; don't advertise an encoding we
     # cannot decode even when allow_brotli is True.
-    import scraper._engine.user_agent.cache as ua_mod
+    import scraper.engine.user_agent.cache as ua_mod
 
     monkeypatch.setattr(ua_mod, "is_brotli_available", lambda: False)
 
-    ua = UserAgent(cfg=BrowserConfig(browser="chrome", allow_brotli=True))
-    assert "br" not in ua.headers.get("Accept-Encoding", "")
+    cfg = BrowserConfig(browser="chrome", allow_brotli=True)
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    assert "br" not in headers.get("Accept-Encoding", "")
 
 
 # --- _generate_ua_fallback platform coverage (offline, via conftest stub) --
@@ -107,19 +119,19 @@ def test_brotli_stripped_when_unavailable(monkeypatch):
 def test_generate_ua_fallback_all_firefox_platforms():
     rng = random.Random(42)
     for platform in ("windows", "darwin", "linux", "android", "ios"):
-        ua = generate_ua_fallback("firefox", platform, rng)
+        ua = generate_ua_fallback("firefox", platform, None, rng)
         assert ua and ("Firefox/" in ua or "FxiOS/" in ua), f"missing Firefox tag for {platform}"
 
 
 def test_generate_ua_fallback_all_chrome_platforms():
     rng = random.Random(42)
     for platform in ("windows", "darwin", "linux", "android", "ios"):
-        ua = generate_ua_fallback("chrome", platform, rng)
+        ua = generate_ua_fallback("chrome", platform, None, rng)
         assert ua and ("Chrome/" in ua or "CriOS/" in ua), f"missing Chrome tag for {platform}"
 
 
 def test_generate_ua_fallback_chrome_windows_default():
-    ua = generate_ua_fallback("chrome", "windows", random.Random(0))
+    ua = generate_ua_fallback("chrome", "windows", None, random.Random(0))
     assert ua and "Windows NT" in ua
     assert ua and "Chrome/" in ua
 
@@ -128,14 +140,16 @@ def test_invalid_platform_raises():
     import pytest
 
     with pytest.raises(RuntimeError, match="Platform"):
-        UserAgent(cfg=BrowserConfig(browser="chrome", platform="xbox"))  # type: ignore
+        cfg = BrowserConfig(browser="chrome", platform="xbox")  # type: ignore
+        build_ua_headers(make_fast_config(browser=cfg))
 
 
 def test_mobile_and_desktop_both_false_raises():
     import pytest
 
     with pytest.raises(RuntimeError, match="mobile and desktop"):
-        UserAgent(cfg=BrowserConfig(desktop=False, mobile=False))
+        cfg = BrowserConfig(desktop=False, mobile=False)
+        build_ua_headers(make_fast_config(browser=cfg))
 
 
 # --- _infer_platform ------------------------------------------------------
@@ -170,7 +184,7 @@ def test_filter_ua_data_browser_filter():
         {"userAgent": "Mozilla/5.0 Chrome/130.0.0.0 Safari/537.36", "weight": 1.0},
         {"userAgent": "Mozilla/5.0 (rv:140.0) Gecko/20100101 Firefox/140.0", "weight": 1.0},
     ]
-    chrome_only = filter_ua_data(data, "chrome", None)
+    chrome_only = filter_ua_data(data, "chrome")
     assert len(chrome_only) == 1
     assert "Chrome/" in chrome_only[0]["userAgent"]
 
@@ -180,7 +194,7 @@ def test_filter_ua_data_excludes_old_versions():
         {"userAgent": "Mozilla/5.0 Chrome/90.0.0.0", "weight": 1.0},
         {"userAgent": "Mozilla/5.0 Chrome/130.0.0.0", "weight": 1.0},
     ]
-    result = filter_ua_data(data, None, None)
+    result = filter_ua_data(data)
     assert len(result) == 1
     assert "130" in result[0]["userAgent"]
 
@@ -245,7 +259,7 @@ def test_weighted_choice_returns_from_list():
 
 def test_load_with_ua_data_picks_ua(monkeypatch):
     """When load_ua_data returns data, load() should use it instead of fallback."""
-    import scraper._engine.user_agent.cache as ua_mod
+    import scraper.engine.user_agent.cache as ua_mod
 
     fake_data = [
         {
@@ -255,13 +269,14 @@ def test_load_with_ua_data_picks_ua(monkeypatch):
     ]
     monkeypatch.setattr(ua_mod, "load_ua_data", lambda: fake_data)
 
-    ua = UserAgent(cfg=BrowserConfig(browser="chrome", platform="windows", mobile=False))
-    assert "Chrome/130" in ua.headers["User-Agent"]
+    cfg = BrowserConfig(browser="chrome", platform="windows", mobile=False)
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    assert "Chrome/130" in headers["User-Agent"]
 
 
 def test_load_with_ua_data_falls_back_when_filter_empty(monkeypatch):
     """When filtered data yields no platform match, fallback generator is used."""
-    import scraper._engine.user_agent.cache as ua_mod
+    import scraper.engine.user_agent.cache as ua_mod
 
     fake_data = [
         {
@@ -272,8 +287,9 @@ def test_load_with_ua_data_falls_back_when_filter_empty(monkeypatch):
     ]
     monkeypatch.setattr(ua_mod, "load_ua_data", lambda: fake_data)
 
-    ua = UserAgent(cfg=BrowserConfig(browser="chrome", platform="windows"))
-    assert "Chrome/" in ua.headers["User-Agent"]
+    cfg = BrowserConfig(browser="chrome", platform="windows")
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    assert "Chrome/" in headers["User-Agent"]
 
 
 # --- _ch_platform edge cases -----------------------------------------------
@@ -283,33 +299,23 @@ def test_ch_platform_chromeos():
     assert infer_ch_platform("Mozilla/5.0 (X11; CrOS x86_64 14469.0.0)") == "Chrome OS"
 
 
-# --- UserAgent.load -------------------
-
-
-def test_load_with_string_browser_arg():
-    # Pin a desktop platform to avoid the iOS CriOS/ UA family (testing skill gotcha).
-    ua = UserAgent(cfg=BrowserConfig(browser="chrome", platform="windows", mobile=False))
-    # Reload with a plain BrowserConfig to exercise load()
-    ua.load(cfg=BrowserConfig(browser="chrome"))
-    user_agent = str(ua.headers.get("User-Agent", ""))
-    assert "Chrome/" in user_agent or "CriOS/" in user_agent
-
-
 # --- fallback platform vs mobile/desktop constraint --------
 
 
 def test_load_mobile_platform_with_mobile_false_redirects_to_desktop():
     # platform="android" (mobile) + mobile=False → engine picks a desktop platform
-    ua = UserAgent(cfg=BrowserConfig(browser="chrome", platform="android", mobile=False))
-    ua_str = str(ua.headers.get("User-Agent", ""))
+    cfg = BrowserConfig(browser="chrome", platform="android", mobile=False)
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    ua_str = str(headers.get("User-Agent", ""))
     # the engine overrides to a desktop platform so the result is not Android
     assert "Android" not in ua_str
 
 
 def test_load_desktop_platform_with_desktop_false_redirects_to_mobile():
     # platform="windows" (desktop) + desktop=False → engine picks a mobile platform
-    ua = UserAgent(cfg=BrowserConfig(browser="chrome", platform="windows", desktop=False))
-    ua_str = str(ua.headers.get("User-Agent", ""))
+    cfg = BrowserConfig(browser="chrome", platform="windows", desktop=False)
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    ua_str = str(headers.get("User-Agent", ""))
     # engine overrides to mobile platform
     assert "Windows" not in ua_str
 
@@ -363,7 +369,7 @@ def test_filter_ua_data_platform_filter():
 
 
 def test_read_cache_returns_none_when_file_missing(tmp_path, monkeypatch):
-    import scraper._engine.user_agent.cache as cache
+    import scraper.engine.user_agent.cache as cache
 
     monkeypatch.setattr(cache, "_CACHE_PATH", tmp_path / "no_such_file.json.gz")
     assert cache._read_cache() is None

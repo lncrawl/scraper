@@ -3,8 +3,10 @@
 import socket
 import time
 
-from scraper._engine.config import ProxyConfig, TorProxyUrl
-from scraper._engine.proxy_manager import ProxyManager
+import pytest
+
+from scraper.config import ProxyConfig
+from scraper.engine.proxy_manager import ProxyManager
 
 
 def pm(*urls, **kwargs) -> ProxyManager:
@@ -35,13 +37,13 @@ def test_get_proxy_round_robins():
     p = pm("socks5://127.0.0.1:9150", "socks5://127.0.0.1:9151")
     first = p.get_proxy()
     p._last_rotate = 0
-    p.rotate_identity()
+    p.report_failure()
     second = p.get_proxy()
     assert first is not None and second is not None
     assert first["http"] != second["http"]
     # wraps around
     p._last_rotate = 0
-    p.rotate_identity()
+    p.report_failure()
     third = p.get_proxy()
     assert third is not None
     assert third["http"] == first["http"]
@@ -52,24 +54,28 @@ def test_get_proxy_raises_on_missing_scheme():
     assert p.get_proxy() is None
 
 
-# --- rotate_identity -----------------------------------------------------
+# --- _restore_disabled ---------------------------------------------------
 
 
-def test_rotate_identity_noop_when_no_control_port():
-    p = ProxyManager(ProxyConfig(proxy_urls=[TorProxyUrl(control_port=0)]))
-    p.rotate_identity()  # must not raise
+def test_restore_disabled_removes_from_failed_at(monkeypatch):
+    """Restored proxies must be removed from _failed_at so they aren't re-added on next call."""
+    p = pm("socks5://127.0.0.1:9150", failure_tolerance=0, disable_cooldown=0)
+    p.report_failure()  # disables the proxy immediately (tolerance=0)
+    assert not p._available
+    assert p._failed_at  # proxy is in the failed dict
+
+    # Force cooldown to be satisfied immediately
+    monkeypatch.setattr("scraper.engine.proxy_manager.time.monotonic", lambda: 10**9)
+    p._restore_disabled()
+    assert len(p._available) == 1
+    assert not p._failed_at  # must be cleaned up
+
+    # Calling again must NOT add a duplicate
+    p._restore_disabled()
+    assert len(p._available) == 1
 
 
-def test_rotate_identity_debounce_skips_rapid_calls(monkeypatch):
-    monkeypatch.setattr(
-        socket,
-        "create_connection",
-        lambda *a, **kw: (_ for _ in ()).throw(AssertionError("should not connect")),
-    )
-
-    p = ProxyManager(ProxyConfig(proxy_urls=[TorProxyUrl(control_port=9051)]))
-    p._last_rotate = time.monotonic()  # simulate a very recent rotation
-    p.rotate_identity()  # should be a no-op (debounce), not raise
+# --- ProxyManager.rotate_tor_identity -----------------------------------------------------
 
 
 def test_rotate_identity_sends_newnym(monkeypatch):
@@ -93,9 +99,7 @@ def test_rotate_identity_sends_newnym(monkeypatch):
     monkeypatch.setattr(socket, "create_connection", lambda *a, **kw: fake)
     monkeypatch.setattr(time, "sleep", lambda _: None)
 
-    tor_proxy = TorProxyUrl(control_port=9051, control_password="pw")
-    p = ProxyManager(ProxyConfig(proxy_urls=[tor_proxy]))
-    p.rotate_identity()
+    ProxyManager.rotate_tor_identity("127.0.0.1", 9051, "pw")
 
     commands = b"".join(fake.sent)
     assert b"AUTHENTICATE" in commands
@@ -107,9 +111,9 @@ def test_rotate_identity_logs_on_socket_error(monkeypatch):
         raise OSError("refused")
 
     monkeypatch.setattr(socket, "create_connection", boom)
-    tor_proxy = TorProxyUrl(control_port=9051)
-    p = ProxyManager(ProxyConfig(proxy_urls=[tor_proxy]))
-    p.rotate_identity()  # error must be swallowed, not raised
+
+    with pytest.raises(OSError, match="refused"):
+        ProxyManager.rotate_tor_identity("127.0.0.1", 9051, "")
 
 
 def test_rotate_identity_raises_on_bad_auth_response(monkeypatch):
@@ -129,9 +133,8 @@ def test_rotate_identity_raises_on_bad_auth_response(monkeypatch):
     monkeypatch.setattr(socket, "create_connection", lambda *a, **kw: _BadAuthSocket())
     monkeypatch.setattr(time, "sleep", lambda _: None)
 
-    tor_proxy = TorProxyUrl(control_port=9051)
-    p = ProxyManager(ProxyConfig(proxy_urls=[tor_proxy]))
-    p.rotate_identity()  # RuntimeError is caught and logged — should not propagate
+    with pytest.raises(RuntimeError, match="Tor control auth failed: '515 Authentication failed'"):
+        ProxyManager.rotate_tor_identity("127.0.0.1", 9051, "")
 
 
 def test_rotate_identity_raises_on_bad_newnym_response(monkeypatch):
@@ -156,6 +159,5 @@ def test_rotate_identity_raises_on_bad_newnym_response(monkeypatch):
     monkeypatch.setattr(socket, "create_connection", lambda *a, **kw: _BadNewNymSocket())
     monkeypatch.setattr(time, "sleep", lambda _: None)
 
-    tor_proxy = TorProxyUrl(control_port=9051)
-    p = ProxyManager(ProxyConfig(proxy_urls=[tor_proxy]))
-    p.rotate_identity()  # RuntimeError is caught and logged — should not propagate
+    with pytest.raises(RuntimeError, match="NEWNYM rejected: '552 Unrecognized SIGNAL'"):
+        ProxyManager.rotate_tor_identity("127.0.0.1", 9051, "")

@@ -5,8 +5,7 @@ import os
 import pytest
 
 from scraper import AbortedException, CloudflareException
-from scraper._utils.file_tools import atomic_write
-from scraper._utils.url_tools import extract_base, extract_host, validate_url
+from scraper.utils import atomic_write, extract_base, extract_host, validate_url
 
 # --- url_tools ------------------------------------------------------------
 

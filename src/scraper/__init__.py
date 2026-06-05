@@ -1,10 +1,11 @@
 """lncrawl-scraper — an HTTP scraper with Cloudflare bypass and a safe HTML wrapper.
 
-A :class:`Scraper` is a ``requests.Session`` subclass that transparently solves
-Cloudflare challenges and adds convenience helpers (``get_soup``, ``get_json``,
-``get_file`` …). :class:`PageSoup` is a null-safe BeautifulSoup wrapper whose
-selectors never return ``None``. Optionally route requests through a real
-browser TLS/HTTP-2 fingerprint via ``ScraperConfig.impersonate``.
+A :class:`Scraper` composes a Cloudflare-bypass engine that transparently solves
+challenges and adds convenience helpers (``get_soup``, ``get_json``, ``get_file`` …).
+By default requests ride a real browser TLS/HTTP-2 fingerprint via curl_cffi
+(``ScraperConfig.impersonate``), falling back to a urllib3 transport when curl_cffi
+is unavailable. :class:`PageSoup` is a null-safe BeautifulSoup wrapper whose
+selectors never return ``None``.
 
 Example:
     >>> from scraper import Scraper
@@ -16,14 +17,22 @@ Example:
 
 from importlib.metadata import PackageNotFoundError, version
 
-from ._engine.exceptions import AbortedException, CloudflareException
 from .config import (
     BrowserConfig,
+    CloudflareConfig,
+    HttpVersion,
+    ImpersonateConfig,
     ProxyConfig,
+    ProxyUrl,
     ScraperConfig,
     StealthConfig,
+    TorProxyUrl,
     default_config,
 )
+
+# Shared domain types first — the engine, transport, and middleware all depend up
+# on these, so importing them before .session/.soup keeps the graph acyclic.
+from .exceptions import AbortedException, CloudflareException
 from .session import Scraper
 from .soup import PageSoup
 
@@ -38,8 +47,13 @@ __all__ = [
     "default_config",
     "ScraperConfig",
     "BrowserConfig",
-    "ProxyConfig",
+    "CloudflareConfig",
     "StealthConfig",
+    "ProxyConfig",
+    "ProxyUrl",
+    "TorProxyUrl",
+    "ImpersonateConfig",
+    "HttpVersion",
     "AbortedException",
     "CloudflareException",
     "__version__",

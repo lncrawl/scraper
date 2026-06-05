@@ -4,6 +4,8 @@ Run:
     uv run python examples/06_configuration.py
 """
 
+import json
+
 from scraper import (
     BrowserConfig,
     Scraper,
@@ -33,7 +35,14 @@ def from_scratch() -> Scraper:
             browser_quirks=True,
         ),
         # Spoofed browser identity (drives UA + matching Client Hints)
-        browser=BrowserConfig(browser="firefox", platform="windows", desktop=True, mobile=False),
+        browser=BrowserConfig(
+            browser="chrome",
+            platform="darwin",
+            desktop=True,
+            mobile=False,
+            architecture="arm",
+            bitness="64",
+        ),
     )
     return Scraper(origin="https://example.com", config=config)
 
@@ -51,12 +60,11 @@ def from_defaults() -> Scraper:
 
 
 def main() -> None:
-    a = from_scratch()
-    print("scratch UA:", a.headers["User-Agent"])
+    a = from_defaults()
+    print("with impersonate:\n", json.dumps(dict(a.headers), indent=4))
 
-    b = from_defaults()
-    print("defaults UA:", b.headers["User-Agent"])
-    print("chrome client hint:", b.headers.get("sec-ch-ua"))
+    b = from_scratch()
+    print("without impersonate:\n", json.dumps(dict(b.headers), indent=4))
 
 
 if __name__ == "__main__":
