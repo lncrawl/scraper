@@ -250,7 +250,7 @@ def _ch_platform(ua: str) -> str:
         return "Windows"
     if "Mac OS X" in ua or "Macintosh" in ua:
         return "macOS"
-    if "CrOS" in ua:
+    if "CrOS" in ua or "CriOS" in ua:
         return "Chrome OS"
     return "Linux"
 
@@ -349,13 +349,17 @@ class UserAgent:
     def __init__(
         self,
         allow_brotli: bool = False,
-        browser: BrowserConfig | dict | None = None,
+        browser: BrowserConfig | dict | str | None = None,
     ) -> None:
         self.headers: CaseInsensitiveDict = CaseInsensitiveDict()
         self.cipher_suite: list[str] = []
         self.load(allow_brotli=allow_brotli, browser=browser)
 
-    def load(self, allow_brotli: bool = False, browser: BrowserConfig | dict | None = None) -> None:
+    def load(
+        self,
+        allow_brotli: bool = False,
+        browser: BrowserConfig | dict | str | None = None,
+    ) -> None:
         rng = random.SystemRandom()
         cfg = browser or {}
         if isinstance(cfg, BrowserConfig):

@@ -14,9 +14,9 @@ from typing import Any, MutableMapping, Optional, Tuple, Union
 from requests import Response
 from requests.structures import CaseInsensitiveDict
 
-from ._engine import ScraperEngine
 from ._engine.config import ScraperConfig
 from ._engine.exceptions import AbortedException
+from ._engine.session import ScraperEngine
 from ._utils.file_tools import atomic_write
 from ._utils.url_tools import extract_base
 from .config import default_config

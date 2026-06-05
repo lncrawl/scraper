@@ -33,9 +33,5 @@ class CloudflareTurnstileError(CloudflareException):
     """Raised when a Cloudflare Turnstile challenge is detected (requires a captcha provider)."""
 
 
-class CloudflareV3Error(CloudflareException):
-    """Raised when a Cloudflare V3 JavaScript VM challenge cannot be solved."""
-
-
 class AbortedException(CloudflareException):
     """Raised when a request is aborted via the abort signal."""
