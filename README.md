@@ -249,6 +249,10 @@ uv run pytest tests/test_dummy.py  # a single file
 
 Mock HTTP with [responses](https://github.com/getsentry/responses) (a dev dependency) so tests make no real network calls.
 
+## Acknowledgements
+
+Inspired by [VeNoMouS/cloudscraper](https://github.com/VeNoMouS/cloudscraper).
+
 ## License
 
 [Apache-2.0](LICENSE)
