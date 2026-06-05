@@ -74,7 +74,11 @@ jobs:
           add: "pyproject.toml uv.lock"
           tag: "v${{ steps.version.outputs.value }}"
           message: "Bump version to v${{ steps.version.outputs.value }}"
-          # A PAT is required so the tag push triggers release.yml.
-          # GITHUB_TOKEN pushes are intentionally blocked from triggering
-          # further workflows to prevent infinite loops.
-          github_token: ${{ secrets.LNCRAWL_PAT }}
+
+      - name: Trigger release workflow
+        run: |
+          gh workflow run release.yml \
+            --repo "${{ github.repository }}" \
+            --field tag="v${{ steps.version.outputs.value }}"
+        env:
+          GH_TOKEN: ${{ secrets.LNCRAWL_PAT }}
