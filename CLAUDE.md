@@ -124,52 +124,27 @@ s = Scraper(origin="https://site.com", config=cfg)
   combine-as-imports. **`pyright`** runs in `standard` mode over `src` + `tests`
   — keep it clean (use real `isinstance` narrowing rather than `is_dataclass`,
   which pyright doesn't narrow on).
-- **Dependencies**: core runtime deps live in `[project.dependencies]`. Optional
-  extras, all of which degrade gracefully when absent (and `all` installs every
-  extra): `brotli` (decode `br` responses — `UserAgent.load` drops `br` from
-  Accept-Encoding when `_brotli_available()` is false, so we never request an
-  undecodable encoding), `image` (`Pillow`, for `get_image`), and `impersonate`
-  (`curl_cffi`, for `ScraperConfig.impersonate`). Each is imported lazily. Add
-  deps via `uv add` / `uv add --dev`.
+- **Dependencies**: core deps in `[project.dependencies]`; optional extras
+  (`brotli`, `image`, `impersonate`, plus `all`) are imported lazily and degrade
+  gracefully when absent — e.g. `UserAgent.load` drops `br` from Accept-Encoding
+  when `_brotli_available()` is false. Add deps via `uv add` / `uv add --dev`.
 - **Public API** is whatever `src/scraper/__init__.py` exports in `__all__`.
   Update it (and the README) when adding user-facing surface.
 
 ## Commit messages
 
-Match the existing history (`git log`):
-
-- **No type prefix.** Do NOT use Conventional Commits (`feat:`, `fix:`,
-  `docs:`, …) — subjects are plain capitalized text.
-- **Imperative mood**, capitalized first word, no trailing period, subject
-  ≤ ~60 chars (e.g. `Add coverage reporting to CI`, `Restructure into src layout`).
-- **Body only for non-trivial changes**: a blank line, then a short rationale
-  paragraph and/or `-` bullets covering *what* changed and *why* (wrap at ~72
-  chars). Small changes are subject-only.
-- **Do NOT append a `Co-Authored-By` trailer** — this overrides the default
-  Claude Code behaviour; the maintainer's commits never carry it.
+Plain capitalized imperative subjects (no Conventional Commits prefix) and **no
+`Co-Authored-By` trailer**. See the **`commit-messages`** skill for the full
+convention and examples — consult it whenever writing a commit message.
 
 ## Testing
 
-`pytest` under [tests/](tests/). The src/ layout means tests import the
-*installed* package, so run them via `uv run poe test` / `uv run poe cov` (which
-use the editable install).
+Tests live in [tests/](tests/); run via uv (`uv run poe test` / `uv run poe cov`).
+They are offline and mock HTTP with `responses`. For fixtures, the iOS UA gotcha,
+optional-dependency gating, and coverage details, use the **`testing`** skill.
 
-- **Tests must be offline and fast.** [conftest.py](tests/conftest.py) provides
-  an autouse fixture that stubs `scraper._engine.user_agent._load_ua_data` to
-  `None` (forces the deterministic embedded UA generator, no network), plus
-  `fast_config` / `make_fast_config()` which disable stealth delays, throttling,
-  and session refresh. Use these in any test that constructs a `Scraper`.
-- **Mock HTTP with `responses`** (`responses.RequestsMock()`), never real
-  requests. It patches `HTTPAdapter.send`, so it intercepts the mounted TLS
-  adapter too. Note: a set abort signal trips the pre-send check, so the request
-  never fires — use `assert_all_requests_are_fired=False` in that case.
-- **UA-family gotcha**: the offline generator can pick iOS, where Chrome's UA is
-  `CriOS/…` and Firefox's is `FxiOS/…` (neither contains `Chrome/` / `Firefox/`).
-  When asserting on UA family, pin a desktop platform
-  (`BrowserConfig(platform="windows", mobile=False)`).
-- `curl_cffi`-dependent tests use `pytest.importorskip("curl_cffi")`.
-- **Coverage** config is in `pyproject.toml` (`[tool.coverage]`, `source =
-  ["scraper"]`, `relative_files = true`). `uv run poe cov` writes `htmlcov/`,
-  `coverage.xml`, and a terminal report (all coverage artifacts are gitignored).
-  The deep CF challenge solvers (`cloudflare_v1/v2/v3`, `interpreter`) are
-  integration-only and stay low-coverage without live Cloudflare traffic.
+## Releasing
+
+Releases are automated: bump → tag → GitHub Release (artifacts + changelog) →
+PyPI. Update `CHANGELOG.md`, then run the **Bump Version** workflow. For the full
+pipeline, pre-release options, and gotchas, use the **`releasing`** skill.
