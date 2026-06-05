@@ -28,7 +28,8 @@ jobs:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
 
-      - name: Bump version
+      - name: Build version args
+        id: args
         env:
           BUMP: ${{ inputs.bump }}
           PRE: ${{ inputs.pre }}
@@ -40,8 +41,28 @@ jobs:
             echo "::error::Select at least one of 'bump' or 'pre' (both were 'none')."
             exit 1
           fi
-          echo "Running: uv version ${args[*]}"
-          uv version "${args[@]}"
+          # Persist as a space-separated string for subsequent steps
+          echo "args=${args[*]}" >> "$GITHUB_OUTPUT"
+
+      - name: Preview new version (dry-run)
+        id: preview
+        run: |
+          new_version=$(uv version --dry-run --short ${{ steps.args.outputs.args }})
+          echo "value=$new_version" >> "$GITHUB_OUTPUT"
+          echo "New version will be: $new_version"
+
+      - name: Verify CHANGELOG has an entry for the new version
+        run: |
+          version="${{ steps.preview.outputs.value }}"
+          if ! grep -qE "^## \[$version\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no entry for v$version."
+            echo "::error::Add a '## [$version] - YYYY-MM-DD' section and push it to main before releasing."
+            exit 1
+          fi
+          echo "CHANGELOG entry for v$version found."
+
+      - name: Bump version
+        run: uv version ${{ steps.args.outputs.args }}
 
       - name: Read new version
         id: version

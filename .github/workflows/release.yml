@@ -53,7 +53,9 @@ jobs:
             capture { print }
           ' CHANGELOG.md | sed '/^\[.*\]: http/d' > release-notes.md
           if [ ! -s release-notes.md ]; then
-            echo "Release ${GITHUB_REF_NAME}. See CHANGELOG.md for details." > release-notes.md
+            echo "::error::CHANGELOG.md has no entry for ${GITHUB_REF_NAME}."
+            echo "::error::Add a '## [${GITHUB_REF_NAME#v}] - YYYY-MM-DD' section and push it to main."
+            exit 1
           fi
           echo "----- release notes -----"
           cat release-notes.md
