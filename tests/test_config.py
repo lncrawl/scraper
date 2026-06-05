@@ -24,7 +24,8 @@ def test_default_config_values():
     cfg = default_config()
     assert isinstance(cfg, ScraperConfig)
     assert isinstance(cfg.browser, BrowserConfig)
-    assert cfg.browser.browser == "firefox"
+    assert cfg.browser.browser is None
+    assert cfg.browser.desktop is True
     assert cfg.stealth.enabled is True
     assert cfg.impersonate is None
 
