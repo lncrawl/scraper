@@ -49,8 +49,6 @@ def default_config() -> ScraperConfig:
             browser_quirks=True,
         ),
         browser=BrowserConfig(
-            browser="firefox",
-            platform="windows",
             desktop=True,
             mobile=False,
         ),
