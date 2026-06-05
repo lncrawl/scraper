@@ -4,18 +4,22 @@ on:
   workflow_dispatch:
     inputs:
       bump:
-        description: Version part to bump
+        description: Release segment to bump
         required: true
         default: patch
         type: choice
-        options: [patch, minor, major]
+        # "stable" promotes a pre-release to its final version;
+        # "none" bumps only the pre-release segment (e.g. rc1 -> rc2).
+        options: [patch, minor, major, stable, none]
+      pre:
+        description: Pre-release segment (optional)
+        required: false
+        default: none
+        type: choice
+        options: [none, alpha, beta, rc]
 
 jobs:
-  ci:
-    uses: ./.github/workflows/ci.yml
-
   bump:
-    needs: ci
     name: Bump version and push tag
     runs-on: ubuntu-latest
     permissions:
@@ -25,7 +29,19 @@ jobs:
       - uses: astral-sh/setup-uv@v7
 
       - name: Bump version
-        run: uv version --bump '${{ inputs.bump }}'
+        env:
+          BUMP: ${{ inputs.bump }}
+          PRE: ${{ inputs.pre }}
+        run: |
+          args=()
+          if [ "$BUMP" != "none" ]; then args+=(--bump "$BUMP"); fi
+          if [ "$PRE" != "none" ]; then args+=(--bump "$PRE"); fi
+          if [ ${#args[@]} -eq 0 ]; then
+            echo "::error::Select at least one of 'bump' or 'pre' (both were 'none')."
+            exit 1
+          fi
+          echo "Running: uv version ${args[*]}"
+          uv version "${args[@]}"
 
       - name: Read new version
         id: version

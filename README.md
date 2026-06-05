@@ -25,9 +25,14 @@ HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth 
 pip install lncrawl-scraper
 
 # optional extras:
+pip install "lncrawl-scraper[brotli]"        # decode brotli (br) responses (brotli)
 pip install "lncrawl-scraper[impersonate]"   # browser TLS/HTTP-2 impersonation (curl_cffi)
 pip install "lncrawl-scraper[image]"         # get_image() support (Pillow)
+pip install "lncrawl-scraper[all]"           # all of the above
 ```
+
+All extras are optional and degrade gracefully when absent — without `brotli`,
+the scraper simply stops advertising `br` encoding so responses stay decodable.
 
 ## Quick start
 

@@ -125,9 +125,12 @@ s = Scraper(origin="https://site.com", config=cfg)
   — keep it clean (use real `isinstance` narrowing rather than `is_dataclass`,
   which pyright doesn't narrow on).
 - **Dependencies**: core runtime deps live in `[project.dependencies]`. Optional
-  extras: `image` (`Pillow`, for `get_image`) and `impersonate` (`curl_cffi`,
-  for `ScraperConfig.impersonate`) — both imported lazily so the package works
-  without them. Add deps via `uv add` / `uv add --dev`.
+  extras, all of which degrade gracefully when absent (and `all` installs every
+  extra): `brotli` (decode `br` responses — `UserAgent.load` drops `br` from
+  Accept-Encoding when `_brotli_available()` is false, so we never request an
+  undecodable encoding), `image` (`Pillow`, for `get_image`), and `impersonate`
+  (`curl_cffi`, for `ScraperConfig.impersonate`). Each is imported lazily. Add
+  deps via `uv add` / `uv add --dev`.
 - **Public API** is whatever `src/scraper/__init__.py` exports in `__all__`.
   Update it (and the README) when adding user-facing surface.
 

@@ -31,12 +31,13 @@ dependencies = [
     "beautifulsoup4>=4.12",
     "lxml>=4.9",
     "quickjs>=1.19.4",
-    "brotli>=1.0",
 ]
 
 [project.optional-dependencies]
+brotli = ["brotli>=1.0"]
 image = ["Pillow>=10.0"]
 impersonate = ["curl_cffi>=0.7"]
+all = ["lncrawl-scraper[brotli,image,impersonate]"]
 
 [project.urls]
 Homepage = "https://github.com/lncrawl/scraper"
@@ -55,8 +56,9 @@ dev = [
     "pyright>=1.1",
     "ruff>=0.15.15",
     "poethepoet>=0.29",
+    "brotli>=1.0",
     "Pillow>=10.0",
-    "curl-cffi>=0.7",
+    "curl-cffi>=0.13.0",
 ]
 
 [tool.poe.tasks]

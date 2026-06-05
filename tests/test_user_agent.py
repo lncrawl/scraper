@@ -71,3 +71,13 @@ def test_allow_brotli_toggle():
     assert "br" not in without.headers.get("Accept-Encoding", "")
     with_br = UserAgent(allow_brotli=True, browser={"browser": "chrome"})
     assert "br" in with_br.headers.get("Accept-Encoding", "")
+
+
+def test_brotli_stripped_when_unavailable(monkeypatch):
+    # The `brotli` extra may not be installed; don't advertise an encoding we
+    # cannot decode even when allow_brotli is True.
+    from scraper._engine import user_agent as ua_mod
+
+    monkeypatch.setattr(ua_mod, "_brotli_available", lambda: False)
+    ua = UserAgent(allow_brotli=True, browser={"browser": "chrome"})
+    assert "br" not in ua.headers.get("Accept-Encoding", "")

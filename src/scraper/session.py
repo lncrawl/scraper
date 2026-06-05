@@ -101,6 +101,65 @@ class Scraper(ScraperEngine):
         kwargs.setdefault("timeout", (15, 301))
         return super().post(url, **kwargs)
 
+    def get_json(self, url: str, headers: MutableMapping = {}, **kwargs) -> Any:
+        """Fetch content and return it as a JSON object."""
+        headers = CaseInsensitiveDict(headers)
+        headers.setdefault("Accept", "application/json,text/plain,*/*")
+        kwargs["headers"] = headers
+        return self.get(url, **kwargs).json()
+
+    def post_json(
+        self,
+        url: str,
+        data: Optional[Union[MutableMapping, str, bytes]] = None,
+        headers: MutableMapping = {},
+        **kwargs,
+    ) -> Any:
+        """Make a POST request and return the content as a JSON object."""
+        headers = CaseInsensitiveDict(headers)
+        headers.setdefault("Content-Type", "application/json")
+        headers.setdefault("Accept", "application/json,text/plain,*/*")
+        response = self.post(url, data=data, headers=headers, **kwargs)
+        return response.json()
+
+    def make_soup(
+        self,
+        data: Union[Response, bytes, str, Any],
+        encoding: Optional[str] = None,
+    ) -> PageSoup:
+        return PageSoup.create(data, encoding, self.parser)
+
+    def get_soup(
+        self,
+        url: str,
+        headers: MutableMapping = {},
+        encoding: Optional[str] = None,
+        **kwargs,
+    ) -> PageSoup:
+        """Fetch content and return a PageSoup instance."""
+        headers = CaseInsensitiveDict(headers)
+        headers.setdefault("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9")
+        kwargs["headers"] = headers
+        response = self.get(url, **kwargs)
+        self.last_soup_url = url
+        return self.make_soup(response, encoding)
+
+    def post_soup(
+        self,
+        url: str,
+        data: Optional[Union[MutableMapping, str, bytes]] = None,
+        headers: MutableMapping = {},
+        encoding: Optional[str] = None,
+        **kwargs,
+    ) -> PageSoup:
+        """Make a POST request and return a PageSoup instance."""
+        headers = CaseInsensitiveDict(headers)
+        headers.setdefault("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9")
+        kwargs["headers"] = headers
+        response = self.post(url, data=data, **kwargs)
+        self.last_soup_url = url
+        return self.make_soup(response, encoding)
+
     def submit_form(
         self,
         url: str,
@@ -176,62 +235,3 @@ class Scraper(ScraperEngine):
             )
             response = self.get(url, **kwargs)
             return Image.open(BytesIO(response.content))
-
-    def get_json(self, url: str, headers: MutableMapping = {}, **kwargs) -> Any:
-        """Fetch content and return it as a JSON object."""
-        headers = CaseInsensitiveDict(headers)
-        headers.setdefault("Accept", "application/json,text/plain,*/*")
-        kwargs["headers"] = headers
-        return self.get(url, **kwargs).json()
-
-    def post_json(
-        self,
-        url: str,
-        data: Optional[Union[MutableMapping, str, bytes]] = None,
-        headers: MutableMapping = {},
-        **kwargs,
-    ) -> Any:
-        """Make a POST request and return the content as a JSON object."""
-        headers = CaseInsensitiveDict(headers)
-        headers.setdefault("Content-Type", "application/json")
-        headers.setdefault("Accept", "application/json,text/plain,*/*")
-        response = self.post(url, data=data, headers=headers, **kwargs)
-        return response.json()
-
-    def make_soup(
-        self,
-        data: Union[Response, bytes, str, Any],
-        encoding: Optional[str] = None,
-    ) -> PageSoup:
-        return PageSoup.create(data, encoding, self.parser)
-
-    def get_soup(
-        self,
-        url: str,
-        headers: MutableMapping = {},
-        encoding: Optional[str] = None,
-        **kwargs,
-    ) -> PageSoup:
-        """Fetch content and return a PageSoup instance."""
-        headers = CaseInsensitiveDict(headers)
-        headers.setdefault("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9")
-        kwargs["headers"] = headers
-        response = self.get(url, **kwargs)
-        self.last_soup_url = url
-        return self.make_soup(response, encoding)
-
-    def post_soup(
-        self,
-        url: str,
-        data: Optional[Union[MutableMapping, str, bytes]] = None,
-        headers: MutableMapping = {},
-        encoding: Optional[str] = None,
-        **kwargs,
-    ) -> PageSoup:
-        """Make a POST request and return a PageSoup instance."""
-        headers = CaseInsensitiveDict(headers)
-        headers.setdefault("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9")
-        kwargs["headers"] = headers
-        response = self.post(url, data=data, **kwargs)
-        self.last_soup_url = url
-        return self.make_soup(response, encoding)

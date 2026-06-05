@@ -16,6 +16,7 @@ import re
 import tempfile
 import time
 from dataclasses import asdict
+from functools import lru_cache
 from pathlib import Path
 from typing import Dict
 
@@ -24,6 +25,23 @@ from requests.structures import CaseInsensitiveDict
 from .config import BrowserConfig
 
 logger = logging.getLogger(__name__)
+
+
+@lru_cache(maxsize=1)
+def _brotli_available() -> bool:
+    """Whether a brotli decoder (the optional `brotli` extra) is importable."""
+    try:
+        import brotli  # noqa: F401
+
+        return True
+    except ImportError:
+        try:
+            import brotlicffi  # type: ignore[import-not-found]  # noqa: F401
+
+            return True
+        except ImportError:
+            return False
+
 
 # ------------------------------------------------------------------------------- #
 # Remote data source
@@ -393,7 +411,12 @@ class UserAgent:
             self.headers = CaseInsensitiveDict(_HEADERS[browser_name])
             self.headers["User-Agent"] = ua_str
 
-        if not allow_brotli and "br" in self.headers.get("Accept-Encoding", ""):
+        # Only advertise brotli when it is both enabled and actually decodable;
+        # the `brotli` package is an optional extra, so requesting "br" without
+        # it would yield undecodable response bodies.
+        if (not allow_brotli or not _brotli_available()) and "br" in self.headers.get(
+            "Accept-Encoding", ""
+        ):
             self.headers["Accept-Encoding"] = ", ".join(
                 enc.strip()
                 for enc in self.headers["Accept-Encoding"].split(",")
