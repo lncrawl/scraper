@@ -4,7 +4,7 @@ import pytest
 
 from scraper import Scraper, ScraperConfig
 from scraper._engine.impersonate import ImpersonateTransport, build_transport
-from scraper._engine.session import _impersonate_family
+from scraper._engine.session import ScraperEngine
 
 from .conftest import make_fast_config
 
@@ -32,12 +32,18 @@ def test_build_transport_enabled():
         ("chrome124", "chrome"),
         ("firefox", "firefox"),
         ("firefox135", "firefox"),
-        ("safari17_0", "chrome"),  # unknown families fall back to chrome
-        (None, "chrome"),
+        ("safari17_0", "safari"),
+        ("edge145", "edge"),
     ],
 )
 def test_impersonate_family_mapping(target, family):
-    assert _impersonate_family(target) == family
+    engine = ScraperEngine(make_fast_config(impersonate=target))
+    assert family == engine.user_agent.config.browser
+
+
+def test_impersonate_unknown_family():
+    with pytest.raises(ValueError, match="unknown browser is not supported"):
+        ScraperEngine(make_fast_config(impersonate="unknown"))
 
 
 # --- response adaptation --------------------------------------------------

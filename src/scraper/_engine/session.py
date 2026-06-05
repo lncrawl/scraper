@@ -4,6 +4,7 @@ import logging
 import threading
 import time
 from dataclasses import replace
+from typing import get_args
 from urllib.parse import urlparse
 
 import requests
@@ -15,7 +16,7 @@ from .challenges import (
     CloudflareV3Handler,
     TurnstileHandler,
 )
-from .config import BrowserConfig, ScraperConfig
+from .config import BrowserConfig, BrowserType, ScraperConfig
 from .exceptions import AbortedException, CloudflareLoopProtection
 from .impersonate import ImpersonateTransport, build_transport
 from .proxy_manager import ProxyManager
@@ -34,11 +35,6 @@ _CF_COOKIE_NAMES = (
     "cf_turnstile",
     "__cf_bm",
 )
-
-
-def _impersonate_family(target: str | None) -> str:
-    """Map a curl-impersonate target (e.g. ``"chrome124"``) to a UA family."""
-    return "firefox" if (target or "").lower().startswith("firefox") else "chrome"
 
 
 class ScraperEngine(requests.Session):
@@ -63,26 +59,25 @@ class ScraperEngine(requests.Session):
         # browser TLS/HTTP-2 fingerprint, and keep the spoofed UA family aligned
         # with the impersonation target so headers and TLS tell the same story.
         self._impersonate: ImpersonateTransport | None = build_transport(
-            self.config.impersonate, self.config.verify_ssl
+            self.config.impersonate,
+            self.config.verify_ssl,
         )
         browser = self.config.browser
-        if self._impersonate is not None:
+        if self.config.impersonate and self._impersonate is not None:
             # The UA family MUST match the impersonation target, or the TLS
             # fingerprint and the User-Agent contradict each other. The target
             # wins over a configured browser family (a custom UA is respected).
-            family = _impersonate_family(self.config.impersonate)
+            families = [b for b in get_args(BrowserType) if self.config.impersonate.startswith(b)]
+            if not families:
+                raise ValueError(f"{self.config.impersonate} browser is not supported")
+            family = families[0]
             if browser is None:
                 browser = BrowserConfig(browser=family)
             elif isinstance(browser, BrowserConfig):
                 if not browser.custom:
                     browser = replace(browser, browser=family)
-            elif isinstance(browser, dict) and not browser.get("custom"):
-                browser = {**browser, "browser": family}
 
-        self.user_agent = UserAgent(
-            allow_brotli=self.config.allow_brotli,
-            browser=browser,
-        )
+        self.user_agent = UserAgent(browser)
         self._stealth = StealthMode(self.config.stealth)
         self.proxy_manager = ProxyManager(self.config.proxy)
 
@@ -160,7 +155,7 @@ class ScraperEngine(requests.Session):
                 for name in _CF_COOKIE_NAMES:
                     self._impersonate.clear_cookie(name)
             self._state.reset_session_clock()
-            self.user_agent.load(allow_brotli=self.config.allow_brotli, browser=self.config.browser)
+            self.user_agent.load(self.user_agent.config)
             self.headers.update(self.user_agent.headers)
             parsed = urlparse(url)
             resp = self.perform_request("GET", f"{parsed.scheme}://{parsed.netloc}", timeout=30)

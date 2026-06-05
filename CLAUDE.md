@@ -71,7 +71,7 @@ HTTP/1.1 fingerprint — `set_ciphers()` in [tls.py](src/scraper/_engine/tls.py)
 only reorders ciphers, so the ClientHello still reads as Python. Three features
 push past that:
 
-- **Impersonation transport** ([_engine/impersonate.py](src/scraper/_engine/impersonate.py)):
+- **Impersonation transport** ([\_engine/impersonate.py](src/scraper/_engine/impersonate.py)):
   when `ScraperConfig.impersonate` is set (e.g. `"chrome"`), `ScraperEngine.perform_request`
   routes through `curl_cffi` (curl-impersonate) for a real browser TLS + HTTP/2
   fingerprint, and adapts the result back into a `requests.Response`. The
@@ -113,7 +113,7 @@ s = Scraper(origin="https://site.com", config=cfg)
 ## Conventions
 
 - **Python 3.9 compatibility is mandatory.** Bare `X | Y` unions must not be
-  *evaluated at runtime* — only use them in files that have
+  _evaluated at runtime_ — only use them in files that have
   `from __future__ import annotations`, or in pure annotations. Prefer
   `typing.Optional/Union` in new non-future-annotated modules. `importlib`,
   dataclasses, etc. must all work on 3.9.
@@ -127,7 +127,7 @@ s = Scraper(origin="https://site.com", config=cfg)
 - **Dependencies**: core deps in `[project.dependencies]`; optional extras
   (`brotli`, `image`, `impersonate`, plus `all`) are imported lazily and degrade
   gracefully when absent — e.g. `UserAgent.load` drops `br` from Accept-Encoding
-  when `_brotli_available()` is false. Add deps via `uv add` / `uv add --dev`.
+  when `is_brotli_available()` is false. Add deps via `uv add` / `uv add --dev`.
 - **Public API** is whatever `src/scraper/__init__.py` exports in `__all__`.
   Update it (and the README) when adding user-facing surface.
 - **Never `git push` automatically.** Commit locally and stop; let the user

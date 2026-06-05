@@ -2,9 +2,28 @@ from __future__ import annotations
 
 import ssl
 from dataclasses import dataclass, field
-from typing import Callable
+from typing import Callable, Literal
 
 from requests import Response
+
+BrowserType = Literal["chrome", "firefox", "edge", "safari"]
+PlatformType = Literal["windows", "darwin", "linux", "android", "ios"]
+ArchitectureType = Literal["x86", "arm"]
+BitnessType = Literal["32", "64"]
+
+
+@dataclass
+class BrowserConfig:
+    """Identity to spoof — drives the User-Agent and matching Client Hints."""
+
+    allow_brotli: bool = True
+    browser: BrowserType | None = None
+    platform: PlatformType | None = None
+    architecture: ArchitectureType | None = None
+    bitness: BitnessType | None = None
+    desktop: bool = True
+    mobile: bool = True
+    custom: str | None = None
 
 
 @dataclass
@@ -24,28 +43,29 @@ class StealthConfig:
 
 
 @dataclass
-class BrowserConfig:
-    """Identity to spoof — drives the User-Agent and matching Client Hints."""
+class ProxyUrl:
+    """Proxy URL."""
 
-    # Browser engine to spoof: "chrome" | "firefox" | None (random choice).
-    browser: str | None = None
-    # Target platform: "windows" | "darwin" | "linux" | "android" | "ios" | None.
-    platform: str | None = None
-    desktop: bool = True
-    mobile: bool = True
-    # Explicit User-Agent string; when set, it overrides browser/platform.
-    custom: str | None = None
+    url: str
+    http_only: bool = False
+
+
+@dataclass
+class TorProxyUrl(ProxyUrl):
+    """Tor Proxy URL for optional Tor control-port settings for rotation."""
+
+    url: str = "socks5://127.0.0.1:9150"
+    control_host: str = "127.0.0.1"
+    control_port: int = 9151
+    control_password: str = ""
 
 
 @dataclass
 class ProxyConfig:
-    """Proxy rotation and optional Tor control-port settings."""
+    """Proxy configuration."""
 
-    proxy_urls: list[str] = field(default_factory=list)
     fallback_to_direct: bool = True
-    tor_control_host: str = "127.0.0.1"
-    tor_control_port: int = 9151
-    tor_control_password: str = ""
+    proxy_urls: list[TorProxyUrl | ProxyUrl | str] = field(default_factory=list)
 
 
 @dataclass
@@ -87,15 +107,14 @@ class ScraperConfig:
     stealth: StealthConfig = field(default_factory=StealthConfig)
 
     # Browser / User-Agent
-    browser: BrowserConfig | dict | None = None
-    allow_brotli: bool = True
+    browser: BrowserConfig | None = None
 
     # Network fingerprint impersonation (requires the `impersonate` extra).
-    # When set to a curl-impersonate target (e.g. "chrome", "firefox",
-    # "chrome124"), requests are routed through curl_cffi to reproduce a real
+    # When set to a curl-impersonate target (e.g. "chrome", "firefox"),
+    # requests are routed through curl_cffi to reproduce a real
     # browser's TLS (JA3/JA4) and HTTP/2 fingerprint instead of the urllib3
     # default. None keeps the standard transport.
-    impersonate: str | None = None
+    impersonate: BrowserType | str | None = None
 
     # Proxy
     proxy: ProxyConfig = field(default_factory=ProxyConfig)

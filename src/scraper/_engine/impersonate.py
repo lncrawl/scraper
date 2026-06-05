@@ -104,4 +104,7 @@ def build_transport(target: Optional[str], verify_ssl: bool) -> Optional[Imperso
     """Return a transport for ``target`` (e.g. ``"chrome"``), or None when disabled."""
     if not target:
         return None
-    return ImpersonateTransport(target, verify_ssl=verify_ssl)
+    try:
+        return ImpersonateTransport(target, verify_ssl=verify_ssl)
+    except ImportError:
+        return None

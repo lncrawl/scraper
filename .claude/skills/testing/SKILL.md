@@ -5,7 +5,7 @@ description: How to write and run tests for lncrawl-scraper — offline fixtures
 
 # Testing lncrawl-scraper
 
-`pytest` under `tests/`. The src/ layout means tests import the *installed*
+`pytest` under `tests/`. The src/ layout means tests import the _installed_
 package, so always run via uv:
 
 ```bash
@@ -17,7 +17,7 @@ uv run poe cov     # pytest with coverage (term-missing + html + xml)
 
 Tests must be **offline and fast**. `conftest.py` provides:
 
-- An **autouse** fixture that stubs `scraper._engine.user_agent._load_ua_data`
+- An **autouse** fixture that stubs `scraper._engine.user_agent.cache.load_ua_data`
   to return `None`, forcing the deterministic embedded UA generator (no network).
 - `fast_config` (fixture) / `make_fast_config(**overrides)` (helper) — a
   `ScraperConfig` with stealth delays, throttling, and session refresh disabled.
@@ -57,7 +57,7 @@ in abort tests.
   wrap membership/`startswith` checks in `str(...)` to satisfy pyright on CI.
 - **Optional deps**: gate `curl_cffi`/impersonation tests with
   `pytest.importorskip("curl_cffi")`. For brotli behaviour, monkeypatch
-  `scraper._engine.user_agent._brotli_available`.
+  `scraper._engine.user_agent.cache.is_brotli_available`.
 - **Exception/empty branches in PageSoup**: inject a raising stand-in tag
   (`ps._tag = _BoomTag()`) to exercise the defensive `except` paths; see
   `tests/test_soup_edge.py`.

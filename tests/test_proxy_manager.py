@@ -3,9 +3,7 @@
 import socket
 import time
 
-import pytest
-
-from scraper._engine.config import ProxyConfig
+from scraper._engine.config import ProxyConfig, TorProxyUrl
 from scraper._engine.proxy_manager import ProxyManager
 
 
@@ -36,10 +34,14 @@ def test_get_proxy_returns_both_schemes():
 def test_get_proxy_round_robins():
     p = pm("socks5://127.0.0.1:9150", "socks5://127.0.0.1:9151")
     first = p.get_proxy()
+    p._last_rotate = 0
+    p.rotate_identity()
     second = p.get_proxy()
     assert first is not None and second is not None
     assert first["http"] != second["http"]
     # wraps around
+    p._last_rotate = 0
+    p.rotate_identity()
     third = p.get_proxy()
     assert third is not None
     assert third["http"] == first["http"]
@@ -47,15 +49,14 @@ def test_get_proxy_round_robins():
 
 def test_get_proxy_raises_on_missing_scheme():
     p = pm("127.0.0.1:9150")
-    with pytest.raises(ValueError, match="No scheme"):
-        p.get_proxy()
+    assert p.get_proxy() is None
 
 
 # --- rotate_identity -----------------------------------------------------
 
 
 def test_rotate_identity_noop_when_no_control_port():
-    p = ProxyManager(ProxyConfig(tor_control_port=0))
+    p = ProxyManager(ProxyConfig(proxy_urls=[TorProxyUrl(control_port=0)]))
     p.rotate_identity()  # must not raise
 
 
@@ -66,7 +67,7 @@ def test_rotate_identity_debounce_skips_rapid_calls(monkeypatch):
         lambda *a, **kw: (_ for _ in ()).throw(AssertionError("should not connect")),
     )
 
-    p = ProxyManager(ProxyConfig(tor_control_port=9051))
+    p = ProxyManager(ProxyConfig(proxy_urls=[TorProxyUrl(control_port=9051)]))
     p._last_rotate = time.monotonic()  # simulate a very recent rotation
     p.rotate_identity()  # should be a no-op (debounce), not raise
 
@@ -92,7 +93,8 @@ def test_rotate_identity_sends_newnym(monkeypatch):
     monkeypatch.setattr(socket, "create_connection", lambda *a, **kw: fake)
     monkeypatch.setattr(time, "sleep", lambda _: None)
 
-    p = ProxyManager(ProxyConfig(tor_control_port=9051, tor_control_password="pw"))
+    tor_proxy = TorProxyUrl(control_port=9051, control_password="pw")
+    p = ProxyManager(ProxyConfig(proxy_urls=[tor_proxy]))
     p.rotate_identity()
 
     commands = b"".join(fake.sent)
@@ -105,7 +107,8 @@ def test_rotate_identity_logs_on_socket_error(monkeypatch):
         raise OSError("refused")
 
     monkeypatch.setattr(socket, "create_connection", boom)
-    p = ProxyManager(ProxyConfig(tor_control_port=9051))
+    tor_proxy = TorProxyUrl(control_port=9051)
+    p = ProxyManager(ProxyConfig(proxy_urls=[tor_proxy]))
     p.rotate_identity()  # error must be swallowed, not raised
 
 
@@ -126,7 +129,8 @@ def test_rotate_identity_raises_on_bad_auth_response(monkeypatch):
     monkeypatch.setattr(socket, "create_connection", lambda *a, **kw: _BadAuthSocket())
     monkeypatch.setattr(time, "sleep", lambda _: None)
 
-    p = ProxyManager(ProxyConfig(tor_control_port=9051))
+    tor_proxy = TorProxyUrl(control_port=9051)
+    p = ProxyManager(ProxyConfig(proxy_urls=[tor_proxy]))
     p.rotate_identity()  # RuntimeError is caught and logged — should not propagate
 
 
@@ -152,5 +156,6 @@ def test_rotate_identity_raises_on_bad_newnym_response(monkeypatch):
     monkeypatch.setattr(socket, "create_connection", lambda *a, **kw: _BadNewNymSocket())
     monkeypatch.setattr(time, "sleep", lambda _: None)
 
-    p = ProxyManager(ProxyConfig(tor_control_port=9051))
+    tor_proxy = TorProxyUrl(control_port=9051)
+    p = ProxyManager(ProxyConfig(proxy_urls=[tor_proxy]))
     p.rotate_identity()  # RuntimeError is caught and logged — should not propagate

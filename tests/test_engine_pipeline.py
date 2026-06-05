@@ -13,37 +13,11 @@ import requests
 import responses
 
 from scraper import AbortedException, Scraper, StealthConfig
-from scraper._engine.config import ProxyConfig
+from scraper._engine.config import BrowserConfig, ProxyConfig
 
 from .conftest import make_fast_config
 
 BASE = "https://example.com"
-
-
-# ---------------------------------------------------------------------------
-# _impersonate_family
-# ---------------------------------------------------------------------------
-
-
-def test_impersonate_family_chrome_prefix():
-    from scraper._engine.session import _impersonate_family
-
-    assert _impersonate_family("chrome124") == "chrome"
-    assert _impersonate_family("chrome") == "chrome"
-
-
-def test_impersonate_family_firefox_prefix():
-    from scraper._engine.session import _impersonate_family
-
-    assert _impersonate_family("firefox120") == "firefox"
-    assert _impersonate_family("Firefox120") == "firefox"
-
-
-def test_impersonate_family_none_or_unknown():
-    from scraper._engine.session import _impersonate_family
-
-    assert _impersonate_family(None) == "chrome"
-    assert _impersonate_family("safari") == "chrome"
 
 
 # ---------------------------------------------------------------------------
@@ -59,13 +33,13 @@ def test_all_challenge_handlers_disabled():
     cfg.disable_v3 = True
     cfg.disable_v2 = True
     cfg.disable_v1 = True
-    assert ScraperEngine(config=cfg)._challenge_handlers == []
+    assert ScraperEngine(cfg)._challenge_handlers == []
 
 
 def test_default_has_four_handlers():
     from scraper._engine.session import ScraperEngine
 
-    assert len(ScraperEngine(config=make_fast_config())._challenge_handlers) == 4
+    assert len(ScraperEngine(make_fast_config())._challenge_handlers) == 4
 
 
 # ---------------------------------------------------------------------------
@@ -104,28 +78,28 @@ def _fake_transport():
     return _FakeTransport()
 
 
-# # TODO: Flaky test case
-# def test_browser_none_aligned_to_chrome_when_impersonating(monkeypatch):
-#     import scraper._engine.session as eng
+def test_browser_none_aligned_to_chrome_when_impersonating(monkeypatch):
+    import scraper._engine.session as eng
+    from scraper._engine.user_agent.filter import infer_browser
 
-#     monkeypatch.setattr(eng, "build_transport", lambda *a, **kw: _fake_transport())
-#     cfg = make_fast_config()
-#     cfg.impersonate = "chrome124"
-#     cfg.browser = None
-#     e = eng.ScraperEngine(config=cfg)
-#     assert "Chrome/" in e.user_agent.headers.get("User-Agent", "")
+    monkeypatch.setattr(eng, "build_transport", lambda *a, **kw: _fake_transport())
+    cfg = make_fast_config()
+    cfg.impersonate = "chrome124"
+    cfg.browser = None
+    e = eng.ScraperEngine(cfg)
+    assert infer_browser(e.user_agent.headers.get("User-Agent", "")) == "chrome"
 
 
-# # TODO: Flaky test case
-# def test_browser_dict_without_custom_aligned(monkeypatch):
-#     import scraper._engine.session as eng
+def test_browser_dict_without_custom_aligned(monkeypatch):
+    import scraper._engine.session as eng
+    from scraper._engine.user_agent.filter import infer_browser
 
-#     monkeypatch.setattr(eng, "build_transport", lambda *a, **kw: _fake_transport())
-#     cfg = make_fast_config()
-#     cfg.impersonate = "chrome124"
-#     cfg.browser = {"platform": "windows", "mobile": False}
-#     e = eng.ScraperEngine(config=cfg)
-#     assert "Chrome/" in e.user_agent.headers.get("User-Agent", "")
+    monkeypatch.setattr(eng, "build_transport", lambda *a, **kw: _fake_transport())
+    cfg = make_fast_config()
+    cfg.impersonate = "chrome124"
+    cfg.browser = BrowserConfig(platform="windows", mobile=False)
+    e = eng.ScraperEngine(cfg)
+    assert infer_browser(e.user_agent.headers.get("User-Agent", "")) == "chrome"
 
 
 def test_browser_dict_with_custom_not_overridden(monkeypatch):
@@ -134,8 +108,8 @@ def test_browser_dict_with_custom_not_overridden(monkeypatch):
     monkeypatch.setattr(eng, "build_transport", lambda *a, **kw: _fake_transport())
     cfg = make_fast_config()
     cfg.impersonate = "chrome124"
-    cfg.browser = {"custom": "MyBot/1.0"}
-    e = eng.ScraperEngine(config=cfg)
+    cfg.browser = BrowserConfig(custom="MyBot/1.0")
+    e = eng.ScraperEngine(cfg)
     assert e.user_agent.headers["User-Agent"] == "MyBot/1.0"
 
 
@@ -276,7 +250,7 @@ def test_403_retry_exhausted_returns_403():
         r.url = url
         return r
 
-    e = eng.ScraperEngine(config=cfg)
+    e = eng.ScraperEngine(cfg)
     e.perform_request = fake_perform  # type: ignore[method-assign]
     resp = e.request("GET", f"{BASE}/x")
     assert resp.status_code == 403
@@ -386,7 +360,7 @@ def test_perform_request_with_impersonate_transport(monkeypatch):
     monkeypatch.setattr(eng, "build_transport", lambda *a, **kw: _fake_transport())
     cfg = make_fast_config()
     cfg.impersonate = "chrome124"
-    s = eng.ScraperEngine(config=cfg)
+    s = eng.ScraperEngine(cfg)
     # The fake transport returns a 200 directly, no adapter/responses needed
     resp = s.request("GET", f"{BASE}/x")
     assert resp.status_code == 200
@@ -445,7 +419,7 @@ def test_mirror_transport_cookies_clears_and_repopulates(monkeypatch):
     monkeypatch.setattr(eng, "build_transport", lambda *a, **kw: _FakeTransportWithCookies())
     cfg = make_fast_config()
     cfg.impersonate = "chrome124"
-    s = eng.ScraperEngine(config=cfg)
+    s = eng.ScraperEngine(cfg)
     s.request("GET", f"{BASE}/x")
     # After a request, the cookie jar should contain "sid"
     assert "sid" in {c.name for c in s.cookies}
@@ -471,7 +445,7 @@ def test_verify_ssl_false_sets_verify_kwarg():
 
     cfg = make_fast_config()
     cfg.verify_ssl = False
-    s = ScraperEngine(config=cfg)
+    s = ScraperEngine(cfg)
     s.perform_request = fake_perform  # type: ignore[method-assign]
     s.request("GET", f"{BASE}/x")
     assert calls[0] is False
@@ -486,7 +460,7 @@ def test_release_slot_swallows_value_error():
     from scraper._engine.session import ScraperEngine
 
     cfg = make_fast_config()
-    e = ScraperEngine(config=cfg)
+    e = ScraperEngine(cfg)
     # BoundedSemaphore is already at max capacity — releasing again raises ValueError
     e._release_slot()  # must not propagate
 
@@ -501,7 +475,7 @@ def test_rotate_cipher_suite_noop_when_same_suite(monkeypatch):
 
     cfg = make_fast_config()
     cfg.rotate_tls_ciphers = True
-    e = ScraperEngine(config=cfg)
+    e = ScraperEngine(cfg)
     # Force rotator to always return the current suite → no re-mount
     current = e._cipher_suite
     monkeypatch.setattr(e._cipher_rotator, "suite_for", lambda n: current)
@@ -513,7 +487,7 @@ def test_rotate_cipher_suite_noop_when_none(monkeypatch):
 
     cfg = make_fast_config()
     cfg.rotate_tls_ciphers = True
-    e = ScraperEngine(config=cfg)
+    e = ScraperEngine(cfg)
     monkeypatch.setattr(e._cipher_rotator, "suite_for", lambda n: None)
     e._rotate_tls_cipher_suite()  # None → skips remount
 
@@ -565,7 +539,7 @@ def test_403_with_proxy_rotates_and_retries():
     cfg = make_fast_config()
     cfg.proxy = ProxyConfig(proxy_urls=["socks5://127.0.0.1:9150"])
     cfg.max_403_retries = 3
-    e = ScraperEngine(config=cfg)
+    e = ScraperEngine(cfg)
     e.perform_request = fake_perform  # type: ignore[method-assign]
     resp = e.request("GET", f"{BASE}/x")
     assert resp.status_code == 200
@@ -591,7 +565,7 @@ def test_session_refresh_triggered_when_stale():
 
     cfg = make_fast_config()
     cfg.session_refresh_interval = -1  # always stale
-    s = ScraperEngine(config=cfg)
+    s = ScraperEngine(cfg)
     s.perform_request = fake_perform  # type: ignore[method-assign]
     s.request("GET", f"{BASE}/page")
     # At least two calls: the refresh GET (to base) + the actual request
