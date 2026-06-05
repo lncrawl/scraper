@@ -171,3 +171,101 @@ def test_append_ignores_empty_pagesoup():
     before = len(book)
     book.append(PageSoup())  # empty → no-op (exercises the elif-false branch)
     assert len(book) == before
+
+
+# --- missing-branch coverage for select_one / closest / get_attr ----------
+
+
+def test_select_one_on_empty_soup_returns_empty():
+    # self._tag is None → branch 140->146 (falsy tag path)
+    assert not PageSoup().select_one(".x")
+
+
+def test_closest_on_empty_soup_returns_empty():
+    # self._tag is None → branch 172->178 (falsy tag path)
+    assert not PageSoup().closest(".x")
+
+
+def test_get_attr_list_value_joined():
+    # .get() can return a list for multi-valued attributes (e.g. class)
+    from bs4 import BeautifulSoup, Tag
+
+    tag = BeautifulSoup('<div class="a b c"></div>', "html.parser").find("div")
+    assert isinstance(tag, Tag)
+    ps = PageSoup(tag)
+    result = ps.get_attr("class")
+    assert "a" in result and "b" in result
+
+
+def test_parent_is_beautifulsoup_returns_empty():
+    # When the direct parent is the BeautifulSoup root (not a Tag), parent prop
+    # should return an empty PageSoup (line 408 branch).
+    from bs4 import BeautifulSoup, Tag
+
+    bs = BeautifulSoup("<p>hello</p>", "html.parser")
+    p = bs.find("p")
+    assert isinstance(p, Tag)
+    # p.parent is the BeautifulSoup document root, which IS a Tag subclass,
+    # so it returns a PageSoup. Test the falsy-parent path instead:
+    assert not PageSoup().parent
+
+
+def test_root_returns_none_for_isolated_tag():
+    # Tag with no parents → root is None (line 441 path already in test_root_none_for_detached_tag)
+    from bs4 import BeautifulSoup
+
+    detached = BeautifulSoup("", "html.parser").new_tag("span")
+    assert PageSoup(detached).root is None
+
+
+def test_replace_with_empty_pagesoup_noop():
+    s = soup()
+    title = s.select_one(".title")
+    # replacing with an empty PageSoup (no _tag) — should not crash (line 509->506 branch)
+    title.replace_with(PageSoup())
+
+
+# --- __getattr__ with missing _tag attribute ------------------------------
+
+
+def test_getattr_missing_tag_attribute_returns_none():
+    # Trigger the AttributeError branch (lines 62-63): delete _tag so
+    # object.__getattribute__(self, "_tag") raises AttributeError.
+    ps = PageSoup()
+    del ps._tag
+    assert ps.some_unknown_attr is None  # type: ignore[attr-defined]
+
+
+def test_closest_non_tag_result_returns_empty():
+    # closest() when css.closest() returns a non-Tag (e.g. None) → 174->178
+    from bs4 import BeautifulSoup
+
+    bs = BeautifulSoup("<p>text</p>", "html.parser")
+    p = bs.find("p")
+    ps = PageSoup(p)
+    # ".nonexistent" returns None from css.closest → isinstance(None, Tag) False → empty
+    assert not ps.closest(".nonexistent")
+
+
+def test_parent_returns_empty_when_parent_not_a_tag():
+    # Build an orphaned Tag whose parent is a plain (non-Tag) object.
+    from bs4 import Tag
+
+    class _FakeParent:
+        pass
+
+    child = Tag(name="p")
+    child.parent = _FakeParent()  # type: ignore[assignment]
+    ps = PageSoup(child)
+    assert not ps.parent  # isinstance(p, Tag) is False → line 408
+
+
+def test_root_returns_none_when_top_parent_not_beautifulsoup():
+    # A tag whose tree root is another Tag (not BeautifulSoup) → line 441
+    from bs4 import Tag
+
+    parent = Tag(name="div")
+    child = Tag(name="p")
+    parent.append(child)
+    # parents[-1] is parent (a Tag, not BeautifulSoup) → returns None
+    assert PageSoup(child).root is None

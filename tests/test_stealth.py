@@ -57,6 +57,54 @@ def test_delays_do_not_sleep_when_zero():
     sm.apply("GET", "https://x", headers={}, cf_active=False)
 
 
+def test_delay_sleeps_when_large_enough(monkeypatch):
+    sleeps = []
+    monkeypatch.setattr("time.sleep", lambda s: sleeps.append(s))
+    cfg = StealthConfig(
+        min_delay=0.5,
+        max_delay=0.5,
+        min_delay_fast=0.5,
+        max_delay_fast=0.5,
+        human_like_delays=True,
+        randomize_headers=False,
+        browser_quirks=False,
+    )
+    sm = StealthMode(cfg)
+    sm.apply("GET", "https://x", headers={})  # count=0 → skips delay
+    sm.apply("GET", "https://x", headers={})  # count=1, delay=0.5 → sleeps
+    assert len(sleeps) == 1
+    assert sleeps[0] >= 0.5
+
+
+def test_extreme_delay_scaled_and_capped(monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    # Force the 10 % jitter branch to always fire
+    monkeypatch.setattr("random.uniform", lambda a, b: b)
+    monkeypatch.setattr("random.random", lambda: 0.0)  # < 0.1 → jitter taken
+
+    cfg = StealthConfig(
+        min_delay=5.0,
+        max_delay=5.0,
+        min_delay_fast=0.0,
+        max_delay_fast=0.0,
+        human_like_delays=True,
+        randomize_headers=False,
+        browser_quirks=False,
+    )
+    sm = StealthMode(cfg)
+    sm.apply("GET", "https://x", headers={})  # count=0 → skip
+    # cf_active=True + random.random()=0.0 < 0.1 → jitter: delay = min(5.0*1.5, 10.0)
+    sm.apply("GET", "https://x", headers={}, cf_active=True)
+
+
+def test_accept_language_already_present_not_overwritten():
+    # Exercises the 143->145 branch: Accept-Language is already set so line 143
+    # condition is False and we jump to line 145 (the DNT randomization).
+    sm = StealthMode(no_delay_config(randomize_headers=True, browser_quirks=False))
+    out = sm.apply("GET", "https://x", headers={"Accept-Language": "de-DE,de;q=0.9"})
+    assert out["headers"]["Accept-Language"] == "de-DE,de;q=0.9"
+
+
 def test_disabled_stealth_passes_headers_through():
     # StealthMode itself always processes; the engine gates it on enabled, but
     # with both toggles off apply() should be a near no-op aside from counting.

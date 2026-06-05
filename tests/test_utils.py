@@ -88,6 +88,14 @@ def test_atomic_write_swallows_unlink_error(tmp_path, monkeypatch):
             raise ValueError("boom")
 
 
+def test_extract_host_idna_error_is_swallowed():
+    # Labels > 63 chars fail IDNA encoding; the UnicodeError is swallowed and
+    # the already-normalized (but non-IDNA-encoded) host is returned instead.
+    long_label = "a" * 64
+    result = extract_host(f"https://{long_label}.example.com/path")
+    assert long_label in result
+
+
 # --- exception hierarchy --------------------------------------------------
 
 
