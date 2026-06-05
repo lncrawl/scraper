@@ -130,6 +130,9 @@ s = Scraper(origin="https://site.com", config=cfg)
   when `_brotli_available()` is false. Add deps via `uv add` / `uv add --dev`.
 - **Public API** is whatever `src/scraper/__init__.py` exports in `__all__`.
   Update it (and the README) when adding user-facing surface.
+- **Never `git push` automatically.** Commit locally and stop; let the user
+  push when ready. This applies even when asked to "make a commit" — stop
+  after the commit unless a push is explicitly requested.
 
 ## Commit messages
 
