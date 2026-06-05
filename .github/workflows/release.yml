@@ -100,3 +100,11 @@ jobs:
           fail_on_unmatched_files: true
           draft: false
           prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
+
+      - name: Trigger publish workflow
+        run: |
+          gh workflow run publish.yml \
+            --repo "${{ github.repository }}" \
+            --field tag="${{ steps.tag.outputs.name }}"
+        env:
+          GH_TOKEN: ${{ secrets.LNCRAWL_PAT }}

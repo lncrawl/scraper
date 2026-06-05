@@ -1,8 +1,15 @@
 name: Publish
 
 on:
-  release:
-    types: [published]
+  # Triggered explicitly by release.yml after the GitHub Release is created.
+  # GITHUB_TOKEN-created releases do not fire the `release: published` event
+  # in other workflows, so we dispatch directly instead of relying on it.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to publish
+        required: true
+        type: string
 
 jobs:
   publish:
@@ -14,6 +21,9 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag }}
+
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.9"
