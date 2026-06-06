@@ -104,6 +104,9 @@ class CurlCffiTransport(Transport):
             "curl_options": cfg.curl_options or {},
             "verify": config.verify_ssl,
         }
+        # Drop None-valued options so older curl_cffi versions that don't
+        # recognise newer kwargs (e.g. "perk") don't raise TypeError.
+        session_opts = {k: v for k, v in session_opts.items() if v is not None}
         self._session = cffi_requests.Session(**session_opts)  # pyright: ignore[reportArgumentType]
 
     # -- Cookies ------------------------------------------------------------------
