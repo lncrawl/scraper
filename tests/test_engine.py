@@ -313,10 +313,64 @@ def test_refresh_session_returns_false_on_transport_exception():
     assert e.refresh_session(f"{BASE}/page") is False
 
 
+def test_refresh_session_clears_cf_cookies_and_succeeds():
+    e = create_engine(make_fast_config())
+    # Plant one real CF cookie and one whose clear() will raise KeyError (absent domain)
+    e.cookies.set("cf_clearance", "tok", domain="example.com")
+
+    with responses.RequestsMock() as rsps:
+        rsps.add(rsps.GET, f"{BASE}", status=200)
+        result = e.refresh_session(f"{BASE}/page")
+
+    assert result is True
+    assert e.cookies.get("cf_clearance", domain="example.com") is None
+
+
+def test_refresh_session_suppresses_keyerror_on_missing_cookie():
+    """clear() raises KeyError when the cookie doesn't exist for a domain — must not propagate."""
+    e = create_engine(make_fast_config())
+    # list_domains() returns "example.com" but CF cookies were never set there,
+    # so cookies.clear(domain, "/", name) raises KeyError for each name → suppressed.
+    e.cookies.set("unrelated", "val", domain="example.com")
+
+    with responses.RequestsMock() as rsps:
+        rsps.add(rsps.GET, f"{BASE}", status=200)
+        result = e.refresh_session(f"{BASE}/page")
+
+    assert result is True
+
+
 def test_apply_browser_clearance_sets_user_agent():
     e = create_engine(make_fast_config())
     e.apply_browser_clearance("example.com", user_agent="TestBot/1.0")
     assert e.headers["User-Agent"] == "TestBot/1.0"
+
+
+def test_apply_browser_clearance_with_cf_clearance_and_cookies():
+    e = create_engine(make_fast_config())
+    e.apply_browser_clearance(
+        "example.com",
+        cf_clearance="tok123",
+        cookies={"__cf_bm": "bm_val"},
+    )
+    assert e.cookies.get("cf_clearance", domain="example.com") == "tok123"
+    assert e.cookies.get("__cf_bm", domain="example.com") == "bm_val"
+
+
+def test_apply_browser_clearance_no_user_agent_leaves_header_unchanged():
+    e = create_engine(make_fast_config())
+    original_ua = e.headers.get("User-Agent")
+    e.apply_browser_clearance("example.com")
+    assert e.headers.get("User-Agent") == original_ua
+
+
+def test_engine_reset_clears_cookies_and_headers():
+    e = create_engine(make_fast_config())
+    e.cookies.set("tok", "val", domain="example.com")
+    e.headers["X-Custom"] = "yes"
+    e.reset()
+    assert list(e.cookies) == []
+    assert "X-Custom" not in e.headers
 
 
 def test_engine_close_does_not_raise():

@@ -1,5 +1,7 @@
 """Tests for the transport layer: selection, fallback, cookies, and adaptation."""
 
+from http.cookiejar import Cookie
+
 import responses
 from requests.cookies import RequestsCookieJar
 
@@ -239,3 +241,61 @@ def test_curl_close_swallows_exception(monkeypatch):
 
     monkeypatch.setattr(t._session, "close", _boom)
     t.close()  # must not raise
+
+
+def _make_cookie(name: str, value: str, domain: str) -> Cookie:
+    return Cookie(
+        version=0,
+        name=name,
+        value=value,
+        port=None,
+        port_specified=False,
+        domain=domain,
+        domain_specified=True,
+        domain_initial_dot=False,
+        path="/",
+        path_specified=True,
+        secure=False,
+        expires=None,
+        discard=True,
+        comment=None,
+        comment_url=None,
+        rest={},
+    )
+
+
+def test_adapt_curl_response_copies_cookies():
+    """adapt_curl_response must copy cookies from the curl response into the result."""
+    __import__("pytest").importorskip("curl_cffi")
+    from scraper.engine.transport.curl import adapt_curl_response
+
+    class _FakeCookies:
+        jar = [_make_cookie("session", "xyz", "example.com")]
+
+    class _FakeResp:
+        status_code = 200
+        content = b""
+        url = "https://example.com/"
+        reason = "OK"
+        encoding = "utf-8"
+        headers = {}
+        cookies = _FakeCookies()
+
+    out = adapt_curl_response("GET", "https://example.com/", {}, _FakeResp())
+    assert out.cookies.get("session") == "xyz"
+
+
+def test_curl_export_into_copies_cookies():
+    """export_into must populate the target jar with the session's cookies."""
+    from requests.cookies import RequestsCookieJar
+
+    t, _ = _curl_transport()
+
+    t._session.cookies.jar = [_make_cookie("tok", "abc", "example.com")]  # type: ignore[attr-defined]
+
+    jar = RequestsCookieJar()
+    jar.set("old", "value", domain="example.com")
+    t.export_into(jar)
+
+    assert jar.get("tok") == "abc"
+    assert jar.get("old") is None  # jar.clear() was called first

@@ -123,8 +123,7 @@ def _add_client_hints(cfg: BrowserConfig, headers: CaseInsensitiveDict) -> None:
     headers["sec-ch-ua-mobile"] = "?1" if "Mobile" in ua else "?0"
 
     ch_platform = infer_ch_platform(ua)
-    if ch_platform:
-        headers["sec-ch-ua-platform"] = f'"{ch_platform}"'
+    headers["sec-ch-ua-platform"] = f'"{ch_platform}"'
 
     if cfg.architecture:
         headers["sec-ch-ua-arch"] = f'"{cfg.architecture}"'

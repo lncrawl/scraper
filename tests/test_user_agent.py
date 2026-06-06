@@ -528,3 +528,141 @@ def test_build_ua_headers_unrecognized_impersonate_returns_minimal():
     cfg = make_fast_config(impersonate=ImpersonateConfig(target="123"))
     headers = build_ua_headers(cfg)
     assert "User-Agent" not in headers
+
+
+# --- _get_impersonate_browser: valid target parses browser/version/platform --
+
+
+def test_get_impersonate_browser_plain_name():
+    from scraper.engine.user_agent.agent import _get_impersonate_browser
+
+    result = _get_impersonate_browser("chrome")
+    assert result is not None
+    assert result.browser == "chrome"
+    assert result.version == 0
+    assert result.platform is None
+    assert result.desktop is True
+    assert result.mobile is False
+
+
+def test_get_impersonate_browser_with_version():
+    from scraper.engine.user_agent.agent import _get_impersonate_browser
+
+    result = _get_impersonate_browser("chrome120")
+    assert result is not None
+    assert result.browser == "chrome"
+    assert result.version == 120
+
+
+def test_get_impersonate_browser_with_platform():
+    from scraper.engine.user_agent.agent import _get_impersonate_browser
+
+    result = _get_impersonate_browser("chrome120_android")
+    assert result is not None
+    assert result.browser == "chrome"
+    assert result.version == 120
+    assert result.platform == "android"
+    assert result.mobile is True
+    assert result.desktop is False
+
+
+# --- build_ua_headers: valid impersonate target flows through _get_user_agent --
+
+
+def test_build_ua_headers_with_valid_impersonate_target():
+    from scraper.config import ImpersonateConfig
+
+    cfg = make_fast_config(impersonate=ImpersonateConfig(target="chrome120"))
+    headers = build_ua_headers(cfg)
+    assert "User-Agent" in headers
+    assert "Chrome/" in headers["User-Agent"]
+
+
+# --- _get_user_agent: invalid architecture and bitness raise -----------------
+
+
+def test_invalid_architecture_raises():
+    cfg = BrowserConfig(browser="chrome", architecture="arm64")  # type: ignore[arg-type]
+    with pytest.raises(RuntimeError, match="Architecture"):
+        build_ua_headers(make_fast_config(browser=cfg))
+
+
+def test_invalid_bitness_raises():
+    cfg = BrowserConfig(browser="chrome", bitness="128")  # type: ignore[arg-type]
+    with pytest.raises(RuntimeError, match="Bitness"):
+        build_ua_headers(make_fast_config(browser=cfg))
+
+
+# --- safari platform redirect branches --------------------------------------
+
+
+def test_safari_mobile_platform_mobile_false_redirects_to_darwin():
+    # safari + android/ios (mobile) + mobile=False → picks darwin desktop variant
+    cfg = BrowserConfig(browser="safari", platform="ios", mobile=False)
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    ua = headers["User-Agent"]
+    assert "iPhone" not in ua and "iPad" not in ua and "Android" not in ua
+
+
+def test_safari_desktop_platform_desktop_false_redirects_to_ios():
+    # safari + darwin (desktop) + desktop=False → redirects to ios
+    cfg = BrowserConfig(browser="safari", platform="darwin", desktop=False)
+    headers = build_ua_headers(make_fast_config(browser=cfg))
+    ua = headers["User-Agent"]
+    assert "iPhone" in ua or "iPad" in ua
+
+
+# --- _add_client_hints: architecture and bitness headers --------------------
+
+
+def test_add_client_hints_sets_arch_and_bitness():
+    from requests.structures import CaseInsensitiveDict
+
+    from scraper.config import BrowserConfig
+    from scraper.engine.user_agent.agent import _add_client_hints
+
+    chrome_ua = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+    )
+    cfg = BrowserConfig(browser="chrome", architecture="x86", bitness="64")
+    headers = CaseInsensitiveDict({"User-Agent": chrome_ua})
+    _add_client_hints(cfg, headers)
+    assert headers.get("sec-ch-ua-arch") == '"x86"'
+    assert headers.get("sec-ch-ua-bitness") == '"64"'
+
+
+# --- filter_ua_data: chrome entry that passes version filter ----------------
+
+
+def test_filter_ua_data_includes_modern_chrome():
+    data = [
+        {
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0.0.0 Safari/537.36",
+            "weight": 1.0,
+        }
+    ]
+    result = filter_ua_data(data, "chrome", None)
+    assert len(result) == 1
+    assert "Chrome/130" in result[0]["userAgent"]
+
+
+def test_infer_ch_platform_none_ua_returns_none():
+    assert infer_ch_platform(None) is None
+
+
+def test_generate_ua_fallback_edge_windows():
+    ua = generate_ua_fallback("edge", "windows", None, random.Random(0))
+    assert ua and "Windows NT" in ua and "Edg/" in ua
+
+
+def test_filter_ua_data_else_skips_unrecognised_browser(monkeypatch):
+    """The else: continue guard rejects entries whose inferred browser is not
+    one of the four known families (edge/firefox/safari/chrome)."""
+    import scraper.engine.user_agent.filter as filter_mod
+
+    monkeypatch.setattr(filter_mod, "infer_browser", lambda ua: "opera")
+    data = [{"userAgent": "Opera/9.80 (Windows NT 6.1) Presto/2.12", "weight": 1.0}]
+    # browser=None, inferred="opera" → passes the "not browser and not inferred" guard
+    # target="opera" → none of the known elif branches match → else: continue
+    assert filter_ua_data(data, None, None) == []

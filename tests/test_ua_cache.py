@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import gzip
 import json
+import sys
+import types
 
 import responses as rsp
 
@@ -26,6 +28,33 @@ def _write_gz(path, data: list) -> None:
 
 def _write_gz_bytes(data: list) -> bytes:
     return gzip.compress(json.dumps(data).encode())
+
+
+# --- is_brotli_available: brotlicffi fallback and neither-installed path ---
+
+
+def test_is_brotli_available_via_brotlicffi(monkeypatch):
+    from scraper.engine.user_agent.cache import is_brotli_available
+
+    is_brotli_available.cache_clear()
+    monkeypatch.setitem(sys.modules, "brotli", None)  # None → ImportError on import
+    monkeypatch.setitem(sys.modules, "brotlicffi", types.ModuleType("brotlicffi"))
+    try:
+        assert is_brotli_available() is True
+    finally:
+        is_brotli_available.cache_clear()
+
+
+def test_is_brotli_available_neither_installed(monkeypatch):
+    from scraper.engine.user_agent.cache import is_brotli_available
+
+    is_brotli_available.cache_clear()
+    monkeypatch.setitem(sys.modules, "brotli", None)
+    monkeypatch.setitem(sys.modules, "brotlicffi", None)
+    try:
+        assert is_brotli_available() is False
+    finally:
+        is_brotli_available.cache_clear()
 
 
 # --- fast path: fresh cache, no network call needed -----------------------

@@ -79,6 +79,8 @@ def filter_ua_data(
         elif target == "chrome":
             if not _match_version(ua, _CHROME_RE, version, min_chrome):
                 continue
+        else:
+            continue
 
         entries.append(entry)
 
@@ -92,13 +94,5 @@ def weighted_choice(
     if not entries:
         return None
     weights = [e.get("weight", 1e-6) for e in entries]
-    total = sum(weights)
-    threshold = rng.random() * total
-    cumulative = 0.0
-    chosen = entries[-1]
-    for entry, w in zip(entries, weights):
-        cumulative += w
-        if cumulative >= threshold:
-            chosen = entry
-            break
-    return chosen.get("userAgent")
+    chosen = rng.choices(entries, weights=weights, k=1)
+    return chosen[0].get("userAgent")
