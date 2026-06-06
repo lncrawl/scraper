@@ -16,6 +16,7 @@ on:
 permissions:
   contents: write
   code-quality: write
+  pull-requests: write
 
 jobs:
   ci:
