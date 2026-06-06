@@ -4,6 +4,46 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-06-06
+
+### Breaking Changes
+
+- `Scraper` is now a **composition facade** rather than a `requests.Session`
+  subclass. The public helper API (`get_soup`, `get_json`, `get_file`, etc.)
+  is unchanged, but `isinstance(scraper, requests.Session)` no longer holds
+  and Session-internal overrides will not work.
+- `engine/` and `utils/` replace the former private `_engine/` and `_utils/`
+  packages. Direct imports from `scraper._engine.*` or `scraper._utils.*`
+  must be updated to `scraper.engine.*` / `scraper.utils.*`.
+
+### Added
+
+- `CloudflareConfig`, `ImpersonateConfig`, `HttpVersion`, `ProxyUrl`, and
+  `TorProxyUrl` are now exported from the top-level `scraper` package.
+- `engine/` is now a documented public extension surface: the middleware
+  pipeline and pluggable transport layer are importable and subclassable.
+- New middleware pipeline with 11 single-concern middleware classes
+  (`throttle`, `stealth`, `proxy`, `retry_403`, `challenge`, `tls_rotation`,
+  `concurrency`, `refresh`, `ssl_retry`, `hooks`, `abort`) replacing the
+  former monolithic engine.
+- New `Transport` abstraction with `CurlCffiTransport` (primary) and
+  `UrllibTransport` (fallback) implementations.
+
+### Changed
+
+- `curl_cffi` is now a **core dependency** (not an optional extra). The
+  `impersonate` extra is retained for backwards compatibility but is a no-op;
+  plain `pip install lncrawl-scraper` includes it automatically.
+- Default impersonation target is `"chrome"` — requests ride a real Chrome
+  TLS/HTTP-2 fingerprint out of the box.
+- Updated dependencies to latest compatible versions.
+
+### Fixed
+
+- Atomic-group regex syntax that caused `SyntaxError` on Python 3.9 and 3.10.
+- `None`-valued session options no longer forwarded to `curl_cffi`, fixing
+  compatibility with older `curl_cffi` releases.
+
 ## [0.2.0] - 2026-06-05
 
 ### Changed
@@ -47,5 +87,6 @@ Initial public release of `lncrawl-scraper`, extracted from
   rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[0.3.0]: https://github.com/lncrawl/scraper/releases/tag/v0.3.0
 [0.2.0]: https://github.com/lncrawl/scraper/releases/tag/v0.2.0
 [0.1.0]: https://github.com/lncrawl/scraper/releases/tag/v0.1.0
