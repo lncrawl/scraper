@@ -56,7 +56,7 @@ def adapt_curl_response(method: str, url: str, req_headers, resp) -> requests.Re
     out = requests.Response()
     out.status_code = resp.status_code
     out._content = resp.content
-    out._content_consumed = True
+    setattr(out, "_content_consumed", True)
     out.url = str(resp.url)
     out.reason = getattr(resp, "reason", "") or ""
     out.encoding = getattr(resp, "encoding", None)

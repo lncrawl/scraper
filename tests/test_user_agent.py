@@ -130,6 +130,53 @@ def test_generate_ua_fallback_all_chrome_platforms():
         assert ua and ("Chrome/" in ua or "CriOS/" in ua), f"missing Chrome tag for {platform}"
 
 
+def test_generate_ua_fallback_safari_ios():
+    ua = generate_ua_fallback("safari", "ios", None, random.Random(42))
+    assert ua and "iPhone" in ua
+
+
+def test_generate_ua_fallback_edge_all_non_windows_platforms():
+    rng = random.Random(42)
+    for platform, marker in [
+        ("darwin", "Macintosh"),
+        ("linux", "Linux"),
+        ("android", "EdgA/"),
+        ("ios", "EdgiOS/"),
+    ]:
+        ua = generate_ua_fallback("edge", platform, None, rng)
+        assert ua and marker in ua, f"missing {marker!r} for edge/{platform}"
+
+
+def test_generate_ua_fallback_unknown_browser_returns_none():
+    assert generate_ua_fallback("opera", "windows", None, random.Random(0)) is None
+
+
+def test_filter_ua_data_skips_mobile_with_wrong_device_category():
+    """Android/iOS platform filters also require deviceCategory == 'mobile'."""
+    data = [
+        {
+            "userAgent": "Mozilla/5.0 (Linux; Android 14) Chrome/130.0.0.0 Mobile Safari/537.36",
+            "deviceCategory": "desktop",
+            "weight": 1.0,
+        }
+    ]
+    assert filter_ua_data(data, None, "android") == []
+
+
+def test_match_version_exact_match_below_min():
+    """An exact version == v passes even when v < min_version."""
+    from scraper.engine.user_agent.filter import _CHROME_RE, _match_version
+
+    assert _match_version("Chrome/90.0.0.0", _CHROME_RE, 90, 120) is True
+
+
+def test_match_version_below_min_no_exact_match_rejected():
+    """A version below min_version with no exact-match criteria is rejected."""
+    from scraper.engine.user_agent.filter import _CHROME_RE, _match_version
+
+    assert _match_version("Chrome/90.0.0.0", _CHROME_RE, None, 120) is False
+
+
 def test_generate_ua_fallback_chrome_windows_default():
     ua = generate_ua_fallback("chrome", "windows", None, random.Random(0))
     assert ua and "Windows NT" in ua
@@ -373,3 +420,108 @@ def test_read_cache_returns_none_when_file_missing(tmp_path, monkeypatch):
 
     monkeypatch.setattr(cache, "_CACHE_PATH", tmp_path / "no_such_file.json.gz")
     assert cache._read_cache() is None
+
+
+# --- _match_version: no regex match → return False (line 24) ---------------
+
+
+def test_match_version_no_regex_match_returns_false():
+    from scraper.engine.user_agent.filter import _CHROME_RE, _match_version
+
+    # UA has no Chrome/ token at all → regex doesn't match → line 24
+    assert _match_version("Mozilla/5.0 Firefox/130.0", _CHROME_RE, None, 120) is False
+
+
+# --- infer_browser: Chromium UA returns None (line 13→18) ------------------
+
+
+def test_infer_browser_chromium_ua_returns_none():
+    from scraper.engine.user_agent.helper import infer_browser
+
+    # "Chromium" in UA → the Chrome/Safari branches are skipped → returns None
+    ua = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chromium/130.0.0.0 Safari/537.36"
+    assert infer_browser(ua) is None
+
+
+# --- infer_ch_platform: Linux fallback (line 36) ---------------------------
+
+
+def test_infer_ch_platform_linux_fallback():
+    from scraper.engine.user_agent.helper import infer_ch_platform
+
+    # Generic desktop UA with no OS token → falls through to "Linux"
+    assert infer_ch_platform("Mozilla/5.0 (X11; Linux x86_64)") == "Linux"
+
+
+# --- _add_client_hints: UA without Chrome/ skips hint generation (line 112) --
+
+
+def test_add_client_hints_no_chrome_version_skips_hints():
+    # UA that infer_browser returns "chrome" for (has Chrome/ token) but the version
+    # part is non-numeric so re.search returns None → return early at line 112.
+    from requests.structures import CaseInsensitiveDict
+
+    from scraper.config import BrowserConfig
+    from scraper.engine.user_agent.agent import _add_client_hints
+
+    headers = CaseInsensitiveDict({"User-Agent": "Mozilla/5.0 Chrome/NoVersion Safari/537.36"})
+    _add_client_hints(BrowserConfig(browser="chrome"), headers)
+    assert "sec-ch-ua" not in headers
+
+
+# --- edge client hints: ev extracted from Edg/ token (lines 126-132) -----
+
+
+def test_add_client_hints_edge_includes_ev():
+    from requests.structures import CaseInsensitiveDict
+
+    from scraper.config import BrowserConfig
+    from scraper.engine.user_agent.agent import _add_client_hints
+
+    edge_ua = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/130.0.4472.124 Safari/537.36 Edg/130.0.2849.52"
+    )
+    headers = CaseInsensitiveDict({"User-Agent": edge_ua})
+    _add_client_hints(BrowserConfig(browser="edge"), headers)
+    assert "sec-ch-ua" in headers
+    assert "Microsoft Edge" in headers["sec-ch-ua"]
+    # ev comes from Edg/ token
+    assert "130" in headers["sec-ch-ua"]
+
+
+# --- filter_ua_data: modern Firefox passes version check (branch 74→85) ---
+
+
+def test_filter_ua_data_includes_modern_firefox():
+    data = [{"userAgent": "Mozilla/5.0 (rv:135.0) Gecko/20100101 Firefox/135.0", "weight": 1.0}]
+    result = filter_ua_data(data, "firefox", None)
+    assert len(result) == 1
+
+
+# --- filter_ua_data: old Edge excluded (line 72 — continue for old edge) --
+
+
+def test_filter_ua_data_skips_old_edge():
+    data = [
+        {
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 Chrome/90.0.0.0 Safari/537.36 Edg/90.0",
+            "weight": 1.0,
+        }
+    ]
+    assert filter_ua_data(data, "edge", None) == []
+
+
+# --- build_ua_headers: unrecognized impersonate target returns early (line 153) --
+
+
+def test_build_ua_headers_unrecognized_impersonate_returns_minimal():
+    from scraper.config import ImpersonateConfig
+
+    # "123" is truthy so the impersonate branch is entered, but _IMPERSONATE_TARGET_RE
+    # requires at least one letter — all-digits target → findall returns [] → None →
+    # early return at line 153 with just Accept-Encoding, no User-Agent set.
+    cfg = make_fast_config(impersonate=ImpersonateConfig(target="123"))
+    headers = build_ua_headers(cfg)
+    assert "User-Agent" not in headers

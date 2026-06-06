@@ -73,6 +73,18 @@ def test_urllib_transport_put_and_clear_cookie():
     assert jar2.get("a") is None
 
 
+def test_urllib_transport_clear_cookie_missing_is_ignored():
+    """clear_cookie must not raise when the named cookie does not exist."""
+    t = DirectUrllibTransport(make_fast_config())
+    t.put_cookie("present", "v", domain="example.com")
+    t.clear_cookie("absent", domain="example.com")  # cookie never set → KeyError suppressed
+    t.clear_cookie("present")  # removes it
+
+
+def test_urllib_transport_close():
+    DirectUrllibTransport(make_fast_config()).close()
+
+
 def test_urllib_transport_cipher_rotation_remounts():
     # Use the real chrome pool (>window size) so rotation picks a different window.
     t = DirectUrllibTransport(make_fast_config(browser=BrowserConfig(browser="chrome")))
@@ -205,3 +217,25 @@ def test_curl_cookie_roundtrip_and_export():
     assert t._session.cookies.get("sid") is None
     t.clear_all_cookies()  # no error on empty
     t.close()
+
+
+def test_curl_clear_cookie_swallows_exception(monkeypatch):
+    """clear_cookie must not raise when the underlying delete() throws."""
+    t, _ = _curl_transport()
+
+    def _boom(name, domain=None):
+        raise RuntimeError("cookie store exploded")
+
+    monkeypatch.setattr(t._session.cookies, "delete", _boom)
+    t.clear_cookie("missing")  # must not raise
+
+
+def test_curl_close_swallows_exception(monkeypatch):
+    """close() must not raise when the underlying session.close() throws."""
+    t, _ = _curl_transport()
+
+    def _boom():
+        raise RuntimeError("session exploded")
+
+    monkeypatch.setattr(t._session, "close", _boom)
+    t.close()  # must not raise

@@ -269,7 +269,11 @@ Mock HTTP with [responses](https://github.com/getsentry/responses) (a dev depend
 
 ## Acknowledgements
 
-Inspired by [VeNoMouS/cloudscraper](https://github.com/VeNoMouS/cloudscraper).
+Inspired by,
+
+- [VeNoMouS/cloudscraper](https://github.com/VeNoMouS/cloudscraper)
+- [intoli/user-agents](https://github.com/intoli/user-agents)
+- [lexiforest/curl_cffi](https://github.com/lexiforest/curl_cffi)
 
 ## License
 

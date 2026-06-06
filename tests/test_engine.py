@@ -300,6 +300,30 @@ def test_session_refresh_triggered_when_stale():
     assert len(calls) >= 2
 
 
+# --- refresh_session / apply_clearance / close ----------------------------
+
+
+def test_refresh_session_returns_false_on_transport_exception():
+    e = create_engine(make_fast_config())
+
+    def boom(ctx):
+        raise requests.exceptions.ConnectionError("offline")
+
+    e.transport.send = boom  # type: ignore[method-assign]
+    assert e.refresh_session(f"{BASE}/page") is False
+
+
+def test_apply_browser_clearance_sets_user_agent():
+    e = create_engine(make_fast_config())
+    e.apply_browser_clearance("example.com", user_agent="TestBot/1.0")
+    assert e.headers["User-Agent"] == "TestBot/1.0"
+
+
+def test_engine_close_does_not_raise():
+    e = create_engine(make_fast_config())
+    e.close()
+
+
 # --- cookies / raw send ---------------------------------------------------
 
 
@@ -324,3 +348,62 @@ def test_perform_request_bypasses_pipeline():
     resp = e.perform_request("GET", f"{BASE}/raw")
     assert resp.status_code == 200
     assert calls == [f"{BASE}/raw"]
+
+
+# --- middleware unit: challenge solve_depth not reset on redirect ----------
+
+
+def test_challenge_solve_depth_not_reset_on_redirect():
+    """solve_depth is NOT zeroed when the response is a redirect (is_redirect=True)."""
+    from scraper.engine.context import RequestContext
+    from scraper.engine.middleware.challenge import ChallengeMiddleware
+
+    e = create_engine(make_fast_config())
+    mw = ChallengeMiddleware(e)
+
+    # A plain 302 redirect — no CF headers so no handler matches.
+    redir = _resp(302, BASE)
+    redir.headers["Location"] = f"{BASE}/done"
+
+    e.chain.solve_depth = 2  # simulate mid-chain state
+
+    result = mw.handle(RequestContext("GET", f"{BASE}/x"), lambda ctx: redir)
+    assert result is redir
+    assert e.chain.solve_depth == 2  # not reset — response was a redirect
+
+
+# --- middleware unit: concurrency ValueError from release is swallowed ----
+
+
+def test_concurrency_release_value_error_suppressed(monkeypatch):
+    """ValueError from slots.release() in the finally block must not propagate."""
+    from scraper.engine.context import RequestContext
+    from scraper.engine.middleware.concurrency import ConcurrencyMiddleware
+
+    e = create_engine(make_fast_config())
+    mw = ConcurrencyMiddleware(e)
+
+    monkeypatch.setattr(
+        e.slots, "release", lambda: (_ for _ in ()).throw(ValueError("over-released"))
+    )
+
+    result = mw.handle(RequestContext("GET", f"{BASE}/x"), lambda ctx: _resp(200, BASE))
+    assert result.status_code == 200
+
+
+# --- middleware unit: tls_rotation skipped for nested requests ------------
+
+
+def test_tls_rotation_skipped_for_nested():
+    """rotate_ciphers() must not be called when ctx.nested is True."""
+    from scraper.engine.context import RequestContext
+    from scraper.engine.middleware.tls_rotation import TlsRotationMiddleware
+
+    e = create_engine(make_fast_config())
+    mw = TlsRotationMiddleware(e)
+
+    rotate_calls = []
+    e.transport.rotate_ciphers = lambda: rotate_calls.append(1)  # type: ignore[method-assign]
+
+    mw.handle(RequestContext("GET", f"{BASE}/x", nested=True), lambda ctx: _resp(200, BASE))
+    assert not rotate_calls  # nested request → rotation skipped

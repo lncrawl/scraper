@@ -133,6 +133,28 @@ def test_proxy_injects_when_configured():
     assert ctx.kwargs.get("proxies")
 
 
+# --- proxy: no-fallback raises when proxies exhausted --------------------
+
+
+def test_proxy_raises_when_no_fallback_and_proxies_exhausted():
+    from scraper.config import ProxyConfig
+
+    e = _engine(
+        proxy=ProxyConfig(
+            proxy_urls=["socks5://127.0.0.1:9150"],
+            failure_tolerance=0,  # disable on first failure
+            retry_request_on_failure=1,
+            fallback_to_direct=False,  # no direct fallback
+        )
+    )
+
+    def always_fail(ctx):
+        raise requests.exceptions.ProxyError("down")
+
+    with pytest.raises(requests.exceptions.ProxyError):
+        ProxyMiddleware(e).handle(RequestContext("GET", BASE), always_fail)
+
+
 # --- stealth gating -------------------------------------------------------
 
 
@@ -170,6 +192,17 @@ def test_retry403_resets_on_200():
 
 def test_retry403_returns_403_when_budget_exhausted():
     e = _engine(max_403_retries=0)
+    out = Retry403Middleware(e).handle(RequestContext("GET", BASE), _nxt(_resp(403)))
+    assert out.status_code == 403
+
+
+# --- 403: return None when no proxy and no refresh -----------------------
+
+
+def test_retry403_returns_none_when_no_proxy_and_no_refresh():
+    """When no proxy is available and auto_refresh is off, _maybe_retry returns None
+    and the original 403 response is passed through."""
+    e = _engine(auto_refresh_on_403=False, max_403_retries=3)
     out = Retry403Middleware(e).handle(RequestContext("GET", BASE), _nxt(_resp(403)))
     assert out.status_code == 403
 

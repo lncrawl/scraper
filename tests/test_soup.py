@@ -228,3 +228,55 @@ def test_contents_includes_text_nodes():
     contents = s.select_one("p").contents
     assert any(isinstance(c, str) for c in contents)
     assert any(isinstance(c, PageSoup) for c in contents)
+
+
+def test_get_attr_returns_default_when_attr_absent():
+    # Attribute does not exist on the tag → val is None → returns default (line 362→370)
+    s = PageSoup.create("<div></div>")
+    assert s.select_one("div").get_attr("data-missing", "fallback") == "fallback"
+
+
+def test_decompose_without_selector_removes_element():
+    # decompose() with no selector decomposes the tag itself (line 457→456)
+    s = PageSoup.create("<div><span>keep</span><b>remove</b></div>")
+    b = s.select_one("b")
+    b.decompose()
+    assert not s.select("b")
+
+
+def test_get_attr_inner_tag_falsy_covers_dead_branch():
+    """Cover branch 362→370: inner `if self._tag:` evaluates False."""
+    from bs4 import BeautifulSoup
+
+    div = BeautifulSoup("<div class='x'>hi</div>", "html.parser").find("div")
+    call_count = [0]
+
+    class _OnceTruthy:
+        def __bool__(self):
+            call_count[0] += 1
+            return call_count[0] == 1  # True on outer guard, False on inner check
+
+    s = PageSoup(div)
+    s._tag = _OnceTruthy()  # type: ignore[assignment]
+    assert s.get_attr("class", "fallback") == "fallback"
+    assert call_count[0] == 2
+
+
+def test_decompose_selector_non_tag_item_skipped():
+    """Cover branch 457→456: isinstance(t, Tag) is False → loop continues."""
+    from bs4 import BeautifulSoup
+    from bs4.element import NavigableString
+
+    soup = BeautifulSoup("<div><span>hi</span></div>", "html.parser")
+    span = soup.find("span")
+
+    class _MockTagWithNonTag:
+        def __bool__(self) -> bool:
+            return True
+
+        def select(self, sel: str):  # type: ignore[return]
+            return [NavigableString("text"), span]
+
+    s = PageSoup(soup.find("div"))
+    s._tag = _MockTagWithNonTag()  # type: ignore[assignment]
+    s.decompose("span")  # NavigableString skipped, span decomposed — must not raise

@@ -6,6 +6,10 @@ on:
   pull_request:
   workflow_call:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     name: Lint
@@ -24,6 +28,8 @@ jobs:
     name: Coverage
     runs-on: ubuntu-latest
     needs: lint
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
@@ -32,13 +38,19 @@ jobs:
       - run: uv sync --all-groups --all-extras
 
       - name: Run tests with coverage
-        run: uv run pytest --cov --cov-report=xml --cov-report=term-missing
+        run: |
+          uv run pytest \
+            --cov \
+            --cov-report=xml \
+            --cov-report=term-missing \
+            --cov-report=markdown-append:$GITHUB_STEP_SUMMARY
 
       - name: Upload coverage.xml
         uses: actions/upload-artifact@v7
         with:
           name: coverage-xml
           path: coverage.xml
+          retention-days: 7
 
   build:
     name: Build (Python ${{ matrix.python-version }})
@@ -60,3 +72,4 @@ jobs:
         with:
           name: dist-${{ matrix.python-version }}
           path: dist/
+          retention-days: 30

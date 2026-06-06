@@ -75,6 +75,45 @@ def test_restore_disabled_removes_from_failed_at(monkeypatch):
     assert len(p._available) == 1
 
 
+# --- report_success / report_failure edge cases ---------------------------
+
+
+def test_report_success_is_noop_when_no_proxies():
+    """report_success must not raise when _available is empty."""
+    ProxyManager().report_success()
+
+
+def test_report_failure_is_noop_when_no_proxies():
+    """report_failure must not raise when _available is empty."""
+    ProxyManager().report_failure()
+
+
+# --- get_proxy http_only flag ---------------------------------------------
+
+
+def test_get_proxy_http_only():
+    from scraper.config import ProxyUrl
+
+    p = ProxyManager(
+        ProxyConfig(proxy_urls=[ProxyUrl(url="socks5://127.0.0.1:9150", http_only=True)])
+    )
+    result = p.get_proxy()
+    assert result is not None
+    assert "http" in result
+    assert "https" not in result
+
+
+# --- ProxyUrl object accepted directly (no string wrapping) ---------------
+
+
+def test_proxy_url_object_accepted_directly():
+    from scraper.config import ProxyUrl
+
+    # Passing a ProxyUrl object directly must work (no str→ProxyUrl conversion needed).
+    p = ProxyManager(ProxyConfig(proxy_urls=[ProxyUrl(url="socks5://127.0.0.1:9150")]))
+    assert p.has_proxy
+
+
 # --- ProxyManager.rotate_tor_identity -----------------------------------------------------
 
 
@@ -161,3 +200,51 @@ def test_rotate_identity_raises_on_bad_newnym_response(monkeypatch):
 
     with pytest.raises(RuntimeError, match="NEWNYM rejected: '552 Unrecognized SIGNAL'"):
         ProxyManager.rotate_tor_identity("127.0.0.1", 9051, "")
+
+
+# --- Tor rotation triggered via report_failure ---------------------------
+
+
+def test_tor_rotation_success_on_report_failure(monkeypatch):
+    """report_failure on a TorProxyUrl with control_port calls rotate_tor_identity."""
+    from scraper.config import TorProxyUrl
+
+    p = ProxyManager(
+        ProxyConfig(
+            proxy_urls=[TorProxyUrl(url="socks5://127.0.0.1:9150", control_port=9051)],
+            failure_tolerance=10,  # don't disable on first failure
+            tor_rotation_cooldown=0.0,  # no cooldown
+        )
+    )
+
+    rotated = []
+    monkeypatch.setattr(
+        ProxyManager, "rotate_tor_identity", staticmethod(lambda h, p, pw: rotated.append(1))
+    )
+    monkeypatch.setattr("scraper.engine.proxy_manager.time.monotonic", lambda: 1e9)
+
+    p.report_failure()
+    assert rotated  # rotation was attempted
+
+
+def test_tor_rotation_failure_on_report_failure_logs_warning(monkeypatch):
+    """If rotate_tor_identity raises, the warning is logged and rotation falls through."""
+    from scraper.config import TorProxyUrl
+
+    p = ProxyManager(
+        ProxyConfig(
+            proxy_urls=[TorProxyUrl(url="socks5://127.0.0.1:9150", control_port=9051)],
+            failure_tolerance=10,
+            tor_rotation_cooldown=0.0,
+        )
+    )
+
+    def _boom(host, port, pw):
+        raise OSError("connection refused")
+
+    monkeypatch.setattr(ProxyManager, "rotate_tor_identity", staticmethod(_boom))
+    monkeypatch.setattr("scraper.engine.proxy_manager.time.monotonic", lambda: 1e9)
+
+    # Must not raise — the exception is caught and logged
+    p.report_failure()
+    assert p.has_proxy  # proxy still active

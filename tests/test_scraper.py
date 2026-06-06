@@ -242,3 +242,93 @@ def test_make_soup_from_various(fast_config):
     s = make(fast_config)
     assert s.make_soup("<p>a</p>").select_one("p").text == "a"
     assert s.make_soup(b"<p>b</p>").select_one("p").text == "b"
+
+
+# --- delegated properties / close -----------------------------------------
+
+
+def test_config_and_proxy_manager_properties(fast_config):
+    s = make(fast_config)
+    assert s.config is s.engine.config
+    assert s.proxy_manager is s.engine.proxy_manager
+
+
+def test_signal_setter(fast_config):
+    from scraper.utils import EventLock
+
+    s = make(fast_config)
+    new_signal = EventLock()
+    s.signal = new_signal
+    assert s.engine.signal is new_signal
+
+
+def test_close_does_not_raise(fast_config):
+    make(fast_config).close()
+
+
+# --- request: Origin/Referer omitted when no origin configured ------------
+
+
+def test_request_without_origin_omits_origin_referer_headers():
+    from .conftest import make_fast_config
+
+    with responses.RequestsMock() as rsps:
+        rsps.add(rsps.GET, f"{BASE}/x", body="ok")
+        s = Scraper(config=make_fast_config())  # no origin= kwarg
+        s.get(f"{BASE}/x")
+        hdrs = rsps.calls[0].request.headers
+        assert "Origin" not in hdrs
+        assert "Referer" not in hdrs
+
+
+# --- HTTP verb methods (options / head / put / patch / delete) -----------
+
+
+def test_http_verb_methods(fast_config):
+    with responses.RequestsMock() as rsps:
+        rsps.add(rsps.OPTIONS, f"{BASE}/x", body=b"ok")
+        rsps.add(rsps.HEAD, f"{BASE}/x", body=b"")
+        rsps.add(rsps.PUT, f"{BASE}/x", body=b"ok")
+        rsps.add(rsps.PATCH, f"{BASE}/x", body=b"ok")
+        rsps.add(rsps.DELETE, f"{BASE}/x", body=b"ok")
+        s = make(fast_config)
+        s.options(f"{BASE}/x")
+        s.head(f"{BASE}/x")
+        s.put(f"{BASE}/x")
+        s.patch(f"{BASE}/x")
+        s.delete(f"{BASE}/x")
+        assert len(rsps.calls) == 5
+
+
+# --- get_image: invalid URL raises ValueError ----------------------------
+
+
+def test_get_image_invalid_url_raises(fast_config):
+    s = make(fast_config)
+    with pytest.raises(ValueError, match="Invalid URL"):
+        s.get_image("not-a-url")
+
+
+# --- get_image: SVG data URI via cairosvg --------------------------------
+
+
+def test_get_image_svg_data_uri_returns_image(fast_config, monkeypatch):
+    cairosvg = pytest.importorskip("cairosvg")
+    from PIL import Image
+
+    buf = io.BytesIO()
+    Image.new("RGB", (1, 1)).save(buf, format="PNG")
+    png_bytes = buf.getvalue()
+
+    monkeypatch.setattr(cairosvg, "svg2png", lambda bytestring: png_bytes)
+
+    img = make(fast_config).get_image("data:image/svg+xml,<svg/>")
+    assert img is not None
+
+
+def test_get_image_svg_data_uri_empty_raises(fast_config, monkeypatch):
+    cairosvg = pytest.importorskip("cairosvg")
+    monkeypatch.setattr(cairosvg, "svg2png", lambda bytestring: None)
+
+    with pytest.raises(RuntimeError, match="SVG"):
+        make(fast_config).get_image("data:image/svg+xml,<svg/>")
