@@ -79,8 +79,6 @@ def filter_ua_data(
         elif target == "chrome":
             if not _match_version(ua, _CHROME_RE, version, min_chrome):
                 continue
-        elif target is not None:
-            continue
 
         entries.append(entry)
 

@@ -359,12 +359,11 @@ class PageSoup:
         if not self._tag:
             return default
         try:
-            if self._tag:
-                val = self._tag.get(key)
-                if isinstance(val, list):
-                    return " ".join(str(v) for v in val)
-                if val is not None:
-                    return str(val)
+            val = self._tag.get(key)
+            if isinstance(val, list):
+                return " ".join(str(v) for v in val)
+            if val is not None:
+                return str(val)
         except Exception:
             pass
         return default
@@ -454,8 +453,7 @@ class PageSoup:
         try:
             if selector is not None:
                 for t in self._tag.select(selector):
-                    if isinstance(t, Tag):
-                        t.decompose()
+                    t.decompose()
             else:
                 self._tag.decompose()
         except Exception:

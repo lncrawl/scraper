@@ -3,6 +3,8 @@
 import random
 import re
 
+import pytest
+
 from scraper.config import BrowserConfig
 from scraper.engine.user_agent.agent import build_ua_headers
 from scraper.engine.user_agent.fallback import generate_ua_fallback
@@ -148,7 +150,8 @@ def test_generate_ua_fallback_edge_all_non_windows_platforms():
 
 
 def test_generate_ua_fallback_unknown_browser_returns_none():
-    assert generate_ua_fallback("opera", "windows", None, random.Random(0)) is None
+    with pytest.raises(ValueError, match="Unknown browser: opera"):
+        generate_ua_fallback("opera", "windows", None, random.Random(0))
 
 
 def test_filter_ua_data_skips_mobile_with_wrong_device_category():

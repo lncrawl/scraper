@@ -112,29 +112,23 @@ class CloudflareV1Handler(ChallengeHandler):
 
     @staticmethod
     def _is_new_iuam_challenge(resp: Response) -> bool:
-        try:
-            return CloudflareV1Handler._is_iuam_challenge(resp) and bool(
-                re.search(
-                    r"cpo\.src\s*=\s*['\"]\/cdn-cgi\/challenge-platform\/\S+orchestrate\/jsch\/v1",
-                    resp.text,
-                    re.M | re.S,
-                )
+        return CloudflareV1Handler._is_iuam_challenge(resp) and bool(
+            re.search(
+                r"cpo\.src\s*=\s*['\"]\/cdn-cgi\/challenge-platform\/\S+orchestrate\/jsch\/v1",
+                resp.text,
+                re.M | re.S,
             )
-        except AttributeError:
-            return False
+        )
 
     @staticmethod
     def _is_new_captcha_challenge(resp: Response) -> bool:
-        try:
-            return CloudflareV1Handler._is_captcha_challenge(resp) and bool(
-                re.search(
-                    r"cpo\.src\s*=\s*['\"]\/cdn-cgi\/challenge-platform\/\S+orchestrate\/(captcha|managed)\/v1",
-                    resp.text,
-                    re.M | re.S,
-                )
+        return CloudflareV1Handler._is_captcha_challenge(resp) and bool(
+            re.search(
+                r"cpo\.src\s*=\s*['\"]\/cdn-cgi\/challenge-platform\/\S+orchestrate\/(captcha|managed)\/v1",
+                resp.text,
+                re.M | re.S,
             )
-        except AttributeError:
-            return False
+        )
 
     # -- Solving ------------------------------------------------------------
 

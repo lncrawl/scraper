@@ -42,7 +42,7 @@ def _get_impersonate_browser(target: str) -> BrowserConfig | None:
     )
 
 
-def _get_user_agent(cfg: BrowserConfig) -> str | None:
+def _get_user_agent(cfg: BrowserConfig) -> str:
     if cfg.custom:
         return cfg.custom
 
@@ -153,9 +153,6 @@ def build_ua_headers(config: ScraperConfig) -> CaseInsensitiveDict:
             return headers
 
     ua_str = _get_user_agent(cfg)
-    if not ua_str:
-        return headers
-
     browser = infer_browser(ua_str)
     if browser:
         headers.update(DEFAULT_HEADERS[browser])

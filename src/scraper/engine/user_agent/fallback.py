@@ -22,7 +22,7 @@ def generate_ua_fallback(
     platform: str | None,
     version: int | None,
     rng: random.Random,
-) -> str | None:
+) -> str:
     """Generate a realistic modern UA string without any network or disk I/O."""
     if browser == "firefox":
         v = version or rng.choice(FIREFOX_VERSIONS)
@@ -84,4 +84,4 @@ def generate_ua_fallback(
             return f"Mozilla/5.0 (iPhone; CPU iPhone OS {iv} like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/{v}.0.0.0 Mobile/15E148 Safari/604.1"
         return f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) {webkit} Chrome/{v}.0.0.0 Safari/537.36"
 
-    return None
+    raise ValueError(f"Unknown browser: {browser}")
