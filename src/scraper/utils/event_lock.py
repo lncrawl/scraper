@@ -36,6 +36,5 @@ class EventLock:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._signal = self._signal
         self.release()
         return False
