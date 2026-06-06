@@ -28,18 +28,18 @@ classifiers = [
 
 dependencies = [
     "requests[socks]>=2.32.5",
-    "beautifulsoup4>=4.12.3",
+    "beautifulsoup4>=4.14.3",
     "lxml>=6.0.0",
     "quickjs>=1.19.4",
-    "curl_cffi>=0.7.4",
+    "curl_cffi>=0.13.0",
 ]
 
 [project.optional-dependencies]
 brotli = [
-    "brotli>=1.0",
+    "brotli>=1.2.0",
 ]
 image = [
-    "Pillow>=10.0",
+    "Pillow>=11.3.0",
     "cairosvg>=2.8.2",
 ]
 all = [
@@ -57,14 +57,14 @@ packages = ["src/scraper"]
 
 [dependency-groups]
 dev = [
-    "pytest>=8.0",
-    "pytest-cov>=5.0",
-    "responses>=0.25",
+    "pytest>=8.4.2",
+    "pytest-cov>=6.3.0",
+    "responses>=0.26",
     "pyright>=1.1",
-    "ruff>=0.15.15",
-    "poethepoet>=0.29",
-    "brotli>=1.0",
-    "Pillow>=10.0",
+    "ruff>=0.15.16",
+    "poethepoet>=0.37.0",
+    "brotli>=1.2.0",
+    "Pillow>=11.3.0",
     "cairosvg>=2.8.2",
 ]
 
