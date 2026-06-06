@@ -24,7 +24,7 @@ from .helper import infer_browser, infer_ch_platform
 
 logger = logging.getLogger(__name__)
 
-_IMPERSONATE_TARGET_RE = re.compile(r"([a-zA-Z]+)([0-9]*)[^_]*(?>_(.+))?")
+_IMPERSONATE_TARGET_RE = re.compile(r"([a-zA-Z]+)([0-9]*)(?:[^_]*_(.+))?")
 
 
 def _get_impersonate_browser(target: str) -> BrowserConfig | None:
