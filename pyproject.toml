@@ -1,122 +1,120 @@
 [build-system]
-requires = ["hatchling"]
 build-backend = "hatchling.build"
+requires = ["hatchling"]
 
 [project]
-name = "lncrawl-scraper"
-version = "0.3.0"
-description = "HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth mode, proxy support, and a null-safe BeautifulSoup wrapper."
-readme = "README.md"
-license = { file = "LICENSE" }
-requires-python = ">=3.9"
-authors = [{ name = "Sudipta Chandra", email = "dipu.sudipta@gmail.com" }]
-keywords = ["scraper", "cloudflare", "beautifulsoup", "http", "stealth"]
+authors = [{name = "Sudipta Chandra", email = "dipu.sudipta@gmail.com"}]
 classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: Apache Software License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
-    "Topic :: Internet :: WWW/HTTP",
-    "Topic :: Software Development :: Libraries :: Python Modules",
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+description = "HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth mode, proxy support, and a null-safe BeautifulSoup wrapper."
+keywords = ["scraper", "cloudflare", "beautifulsoup", "http", "stealth"]
+license = {file = "LICENSE"}
+name = "lncrawl-scraper"
+readme = "README.md"
+requires-python = ">=3.9"
+version = "0.3.0"
 
 dependencies = [
-    "requests[socks]>=2.32.5",
-    "beautifulsoup4>=4.14.3",
-    "lxml>=6.0.0",
-    "quickjs>=1.19.4",
-    "curl_cffi>=0.13.0",
+  "requests[socks]>=2.32.5",
+  "beautifulsoup4>=4.14.3",
+  "lxml>=6.0.0",
+  "quickjs>=1.19.4",
+  "curl_cffi>=0.13.0",
 ]
 
 [project.optional-dependencies]
+all = [
+  "lncrawl-scraper[brotli,image]",
+]
 brotli = [
-    "brotli>=1.2.0",
+  "brotli>=1.2.0",
 ]
 image = [
-    "Pillow>=11.3.0",
-    "cairosvg>=2.8.2",
-]
-all = [
-    "lncrawl-scraper[brotli,image]",
+  "Pillow>=11.3.0",
 ]
 
 [project.urls]
-Homepage = "https://github.com/lncrawl/scraper"
-Repository = "https://github.com/lncrawl/scraper"
-Issues = "https://github.com/lncrawl/scraper/issues"
 Changelog = "https://github.com/lncrawl/scraper/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/lncrawl/scraper"
+Issues = "https://github.com/lncrawl/scraper/issues"
+Repository = "https://github.com/lncrawl/scraper"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/scraper"]
 
 [dependency-groups]
 dev = [
-    "pytest>=8.4.2",
-    "pytest-cov>=6.3.0",
-    "responses>=0.26",
-    "pyright>=1.1",
-    "ruff>=0.15.16",
-    "poethepoet>=0.37.0",
-    "brotli>=1.2.0",
-    "Pillow>=11.3.0",
-    "cairosvg>=2.8.2",
+  "pytest>=8.4.2",
+  "pytest-cov>=6.3.0",
+  "responses>=0.26",
+  "pyright>=1.1",
+  "ruff>=0.15.16",
+  "poethepoet>=0.37.0",
+  "brotli>=1.2.0",
+  "Pillow>=11.3.0",
 ]
 
 [tool.poe.tasks]
+build = [
+  {ref = "lint"},
+  {ref = "test"},
+  {cmd = "uv build"},
+]
+cov = "pytest --cov --cov-report=term-missing --cov-report=html --cov-report=xml"
 lint = [
-    { cmd = "ruff check" },
-    { cmd = "ruff format --check" },
-    { cmd = "pyright" },
+  {cmd = "ruff check"},
+  {cmd = "ruff format --check"},
+  {cmd = "pyright"},
 ]
 lint-fix = [
-    { cmd = "ruff check --fix" },
-    { cmd = "ruff format" },
-]
-test = "pytest"
-cov = "pytest --cov --cov-report=term-missing --cov-report=html --cov-report=xml"
-build = [
-    { ref = "lint" },
-    { ref = "test" },
-    { cmd = "uv build" },
+  {cmd = "ruff check --fix"},
+  {cmd = "ruff format"},
 ]
 publish = [
-    { ref = "build" },
-    { cmd = "uv publish" },
+  {ref = "build"},
+  {cmd = "uv publish"},
 ]
+test = "pytest"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
 [tool.coverage.run]
 branch = true
-source = ["scraper"]
 relative_files = true
+source = ["scraper"]
 
 [tool.coverage.report]
-show_missing = true
 exclude_also = [
-    "pragma: no cover",
-    "if TYPE_CHECKING:",
-    "raise NotImplementedError",
-    "if __name__ == .__main__.:",
-    "@(abc\\.)?abstractmethod",
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+  "@(abc\\.)?abstractmethod",
 ]
+show_missing = true
 
 [tool.pyright]
+include = ["src", "tests"]
 pythonVersion = "3.9"
 typeCheckingMode = "standard"
-include = ["src", "tests"]
 
 [tool.ruff]
 line-length = 100
 target-version = "py39"
 
 [tool.ruff.lint]
-select = ["E", "F", "I"]
 ignore = ["E501"]
+select = ["E", "F", "I"]

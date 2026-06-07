@@ -302,13 +302,7 @@ class Scraper:
 
         # svg data url
         if url.startswith("data:image/svg"):
-            import cairosvg
-
-            content = url.split(",", 1)[-1].encode()
-            png_bytes = cairosvg.svg2png(bytestring=content)
-            if not png_bytes:
-                raise RuntimeError("Failed to parse convert SVG to PNG")
-            return Image.open(BytesIO(png_bytes))
+            raise NotImplementedError("SVG Images are not supported")
 
         # reject all non-http urls
         if not validate_url(url):

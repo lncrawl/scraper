@@ -635,7 +635,7 @@ def test_v3_fallback_cv_id():
 
 
 def test_v3_fallback_random_is_in_range():
-    data = {"opt_data": {}, "ctx_data": {}}
+    data: dict = {"opt_data": {}, "ctx_data": {}}
     result = int(CloudflareV3Handler._fallback_answer(data))
     assert 100_000 <= result <= 999_999
 
@@ -809,16 +809,11 @@ def test_interpreter_solve_challenge_invalid_body_raises():
         interp.solve_challenge("<html>no challenge here</html>", "example.com")
 
 
-# ---------------------------------------------------------------------------
-# _iuam_template helper
-# ---------------------------------------------------------------------------
-
-
 def test_iuam_template_missing_settimeout_raises():
-    from scraper.engine.challenges.interpreter import _iuam_template
+    from scraper.engine.challenges.interpreter import JavaScriptInterpreter
 
     with pytest.raises(ValueError, match="Unable to identify"):
-        _iuam_template("<html>no challenge</html>", "example.com")
+        JavaScriptInterpreter._iuam_template("<html>no challenge</html>", "example.com")
 
 
 # ---------------------------------------------------------------------------

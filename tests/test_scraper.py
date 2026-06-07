@@ -309,26 +309,6 @@ def test_get_image_invalid_url_raises(fast_config):
         s.get_image("not-a-url")
 
 
-# --- get_image: SVG data URI via cairosvg --------------------------------
-
-
-def test_get_image_svg_data_uri_returns_image(fast_config, monkeypatch):
-    cairosvg = pytest.importorskip("cairosvg")
-    from PIL import Image
-
-    buf = io.BytesIO()
-    Image.new("RGB", (1, 1)).save(buf, format="PNG")
-    png_bytes = buf.getvalue()
-
-    monkeypatch.setattr(cairosvg, "svg2png", lambda bytestring: png_bytes)
-
-    img = make(fast_config).get_image("data:image/svg+xml,<svg/>")
-    assert img is not None
-
-
-def test_get_image_svg_data_uri_empty_raises(fast_config, monkeypatch):
-    cairosvg = pytest.importorskip("cairosvg")
-    monkeypatch.setattr(cairosvg, "svg2png", lambda bytestring: None)
-
-    with pytest.raises(RuntimeError, match="SVG"):
+def test_get_image_svg_data_uri_raises(fast_config, monkeypatch):
+    with pytest.raises(NotImplementedError, match="SVG"):
         make(fast_config).get_image("data:image/svg+xml,<svg/>")

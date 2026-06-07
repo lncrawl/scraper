@@ -20,7 +20,7 @@ def main() -> None:
     try:
         s.get("https://httpbin.org/status/404")
     except requests.HTTPError as exc:
-        print("HTTP error:", exc.response.status_code)
+        print("HTTP error:", exc.response and exc.response.status_code)
 
     # --- Catch-all order: AbortedException is a CloudflareException --------
     try:
