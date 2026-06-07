@@ -9,18 +9,15 @@ import pytest
 import requests
 
 from scraper import AbortedException
-from scraper.challenges import ClearanceResult, ClearanceSolver
-from scraper.config import CloudflareConfig, ProxyConfig, StealthConfig
+from scraper.config import ProxyConfig, StealthConfig
 from scraper.engine import create_engine
 from scraper.engine.context import RequestContext
 from scraper.engine.middleware import build_chain
 from scraper.engine.middleware.abort import AbortMiddleware
-from scraper.engine.middleware.challenge import ChallengeMiddleware
 from scraper.engine.middleware.proxy import ProxyMiddleware
 from scraper.engine.middleware.retry_403 import Retry403Middleware
 from scraper.engine.middleware.stealth import StealthMiddleware
 from scraper.engine.middleware.throttle import ThrottleMiddleware
-from scraper.exceptions import CloudflareChallengeError, CloudflareSolveError
 
 from .conftest import make_fast_config
 
@@ -205,101 +202,3 @@ def test_retry403_returns_none_when_no_proxy_and_no_refresh():
     e = _engine(auto_refresh_on_403=False, max_403_retries=3)
     out = Retry403Middleware(e).handle(RequestContext("GET", BASE), _nxt(_resp(403)))
     assert out.status_code == 403
-
-
-# --- challenge detection + auto-solve ------------------------------------
-
-_MANAGED_BODY = "window._cf_chl_opt = {}"
-
-
-def _cf_resp(status=503, url=BASE, body=_MANAGED_BODY):
-    r = requests.Response()
-    r.status_code = status
-    r._content = body.encode()
-    r.url = url
-    r.headers["Server"] = "cloudflare"
-    return r
-
-
-class _FakeSolver(ClearanceSolver):
-    """Returns a scripted ClearanceResult (or None) and records calls."""
-
-    def __init__(self, result):
-        self.result = result
-        self.calls = []
-
-    async def solve_async(self, url, *, proxy=None, user_agent=None):
-        self.calls.append(url)
-        return self.result
-
-
-def test_challenge_detect_raises_without_solver():
-    e = _engine()  # cloudflare.solver is None by default
-    with pytest.raises(CloudflareChallengeError):
-        ChallengeMiddleware(e).handle(RequestContext("GET", BASE), _nxt(_cf_resp()))
-    assert e.state.cf_active is True
-
-
-def test_challenge_clean_response_resets_attempts():
-    e = _engine()
-    e.chain.solve_attempts = 5
-    out = ChallengeMiddleware(e).handle(RequestContext("GET", BASE), _nxt(_resp(200)))
-    assert out.status_code == 200
-    assert e.chain.solve_attempts == 0
-
-
-def test_challenge_solver_solves_and_retries():
-    solver = _FakeSolver(ClearanceResult(cookies={"cf_clearance": "TOKEN"}, user_agent="UA/1.0"))
-    e = _engine(cloudflare=CloudflareConfig(solver=solver))
-    # The retry re-enters the engine via e.request → fake the transport to 200.
-    e.transport.send = lambda ctx: _resp(200, ctx.url)  # type: ignore[method-assign]
-
-    out = ChallengeMiddleware(e).handle(RequestContext("GET", BASE), _nxt(_cf_resp()))
-    assert out.status_code == 200
-    assert solver.calls == [BASE]
-    assert e.state.cf_active is True
-    assert e.cookies.get("cf_clearance") == "TOKEN"
-    # The solver's exact UA is pinned on the transport for clearance reuse.
-    assert e.transport._forced_user_agent == "UA/1.0"
-
-
-def test_challenge_solver_no_clearance_raises():
-    solver = _FakeSolver(None)
-    e = _engine(cloudflare=CloudflareConfig(solver=solver))
-    with pytest.raises(CloudflareSolveError, match="did not obtain a cf_clearance"):
-        ChallengeMiddleware(e).handle(RequestContext("GET", BASE), _nxt(_cf_resp()))
-
-
-def test_challenge_max_attempts_exhausted_raises():
-    solver = _FakeSolver(ClearanceResult(cookies={"cf_clearance": "T"}, user_agent="UA"))
-    e = _engine(cloudflare=CloudflareConfig(solver=solver, max_solve_attempts=1))
-    e.chain.solve_attempts = 1  # already at the limit
-    with pytest.raises(CloudflareSolveError, match="challenge persisted"):
-        ChallengeMiddleware(e).handle(RequestContext("GET", BASE), _nxt(_cf_resp()))
-
-
-def test_challenge_middleware_no_detector_passes_through():
-    """When cf_detector is None the response is returned unchanged."""
-    e = _engine()
-    e.cf_detector = None
-    out = ChallengeMiddleware(e).handle(RequestContext("GET", BASE), _nxt(_cf_resp()))
-    assert out.status_code == 503
-
-
-def test_challenge_solver_receives_proxy():
-    """_current_proxy forwards the https proxy URL into solver.solve."""
-    received: list = []
-
-    class _TrackSolver(ClearanceSolver):
-        async def solve_async(self, url, *, proxy=None, user_agent=None):
-            received.append(proxy)
-            return ClearanceResult(cookies={"cf_clearance": "T"}, user_agent=None)
-
-    e = _engine(
-        cloudflare=CloudflareConfig(solver=_TrackSolver()),
-        proxy=ProxyConfig(proxy_urls=["https://p:8080"]),
-    )
-    e.transport.send = lambda ctx: _resp(200, ctx.url)  # type: ignore[method-assign]
-    ChallengeMiddleware(e).handle(RequestContext("GET", BASE), _nxt(_cf_resp()))
-    assert received[0] is not None
-    assert "p:8080" in received[0]

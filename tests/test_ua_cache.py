@@ -138,6 +138,11 @@ def test_load_ua_data_falls_back_to_stale_on_network_error(tmp_path, monkeypatch
 # --- 200 response with no ETag header — walrus branch skipped (line 70→72) --
 
 
+def test_read_cache_returns_none_when_file_missing(tmp_path, monkeypatch):
+    monkeypatch.setattr(cache_mod, "_CACHE_PATH", tmp_path / "no_such_file.json.gz")
+    assert cache_mod._read_cache() is None
+
+
 def test_load_ua_data_200_no_etag_skips_etag_write(tmp_path, monkeypatch):
     cache_file = tmp_path / "cache.json.gz"
     etag_file = tmp_path / "cache.etag"

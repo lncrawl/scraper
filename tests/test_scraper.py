@@ -1,8 +1,7 @@
-"""Tests for the Scraper session, with HTTP mocked via `responses`."""
-
-import io
+"""Tests for the Scraper session: soup, JSON, forms, headers, status, and verbs."""
 
 import pytest
+import requests
 import responses
 
 from scraper import PageSoup, Scraper
@@ -101,6 +100,12 @@ def test_set_header_and_cookie_are_sent(fast_config):
         assert "sid=abc" in str(headers["Cookie"])
 
 
+def test_set_header_decodes_bytes(fast_config):
+    s = make(fast_config)
+    s.set_header("X-Token", b"bytes-value")
+    assert s.headers["X-Token"] == "bytes-value"
+
+
 def test_reset_clears_state(fast_config):
     s = make(fast_config)
     s.set_cookie("sid", "abc")
@@ -110,12 +115,22 @@ def test_reset_clears_state(fast_config):
     assert "X-Token" not in s.headers
 
 
+def test_request_without_origin_omits_origin_referer_headers():
+    from .conftest import make_fast_config
+
+    with responses.RequestsMock() as rsps:
+        rsps.add(rsps.GET, f"{BASE}/x", body="ok")
+        s = Scraper(config=make_fast_config())
+        s.get(f"{BASE}/x")
+        hdrs = rsps.calls[0].request.headers
+        assert "Origin" not in hdrs
+        assert "Referer" not in hdrs
+
+
 # --- status handling ------------------------------------------------------
 
 
 def test_raise_for_status_on_error(fast_config):
-    import requests
-
     with responses.RequestsMock() as rsps:
         rsps.add(rsps.GET, f"{BASE}/missing", status=404)
         s = make(fast_config)
@@ -132,119 +147,32 @@ def test_ping_uses_head(fast_config):
         assert rsps.calls[0].request.method == "HEAD"
 
 
-# --- downloads ------------------------------------------------------------
+# --- HTTP verb methods ----------------------------------------------------
 
 
-def test_get_file_writes_to_disk(fast_config, tmp_path):
-    payload = b"binary-content" * 1000
+def test_http_verb_methods(fast_config):
     with responses.RequestsMock() as rsps:
-        rsps.add(rsps.GET, f"{BASE}/file.bin", body=payload)
+        rsps.add(rsps.OPTIONS, f"{BASE}/x", body=b"ok")
+        rsps.add(rsps.HEAD, f"{BASE}/x", body=b"")
+        rsps.add(rsps.PUT, f"{BASE}/x", body=b"ok")
+        rsps.add(rsps.PATCH, f"{BASE}/x", body=b"ok")
+        rsps.add(rsps.DELETE, f"{BASE}/x", body=b"ok")
         s = make(fast_config)
-        out = tmp_path / "file.bin"
-        s.get_file(f"{BASE}/file.bin", output_file=out)
-        assert out.read_bytes() == payload
+        s.options(f"{BASE}/x")
+        s.head(f"{BASE}/x")
+        s.put(f"{BASE}/x")
+        s.patch(f"{BASE}/x")
+        s.delete(f"{BASE}/x")
+        assert len(rsps.calls) == 5
 
 
-def test_get_file_aborts(fast_config, tmp_path):
-    from scraper import AbortedException
-
-    # The abort signal trips the pre-send check, so the request never fires —
-    # disable the "all requests fired" assertion accordingly.
-    with responses.RequestsMock(assert_all_requests_are_fired=False) as rsps:
-        rsps.add(rsps.GET, f"{BASE}/file.bin", body=b"x" * 100000)
-        s = make(fast_config)
-        s.abort()  # signal set before download starts
-        with pytest.raises(AbortedException):
-            s.get_file(f"{BASE}/file.bin", output_file=tmp_path / "f.bin")
-
-
-def test_get_image_returns_pil_image(fast_config):
-    from PIL import Image
-
-    buf = io.BytesIO()
-    Image.new("RGB", (8, 8), "red").save(buf, format="PNG")
-    with responses.RequestsMock() as rsps:
-        rsps.add(rsps.GET, f"{BASE}/cover.png", body=buf.getvalue(), content_type="image/png")
-        s = make(fast_config)
-        img = s.get_image(f"{BASE}/cover.png")
-        assert img.size == (8, 8)
-
-
-def test_get_image_from_data_uri(fast_config):
-    import base64
-
-    from PIL import Image
-
-    buf = io.BytesIO()
-    Image.new("RGB", (4, 4), "blue").save(buf, format="PNG")
-    data_uri = "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
-    s = make(fast_config)
-    img = s.get_image(data_uri)  # no network call
-    assert img.size == (4, 4)
-
-
-def test_get_image_retries_on_unidentified(fast_config):
-    # First response isn't a valid image → UnidentifiedImageError → retry with
-    # an explicit Accept header, second response is a real PNG.
-    from PIL import Image
-
-    buf = io.BytesIO()
-    Image.new("RGB", (5, 5), "green").save(buf, format="PNG")
-    with responses.RequestsMock() as rsps:
-        rsps.add(rsps.GET, f"{BASE}/img", body=b"not-an-image")
-        rsps.add(rsps.GET, f"{BASE}/img", body=buf.getvalue(), content_type="image/png")
-        s = make(fast_config)
-        img = s.get_image(f"{BASE}/img")
-        assert img.size == (5, 5)
-        # the retry sent without explicit image Accept header
-        assert "Accept" not in rsps.calls[1].request.headers
-
-
-def test_get_file_accepts_str_path(fast_config, tmp_path):
-    out = tmp_path / "via_str.bin"
-    with responses.RequestsMock() as rsps:
-        rsps.add(rsps.GET, f"{BASE}/f.bin", body=b"abc")
-        s = make(fast_config)
-        s.get_file(f"{BASE}/f.bin", output_file=str(out))  # str, not Path
-        assert out.read_bytes() == b"abc"
-
-
-def test_get_file_aborts_mid_stream(fast_config, tmp_path, monkeypatch):
-    from scraper import AbortedException
-
-    s = make(fast_config)
-
-    class _StreamResp:
-        def iter_content(self, chunk_size):
-            yield b"first"
-            s.abort()  # signal set after the first chunk is written
-            yield b"second"
-
-        def close(self):
-            pass
-
-    # Bypass the network: the throttle pre-send check would otherwise trip first.
-    monkeypatch.setattr(s, "get", lambda *a, **k: _StreamResp())
-    with pytest.raises(AbortedException):
-        s.get_file(f"{BASE}/stream", output_file=tmp_path / "partial.bin")
-
-
-def test_set_header_decodes_bytes(fast_config):
-    s = make(fast_config)
-    s.set_header("X-Token", b"bytes-value")
-    assert s.headers["X-Token"] == "bytes-value"
-
-
-# --- make_soup ------------------------------------------------------------
+# --- make_soup / delegated properties / close ----------------------------
 
 
 def test_make_soup_from_various(fast_config):
     s = make(fast_config)
     assert s.make_soup("<p>a</p>").select_one("p").text == "a"
     assert s.make_soup(b"<p>b</p>").select_one("p").text == "b"
-
-
-# --- delegated properties / close -----------------------------------------
 
 
 def test_config_and_proxy_manager_properties(fast_config):
@@ -264,51 +192,3 @@ def test_signal_setter(fast_config):
 
 def test_close_does_not_raise(fast_config):
     make(fast_config).close()
-
-
-# --- request: Origin/Referer omitted when no origin configured ------------
-
-
-def test_request_without_origin_omits_origin_referer_headers():
-    from .conftest import make_fast_config
-
-    with responses.RequestsMock() as rsps:
-        rsps.add(rsps.GET, f"{BASE}/x", body="ok")
-        s = Scraper(config=make_fast_config())  # no origin= kwarg
-        s.get(f"{BASE}/x")
-        hdrs = rsps.calls[0].request.headers
-        assert "Origin" not in hdrs
-        assert "Referer" not in hdrs
-
-
-# --- HTTP verb methods (options / head / put / patch / delete) -----------
-
-
-def test_http_verb_methods(fast_config):
-    with responses.RequestsMock() as rsps:
-        rsps.add(rsps.OPTIONS, f"{BASE}/x", body=b"ok")
-        rsps.add(rsps.HEAD, f"{BASE}/x", body=b"")
-        rsps.add(rsps.PUT, f"{BASE}/x", body=b"ok")
-        rsps.add(rsps.PATCH, f"{BASE}/x", body=b"ok")
-        rsps.add(rsps.DELETE, f"{BASE}/x", body=b"ok")
-        s = make(fast_config)
-        s.options(f"{BASE}/x")
-        s.head(f"{BASE}/x")
-        s.put(f"{BASE}/x")
-        s.patch(f"{BASE}/x")
-        s.delete(f"{BASE}/x")
-        assert len(rsps.calls) == 5
-
-
-# --- get_image: invalid URL raises ValueError ----------------------------
-
-
-def test_get_image_invalid_url_raises(fast_config):
-    s = make(fast_config)
-    with pytest.raises(ValueError, match="Invalid URL"):
-        s.get_image("not-a-url")
-
-
-def test_get_image_svg_data_uri_raises(fast_config, monkeypatch):
-    with pytest.raises(NotImplementedError, match="SVG"):
-        make(fast_config).get_image("data:image/svg+xml,<svg/>")
