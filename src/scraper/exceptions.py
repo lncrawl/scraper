@@ -16,25 +16,24 @@ class AbortedException(CloudflareException):
     """Raised when a request is aborted via the abort signal."""
 
 
-class CloudflareLoopProtection(CloudflareException):
-    """Raised when the challenge-solve recursion depth limit is exceeded."""
-
-
 class CloudflareFirewallBlock(CloudflareException):
     """Raised when Cloudflare returns a 1020 (firewall block) response."""
 
 
 class CloudflareChallengeError(CloudflareException):
-    """Raised when an unsupported Cloudflare challenge version is detected."""
+    """Raised when a managed Cloudflare JS challenge is detected and no solver is
+    configured to pass it."""
 
 
 class CloudflareSolveError(CloudflareException):
-    """Raised when the challenge answer is rejected by Cloudflare."""
+    """Raised when a configured solver was run but failed to obtain clearance."""
 
 
 class CloudflareCaptchaError(CloudflareException):
-    """Raised when a captcha-only CF challenge is detected (no provider available)."""
+    """Raised when an interactive captcha challenge is detected and no solver is
+    configured to pass it."""
 
 
 class CloudflareTurnstileError(CloudflareException):
-    """Raised when a Cloudflare Turnstile challenge is detected (requires a captcha provider)."""
+    """Raised when a Cloudflare Turnstile challenge is detected and no solver is
+    configured to pass it."""

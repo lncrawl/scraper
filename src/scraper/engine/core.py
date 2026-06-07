@@ -16,9 +16,9 @@ from urllib.parse import urlparse
 import requests
 from requests.cookies import RequestsCookieJar
 
+from ..challenges import build_detector
 from ..config import ScraperConfig
 from ..utils import EventLock
-from .challenges import build_handlers
 from .context import RequestContext
 from .middleware import build_chain
 from .proxy_manager import ProxyManager
@@ -67,7 +67,8 @@ class Engine:
         self.transport: Transport = build_transport(self.config)
         self.transport.bind_headers(self.headers)
 
-        self.challenge_handlers = build_handlers(self.config.cloudflare)
+        self.cf_detector = build_detector(self.config.cloudflare)
+        self.cf_solver = self.config.cloudflare.solver
         self.middleware = build_chain(self)
 
     # -- Per-thread chain state ---------------------------------------------------
@@ -179,6 +180,9 @@ class Engine:
         host = urlparse(domain).hostname or domain.split("/")[0]
         if user_agent:
             self.headers["User-Agent"] = user_agent
+            # Pin it on the transport too: curl_cffi otherwise sends its own
+            # impersonation UA, and Cloudflare binds cf_clearance to this exact UA.
+            self.transport.force_user_agent(user_agent)
         jar = dict(cookies or {})
         if cf_clearance:
             jar["cf_clearance"] = cf_clearance

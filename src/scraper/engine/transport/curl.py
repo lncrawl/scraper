@@ -9,7 +9,9 @@ configured and curl_cffi is installed.
 
 from __future__ import annotations
 
+import re
 import threading
+from typing import Optional
 
 import requests
 from requests.cookies import RequestsCookieJar
@@ -89,6 +91,7 @@ class CurlCffiTransport(Transport):
         self._config = config
         cfg = config.impersonate
         self._lock = threading.Lock()
+        self._forced_impersonate: Optional[str] = None
         # target may be any curl-impersonate label (e.g. "chrome124") and several
         # fingerprint options are typed as Literals by curl_cffi; our dynamic
         # str/int/TypedDict values are intentionally allowed, so the call is ignored.
@@ -108,6 +111,55 @@ class CurlCffiTransport(Transport):
         # recognise newer kwargs (e.g. "perk") don't raise TypeError.
         session_opts = {k: v for k, v in session_opts.items() if v is not None}
         self._session = cffi_requests.Session(**session_opts)  # pyright: ignore[reportArgumentType]
+
+    # -- Fingerprint --------------------------------------------------------------
+
+    def force_user_agent(self, user_agent: Optional[str]) -> None:
+        """Pin the UA *and* align the impersonation target to it.
+
+        Beyond the base UA pin, this also matches curl_cffi's impersonation to the
+        browser family + major version in *user_agent*. cf_clearance is bound to the
+        TLS (JA3) fingerprint as well as the UA, so aligning impersonation maximises
+        the chance Cloudflare accepts a clearance solved by that browser.
+        """
+        super().force_user_agent(user_agent)
+        self._forced_impersonate = self._match_impersonate(user_agent) if user_agent else None
+
+    @staticmethod
+    def _match_impersonate(user_agent: str) -> Optional[str]:
+        """Return the curl_cffi impersonate label closest to *user_agent*, or None.
+
+        Picks the highest supported version that does not exceed the browser's major
+        version (falling back to the lowest available for older browsers).
+        """
+        try:
+            from curl_cffi.requests.impersonate import BrowserType
+        except Exception:  # pragma: no cover - curl_cffi always present in practice
+            return None
+
+        ua = user_agent or ""
+        if "Edg/" in ua:
+            family, match = "edge", re.search(r"Edg/(\d+)", ua)
+        elif "Firefox/" in ua:
+            family, match = "firefox", re.search(r"Firefox/(\d+)", ua)
+        elif "Chrome/" in ua:
+            family, match = "chrome", re.search(r"Chrome/(\d+)", ua)
+        else:
+            return None
+        if not match:
+            return None
+        want = int(match.group(1))
+
+        # Only plain "<family><digits>" labels (skip android/ios/beta variants).
+        candidates = sorted(
+            (int(m.group(1)), bt.value)
+            for bt in BrowserType
+            if (m := re.fullmatch(rf"{family}(\d+)", str(bt.value)))
+        )
+        if not candidates:
+            return None
+        best = next((label for ver, label in reversed(candidates) if ver <= want), None)
+        return best or candidates[0][1]
 
     # -- Cookies ------------------------------------------------------------------
 
@@ -147,11 +199,17 @@ class CurlCffiTransport(Transport):
         else:
             headers = dict(self._session_headers)
             headers.update(kwargs.get("headers") or {})
+        # A pinned UA (e.g. from a reused browser cf_clearance) must override the
+        # impersonation default, since Cloudflare binds the clearance to that UA.
+        if self._forced_user_agent:
+            headers["User-Agent"] = self._forced_user_agent
         kwargs["headers"] = headers
 
         call = {k: kwargs[k] for k in _PASSTHROUGH if k in kwargs}
         call.setdefault("verify", self._config.verify_ssl)
         call.setdefault("allow_redirects", True)
+        if self._forced_impersonate:
+            call["impersonate"] = self._forced_impersonate
 
         with self._lock:
             resp = self._session.request(ctx.method, ctx.url, **call)  # pyright: ignore[reportArgumentType]

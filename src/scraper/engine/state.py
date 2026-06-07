@@ -7,10 +7,10 @@ import time
 class RequestChain:
     """Per-thread mutable state for a request chain (challenge follow-ups share one chain)."""
 
-    __slots__ = ("solve_depth", "request_depth")
+    __slots__ = ("solve_attempts", "request_depth")
 
     def __init__(self) -> None:
-        self.solve_depth = 0
+        self.solve_attempts = 0
         self.request_depth = 0
 
 

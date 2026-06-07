@@ -29,17 +29,19 @@ version = "0.3.0"
 dependencies = [
   "requests[socks]>=2.32.5",
   "beautifulsoup4>=4.14.3",
-  "lxml>=6.0.0",
-  "quickjs>=1.19.4",
   "curl_cffi>=0.13.0",
+  "lxml>=6.0.0",
 ]
 
 [project.optional-dependencies]
 all = [
-  "lncrawl-scraper[brotli,image]",
+  "lncrawl-scraper[brotli,image,browser]",
 ]
 brotli = [
   "brotli>=1.2.0",
+]
+browser = [
+  "nodriver>=0.50",
 ]
 image = [
   "Pillow>=11.3.0",

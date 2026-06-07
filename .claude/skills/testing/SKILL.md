@@ -68,7 +68,10 @@ Config lives in `pyproject.toml` (`[tool.coverage]`, `source = ["scraper"]`,
 `relative_files = true`). `uv run poe cov` writes `htmlcov/`, `coverage.xml`, and
 a terminal report (all gitignored). CI's `coverage` job uploads `coverage.xml`.
 
-The deep CF challenge solvers (`cloudflare_v1/v2/v3`, `interpreter`) are
-integration-only and stay low-coverage without live Cloudflare traffic — don't
-chase coverage there with contrived mocks. Pure modules (`soup`, `config`,
-`_utils`, `session`) should stay high.
+The CF challenge solvers (`engine/challenges/browser_solver.py`,
+`remote_solver.py`) only genuinely run against a real browser / live service, so
+keep tests offline: drive `RemoteSolver` with `responses` and `BrowserSolver`
+against a fake `nodriver` module injected into `sys.modules` (see
+`tests/test_challenges.py`). The pure `CloudflareDetector` (`detector.py`) is
+fully unit-testable and should stay high-coverage, as should `soup`, `config`,
+`_utils`, and `session`.

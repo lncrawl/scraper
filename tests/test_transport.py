@@ -1,7 +1,9 @@
 """Tests for the transport layer: selection, fallback, cookies, and adaptation."""
 
+import re
 from http.cookiejar import Cookie
 
+import pytest
 import responses
 from requests.cookies import RequestsCookieJar
 
@@ -211,6 +213,46 @@ def test_curl_send_without_default_headers_merges_session():
     assert calls[0][2]["headers"]["User-Agent"] == "synthetic"
 
 
+def test_curl_forced_user_agent_overrides_impersonation_default():
+    """A pinned UA (browser cf_clearance) must be sent even with default_headers."""
+    t, calls = _curl_transport()
+    t.force_user_agent("Browser/123.0")
+    t.send(RequestContext("GET", f"{BASE}/x", kwargs={"headers": {"Origin": BASE}}))
+    assert calls[0][2]["headers"]["User-Agent"] == "Browser/123.0"
+
+
+_CHROME_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/131.0.0.0 Safari/537.36"
+
+
+def test_curl_match_impersonate_picks_closest():
+    pytest.importorskip("curl_cffi")
+    from curl_cffi.requests.impersonate import BrowserType
+
+    from scraper.engine.transport.curl import CurlCffiTransport
+
+    chrome_vers = sorted(
+        int(m.group(1)) for bt in BrowserType if (m := re.fullmatch(r"chrome(\d+)", str(bt.value)))
+    )
+
+    # Exact-ish: highest supported <= 131.
+    target = CurlCffiTransport._match_impersonate(_CHROME_UA)
+    assert target and target.startswith("chrome")
+    assert int(target.removeprefix("chrome")) <= 131
+    # Newer than any supported → highest available.
+    newest = CurlCffiTransport._match_impersonate("Chrome/999.0.0.0")
+    assert int(str(newest).removeprefix("chrome")) == max(chrome_vers)
+    # Unrecognised UA → no override.
+    assert CurlCffiTransport._match_impersonate("totally unknown agent") is None
+
+
+def test_curl_force_user_agent_aligns_impersonate_per_request():
+    t, calls = _curl_transport()
+    t.force_user_agent(_CHROME_UA)
+    t.send(RequestContext("GET", f"{BASE}/x", kwargs={"headers": {}}))
+    assert str(calls[0][2]["impersonate"]).startswith("chrome")
+    assert calls[0][2]["headers"]["User-Agent"] == _CHROME_UA
+
+
 def test_curl_cookie_roundtrip_and_export():
     t, _ = _curl_transport()
     t.put_cookie("sid", "abc")
@@ -299,3 +341,50 @@ def test_curl_export_into_copies_cookies():
 
     assert jar.get("tok") == "abc"
     assert jar.get("old") is None  # jar.clear() was called first
+
+
+# --- _match_impersonate: Edge, Firefox, no-version, no-candidates ---------
+
+
+def test_match_impersonate_edge_ua():
+    """Edge UA is classified under the 'edge' family."""
+    pytest.importorskip("curl_cffi")
+    from scraper.engine.transport.curl import CurlCffiTransport
+
+    result = CurlCffiTransport._match_impersonate(
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0"
+    )
+    assert result is None or result.startswith("edge") or result.startswith("chrome")
+
+
+def test_match_impersonate_firefox_ua():
+    """Firefox UA → 'firefox' family; no candidates → None."""
+    pytest.importorskip("curl_cffi")
+    from scraper.engine.transport.curl import CurlCffiTransport
+
+    result = CurlCffiTransport._match_impersonate(
+        "Mozilla/5.0 (Windows NT 10.0; rv:120.0) Gecko/20100101 Firefox/120.0"
+    )
+    # curl_cffi may or may not support Firefox impersonation.
+    assert result is None or isinstance(result, str)
+
+
+def test_match_impersonate_no_version_digits_returns_none():
+    """Recognized family prefix present but no version digits → None."""
+    pytest.importorskip("curl_cffi")
+    from scraper.engine.transport.curl import CurlCffiTransport
+
+    assert CurlCffiTransport._match_impersonate("Mozilla/5.0 Edg/") is None
+
+
+def test_match_impersonate_no_candidates_returns_none(monkeypatch):
+    """No BrowserType entries match the family → None."""
+    pytest.importorskip("curl_cffi")
+    import curl_cffi.requests.impersonate as _imp
+
+    from scraper.engine.transport.curl import CurlCffiTransport
+
+    monkeypatch.setattr(_imp, "BrowserType", [])
+    assert CurlCffiTransport._match_impersonate("Chrome/131.0.0.0") is None

@@ -14,9 +14,11 @@ from __future__ import annotations
 import enum
 import ssl
 from dataclasses import dataclass, field
-from typing import Callable, Literal, TypedDict
+from typing import Callable, Literal, Optional, TypedDict
 
 from requests import Response
+
+from .challenges.clearance import ClearanceSolver
 
 BrowserType = Literal["chrome", "firefox", "edge", "safari"]
 PlatformType = Literal["windows", "darwin", "linux", "android", "ios"]
@@ -187,15 +189,29 @@ class ImpersonateConfig:
 
 @dataclass
 class CloudflareConfig:
-    """Cloudflare challenge handlers."""
+    """Cloudflare challenge detection and optional auto-solve.
+
+    Modern Cloudflare challenges (managed challenge / Turnstile) cannot be solved
+    in pure Python. The engine *detects* them and, when a ``solver`` is set,
+    drives it to obtain a ``cf_clearance`` cookie and retries the request
+    transparently. With no solver it raises a clear exception instead — pair the
+    default browser impersonation with
+    :meth:`~scraper.Scraper.apply_browser_clearance` for those sites.
+    """
+
+    enabled: bool = True
+    """Detect Cloudflare challenges at all. When False, challenge responses pass
+    through untouched for the caller to handle."""
 
     debug: bool = False
-    disable_v1: bool = False
-    disable_v2: bool = False
-    disable_v3: bool = False
-    disable_turnstile: bool = False
-    solve_depth: int = 3
-    double_down: bool = True
+    """Log detection/solve decisions."""
+
+    solver: Optional[ClearanceSolver] = None
+    """Set to a :class:`ClearanceSolver` to auto-solve detected challenges. Its
+    presence is the auto-solve toggle."""
+
+    max_solve_attempts: int = 1
+    """Bounded retries per request chain before giving up (avoids solve loops)."""
 
 
 @dataclass

@@ -39,7 +39,7 @@ def build_chain(engine: "Engine") -> List[Middleware]:
     chain.append(SessionRefreshMiddleware(engine))
     chain.append(ConcurrencyMiddleware(engine))
     chain.append(Retry403Middleware(engine))
-    if engine.challenge_handlers:
+    if engine.cf_detector is not None:
         chain.append(ChallengeMiddleware(engine))
     chain.append(StealthMiddleware(engine))
     chain.append(HooksMiddleware(engine))

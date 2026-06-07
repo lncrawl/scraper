@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, MutableMapping
+from typing import TYPE_CHECKING, MutableMapping, Optional
 
 from requests import Response
 from requests.cookies import RequestsCookieJar
@@ -24,6 +24,7 @@ class Transport(ABC):
     """
 
     _session_headers: MutableMapping = {}
+    _forced_user_agent: Optional[str] = None
 
     def bind_headers(self, headers: MutableMapping) -> None:
         """Hand the engine's live session-header mapping to the transport.
@@ -32,6 +33,16 @@ class Transport(ABC):
         User-Agent) are reflected on the next send.
         """
         self._session_headers = headers
+
+    def force_user_agent(self, user_agent: Optional[str]) -> None:
+        """Pin an exact User-Agent that overrides impersonation defaults every send.
+
+        Cloudflare binds a ``cf_clearance`` cookie to the exact User-Agent that
+        solved the challenge. When reusing such a clearance the curl_cffi transport
+        must send that UA verbatim — otherwise it emits its own impersonation UA and
+        Cloudflare rejects the cookie. Pass ``None`` to clear the override.
+        """
+        self._forced_user_agent = user_agent
 
     @abstractmethod
     def send(self, ctx: RequestContext) -> Response:

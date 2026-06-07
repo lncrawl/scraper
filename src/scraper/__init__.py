@@ -1,7 +1,8 @@
 """lncrawl-scraper — an HTTP scraper with Cloudflare bypass and a safe HTML wrapper.
 
-A :class:`Scraper` composes a Cloudflare-bypass engine that transparently solves
-challenges and adds convenience helpers (``get_soup``, ``get_json``, ``get_file`` …).
+A :class:`Scraper` composes a Cloudflare-bypass engine that detects challenges
+(and solves them when a :class:`ClearanceSolver` is configured) and adds
+convenience helpers (``get_soup``, ``get_json``, ``get_file`` …).
 By default requests ride a real browser TLS/HTTP-2 fingerprint via curl_cffi
 (``ScraperConfig.impersonate``), falling back to a urllib3 transport when curl_cffi
 is unavailable. :class:`PageSoup` is a null-safe BeautifulSoup wrapper whose
@@ -17,8 +18,12 @@ Example:
 
 from importlib.metadata import PackageNotFoundError, version
 
+# Shared domain types first — the engine, transport, and middleware all depend up
+# on these, so importing them before .session/.soup keeps the graph acyclic.
+from .challenges import BrowserSolver, ClearanceResult, RemoteSolver
 from .config import (
     BrowserConfig,
+    ClearanceSolver,
     CloudflareConfig,
     HttpVersion,
     ImpersonateConfig,
@@ -29,9 +34,6 @@ from .config import (
     TorProxyUrl,
     default_config,
 )
-
-# Shared domain types first — the engine, transport, and middleware all depend up
-# on these, so importing them before .session/.soup keeps the graph acyclic.
 from .exceptions import AbortedException, CloudflareException
 from .session import Scraper
 from .soup import PageSoup
@@ -54,6 +56,10 @@ __all__ = [
     "TorProxyUrl",
     "ImpersonateConfig",
     "HttpVersion",
+    "ClearanceResult",
+    "ClearanceSolver",
+    "RemoteSolver",
+    "BrowserSolver",
     "AbortedException",
     "CloudflareException",
     "__version__",

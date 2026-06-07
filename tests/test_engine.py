@@ -38,25 +38,20 @@ def _fake_send(fn):
     return send
 
 
-# --- challenge handler configuration --------------------------------------
+# --- challenge detection configuration ------------------------------------
 
 
-def test_default_has_four_handlers():
+def test_default_has_detector_no_solver():
     e = create_engine(make_fast_config())
-    assert len(e.challenge_handlers) == 4
+    assert e.cf_detector is not None
+    assert e.cf_solver is None
 
 
-def test_all_challenge_handlers_disabled():
-    cloudflare = CloudflareConfig(
-        disable_turnstile=True,
-        disable_v3=True,
-        disable_v2=True,
-        disable_v1=True,
-    )
-    cfg = make_fast_config(cloudflare=cloudflare)
+def test_detection_disabled_omits_middleware():
+    cfg = make_fast_config(cloudflare=CloudflareConfig(enabled=False))
     e = create_engine(cfg)
-    assert e.challenge_handlers == []
-    # ChallengeMiddleware is omitted from the chain when there are no handlers.
+    assert e.cf_detector is None
+    # ChallengeMiddleware is omitted from the chain when detection is disabled.
     assert "ChallengeMiddleware" not in [type(m).__name__ for m in e.middleware]
 
 
@@ -402,28 +397,6 @@ def test_perform_request_bypasses_pipeline():
     resp = e.perform_request("GET", f"{BASE}/raw")
     assert resp.status_code == 200
     assert calls == [f"{BASE}/raw"]
-
-
-# --- middleware unit: challenge solve_depth not reset on redirect ----------
-
-
-def test_challenge_solve_depth_not_reset_on_redirect():
-    """solve_depth is NOT zeroed when the response is a redirect (is_redirect=True)."""
-    from scraper.engine.context import RequestContext
-    from scraper.engine.middleware.challenge import ChallengeMiddleware
-
-    e = create_engine(make_fast_config())
-    mw = ChallengeMiddleware(e)
-
-    # A plain 302 redirect — no CF headers so no handler matches.
-    redir = _resp(302, BASE)
-    redir.headers["Location"] = f"{BASE}/done"
-
-    e.chain.solve_depth = 2  # simulate mid-chain state
-
-    result = mw.handle(RequestContext("GET", f"{BASE}/x"), lambda ctx: redir)
-    assert result is redir
-    assert e.chain.solve_depth == 2  # not reset — response was a redirect
 
 
 # --- middleware unit: concurrency ValueError from release is swallowed ----
