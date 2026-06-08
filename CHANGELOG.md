@@ -4,6 +4,44 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Breaking Changes
+
+- `requests` dependency replaced with `httpx[http2,socks]`. Code that accesses
+  `scraper.engine.transport` or constructs `requests`-style sessions directly
+  must be updated.
+- `Scraper` no longer has an `abort_event` attribute. Use `CancelToken` (now
+  exported from `scraper`) and pass it as `cancel_token=` to any request method.
+- `EventLock` removed from `scraper.utils` — it was an internal primitive
+  superseded by `CancelToken`.
+- `ClearanceSolver.solve_async` renamed to `solve` (the sync `solve` wrapper is
+  gone; the solver protocol is now purely async).
+- `CloudflareConfig.solver` (single) replaced by `CloudflareConfig.solvers`
+  (list). The engine tries each in order.
+- `ProxyManager.get_proxy()` now returns `str | None` instead of
+  `dict[str, str] | None`.
+- `RequestChain` and `RequestContext` (`engine.state` / `engine.context`) merged
+  into `RequestState`; import paths change accordingly.
+- `UrllibTransport` removed; `HttpxTransport` is the new fallback when
+  `curl_cffi` is unavailable.
+
+### Added
+
+- `CancelToken` — thread-safe per-request cancellation. Exported from `scraper`.
+- `RequestHeaders` utility (case-insensitive `dict` for HTTP headers) in
+  `scraper.utils`.
+- `ClearanceStore` — in-memory + optional on-disk cache for `cf_clearance`
+  records, keyed by `(domain, proxy_key)`.
+- `ClearanceResult` extended with `expires`, `cf_bm_expires`, and `proxy_key`
+  fields.
+- `HttpxTransport` — `httpx.AsyncClient`-backed fallback transport with
+  per-proxy client pooling (replaces `UrllibTransport`).
+- Engine pipeline is **fully async**: all middleware and the transport are
+  coroutines; a daemon asyncio event loop runs in a background thread.
+- `anyio[trio]` added as dev dependency; `respx` replaces `responses` for
+  HTTP mocking in tests.
+
 ## [0.3.0] - 2026-06-06
 
 ### Breaking Changes

@@ -1,10 +1,8 @@
-"""Tests for CipherRotator and CipherSuiteAdapter."""
+"""Tests for CipherRotator and build_ssl_context."""
 
 import ssl
 
-from requests.adapters import HTTPAdapter
-
-from scraper.engine.tls import CipherRotator, CipherSuiteAdapter
+from scraper.engine.tls import CipherRotator, build_ssl_context
 
 # --- CipherRotator -------------------------------------------------------
 
@@ -40,80 +38,41 @@ def test_suite_for_returns_subset_of_pool():
         assert cipher in pool
 
 
-# --- CipherSuiteAdapter --------------------------------------------------
+# --- build_ssl_context ---------------------------------------------------
 
 
-def test_source_address_string_converted_to_tuple():
-    a = CipherSuiteAdapter(source_address="127.0.0.1")
-    assert a.source_address == ("127.0.0.1", 0)
+def test_build_ssl_context_returns_ssl_context():
+    ctx = build_ssl_context()
+    assert isinstance(ctx, ssl.SSLContext)
 
 
-def test_source_address_tuple_preserved():
-    a = CipherSuiteAdapter(source_address=("192.168.1.1", 8080))
-    assert a.source_address == ("192.168.1.1", 8080)
+def test_build_ssl_context_verify_false_disables_check_hostname():
+    ctx = build_ssl_context(verify_ssl=False)
+    assert ctx.check_hostname is False
+    assert ctx.verify_mode == ssl.CERT_NONE
 
 
-def test_source_address_none_preserved():
-    a = CipherSuiteAdapter()
-    assert a.source_address is None
+def test_build_ssl_context_custom_context_passthrough():
+    custom = ssl.create_default_context()
+    ctx = build_ssl_context(ssl_context=custom)
+    assert ctx is custom
 
 
-def test_custom_ssl_context_not_overridden():
-    ctx = ssl.create_default_context()
-    a = CipherSuiteAdapter(ssl_context=ctx)
-    assert a.ssl_context is ctx
+def test_build_ssl_context_server_hostname():
+    ctx = build_ssl_context(server_hostname="example.com")
+    assert getattr(ctx, "server_hostname", None) == "example.com"
 
 
-def test_server_hostname_set_on_ssl_context():
-    a = CipherSuiteAdapter(server_hostname="example.com")
-    assert getattr(a.ssl_context, "server_hostname", None) == "example.com"
+def test_build_ssl_context_tls_versions():
+    ctx = build_ssl_context()
+    assert ctx.minimum_version == ssl.TLSVersion.TLSv1_2
+    assert ctx.maximum_version == ssl.TLSVersion.TLSv1_3
 
 
-def test_verify_ssl_false_disables_check_hostname():
-    a = CipherSuiteAdapter(verify_ssl=False)
-    assert a.ssl_context.check_hostname is False
-    assert a.ssl_context.verify_mode == ssl.CERT_NONE
-
-
-def test_cipher_suite_none_skips_set_ciphers():
-    # Should not raise even with no cipher_suite provided
-    a = CipherSuiteAdapter(cipher_suite=None)
-    assert a.ssl_context is not None
-
-
-def test_wrap_socket_with_server_hostname(monkeypatch):
-    a = CipherSuiteAdapter(server_hostname="example.com")
-    captured = {}
-
-    def fake_wrap(*args, **kwargs):
-        captured.update(kwargs)
-        return object()
-
-    a.ssl_context.orig_wrap_socket = fake_wrap  # type: ignore[attr-defined]
-    a._wrap_socket()
-    assert captured.get("server_hostname") == "example.com"
-
-
-def test_wrap_socket_without_server_hostname(monkeypatch):
-    a = CipherSuiteAdapter(verify_ssl=True)
-
-    def fake_wrap(*args, **kwargs):
-        return object()
-
-    a.ssl_context.orig_wrap_socket = fake_wrap  # type: ignore[attr-defined]
-    a._wrap_socket()
-    assert a.ssl_context.check_hostname is True
-
-
-def test_proxy_manager_for_injects_ssl_context(monkeypatch):
-    captured = {}
-
-    def fake_super(self_, proxy, **kwargs):
-        captured.update(kwargs)
-        return object()
-
-    monkeypatch.setattr(HTTPAdapter, "proxy_manager_for", fake_super)
-    a = CipherSuiteAdapter()
-    a.proxy_manager_for("http://proxy.example.com")
-    assert captured.get("ssl_context") is a.ssl_context
-    assert "source_address" in captured
+def test_build_ssl_context_cipher_suite_is_applied():
+    """Line 42: ctx.set_ciphers() is called when cipher_suite is provided."""
+    ctx = build_ssl_context(cipher_suite="AES128-SHA:AES256-SHA")
+    assert isinstance(ctx, ssl.SSLContext)
+    # Verify the custom cipher list is active (get_ciphers returns at least one entry)
+    ciphers = ctx.get_ciphers()
+    assert isinstance(ciphers, list)

@@ -1,9 +1,9 @@
-"""Remote challenge solver — a FlareSolverr / Byparr HTTP client.
+"""Remote challenge solver - a FlareSolverr / Byparr HTTP client.
 
 Drives a browser running in a separate process/container through the FlareSolverr
 ``v1`` API (``cmd: request.get``) and returns the harvested ``cf_clearance``
 cookie + User-Agent. Byparr exposes the same API, so the same client works for
-both — point ``endpoint`` at whichever you run.
+both - point ``endpoint`` at whichever you run.
 
 This keeps the scraper itself lightweight: no browser, Chrome, or Xvfb in its own
 image. For best results run the service behind the same egress IP/proxy as the
@@ -15,7 +15,7 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
-import requests
+import httpx
 
 from ..exceptions import CloudflareSolveError
 from .clearance import ClearanceResult, ClearanceSolver
@@ -42,7 +42,7 @@ class RemoteSolver(ClearanceSolver):
         self.timeout = timeout
         self.session = session
 
-    async def solve_async(
+    async def solve(
         self,
         url: str,
         *,
@@ -60,11 +60,11 @@ class RemoteSolver(ClearanceSolver):
             payload["proxy"] = {"url": proxy}
 
         try:
-            # A small margin over maxTimeout so the HTTP call outlives the solve.
-            resp = requests.post(f"{self.endpoint}/v1", json=payload, timeout=self.timeout + 15)
+            async with httpx.AsyncClient(timeout=self.timeout + 15) as client:
+                resp = await client.post(f"{self.endpoint}/v1", json=payload)
             resp.raise_for_status()
             data = resp.json()
-        except (requests.RequestException, ValueError) as exc:
+        except (httpx.HTTPError, ValueError) as exc:
             raise CloudflareSolveError(
                 f"RemoteSolver request to {self.endpoint} failed: {exc}"
             ) from exc

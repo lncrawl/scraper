@@ -27,7 +27,7 @@ requires-python = ">=3.9"
 version = "0.3.0"
 
 dependencies = [
-  "requests[socks]>=2.32.5",
+  "httpx[http2,socks]>=0.28",
   "beautifulsoup4>=4.14.3",
   "curl_cffi>=0.13.0",
   "lxml>=6.0.0",
@@ -60,12 +60,14 @@ packages = ["src/scraper"]
 dev = [
   "pytest>=8.4.2",
   "pytest-cov>=6.3.0",
-  "responses>=0.26",
+  "respx>=0.22",
+  "anyio[trio]>=4.0",
   "pyright>=1.1",
   "ruff>=0.15.16",
   "poethepoet>=0.37.0",
   "brotli>=1.2.0",
   "Pillow>=11.3.0",
+  "lxml-stubs>=0.5.1",
 ]
 
 [tool.poe.tasks]
@@ -109,7 +111,7 @@ exclude_also = [
 show_missing = true
 
 [tool.pyright]
-include = ["src", "tests"]
+include = ["src", "tests", "examples"]
 pythonVersion = "3.9"
 typeCheckingMode = "standard"
 

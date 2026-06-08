@@ -12,17 +12,16 @@ import base64
 import logging
 from io import BytesIO
 from pathlib import Path
-from typing import Any, MutableMapping
+from typing import Any, MutableMapping, Optional
 
-from requests import Response
-from requests.cookies import RequestsCookieJar
-from requests.structures import CaseInsensitiveDict
+import httpx
+from curl_cffi.requests.session import HttpMethod
 
 from .config import ScraperConfig, default_config
 from .engine import Engine, ProxyManager, create_engine
 from .exceptions import AbortedException
 from .soup import PageSoup
-from .utils import atomic_write, extract_base, validate_url
+from .utils import RequestHeaders, atomic_write, extract_base, validate_url
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +48,7 @@ class Scraper:
         origin: str | None = None,
         parser: str | None = None,
         config: ScraperConfig | None = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         self.engine: Engine = create_engine(config or default_config())
         self.origin = origin or ""
@@ -67,36 +66,42 @@ class Scraper:
         return self.engine.headers
 
     @property
-    def cookies(self) -> RequestsCookieJar:
+    def cookies(self) -> httpx.Cookies:
         return self.engine.cookies
 
     @property
     def proxy_manager(self) -> ProxyManager:
         return self.engine.proxy_manager
 
-    @property
-    def signal(self):
-        """The cross-thread abort signal (a :class:`threading.Event`)."""
-        return self.engine.signal
-
-    @signal.setter
-    def signal(self, value) -> None:
-        self.engine.signal = value
-
-    def abort(self) -> None:
-        """Signal all pending and in-progress requests (incl. downloads) to stop."""
-        self.engine.abort()
-
     def put_cookie(self, name: str, value: str, domain: str = "", path: str = "/") -> None:
         """Set a cookie on the session (and the transport's jar)."""
         self.engine.put_cookie(name, value, domain=domain, path=path)
 
-    def apply_browser_clearance(self, domain: str, **kwargs) -> None:
+    def apply_browser_clearance(self, domain: str, **kwargs: Any) -> None:
         """Reuse a Cloudflare clearance solved by a real browser (see Engine)."""
         self.engine.apply_browser_clearance(domain, **kwargs)
 
+    def rotate_proxy(self) -> None:
+        """Rotate to the next proxy and reset the transport connection pool.
+
+        For a :class:`~scraper.config.TorProxyUrl` with a ``control_port``,
+        sends ``SIGNAL NEWNYM`` to obtain a new Tor exit circuit. For any
+        other proxy type (or when NEWNYM fails), advances the round-robin
+        index to the next configured proxy. In both cases the transport
+        session is recreated so the next request uses fresh TCP connections.
+        """
+        self.engine.rotate_proxy()
+
     def close(self) -> None:
+        """Abort all in-progress requests and release transport resources."""
+        self.engine.abort()
         self.engine.close()
+
+    def __enter__(self) -> "Scraper":
+        return self
+
+    def __exit__(self, *args: object) -> None:
+        self.close()
 
     def reset(self) -> None:
         """Reset the scraper to its initial state."""
@@ -117,72 +122,80 @@ class Scraper:
 
     # -- HTTP surface -------------------------------------------------------------
 
-    def request(self, method: str, url: str, *args, **kwargs) -> Response:
+    def request(
+        self,
+        method: HttpMethod,
+        url: str,
+        *args: Any,
+        cancel_token: Optional[Any] = None,
+        **kwargs: Any,
+    ) -> httpx.Response:
         """Issue a request with auto Origin/Referer, then raise on HTTP errors."""
         kwargs.setdefault("allow_redirects", True)
 
-        headers = CaseInsensitiveDict(kwargs.pop("headers", {}) or {})
+        headers = RequestHeaders(kwargs.pop("headers", {}) or {})
         last_url = self.last_soup_url or self.origin
         if last_url:
             origin = extract_base(last_url)
             headers.setdefault("Origin", origin.strip("/"))
             headers.setdefault("Referer", origin)
-        kwargs["headers"] = headers
+        kwargs["headers"] = {k: v for k, v in headers.items() if v is not None}
 
-        response = self.engine.request(method, url, *args, **kwargs)
+        response = self.engine.request(method, url, *args, cancel_token=cancel_token, **kwargs)
         response.raise_for_status()
-        response.encoding = "utf8"
         return response
 
-    def ping(self, url: str, timeout: float = 5, **kwargs) -> Response:
-        """Send a HEAD request - a lightweight reachability check."""
+    def ping(self, url: str, timeout: float = 5, **kwargs: Any) -> httpx.Response:
+        """Send a HEAD request — a lightweight reachability check."""
         return self.request("HEAD", url, timeout=timeout, **kwargs)
 
-    def options(self, url: str, **kwargs) -> Response:
+    def options(self, url: str, **kwargs: Any) -> httpx.Response:
         """OPTIONS to ``url`` with a default ``(connect, read)`` timeout."""
         kwargs.setdefault("timeout", _DEFAULT_TIMEOUT)
         return self.request("OPTIONS", url, **kwargs)
 
-    def head(self, url: str, **kwargs) -> Response:
+    def head(self, url: str, **kwargs: Any) -> httpx.Response:
         """HEAD to ``url`` with a default ``(connect, read)`` timeout."""
         kwargs.setdefault("timeout", _DEFAULT_TIMEOUT)
         return self.request("HEAD", url, **kwargs)
 
-    def get(self, url: str, **kwargs) -> Response:
+    def get(self, url: str, **kwargs: Any) -> httpx.Response:
         """GET ``url`` with a default ``(connect, read)`` timeout."""
         kwargs.setdefault("timeout", _DEFAULT_TIMEOUT)
         return self.request("GET", url, **kwargs)
 
-    def post(self, url: str, data: Any = None, json: Any = None, **kwargs) -> Response:
+    def post(self, url: str, data: Any = None, json: Any = None, **kwargs: Any) -> httpx.Response:
         """Raw POST to ``url`` with a default ``(connect, read)`` timeout."""
         kwargs.setdefault("timeout", _DEFAULT_TIMEOUT)
         return self.request("POST", url, data=data, json=json, **kwargs)
 
-    def put(self, url: str, **kwargs) -> Response:
+    def put(self, url: str, **kwargs: Any) -> httpx.Response:
         """Raw PUT to ``url``"""
         return self.request("PUT", url, **kwargs)
 
-    def patch(self, url: str, **kwargs) -> Response:
+    def patch(self, url: str, **kwargs: Any) -> httpx.Response:
         """Raw PATCH to ``url``"""
         return self.request("PATCH", url, **kwargs)
 
-    def delete(self, url: str, **kwargs) -> Response:
+    def delete(self, url: str, **kwargs: Any) -> httpx.Response:
         """Raw DELETE to ``url``"""
         return self.request("DELETE", url, **kwargs)
 
-    def get_json(self, url: str, headers: MutableMapping = {}, **kwargs) -> Any:
+    def get_json(self, url: str, headers: Optional[MutableMapping] = None, **kwargs: Any) -> Any:
         """Fetch content and return it as a JSON object."""
-        headers = CaseInsensitiveDict(headers)
-        headers.setdefault("Accept", "application/json,text/plain,*/*")
-        kwargs["headers"] = headers
+        merged = RequestHeaders(headers or {})
+        merged.setdefault("Accept", "application/json,text/plain,*/*")
+        kwargs["headers"] = dict(merged)
         return self.get(url, **kwargs).json()
 
-    def post_json(self, url: str, data: Any = None, headers: MutableMapping = {}, **kwargs) -> Any:
+    def post_json(
+        self, url: str, data: Any = None, headers: Optional[MutableMapping] = None, **kwargs: Any
+    ) -> Any:
         """Make a POST request and return the content as a JSON object."""
-        headers = CaseInsensitiveDict(headers)
-        headers.setdefault("Content-Type", "application/json")
-        headers.setdefault("Accept", "application/json,text/plain,*/*")
-        response = self.post(url, data=data, headers=headers, **kwargs)
+        merged = RequestHeaders(headers or {})
+        merged.setdefault("Content-Type", "application/json")
+        merged.setdefault("Accept", "application/json,text/plain,*/*")
+        response = self.post(url, data=data, headers=dict(merged), **kwargs)
         return response.json()
 
     # -- Soup helpers -------------------------------------------------------------
@@ -197,14 +210,14 @@ class Scraper:
     def get_soup(
         self,
         url: str,
-        headers: MutableMapping = {},
+        headers: Optional[MutableMapping] = None,
         encoding: str | None = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> PageSoup:
         """Fetch content and return a PageSoup instance."""
-        headers = CaseInsensitiveDict(headers)
-        headers.setdefault("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9")
-        kwargs["headers"] = headers
+        merged = RequestHeaders(headers or {})
+        merged.setdefault("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9")
+        kwargs["headers"] = dict(merged)
         response = self.get(url, **kwargs)
         self.last_soup_url = url
         return self.make_soup(response, encoding)
@@ -213,14 +226,14 @@ class Scraper:
         self,
         url: str,
         data: Any = None,
-        headers: MutableMapping = {},
+        headers: Optional[MutableMapping] = None,
         encoding: str | None = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> PageSoup:
         """Make a POST request and return a PageSoup instance."""
-        headers = CaseInsensitiveDict(headers)
-        headers.setdefault("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9")
-        kwargs["headers"] = headers
+        merged = RequestHeaders(headers or {})
+        merged.setdefault("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9")
+        kwargs["headers"] = dict(merged)
         response = self.post(url, data=data, **kwargs)
         self.last_soup_url = url
         return self.make_soup(response, encoding)
@@ -230,18 +243,18 @@ class Scraper:
         url: str,
         data: Any = None,
         json: Any = None,
-        headers: MutableMapping = {},
+        headers: Optional[MutableMapping] = None,
         multipart: bool = False,
-        **kwargs,
-    ) -> Response:
+        **kwargs: Any,
+    ) -> httpx.Response:
         if multipart:
             content_type = "multipart/form-data"
         else:
             content_type = "application/x-www-form-urlencoded; charset=UTF-8"
 
-        headers = CaseInsensitiveDict(headers or {})
-        headers["Content-Type"] = content_type
-        kwargs["headers"] = headers
+        merged = RequestHeaders(headers or {})
+        merged["Content-Type"] = content_type
+        kwargs["headers"] = dict(merged)
 
         return self.post(url, data=data, json=json, **kwargs)
 
@@ -251,14 +264,15 @@ class Scraper:
         self,
         url: str,
         output_file: str | Path,
-        headers: MutableMapping = {},
+        headers: Optional[MutableMapping] = None,
         stream: bool = True,
-        **kwargs,
+        cancel_token: Optional[Any] = None,
+        **kwargs: Any,
     ) -> None:
         """Download content of the url to a file.
 
-        Checks the abort signal between chunks so downloads can be cancelled via
-        :meth:`abort`.
+        Checks the abort flag between chunks so downloads can be cancelled via
+        :meth:`abort` or a ``cancel_token``.
         """
         if isinstance(output_file, str):
             output_file = Path(output_file)
@@ -267,22 +281,22 @@ class Scraper:
             url,
             headers=headers,
             stream=stream,
+            cancel_token=cancel_token,
             **kwargs,
         )
         with atomic_write(output_file) as tmp:
-            for chunk in response.iter_content(chunk_size=2048):
-                if self.signal.aborted:
-                    response.close()
+            for chunk in response.iter_bytes(chunk_size=2048):
+                if self.engine._aborted:
                     raise AbortedException("Download aborted.")
                 tmp.write(chunk)
 
     def get_image(
         self,
         url: str,
-        headers: MutableMapping = {},
-        timeout: tuple[float, float] = (3, 30),
-        **kwargs,
-    ):
+        headers: Optional[MutableMapping] = None,
+        timeout: tuple[float, float] = _DEFAULT_TIMEOUT,
+        **kwargs: Any,
+    ) -> Any:
         """Download image from url and return a `PIL` Image object.
 
         **Important**: Using this function requires the `image` extra dependency.
@@ -309,20 +323,18 @@ class Scraper:
             raise ValueError(f"Invalid URL: '{url}'")
 
         # build headers
-        headers = CaseInsensitiveDict(headers)
-        headers.setdefault("Origin", None)
-        headers.setdefault("Referer", None)
-        headers.setdefault(
+        merged = RequestHeaders(headers or {})
+        merged.setdefault("Origin", None)
+        merged.setdefault("Referer", None)
+        merged.setdefault(
             "Accept",
             "image/webp,image/png,image/jpeg,image/gif,image/tiff,image/bmp,image/*,*/*;q=0.8",
         )
 
-        # try fetching with explicit Accept headers first,
-        # in case of failure try again without the accept headers
         try:
-            response = self.get(url, headers=headers, timeout=timeout, **kwargs)
+            response = self.get(url, headers=dict(merged), timeout=timeout, **kwargs)
             return Image.open(BytesIO(response.content))
         except UnidentifiedImageError:
-            headers["Accept"] = None
-            response = self.get(url, headers=headers, timeout=timeout, **kwargs)
+            merged["Accept"] = None
+            response = self.get(url, headers=dict(merged), timeout=timeout, **kwargs)
             return Image.open(BytesIO(response.content))

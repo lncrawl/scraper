@@ -2,7 +2,7 @@
 
 :func:`build_transport` selects the primary curl_cffi transport when an
 impersonation target is configured and curl_cffi is importable, and otherwise
-returns the legacy urllib3 transport (also used as the automatic fallback).
+returns the httpx-based fallback transport.
 """
 
 from __future__ import annotations
@@ -18,13 +18,13 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def build_transport(config: ScraperConfig) -> Transport:
+def build_transport(config: "ScraperConfig") -> Transport:
     """Return the transport for *config*.
 
-    Uses :class:`~scraper.engine.transport.curl.CurlCffiTransport` (curl_cffi) when
-    ``config.impersonate.target`` is set and curl_cffi is installed; otherwise (or
-    if curl_cffi is missing) falls back to
-    :class:`~scraper.engine.transport.urllib.UrllibTransport`.
+    Uses :class:`~scraper.engine.transport.curl.CurlCffiTransport` (curl_cffi)
+    when ``config.impersonate.target`` is set and curl_cffi is installed;
+    otherwise falls back to
+    :class:`~scraper.engine.transport.httpx_transport.HttpxTransport`.
     """
     if config.impersonate.target:
         try:
@@ -33,15 +33,13 @@ def build_transport(config: ScraperConfig) -> Transport:
             return CurlCffiTransport(config)
         except ImportError:
             logger.warning(
-                "curl_cffi is unavailable — falling back to the urllib3 transport "
+                "curl_cffi is unavailable — falling back to the httpx transport "
                 "(weaker TLS fingerprint). Install curl_cffi to enable impersonation."
             )
 
-    # The following transport is just for legacy support.
-    # It may never be used since curl-cffi is a direct dependency.
-    from .urllib import UrllibTransport
+    from .httpx import HttpxTransport
 
-    return UrllibTransport(config)
+    return HttpxTransport(config)
 
 
 __all__ = [

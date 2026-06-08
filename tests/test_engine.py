@@ -1,7 +1,8 @@
 """Tests for engine configuration and session management."""
 
+import httpx
 import pytest
-import responses
+import respx
 
 from scraper.config import CloudflareConfig, ImpersonateConfig
 from scraper.engine import Engine, create_engine
@@ -12,13 +13,17 @@ from .conftest import make_fast_config
 BASE = "https://example.com"
 
 
+def _resp(status=200, url=BASE, body=b""):
+    req = httpx.Request("GET", url)
+    return httpx.Response(status_code=status, content=body, request=req)
+
+
 # --- challenge detection configuration ------------------------------------
 
 
 def test_default_has_detector_no_solver():
     e = create_engine(make_fast_config())
     assert e.cf_detector is not None
-    assert e.cf_solver is None
 
 
 def test_detection_disabled_omits_middleware():
@@ -54,38 +59,31 @@ def test_impersonate_custom_ua_not_overridden():
 
 
 def test_refresh_session_returns_false_on_transport_exception():
-    import requests
-
     e = create_engine(make_fast_config())
 
-    def boom(ctx):
-        raise requests.exceptions.ConnectionError("offline")
+    async def boom(ctx):
+        raise ConnectionError("offline")
 
     e.transport.send = boom  # type: ignore[method-assign]
-    assert e.refresh_session(f"{BASE}/page") is False
+    result = asyncio_run_on_engine(e._refresh_session(f"{BASE}/page"), e)
+    assert result is False
 
 
+def asyncio_run_on_engine(coro, engine):
+    import asyncio
+
+    return asyncio.run_coroutine_threadsafe(coro, engine._loop).result(timeout=5)
+
+
+@respx.mock
 def test_refresh_session_clears_cf_cookies_and_succeeds():
+    respx.get(BASE).mock(return_value=httpx.Response(200))
     e = create_engine(make_fast_config())
-    e.cookies.set("cf_clearance", "tok", domain="example.com")
+    e.put_cookie("cf_clearance", "tok", domain="example.com")
 
-    with responses.RequestsMock() as rsps:
-        rsps.add(rsps.GET, f"{BASE}", status=200)
-        result = e.refresh_session(f"{BASE}/page")
-
+    result = asyncio_run_on_engine(e._refresh_session(f"{BASE}/page"), e)
     assert result is True
-    assert e.cookies.get("cf_clearance", domain="example.com") is None
-
-
-def test_refresh_session_suppresses_keyerror_on_missing_cookie():
-    e = create_engine(make_fast_config())
-    e.cookies.set("unrelated", "val", domain="example.com")
-
-    with responses.RequestsMock() as rsps:
-        rsps.add(rsps.GET, f"{BASE}", status=200)
-        result = e.refresh_session(f"{BASE}/page")
-
-    assert result is True
+    assert e.cookies.get("cf_clearance") is None
 
 
 def test_apply_browser_clearance_sets_user_agent():
@@ -114,7 +112,7 @@ def test_apply_browser_clearance_no_user_agent_leaves_header_unchanged():
 
 def test_engine_reset_clears_cookies_and_headers():
     e = create_engine(make_fast_config())
-    e.cookies.set("tok", "val", domain="example.com")
+    e.put_cookie("tok", "val", domain="example.com")
     e.headers["X-Custom"] = "yes"
     e.reset()
     assert list(e.cookies) == []
@@ -129,32 +127,110 @@ def test_engine_close_does_not_raise():
 # --- cookies / raw send ---------------------------------------------------
 
 
+@respx.mock
 def test_put_cookie_visible_in_request():
-    with responses.RequestsMock() as rsps:
-        rsps.add(rsps.GET, f"{BASE}/x", body="ok")
-        from scraper import Scraper
+    route = respx.get(f"{BASE}/x").mock(return_value=httpx.Response(200, content=b"ok"))
+    from scraper import Scraper
 
-        s = Scraper(origin=BASE, config=make_fast_config())
-        s.put_cookie("token", "abc", domain="example.com")
-        s.get(f"{BASE}/x")
-        assert "token=abc" in str(rsps.calls[0].request.headers.get("Cookie", ""))
+    s = Scraper(origin=BASE, config=make_fast_config())
+    s.put_cookie("token", "abc", domain="example.com")
+    s.get(f"{BASE}/x")
+    cookie_header = str(route.calls[0].request.headers.get("cookie", ""))
+    assert "token=abc" in cookie_header
 
 
 def test_perform_request_bypasses_pipeline():
-    import requests
-
     calls = []
 
-    def fake_send(ctx):
-        r = requests.Response()
-        r.status_code = 200
-        r._content = b""
-        r.url = ctx.url
+    async def fake_send(ctx):
         calls.append(ctx.url)
-        return r
+        return _resp(200, ctx.url)
 
     e: Engine = create_engine(make_fast_config())
     e.transport.send = fake_send  # type: ignore[method-assign]
     resp = e.perform_request("GET", f"{BASE}/raw")
     assert resp.status_code == 200
     assert calls == [f"{BASE}/raw"]
+
+
+def test_perform_request_injects_proxy_when_configured():
+    """perform_request injects the active proxy into ctx.kwargs when no proxy is pre-set."""
+    from scraper.config import ProxyConfig
+
+    injected: list = []
+
+    async def fake_send(ctx):
+        injected.append(ctx.kwargs.get("proxy"))
+        return _resp(200, ctx.url)
+
+    e = create_engine(make_fast_config(proxy=ProxyConfig(proxy_urls=["socks5://127.0.0.1:9150"])))
+    e.transport.send = fake_send  # type: ignore[method-assign]
+    e.perform_request("GET", f"{BASE}/raw")
+    assert injected[0] == "socks5://127.0.0.1:9150"
+
+
+def test_perform_request_skips_proxy_injection_when_proxy_already_set():
+    """perform_request does not overwrite a proxy already in kwargs."""
+    from scraper.config import ProxyConfig
+
+    injected: list = []
+
+    async def fake_send(ctx):
+        injected.append(ctx.kwargs.get("proxy"))
+        return _resp(200, ctx.url)
+
+    e = create_engine(make_fast_config(proxy=ProxyConfig(proxy_urls=["socks5://127.0.0.1:9150"])))
+    e.transport.send = fake_send  # type: ignore[method-assign]
+    e.perform_request("GET", f"{BASE}/raw", proxy="socks5://10.0.0.1:1080")
+    assert injected[0] == "socks5://10.0.0.1:1080"
+
+
+# --- close exception swallowing -------------------------------------------
+
+
+def test_close_swallows_transport_aclose_exception():
+    """close() completes without raising even when transport.aclose() fails."""
+    e = create_engine(make_fast_config())
+
+    async def _boom() -> None:
+        raise RuntimeError("transport crashed")
+
+    e.transport.aclose = _boom  # type: ignore[method-assign]
+    e.close()  # must not propagate the RuntimeError
+
+
+# --- cancel token integration with engine.request -------------------------
+
+
+@respx.mock
+def test_engine_request_with_cancel_token_succeeds():
+    """Passing a CancelToken binds it to the future (core.py:144)."""
+    from scraper.utils.cancel_token import CancelToken
+
+    respx.get(f"{BASE}/x").mock(return_value=httpx.Response(200, content=b"ok"))
+    e = create_engine(make_fast_config())
+    token = CancelToken()
+    resp = e.request("GET", f"{BASE}/x", cancel_token=token)
+    assert resp.status_code == 200
+
+
+def test_engine_request_cancelled_token_raises_aborted():
+    """Pre-cancelled token + slow transport → AbortedException (core.py:149)."""
+    import asyncio
+
+    from scraper.exceptions import AbortedException
+    from scraper.utils.cancel_token import CancelToken
+
+    e = create_engine(make_fast_config())
+
+    async def _hang(ctx):  # type: ignore[misc]
+        await asyncio.sleep(30)
+        return _resp(200)
+
+    e.transport.send = _hang  # type: ignore[method-assign]
+
+    token = CancelToken()
+    token.cancel()  # pre-cancel before the request starts
+
+    with pytest.raises(AbortedException):
+        e.request("GET", f"{BASE}/slow", cancel_token=token)

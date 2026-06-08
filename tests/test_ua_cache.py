@@ -12,7 +12,8 @@ import json
 import sys
 import types
 
-import responses as rsp
+import httpx
+import respx
 
 from scraper.engine.user_agent import cache as cache_mod
 
@@ -60,7 +61,7 @@ def test_is_brotli_available_neither_installed(monkeypatch):
 # --- fast path: fresh cache, no network call needed -----------------------
 
 
-@rsp.activate
+@respx.mock
 def test_load_ua_data_fast_path_skips_network(tmp_path, monkeypatch):
     cache_file = tmp_path / "cache.json.gz"
     _write_gz(cache_file, _FAKE_UA)
@@ -69,7 +70,7 @@ def test_load_ua_data_fast_path_skips_network(tmp_path, monkeypatch):
     result = _real_load()
 
     assert result is not None and result[0]["userAgent"] == _FAKE_UA[0]["userAgent"]
-    assert len(rsp.calls) == 0, "no HTTP call should be made for a fresh cache"
+    assert len(respx.calls) == 0, "no HTTP call should be made for a fresh cache"
 
 
 # --- 304 not-modified: server confirms data unchanged --------------------
@@ -86,10 +87,10 @@ def test_load_ua_data_304_touches_cache_and_returns_data(tmp_path, monkeypatch):
     monkeypatch.setattr(cache_mod, "_CACHE_PATH", cache_file)
     monkeypatch.setattr(cache_mod, "_ETAG_PATH", etag_file)
 
-    with rsp.RequestsMock() as rsps:
-        rsps.add(rsp.GET, cache_mod._CACHE_URL, status=304)
+    with respx.mock:
+        route = respx.get(cache_mod._CACHE_URL).mock(return_value=httpx.Response(304))
         result = _real_load()
-        assert rsps.calls[0].request.headers.get("If-None-Match") == '"v1"'
+        assert route.calls[0].request.headers.get("if-none-match") == '"v1"'
 
     assert result is not None and result[0]["userAgent"] == _FAKE_UA[0]["userAgent"]
 
@@ -103,13 +104,13 @@ def test_load_ua_data_downloads_and_caches_new_data(tmp_path, monkeypatch):
     monkeypatch.setattr(cache_mod, "_CACHE_PATH", cache_file)
     monkeypatch.setattr(cache_mod, "_ETAG_PATH", etag_file)
 
-    with rsp.RequestsMock() as rsps:
-        rsps.add(
-            rsp.GET,
-            cache_mod._CACHE_URL,
-            body=gzip.compress(json.dumps(_FAKE_UA).encode()),
-            status=200,
-            headers={"ETag": '"newetag"'},
+    with respx.mock:
+        respx.get(cache_mod._CACHE_URL).mock(
+            return_value=httpx.Response(
+                200,
+                content=gzip.compress(json.dumps(_FAKE_UA).encode()),
+                headers={"ETag": '"newetag"'},
+            )
         )
         result = _real_load()
 
@@ -128,8 +129,8 @@ def test_load_ua_data_falls_back_to_stale_on_network_error(tmp_path, monkeypatch
     monkeypatch.setattr(cache_mod, "_CACHE_PATH", cache_file)
     monkeypatch.setattr(cache_mod, "_ETAG_PATH", tmp_path / "no_etag.txt")
 
-    with rsp.RequestsMock() as rsps:
-        rsps.add(rsp.GET, cache_mod._CACHE_URL, body=Exception("timeout"))
+    with respx.mock:
+        respx.get(cache_mod._CACHE_URL).mock(side_effect=httpx.ConnectError("timeout"))
         result = _real_load()
 
     assert result is not None and result[0]["userAgent"] == _FAKE_UA[0]["userAgent"]
@@ -150,13 +151,13 @@ def test_load_ua_data_200_no_etag_skips_etag_write(tmp_path, monkeypatch):
     monkeypatch.setattr(cache_mod, "_CACHE_PATH", cache_file)
     monkeypatch.setattr(cache_mod, "_ETAG_PATH", etag_file)
 
-    with rsp.RequestsMock() as rsps:
-        rsps.add(
-            rsp.GET,
-            cache_mod._CACHE_URL,
-            body=_write_gz_bytes(_FAKE_UA),
-            status=200,
-            # No ETag header → `if etag := resp.headers.get("ETag"):` is falsy → file not written
+    with respx.mock:
+        respx.get(cache_mod._CACHE_URL).mock(
+            return_value=httpx.Response(
+                200,
+                content=_write_gz_bytes(_FAKE_UA),
+                # No ETag header → `if etag := resp.headers.get("ETag"):` is falsy → file not written
+            )
         )
         result = _real_load()
 

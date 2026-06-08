@@ -5,7 +5,7 @@ HTTP/1.1 — both of which modern Cloudflare detects. The curl_cffi transport
 reproduces a real browser's TLS (JA3/JA4) and HTTP/2 fingerprint, and
 `default_config()` enables it (impersonate.target = "chrome") out of the box.
 curl_cffi is a core dependency, so no extra install is needed; if it is somehow
-unavailable the engine falls back to the urllib3 transport.
+unavailable the engine falls back to the httpx transport.
 
 Run:
     uv run python examples/07_impersonation.py

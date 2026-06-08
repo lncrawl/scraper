@@ -28,7 +28,7 @@ HTML = """
 
 
 def main() -> None:
-    # Build a PageSoup directly from a string (or bytes, or a requests.Response).
+    # Build a PageSoup directly from a string (or bytes, or an httpx.Response).
     soup = PageSoup.create(HTML)
 
     book = soup.select_one("div.book")

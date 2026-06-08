@@ -37,6 +37,7 @@ from .config import (
 from .exceptions import AbortedException, CloudflareException
 from .session import Scraper
 from .soup import PageSoup
+from .utils.cancel_token import CancelToken
 
 try:
     __version__ = version("lncrawl-scraper")
@@ -62,5 +63,6 @@ __all__ = [
     "BrowserSolver",
     "AbortedException",
     "CloudflareException",
+    "CancelToken",
     "__version__",
 ]

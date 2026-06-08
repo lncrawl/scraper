@@ -13,7 +13,7 @@ class CloudflareException(Exception):
 
 
 class AbortedException(CloudflareException):
-    """Raised when a request is aborted via the abort signal."""
+    """Raised when a request or download is cancelled via a CancelToken."""
 
 
 class CloudflareFirewallBlock(CloudflareException):
@@ -37,3 +37,20 @@ class CloudflareCaptchaError(CloudflareException):
 class CloudflareTurnstileError(CloudflareException):
     """Raised when a Cloudflare Turnstile challenge is detected and no solver is
     configured to pass it."""
+
+
+class TransportError(Exception):
+    """Base for network-level errors raised by a Transport implementation.
+
+    Both HttpxTransport and CurlCffiTransport wrap their native exceptions in
+    subclasses of this so that middleware can catch transport errors without
+    depending on either http library directly.
+    """
+
+
+class ProxyTransportError(TransportError):
+    """Raised when the request fails because the configured proxy is unreachable."""
+
+
+class SSLTransportError(TransportError):
+    """Raised when SSL verification fails on the transport send."""

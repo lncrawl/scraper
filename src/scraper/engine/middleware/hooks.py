@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from requests import Response
+import httpx
 
 from .base import Middleware, NextHandler
 
 if TYPE_CHECKING:
-    from ..context import RequestContext
     from ..core import Engine
+    from ..state import RequestState
 
 
 class HooksMiddleware(Middleware):
@@ -20,16 +20,16 @@ class HooksMiddleware(Middleware):
     and ``post_hook(engine, response) -> response`` both receive the engine.
     """
 
-    def __init__(self, engine: Engine) -> None:
+    def __init__(self, engine: "Engine") -> None:
         self._engine = engine
 
-    def handle(self, ctx: RequestContext, nxt: NextHandler) -> Response:
+    async def handle(self, ctx: "RequestState", nxt: NextHandler) -> httpx.Response:
         e = self._engine
         if e.config.pre_hook:
             ctx.method, ctx.url, ctx.args, ctx.kwargs = e.config.pre_hook(
                 e, ctx.method, ctx.url, *ctx.args, **ctx.kwargs
             )
-        response = nxt(ctx)
+        response = await nxt(ctx)
         if e.config.post_hook:
             response = e.config.post_hook(e, response) or response
         return response

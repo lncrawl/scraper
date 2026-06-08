@@ -1,8 +1,8 @@
 """Concurrent downloads and cooperative cancellation.
 
 A single Scraper is thread-safe (requests are serialized/throttled by the
-engine). `abort()` sets a shared signal that stops pending requests and
-in-progress streaming downloads, raising AbortedException.
+engine). `close()` aborts all pending and in-progress requests, raising
+AbortedException in any thread that is waiting on or streaming a response.
 
 Run:
     uv run python examples/10_concurrency_and_abort.py
@@ -21,7 +21,7 @@ def fetch_many() -> None:
     # Allow a few requests in flight at once.
     s = Scraper(config=ScraperConfig(max_concurrent_requests=4))
 
-    urls = [f"https://httpbin.org/anything/{i}" for i in range(6)]
+    urls = [f"https://httpbin.io/anything/{i}" for i in range(6)]
 
     def worker(url: str) -> int:
         return s.get(url).status_code
@@ -38,7 +38,7 @@ def abort_demo() -> None:
     def stopper() -> None:
         time.sleep(0.5)
         print("aborting...")
-        s.abort()  # sets the shared signal checked between download chunks
+        s.close()  # aborts all in-progress requests and releases resources
 
     threading.Thread(target=stopper, daemon=True).start()
 
@@ -46,7 +46,7 @@ def abort_demo() -> None:
     try:
         # A deliberately slow stream; get_file checks the abort signal between
         # chunks, so the download is interrupted mid-flight.
-        s.get_file("https://httpbin.org/drip?duration=10&numbytes=200", output_file=out)
+        s.get_file("https://httpbin.io/drip?duration=10&numbytes=200", output_file=out)
         print("download finished (not expected here)")
     except AbortedException:
         print("download was aborted cleanly")

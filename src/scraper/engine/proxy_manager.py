@@ -13,25 +13,26 @@ logger = logging.getLogger(__name__)
 class ProxyManager:
     """Round-robin proxy selector for SOCKS/HTTP proxies.
 
-    Intended for use with containers like `peterdavehello/tor-socks-proxy` (`socks5://127.0.0.1:9150`).
-    Call `rotate_identity()` to cycle proxy URL or request a new Tor exit circuit via the
-    control port (SIGNAL NEWNYM); it is called automatically on proxy errors.
+    Tor proxies (:class:`~scraper.config.TorProxyUrl`) get a new exit circuit
+    (SIGNAL NEWNYM) on rotate/failure; plain proxies advance round-robin.
+    Exhausted proxies are temporarily disabled and re-enabled after
+    ``disable_cooldown`` seconds.
     """
 
     def __init__(self, config: ProxyConfig | None = None) -> None:
         self.config = config or ProxyConfig()
 
         self._index = 0
-        self._last_rotate = 0.0
         self._lock = threading.Lock()
         self._available: list[ProxyUrl | TorProxyUrl] = []
-        self._fail_count: dict[ProxyUrl | TorProxyUrl, int] = {}
-        self._failed_at: dict[ProxyUrl | TorProxyUrl, float] = {}
+        self._tor_rotated_at: dict[TorProxyUrl, float] = {}
+        self._disabled_at: dict[ProxyUrl | TorProxyUrl, float] = {}
 
         for p in self.config.proxy_urls:
             if isinstance(p, str):
                 p = ProxyUrl(url=p)
             if "://" not in p.url:
+                logger.warning(f"Ignoring proxy with no scheme: {p.url}")
                 continue
             self._available.append(p)
         logger.debug(f"{len(self._available)} proxy URL(s) configured.")
@@ -39,94 +40,98 @@ class ProxyManager:
     @property
     def has_proxy(self) -> bool:
         self._restore_disabled()
-        return len(self._available) > 0
+        return bool(self._available)
 
-    def get_proxy(self) -> dict[str, str] | None:
+    def get_proxy(self) -> str | None:
+        """Return the current proxy URL string, or ``None`` when no proxy is active."""
         if not self.has_proxy:
             return None
         with self._lock:
             current = self._available[self._index]
-        config = {"http": current.url}
-        if not current.http_only:
-            config["https"] = current.url
-        return config
+        return current.url
 
-    def _restore_disabled(self) -> None:
-        if not self._failed_at:
-            return
-        with self._lock:
-            to_restore = [
-                url
-                for url, fail_time in self._failed_at.items()
-                if time.monotonic() - fail_time >= self.config.disable_cooldown
-            ]
-            for url in to_restore:
-                del self._failed_at[url]
-                self._available.append(url)
-                logger.debug(f"Restored proxy: {url!r}")
+    def rotate(self, *, disable: bool = False) -> None:
+        """Advance to the next proxy identity.
 
-    def report_success(self) -> None:
+        Pass ``disable=True``to temporarily disable the proxy.
+
+        For a :class:`~scraper.config.TorProxyUrl` with a ``control_port``, sends
+        SIGNAL NEWNYM to obtain a new exit circuit; falls back to advancing the
+        round-robin index if NEWNYM fails or isn't applicable.
+        """
         if not self._available:
             return
         with self._lock:
             current = self._available[self._index]
-            # clear failures on success
-            self._failed_at.pop(current, None)
-            self._fail_count[current] = 0
-
-    def report_failure(self) -> None:
-        if not self._available:
-            return
-        with self._lock:
-            current = self._available[self._index]
-            fail_count = self._fail_count.get(current, 0)
-            last_fail = self._failed_at.get(current, 0)
-            self._failed_at[current] = time.monotonic()
-            self._fail_count[current] = fail_count + 1
-
-            # disable current one if failure exceeds tolerance
-            if fail_count >= self.config.failure_tolerance:
+            if disable:
+                now = time.monotonic()
+                self._disabled_at[current] = now
                 self._available.pop(self._index)
                 if self._index >= len(self._available):
                     self._index = 0
-                return  # disabled currnt proxy
+                logger.debug(f"Disabled: {current.url!r}")
+                return  # removed current and moved to next proxy
 
-            # rotate tor identity on failure with a cooldown
-            if (
-                isinstance(current, TorProxyUrl)
-                and current.control_port
-                and time.monotonic() - last_fail >= self.config.tor_rotation_cooldown
-            ):
-                try:
-                    self.rotate_tor_identity(
-                        current.control_host,
-                        current.control_port,
-                        current.control_password,
-                    )
-                    return  # rotation success, reuse current proxy
-                except Exception as e:
-                    logger.warning(f"Tor identity rotation failed: {e}")
+            if isinstance(current, TorProxyUrl) and self._try_rotate_tor_circuit(current):
+                return  # keep using current proxy on rotation success
 
-            # move to next available proxy if rotation is unavailable or failed
+            # move to next proxy
             self._index = (self._index + 1) % len(self._available)
 
-    @staticmethod
-    def rotate_tor_identity(host: str, port: int, password: str) -> None:
-        """Request a new Tor exit circuit via the control port (SIGNAL NEWNYM).
+    def _restore_disabled(self) -> None:
+        if not self._disabled_at:
+            return
+        with self._lock:
+            now = time.monotonic()
+            to_restore = [
+                url
+                for url, fail_time in self._disabled_at.items()
+                if now - fail_time >= self.config.disable_cooldown
+            ]
+            for url in to_restore:
+                del self._disabled_at[url]
+                self._available.append(url)
+                logger.debug(f"Restored: {url!r}")
 
-        Blocks ~5s while Tor builds the new circuit. Debounced to at most once every
-        `_ROTATE_COOLDOWN` seconds across threads. No-op when `control_port` is 0.
-        """
-        with socket.create_connection((host, port), timeout=10) as s:
-            s.sendall(f'AUTHENTICATE "{password}"\r\n'.encode())
-            resp = s.recv(128)
-            if not resp.startswith(b"250"):
-                raise RuntimeError(f"Tor control auth failed: {resp.decode()!r}")
-            s.sendall(b"SIGNAL NEWNYM\r\n")
-            resp = s.recv(128)
-            if not resp.startswith(b"250"):
-                raise RuntimeError(f"NEWNYM rejected: {resp.decode()!r}")
+    def _try_rotate_tor_circuit(self, entry: TorProxyUrl) -> bool:
+        """Send SIGNAL NEWNYM to the Tor control port. Returns True on success."""
+        if not entry.control_port:
+            return False  # no control port
 
-        logger.debug("Tor identity rotated — waiting 5s for new circuit.")
-        for _ in range(50):
-            time.sleep(0.1)  # short interval to avoid blocking IO
+        now = time.monotonic()
+        last_rotate = self._tor_rotated_at.get(entry, 0)
+        if now - last_rotate < self.config.tor_rotation_cooldown:
+            return False  # still under cooldown
+        self._tor_rotated_at[entry] = time.monotonic()
+
+        try:
+            _rotate_tor_circuit(
+                host=entry.control_host,
+                port=entry.control_port,
+                password=entry.control_password,
+            )
+            return True  # rotation successfull
+        except Exception:
+            logger.warning("Tor circuit rotation failed", exc_info=True)
+            return False
+
+
+def _rotate_tor_circuit(host: str, port: int, password: str) -> None:
+    """Authenticate to the Tor control port and request a new exit circuit."""
+    with socket.create_connection((host, port), timeout=5) as s:
+        s.sendall(f'AUTHENTICATE "{password}"\r\n'.encode())
+        resp = s.recv(128).decode().strip()
+        if resp != "250 OK":
+            raise RuntimeError(resp)
+
+        s.sendall(b"SIGNAL NEWNYM\r\n")
+        resp = s.recv(128).decode().strip()
+        if resp != "250 OK":
+            raise RuntimeError(resp)
+
+        for _ in range(10):
+            s.sendall(b"GETINFO status/bootstrap-phase\r\n")
+            resp = s.recv(256).decode().strip()
+            if "250" in resp and "PROGRESS=100" in resp:
+                return
+            time.sleep(0.5)

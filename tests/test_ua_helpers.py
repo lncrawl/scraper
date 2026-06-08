@@ -1,8 +1,6 @@
 """Tests for UA inference helpers: infer_platform, infer_ch_platform, infer_browser,
 and _add_client_hints."""
 
-from requests.structures import CaseInsensitiveDict
-
 from scraper.config import BrowserConfig
 from scraper.engine.user_agent.agent import _add_client_hints
 from scraper.engine.user_agent.helper import (
@@ -59,7 +57,7 @@ def test_infer_browser_chromium_ua_returns_none():
 
 
 def test_add_client_hints_no_chrome_version_skips_hints():
-    headers = CaseInsensitiveDict({"User-Agent": "Mozilla/5.0 Chrome/NoVersion Safari/537.36"})
+    headers = {"User-Agent": "Mozilla/5.0 Chrome/NoVersion Safari/537.36"}
     _add_client_hints(BrowserConfig(browser="chrome"), headers)
     assert "sec-ch-ua" not in headers
 
@@ -70,7 +68,7 @@ def test_add_client_hints_edge_includes_ev():
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/130.0.4472.124 Safari/537.36 Edg/130.0.2849.52"
     )
-    headers = CaseInsensitiveDict({"User-Agent": edge_ua})
+    headers = {"User-Agent": edge_ua}
     _add_client_hints(BrowserConfig(browser="edge"), headers)
     assert "sec-ch-ua" in headers
     assert "Microsoft Edge" in headers["sec-ch-ua"]
@@ -83,7 +81,7 @@ def test_add_client_hints_sets_arch_and_bitness():
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
     )
     cfg = BrowserConfig(browser="chrome", architecture="x86", bitness="64")
-    headers = CaseInsensitiveDict({"User-Agent": chrome_ua})
+    headers = {"User-Agent": chrome_ua}
     _add_client_hints(cfg, headers)
     assert headers.get("sec-ch-ua-arch") == '"x86"'
     assert headers.get("sec-ch-ua-bitness") == '"64"'

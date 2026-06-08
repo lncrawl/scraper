@@ -15,7 +15,7 @@ import logging
 import re
 from typing import NoReturn
 
-from requests import Response
+from httpx import Response, ResponseNotRead
 
 from ..exceptions import (
     CloudflareCaptchaError,
@@ -72,17 +72,15 @@ class CloudflareDetector:
     def classify(self, response: Response) -> CloudflareChallengeKind:
         """Return the :class:`CloudflareChallengeKind` for *response* (pure, no I/O)."""
         try:
-            if not response.headers.get("Server", "").startswith("cloudflare"):
+            status = response.status_code
+
+            if status not in _CHALLENGE_STATUSES:
                 return CloudflareChallengeKind.NONE
 
-            status = response.status_code
             text = response.text
 
             if status == 403 and _FIREWALL_1020.search(text):
                 return CloudflareChallengeKind.FIREWALL_BLOCK
-
-            if status not in _CHALLENGE_STATUSES:
-                return CloudflareChallengeKind.NONE
 
             if _TURNSTILE.search(text):
                 return CloudflareChallengeKind.TURNSTILE
@@ -94,13 +92,13 @@ class CloudflareDetector:
                 return CloudflareChallengeKind.MANAGED
 
             return CloudflareChallengeKind.NONE
-        except AttributeError:
+        except (AttributeError, ResponseNotRead):
             return CloudflareChallengeKind.NONE
 
     def raise_for(self, kind: CloudflareChallengeKind, response: Response) -> NoReturn:
         """Raise the exception mapped to *kind* with an actionable message."""
         if self.debug:
-            logger.debug("CloudflareDetector: %s at %s", kind.name, response.url)
+            logger.debug(f"CloudflareDetector: {kind.name!r} at {response.url!r}")
 
         if kind is CloudflareChallengeKind.FIREWALL_BLOCK:
             raise CloudflareFirewallBlock(

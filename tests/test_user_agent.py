@@ -146,7 +146,7 @@ def test_load_desktop_platform_with_desktop_false_redirects_to_mobile():
 
 
 def test_build_ua_headers_unrecognized_impersonate_returns_minimal():
-    cfg = make_fast_config(impersonate=ImpersonateConfig(target="123"))
+    cfg = make_fast_config(impersonate=ImpersonateConfig(target="123"))  # type:ignore
     headers = build_ua_headers(cfg)
     assert "User-Agent" not in headers
 
@@ -183,6 +183,16 @@ def test_build_ua_headers_with_valid_impersonate_target():
     headers = build_ua_headers(cfg)
     assert "User-Agent" in headers
     assert "Chrome/" in headers["User-Agent"]
+
+
+def test_get_impersonate_browser_unknown_browser_returns_none():
+    result = _get_impersonate_browser("lynx130_windows")
+    assert result is None
+
+
+def test_get_impersonate_browser_unknown_platform_returns_none():
+    result = _get_impersonate_browser("chrome130_amiga")
+    assert result is None
 
 
 def test_invalid_architecture_raises():

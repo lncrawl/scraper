@@ -2,39 +2,46 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
-import time
+import random
 from typing import TYPE_CHECKING
 
-from requests import Response
+import httpx
 
-from ...exceptions import AbortedException
 from .base import Middleware, NextHandler
 
 if TYPE_CHECKING:
-    from ..context import RequestContext
     from ..core import Engine
+    from ..state import RequestState
 
 logger = logging.getLogger(__name__)
 
 
 class ThrottleMiddleware(Middleware):
-    """Sleep to honour the configured min request interval for the CF state."""
+    """Sleep to honour the configured min request interval for the CF state.
 
-    def __init__(self, engine: Engine) -> None:
+    ±:attr:`~scraper.config.StealthConfig.throttle_jitter` random variance is
+    applied to the computed delay so that the inter-request timing doesn't read
+    as machine-regular.  Only runs for top-level requests (``ctx.nested`` is
+    False); challenge follow-ups and 403/429 retries skip this stage.
+    """
+
+    def __init__(self, engine: "Engine") -> None:
         self._engine = engine
 
-    def handle(self, ctx: RequestContext, nxt: NextHandler) -> Response:
+    async def handle(self, ctx: "RequestState", nxt: NextHandler) -> httpx.Response:
         if ctx.nested:
-            return nxt(ctx)
+            return await nxt(ctx)
         e = self._engine
         delay = e.state.throttle_delay(
-            e.config.min_request_interval_fast, e.config.min_request_interval
+            e.config.min_request_interval_fast,
+            e.config.min_request_interval,
         )
         if delay > 0:
+            jitter = e.config.stealth.throttle_jitter
+            delay = max(0.0, delay * (1 + random.uniform(-jitter, jitter)))
             logger.debug("Throttling: sleeping %.2fs", delay)
-            time.sleep(delay)
-        if e.signal.aborted:
-            raise AbortedException("Request aborted before sending.")
+            await asyncio.sleep(delay)
         e.state.mark_request_sent()
-        return nxt(ctx)
+        return await nxt(ctx)

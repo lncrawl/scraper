@@ -1,54 +1,53 @@
-"""Inject proxies and recover from proxy/connection errors."""
+"""Inject the active proxy and recover from proxy/connection errors."""
 
 from __future__ import annotations
 
 import logging
 from typing import TYPE_CHECKING
 
-from requests import Response
-from requests.exceptions import ConnectionError, ProxyError
+import httpx
 
+from ...exceptions import ProxyTransportError
 from .base import Middleware, NextHandler
 
 if TYPE_CHECKING:
-    from ..context import RequestContext
     from ..core import Engine
+    from ..state import RequestState
 
 logger = logging.getLogger(__name__)
 
 
 class ProxyMiddleware(Middleware):
-    """Set ``proxies`` from the manager, then rotate (and optionally fall back to
-    direct) when the send raises a proxy/connection error."""
+    """Set ``ctx.kwargs["proxy"]`` from the manager, then rotate (and optionally
+    fall back to direct) when the send raises a :exc:`ProxyTransportError`."""
 
-    def __init__(self, engine: Engine) -> None:
+    def __init__(self, engine: "Engine") -> None:
         self._engine = engine
 
-    def handle(self, ctx: RequestContext, nxt: NextHandler) -> Response:
+    async def handle(self, ctx: "RequestState", nxt: NextHandler) -> httpx.Response:
         e = self._engine
         pm = e.proxy_manager
 
-        # pre-configured proxy
-        if ctx.kwargs.get("proxies"):
-            return nxt(ctx)
-
-        # use our defined proxy manager and try until success
         attempt = 0
         max_retry = pm.config.retry_request_on_failure
-        while pm.has_proxy and attempt < max_retry:
+
+        # if there is a pre-configured proxy try with this one first
+        if ctx.kwargs.get("proxy"):
             attempt += 1
             try:
-                ctx.kwargs["proxies"] = pm.get_proxy()
-                res = nxt(ctx)
-                pm.report_success()
-                return res
-            except (ProxyError, ConnectionError):
-                pm.report_failure()
+                return await nxt(ctx)
+            except ProxyTransportError:
+                ctx.kwargs.pop("proxy", None)
 
-        # check if default fallback is allowed
+        while pm.has_proxy and attempt < max_retry:
+            try:
+                ctx.kwargs["proxy"] = pm.get_proxy()
+                return await nxt(ctx)
+            except ProxyTransportError:
+                ctx.kwargs.pop("proxy", None)
+                e.rotate_proxy(disable_current=True)
+
         if not pm.config.fallback_to_direct:
-            raise ProxyError("No proxy available")
+            raise ProxyTransportError("No proxy available")
 
-        # direct fallback
-        ctx.kwargs.pop("proxies", None)
-        return nxt(ctx)
+        return await nxt(ctx)

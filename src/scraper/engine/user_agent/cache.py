@@ -46,8 +46,7 @@ def _read_cache() -> list[dict] | None:
 
 def load_ua_data() -> list[dict] | None:
     """Return the intoli UA dataset, downloading/validating via ETag as needed."""
-    # Deferred so tests can monkeypatch scraper.engine.user_agent.cache._CACHE_PATH.
-    import requests as _req
+    import httpx
 
     # Fast path: no network call if cache is fresh.
     if _CACHE_PATH.exists():
@@ -60,7 +59,7 @@ def load_ua_data() -> list[dict] | None:
         headers["If-None-Match"] = _ETAG_PATH.read_text().strip()
 
     try:
-        resp = _req.get(_CACHE_URL, headers=headers, timeout=10)
+        resp = httpx.get(_CACHE_URL, headers=headers, timeout=10, follow_redirects=True)
         if resp.status_code == 304:
             # Unchanged; reset mtime so fast path applies next time.
             _CACHE_PATH.touch()

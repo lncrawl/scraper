@@ -12,9 +12,7 @@ from typing import Any, Dict, Generator, List, Optional, Union
 
 import lxml.etree as etree
 from bs4 import BeautifulSoup, Tag
-from requests import Response
-
-from .utils import EventLock
+from httpx import Response
 
 
 class PageSoup:
@@ -29,7 +27,9 @@ class PageSoup:
     """
 
     def __init__(self, tag: Optional[Tag] = None):
-        self._lock = EventLock()
+        import threading
+
+        self._lock = threading.Lock()
         self._tag = tag if isinstance(tag, Tag) else None
 
     def __bool__(self) -> bool:

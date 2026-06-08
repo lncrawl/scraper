@@ -63,7 +63,7 @@ class BrowserSolver(ClearanceSolver):
         self.timeout = timeout
         self.user_data_dir = user_data_dir
 
-    async def solve_async(
+    async def solve(
         self,
         url: str,
         *,

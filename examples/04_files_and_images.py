@@ -26,7 +26,7 @@ def main(out_dir: Path) -> None:
 
     # --- Download an image (needs the `image` extra) ----------------------
     try:
-        img = s.get_image("https://httpbin.org/image/png")
+        img = s.get_image("https://httpbin.io/image")
         print(f"image: {img.format} {img.size}")
         # Save a copy so you can inspect it.
         out_path = out_dir / "httpbin.png"
@@ -34,6 +34,8 @@ def main(out_dir: Path) -> None:
         print(f"saved to {out_path}")
     except ImportError:
         print("install the 'image' extra to use get_image: pip install 'lncrawl-scraper[image]'")
+
+    input("Press enter to delete temp directory...")
 
 
 if __name__ == "__main__":

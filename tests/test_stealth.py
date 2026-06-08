@@ -40,6 +40,17 @@ def test_chrome_quirks_add_sec_fetch_and_order():
     assert order.index("User-Agent") < order.index("Accept")
 
 
+def test_chrome_quirks_preserves_non_order_headers():
+    """Headers not in the quirks order list are still included in the output."""
+    sm = StealthMode(no_delay_config(randomize_headers=False, browser_quirks=True))
+    out = sm.apply(
+        "GET",
+        "https://x",
+        headers={"User-Agent": CHROME_UA, "X-Custom-Header": "keep-me"},
+    )
+    assert out["headers"]["X-Custom-Header"] == "keep-me"
+
+
 def test_firefox_quirks_add_upgrade_insecure():
     sm = StealthMode(no_delay_config(randomize_headers=False, browser_quirks=True))
     out = sm.apply("GET", "https://x", headers={"User-Agent": FIREFOX_UA})
@@ -57,9 +68,7 @@ def test_delays_do_not_sleep_when_zero():
     sm.apply("GET", "https://x", headers={}, cf_active=False)
 
 
-def test_delay_sleeps_when_large_enough(monkeypatch):
-    sleeps = []
-    monkeypatch.setattr("time.sleep", lambda s: sleeps.append(s))
+def test_delay_computed_when_large_enough():
     cfg = StealthConfig(
         min_delay=0.5,
         max_delay=0.5,
@@ -70,14 +79,14 @@ def test_delay_sleeps_when_large_enough(monkeypatch):
         browser_quirks=False,
     )
     sm = StealthMode(cfg)
-    sm.apply("GET", "https://x", headers={})  # count=0 → skips delay
-    sm.apply("GET", "https://x", headers={})  # count=1, delay=0.5 → sleeps
-    assert len(sleeps) == 1
-    assert sleeps[0] >= 0.5
+    d1 = sm.compute_delay(False)  # count=0 → returns 0.0
+    sm.apply("GET", "https://x", headers={})  # increments request count
+    d2 = sm.compute_delay(False)  # count=1 → returns delay ≥ 0.5
+    assert d1 == 0.0
+    assert d2 >= 0.5
 
 
 def test_extreme_delay_scaled_and_capped(monkeypatch):
-    monkeypatch.setattr("time.sleep", lambda s: None)
     # Force the 10 % jitter branch to always fire
     monkeypatch.setattr("random.uniform", lambda a, b: b)
     monkeypatch.setattr("random.random", lambda: 0.0)  # < 0.1 → jitter taken
@@ -92,9 +101,12 @@ def test_extreme_delay_scaled_and_capped(monkeypatch):
         browser_quirks=False,
     )
     sm = StealthMode(cfg)
-    sm.apply("GET", "https://x", headers={})  # count=0 → skip
+    d1 = sm.compute_delay(True)  # count=0 → returns 0.0
+    sm.apply("GET", "https://x", headers={})  # increment request count
     # cf_active=True + random.random()=0.0 < 0.1 → jitter: delay = min(5.0*1.5, 10.0)
-    sm.apply("GET", "https://x", headers={}, cf_active=True)
+    d2 = sm.compute_delay(True)
+    assert d1 == 0.0
+    assert d2 <= 10.0
 
 
 def test_accept_language_already_present_not_overwritten():
@@ -111,3 +123,23 @@ def test_disabled_stealth_passes_headers_through():
     sm = StealthMode(no_delay_config(randomize_headers=False, browser_quirks=False))
     out = sm.apply("GET", "https://x", headers={"A": "b"})
     assert out["headers"] == {"A": "b"}
+
+
+def test_delay_cf_active_no_jitter_branch(monkeypatch):
+    """Branch 101->105: cf_active=True + random.random() >= 0.1 → no jitter applied."""
+    monkeypatch.setattr("random.uniform", lambda a, b: b)  # always returns max_delay
+    monkeypatch.setattr("random.random", lambda: 0.5)  # >= 0.1 → jitter NOT taken
+
+    cfg = StealthConfig(
+        min_delay=0.5,
+        max_delay=0.5,
+        min_delay_fast=0.0,
+        max_delay_fast=0.0,
+        human_like_delays=True,
+        randomize_headers=False,
+        browser_quirks=False,
+    )
+    sm = StealthMode(cfg)
+    sm._request_count = 1  # skip the count==0 early return
+    d = sm.compute_delay(True)  # cf_active=True, random.random()=0.5 ≥ 0.1
+    assert d == 0.5  # no jitter, plain delay returned

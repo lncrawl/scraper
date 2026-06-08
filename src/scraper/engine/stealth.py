@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import random
-import time
 from collections import OrderedDict
 from typing import Any, Dict
 
@@ -28,9 +27,8 @@ _CHROME_QUIRKS: Dict[str, Any] = {
         "Accept-Language",
         "Cookie",
     ],
-    # sec-ch-ua / mobile / platform are derived from the actual User-Agent in
-    # UserAgent._client_hints and live in the session headers; only the
-    # non-version-specific navigation hints are defaulted here.
+    # sec-ch-ua / mobile / platform are derived from the actual User-Agent;
+    # only the non-version-specific navigation hints are defaulted here.
     "headers": {
         "Sec-Fetch-Site": "none",
         "Sec-Fetch-Mode": "navigate",
@@ -80,12 +78,31 @@ _LANGUAGES = [
 class StealthMode:
     """Stateless stealth helper — no back-reference to the scraper engine.
 
-    Receives only what it needs at call time via apply().
+    Receives only what it needs at call time via :meth:`apply` and
+    :meth:`compute_delay`.
     """
 
     def __init__(self, config: StealthConfig) -> None:
         self._config = config
         self._request_count = 0
+        self._dnt: str | None = random.choice(["1", None])
+
+    def compute_delay(self, cf_active: bool) -> float:
+        """Return the next human-like delay in seconds (does not sleep).
+
+        Returns 0.0 when delays are disabled or for the very first request.
+        The caller (:class:`~scraper.engine.middleware.stealth.StealthMiddleware`)
+        is responsible for ``await asyncio.sleep(delay)``.
+        """
+        if not self._config.human_like_delays or self._request_count == 0:
+            return 0.0
+        if cf_active:
+            delay = random.uniform(self._config.min_delay, self._config.max_delay)
+            if random.random() < 0.1:
+                delay = min(delay * 1.5, 10.0)
+        else:
+            delay = random.uniform(self._config.min_delay_fast, self._config.max_delay_fast)
+        return delay if delay >= 0.05 else 0.0
 
     def apply(
         self,
@@ -94,22 +111,21 @@ class StealthMode:
         *,
         cf_active: bool = False,
         headers: dict | None = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> dict:
-        """Apply stealth techniques and return updated kwargs.
+        """Apply header tweaks and return updated kwargs.
+
+        Does **not** sleep; the caller must call :meth:`compute_delay` and
+        ``await asyncio.sleep(delay)`` separately.
 
         Args:
-            method: HTTP method (unused currently, reserved for future per-method logic).
-            url: Request URL (unused currently, reserved for future per-host logic).
-            cf_active: Whether Cloudflare protection has been detected for this session.
-                       Controls which delay range is used.
+            method: HTTP method (reserved for future per-method logic).
+            url: Request URL (reserved for future per-host logic).
+            cf_active: Whether Cloudflare protection has been detected.
             headers: Current request headers dict (merged into kwargs['headers']).
             **kwargs: Remaining request kwargs passed through.
         """
         headers = dict(headers or {})
-
-        if self._config.human_like_delays:
-            self._apply_delay(cf_active)
 
         if self._config.randomize_headers:
             headers = self._randomize_headers(headers)
@@ -121,29 +137,13 @@ class StealthMode:
         kwargs["headers"] = headers
         return kwargs
 
-    def _apply_delay(self, cf_active: bool) -> None:
-        if self._request_count == 0:
-            return
-
-        if cf_active:
-            delay = random.uniform(self._config.min_delay, self._config.max_delay)
-        else:
-            delay = random.uniform(self._config.min_delay_fast, self._config.max_delay_fast)
-
-        if cf_active and random.random() < 0.1:
-            delay = min(delay * 1.5, 10.0)
-
-        if delay >= 0.05:
-            logger.debug("Stealth delay: %.2fs (cf_active=%s)", delay, cf_active)
-            time.sleep(delay)
-
     def _randomize_headers(self, headers: dict) -> dict:
         if "Accept" not in headers:
             headers["Accept"] = random.choice(_ACCEPTS)
         if "Accept-Language" not in headers:
             headers["Accept-Language"] = random.choice(_LANGUAGES)
-        if random.random() < 0.5:
-            headers["DNT"] = "1"
+        if self._dnt:
+            headers.setdefault("DNT", self._dnt)
         return headers
 
     def _apply_browser_quirks(self, headers: dict) -> dict:

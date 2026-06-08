@@ -1,7 +1,7 @@
 """Tests for CloudflareDetector.classify, raise_for, and build_detector."""
 
+import httpx
 import pytest
-import requests
 
 from scraper.challenges import (
     CloudflareChallengeKind,
@@ -20,12 +20,14 @@ BASE = "https://example.com"
 
 
 def _resp(status=200, url=BASE, body="", headers=None):
-    r = requests.Response()
-    r.status_code = status
-    r._content = body.encode()
-    r.url = url
-    r.headers.update(headers or {})
-    return r
+    req = httpx.Request("GET", url)
+    h = dict(headers or {})
+    return httpx.Response(
+        status_code=status,
+        content=body.encode(),
+        headers=h,
+        request=req,
+    )
 
 
 def _cf_resp(status=503, body="", url=BASE):
@@ -60,10 +62,11 @@ def test_classify_clean_cf_page_is_none():
     )
 
 
-def test_classify_non_cloudflare_is_none():
+def test_classify_non_cloudflare_body_scan_fallback():
+    # Server header absent: body scan still runs and detects the managed challenge.
     assert (
         CloudflareDetector().classify(_resp(503, body=_MANAGED_BODY))
-        is CloudflareChallengeKind.NONE
+        is CloudflareChallengeKind.MANAGED
     )
 
 
@@ -101,6 +104,18 @@ def test_raise_for_maps_exception(kind, exc):
 def test_raise_for_none_kind_hits_fallback():
     with pytest.raises(CloudflareChallengeError):
         CloudflareDetector().raise_for(CloudflareChallengeKind.NONE, _cf_resp())
+
+
+def test_classify_unread_streaming_200_is_none():
+    # get_file passes stream=True; the 200 response body is never read before classify().
+    req = httpx.Request("GET", BASE)
+    stream_resp = httpx.Response(
+        status_code=200,
+        stream=httpx.ByteStream(b"binary content"),
+        request=req,
+    )
+    assert not stream_resp.is_stream_consumed
+    assert CloudflareDetector().classify(stream_resp) is CloudflareChallengeKind.NONE
 
 
 def test_build_detector_enabled():

@@ -1,33 +1,68 @@
+"""Per-request and per-session mutable state for the engine."""
+
 from __future__ import annotations
 
 import threading
 import time
+from dataclasses import dataclass, field
+from typing import Any, Dict, Tuple
+
+from curl_cffi.requests.session import HttpMethod
 
 
-class RequestChain:
-    """Per-thread mutable state for a request chain (challenge follow-ups share one chain)."""
+@dataclass
+class RequestState:
+    """All mutable state carried through one request chain.
 
-    __slots__ = ("solve_attempts", "request_depth")
+    Replaces the former split between ``RequestContext`` (per-request payload)
+    and ``RequestChain`` (per-thread nesting tracker).  A top-level
+    :meth:`~scraper.engine.core.Engine.request` call creates one with
+    ``depth=0``; nested retries (403, challenge follow-ups) receive a copy
+    produced by :meth:`for_retry` with ``depth+1``.
+    """
 
-    def __init__(self) -> None:
-        self.solve_attempts = 0
-        self.request_depth = 0
+    method: HttpMethod
+    url: str
+    args: Tuple[Any, ...] = ()
+    kwargs: Dict[str, Any] = field(default_factory=dict)
+    depth: int = 0
+    solve_attempts: int = 0
+
+    @property
+    def nested(self) -> bool:
+        """True for challenge follow-ups and 403/429 retries."""
+        return self.depth > 0
+
+    def for_retry(self, **kwarg_overrides: Any) -> "RequestState":
+        """Return a new RequestState for a nested retry of this request."""
+        kwargs = dict(self.kwargs)
+        kwargs.update(kwarg_overrides)
+        return RequestState(
+            method=self.method,
+            url=self.url,
+            args=self.args,
+            kwargs=kwargs,
+            depth=self.depth + 1,
+            solve_attempts=self.solve_attempts,
+        )
 
 
 class SessionState:
-    """Thread-safe container for the scraper engine's mutable per-session counters.
+    """Thread-safe container for per-session counters and flags.
 
-    All compound read-modify-write operations are performed under a single lock so
-    the scraper can be driven from multiple threads (e.g. an abort thread) safely.
+    All compound read-modify-write operations are performed under a single lock
+    so the engine can be used from multiple threads safely.
     """
 
     def __init__(self) -> None:
         self._lock = threading.Lock()
-        self._session_start = time.monotonic()
         self._last_request = 0.0
         self._cf_active = False
         self._retry_403 = 0
         self._last_403 = 0.0
+        self._last_429 = 0.0
+
+    # -- Cloudflare detection -------------------------------------------------
 
     @property
     def cf_active(self) -> bool:
@@ -37,6 +72,8 @@ class SessionState:
     def mark_cf_active(self) -> None:
         with self._lock:
             self._cf_active = True
+
+    # -- Throttle -------------------------------------------------------------
 
     def throttle_delay(self, fast: float, slow: float) -> float:
         """Seconds to sleep to honour the min interval for the current CF state."""
@@ -48,20 +85,7 @@ class SessionState:
         with self._lock:
             self._last_request = time.monotonic()
 
-    def needs_refresh(self, max_age: float) -> bool:
-        with self._lock:
-            now = time.monotonic()
-            recent_403 = self._last_403 > 0 and (now - self._last_403) < 60
-            return (now - self._session_start) > max_age or recent_403
-
-    def reset_session_clock(self) -> None:
-        with self._lock:
-            self._session_start = time.monotonic()
-
-    def reset_403(self) -> None:
-        with self._lock:
-            self._retry_403 = 0
-            self._last_403 = 0.0
+    # -- Blocked-request signals (trigger session refresh) --------------------
 
     def register_403(self, limit: int) -> bool:
         """Record a 403 retry attempt; return True if still under *limit*."""
@@ -71,3 +95,20 @@ class SessionState:
             self._retry_403 += 1
             self._last_403 = time.monotonic()
             return True
+
+    def reset_403(self) -> None:
+        with self._lock:
+            self._retry_403 = 0
+            self._last_403 = 0.0
+
+    def mark_429(self) -> None:
+        with self._lock:
+            self._last_429 = time.monotonic()
+
+    def recent_block(self) -> bool:
+        """True if a 403 or 429 was recorded in the last 60 seconds."""
+        with self._lock:
+            now = time.monotonic()
+            return (self._last_403 > 0 and now - self._last_403 < 60) or (
+                self._last_429 > 0 and now - self._last_429 < 60
+            )

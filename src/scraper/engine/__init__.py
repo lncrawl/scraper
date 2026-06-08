@@ -10,10 +10,10 @@ from __future__ import annotations
 from typing import Optional
 
 from ..config import ScraperConfig
-from .context import RequestContext
 from .core import Engine
 from .middleware import Middleware, build_chain
 from .proxy_manager import ProxyManager
+from .state import RequestState
 from .transport import Transport, build_transport
 
 
@@ -25,7 +25,7 @@ def create_engine(config: Optional[ScraperConfig] = None) -> Engine:
 __all__ = [
     "Engine",
     "create_engine",
-    "RequestContext",
+    "RequestState",
     "Transport",
     "ProxyManager",
     "build_transport",

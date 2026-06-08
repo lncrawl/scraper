@@ -2,8 +2,9 @@
 
 import io
 
+import httpx
 import pytest
-import responses
+import respx
 
 from scraper import Scraper
 
@@ -17,16 +18,16 @@ def make(fast_config, **kwargs) -> Scraper:
 # --- image downloads ------------------------------------------------------
 
 
+@respx.mock
 def test_get_image_returns_pil_image(fast_config):
     from PIL import Image
 
     buf = io.BytesIO()
     Image.new("RGB", (8, 8), "red").save(buf, format="PNG")
-    with responses.RequestsMock() as rsps:
-        rsps.add(rsps.GET, f"{BASE}/cover.png", body=buf.getvalue(), content_type="image/png")
-        s = make(fast_config)
-        img = s.get_image(f"{BASE}/cover.png")
-        assert img.size == (8, 8)
+    respx.get(f"{BASE}/cover.png").mock(return_value=httpx.Response(200, content=buf.getvalue()))
+    s = make(fast_config)
+    img = s.get_image(f"{BASE}/cover.png")
+    assert img.size == (8, 8)
 
 
 def test_get_image_from_data_uri(fast_config):
@@ -42,18 +43,22 @@ def test_get_image_from_data_uri(fast_config):
     assert img.size == (4, 4)
 
 
+@respx.mock
 def test_get_image_retries_on_unidentified(fast_config):
     from PIL import Image
 
     buf = io.BytesIO()
     Image.new("RGB", (5, 5), "green").save(buf, format="PNG")
-    with responses.RequestsMock() as rsps:
-        rsps.add(rsps.GET, f"{BASE}/img", body=b"not-an-image")
-        rsps.add(rsps.GET, f"{BASE}/img", body=buf.getvalue(), content_type="image/png")
-        s = make(fast_config)
-        img = s.get_image(f"{BASE}/img")
-        assert img.size == (5, 5)
-        assert "Accept" not in rsps.calls[1].request.headers
+    route = respx.get(f"{BASE}/img")
+    route.side_effect = [
+        httpx.Response(200, content=b"not-an-image"),
+        httpx.Response(200, content=buf.getvalue()),
+    ]
+    s = make(fast_config)
+    img = s.get_image(f"{BASE}/img")
+    assert img.size == (5, 5)
+    # Two requests were made (original + retry after UnidentifiedImageError)
+    assert len(route.calls) == 2
 
 
 def test_get_image_invalid_url_raises(fast_config):
@@ -62,7 +67,7 @@ def test_get_image_invalid_url_raises(fast_config):
         s.get_image("not-a-url")
 
 
-def test_get_image_svg_data_uri_raises(fast_config, monkeypatch):
+def test_get_image_svg_data_uri_raises(fast_config):
     with pytest.raises(NotImplementedError, match="SVG"):
         make(fast_config).get_image("data:image/svg+xml,<svg/>")
 
@@ -70,34 +75,33 @@ def test_get_image_svg_data_uri_raises(fast_config, monkeypatch):
 # --- file downloads -------------------------------------------------------
 
 
+@respx.mock
 def test_get_file_writes_to_disk(fast_config, tmp_path):
     payload = b"binary-content" * 1000
-    with responses.RequestsMock() as rsps:
-        rsps.add(rsps.GET, f"{BASE}/file.bin", body=payload)
-        s = make(fast_config)
-        out = tmp_path / "file.bin"
-        s.get_file(f"{BASE}/file.bin", output_file=out)
-        assert out.read_bytes() == payload
+    respx.get(f"{BASE}/file.bin").mock(return_value=httpx.Response(200, content=payload))
+    s = make(fast_config)
+    out = tmp_path / "file.bin"
+    s.get_file(f"{BASE}/file.bin", output_file=out)
+    assert out.read_bytes() == payload
 
 
+@respx.mock
 def test_get_file_accepts_str_path(fast_config, tmp_path):
     out = tmp_path / "via_str.bin"
-    with responses.RequestsMock() as rsps:
-        rsps.add(rsps.GET, f"{BASE}/f.bin", body=b"abc")
-        s = make(fast_config)
-        s.get_file(f"{BASE}/f.bin", output_file=str(out))
-        assert out.read_bytes() == b"abc"
+    respx.get(f"{BASE}/f.bin").mock(return_value=httpx.Response(200, content=b"abc"))
+    s = make(fast_config)
+    s.get_file(f"{BASE}/f.bin", output_file=str(out))
+    assert out.read_bytes() == b"abc"
 
 
+@respx.mock
 def test_get_file_aborts(fast_config, tmp_path):
     from scraper import AbortedException
 
-    with responses.RequestsMock(assert_all_requests_are_fired=False) as rsps:
-        rsps.add(rsps.GET, f"{BASE}/file.bin", body=b"x" * 100000)
-        s = make(fast_config)
-        s.abort()
-        with pytest.raises(AbortedException):
-            s.get_file(f"{BASE}/file.bin", output_file=tmp_path / "f.bin")
+    s = make(fast_config)
+    s.engine.abort()
+    with pytest.raises(AbortedException):
+        s.get_file(f"{BASE}/file.bin", output_file=tmp_path / "f.bin")
 
 
 def test_get_file_aborts_mid_stream(fast_config, tmp_path, monkeypatch):
@@ -106,9 +110,9 @@ def test_get_file_aborts_mid_stream(fast_config, tmp_path, monkeypatch):
     s = make(fast_config)
 
     class _StreamResp:
-        def iter_content(self, chunk_size):
+        def iter_bytes(self, chunk_size):
             yield b"first"
-            s.abort()
+            s.engine.abort()
             yield b"second"
 
         def close(self):

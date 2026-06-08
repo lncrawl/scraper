@@ -25,9 +25,9 @@ TARGET = "https://novelfire.net/book/marvel-starting-with-the-ice-ice-fruit"
 
 def main() -> None:
     config = default_config()
-    config.cloudflare.solver = RemoteSolver("http://localhost:8192", timeout=60)
+    config.cloudflare.solver = RemoteSolver("http://localhost:8191", timeout=60)
     s = Scraper(config=config)
-    print("Solver configured:", type(s.engine.cf_solver).__name__)
+    print("Solver configured:", type(config.cloudflare.solver).__name__)
 
     # A challenge on this request is now solved and retried automatically; you
     # just get the final page back.

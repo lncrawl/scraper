@@ -3,9 +3,27 @@
 import pytest
 
 from scraper import BrowserConfig, ImpersonateConfig, Scraper
+from scraper.challenges.clearance import ClearanceResult
 from scraper.engine.transport.curl import CurlCffiTransport
 
 from .conftest import make_fast_config
+
+# --- ClearanceResult properties -------------------------------------------
+
+
+def test_cf_clearance_property():
+    r = ClearanceResult(cookies={"cf_clearance": "TOK"}, user_agent=None)
+    assert r.cf_clearance == "TOK"
+
+
+def test_cf_bm_property_present():
+    r = ClearanceResult(cookies={"cf_clearance": "TOK", "__cf_bm": "BM_VAL"}, user_agent=None)
+    assert r.cf_bm == "BM_VAL"
+
+
+def test_cf_bm_property_absent():
+    r = ClearanceResult(cookies={"cf_clearance": "TOK"}, user_agent=None)
+    assert r.cf_bm is None
 
 
 def test_put_cookie_sets_on_session(fast_config):

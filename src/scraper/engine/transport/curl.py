@@ -1,32 +1,31 @@
 """CurlCffiTransport — the primary transport backed by curl_cffi.
 
-The urllib3 transport has a fixed OpenSSL TLS ClientHello (JA3/JA4) and only
-speaks HTTP/1.1, both of which Cloudflare fingerprints. curl_cffi
-(curl-impersonate) reproduces a real Chrome/Firefox/Safari TLS *and* HTTP/2
-fingerprint, so it is the default transport whenever an impersonation target is
-configured and curl_cffi is installed.
+The httpx transport has a standard OpenSSL TLS ClientHello (JA3/JA4) which
+Cloudflare fingerprints. curl_cffi (curl-impersonate) reproduces a real
+Chrome/Firefox/Safari TLS *and* HTTP/2 fingerprint, so it is the default
+transport whenever an impersonation target is configured and curl_cffi is
+installed.
 """
 
 from __future__ import annotations
 
 import re
 import threading
-from typing import Optional
+from typing import Any, Iterator, Optional
 
-import requests
-from requests.cookies import RequestsCookieJar
-from requests.structures import CaseInsensitiveDict
+import httpx
+from httpx import Cookies, SyncByteStream
 
 from ...config import ScraperConfig
-from ..context import RequestContext
+from ...exceptions import ProxyTransportError, SSLTransportError
+from ..state import RequestState
 from .base import Transport
 
 # kwargs forwarded to curl_cffi — standard requests ones plus curl_cffi-specific
 # fingerprint and transport overrides. Anything else is dropped so the underlying
 # call never sees an unknown argument.
 _PASSTHROUGH = (
-    # standard requests kwargs
-    "headers",
+    # standard requests-style kwargs curl_cffi also accepts
     "data",
     "json",
     "params",
@@ -34,11 +33,10 @@ _PASSTHROUGH = (
     "auth",
     "cookies",
     "timeout",
-    "allow_redirects",
-    "proxies",
     "verify",
     "cert",
     "stream",
+    "proxies",
     # curl_cffi-specific per-request overrides
     "ja3",
     "akamai",
@@ -53,37 +51,102 @@ _PASSTHROUGH = (
 )
 
 
-def adapt_curl_response(method: str, url: str, req_headers, resp) -> requests.Response:
-    """Convert a curl_cffi response into a :class:`requests.Response`."""
-    out = requests.Response()
-    out.status_code = resp.status_code
-    out._content = resp.content
-    setattr(out, "_content_consumed", True)
-    out.url = str(resp.url)
-    out.reason = getattr(resp, "reason", "") or ""
-    out.encoding = getattr(resp, "encoding", None)
-    out.headers = CaseInsensitiveDict(dict(resp.headers))
+_STRIP_HEADERS = frozenset({"content-encoding", "transfer-encoding"})
 
-    # Preserve a minimal request record — some challenge handlers read
-    # response.request.method when following challenge redirects.
-    prepared = requests.PreparedRequest()
-    prepared.method = method.upper()
-    prepared.url = out.url
-    prepared.headers = CaseInsensitiveDict(dict(req_headers or {}))
-    out.request = prepared
 
-    for cookie in resp.cookies.jar:
-        out.cookies.set_cookie(cookie)
-    return out
+def _resp_headers(resp: object) -> list:
+    """Extract response headers, stripping auto-decoded content/transfer encodings."""
+    return [
+        (k, v) for k, v in getattr(resp, "headers", {}).items() if k.lower() not in _STRIP_HEADERS
+    ]
+
+
+def _attach_cookies(response: httpx.Response, resp: object) -> None:
+    """Copy cookies from a curl_cffi response object into an httpx.Response."""
+    import http.cookiejar
+
+    jar = http.cookiejar.CookieJar()
+    for cookie in getattr(getattr(resp, "cookies", None), "jar", []):
+        jar.set_cookie(cookie)
+    for cookie in jar:
+        response.cookies.jar.set_cookie(cookie)
+
+
+def adapt_curl_response(method: str, url: str, req_headers: dict, resp: object) -> httpx.Response:
+    """Convert a buffered curl_cffi response into an :class:`httpx.Response`."""
+    req = httpx.Request(method.upper(), url, headers=req_headers)
+    response = httpx.Response(
+        status_code=getattr(resp, "status_code", 200),
+        headers=_resp_headers(resp),
+        content=getattr(resp, "content", b""),
+        request=req,
+    )
+    _attach_cookies(response, resp)
+    return response
+
+
+class _CurlStream(SyncByteStream):
+    """Synchronous byte stream backed by a streaming curl_cffi response.
+
+    Holds ``lock`` for the lifetime of the stream so that the underlying
+    curl_cffi session cannot be used concurrently while body bytes are in
+    flight.  The lock is released exactly once — either after the iterator is
+    exhausted or when :meth:`close` is called, whichever comes first.
+    """
+
+    def __init__(self, resp: Any, lock: threading.Lock) -> None:
+        self._resp = resp
+        self._lock = lock
+        self._released = False
+
+    def _release(self) -> None:
+        if not self._released:
+            self._released = True
+            self._lock.release()
+
+    def __iter__(self) -> Iterator[bytes]:
+        try:
+            yield from self._resp.iter_content()
+        finally:
+            self._release()
+
+    def close(self) -> None:
+        try:
+            self._resp.close()
+        except Exception:
+            pass
+        finally:
+            self._release()
+
+
+def adapt_curl_response_streaming(
+    method: str, url: str, req_headers: dict, resp: object, lock: threading.Lock
+) -> httpx.Response:
+    """Build a streaming :class:`httpx.Response` backed by *resp*.
+
+    The curl_cffi session ``lock`` is held until the response body is fully
+    consumed or closed, preventing concurrent use of the same session handle.
+    """
+    req = httpx.Request(method.upper(), url, headers=req_headers)
+    response = httpx.Response(
+        status_code=getattr(resp, "status_code", 200),
+        headers=_resp_headers(resp),
+        stream=_CurlStream(resp, lock),
+        request=req,
+    )
+    # Cookies from Set-Cookie headers are available immediately (before body).
+    _attach_cookies(response, resp)
+    return response
 
 
 class CurlCffiTransport(Transport):
     """A :class:`Transport` backed directly by ``curl_cffi.requests.Session``."""
 
     def __init__(self, config: ScraperConfig) -> None:
+        super().__init__()
         try:
-            from curl_cffi import requests as cffi_requests
-        except ImportError as exc:  # pragma: no cover - exercised via the extra
+            from curl_cffi.requests import Response, Session
+        except ImportError as exc:  # pragma: no cover
             raise ImportError(
                 "CurlCffiTransport requires curl_cffi: pip install curl_cffi"
             ) from exc
@@ -92,49 +155,30 @@ class CurlCffiTransport(Transport):
         cfg = config.impersonate
         self._lock = threading.Lock()
         self._forced_impersonate: Optional[str] = None
-        # target may be any curl-impersonate label (e.g. "chrome124") and several
-        # fingerprint options are typed as Literals by curl_cffi; our dynamic
-        # str/int/TypedDict values are intentionally allowed, so the call is ignored.
-        session_opts = {
-            "impersonate": cfg.target,
-            "http_version": cfg.http_version,
-            "ja3": cfg.ja3,
-            "akamai": cfg.akamai,
-            "perk": cfg.perk,
-            "extra_fp": cfg.extra_fp,
-            "default_headers": cfg.default_headers,
-            "trust_env": cfg.trust_env,
-            "curl_options": cfg.curl_options or {},
-            "verify": config.verify_ssl,
-        }
-        # Drop None-valued options so older curl_cffi versions that don't
-        # recognise newer kwargs (e.g. "perk") don't raise TypeError.
-        session_opts = {k: v for k, v in session_opts.items() if v is not None}
-        self._session = cffi_requests.Session(**session_opts)  # pyright: ignore[reportArgumentType]
+        self._session = Session[Response](
+            impersonate=cfg.target,
+            http_version=cfg.http_version,
+            ja3=cfg.ja3,
+            akamai=cfg.akamai,
+            perk=cfg.perk,
+            extra_fp=cfg.extra_fp,
+            default_headers=cfg.default_headers,
+            trust_env=cfg.trust_env,
+            curl_options=cfg.curl_options or {},
+            verify=config.verify_ssl,
+        )
 
-    # -- Fingerprint --------------------------------------------------------------
+    # -- Fingerprint ----------------------------------------------------------
 
     def force_user_agent(self, user_agent: Optional[str]) -> None:
-        """Pin the UA *and* align the impersonation target to it.
-
-        Beyond the base UA pin, this also matches curl_cffi's impersonation to the
-        browser family + major version in *user_agent*. cf_clearance is bound to the
-        TLS (JA3) fingerprint as well as the UA, so aligning impersonation maximises
-        the chance Cloudflare accepts a clearance solved by that browser.
-        """
         super().force_user_agent(user_agent)
         self._forced_impersonate = self._match_impersonate(user_agent) if user_agent else None
 
     @staticmethod
     def _match_impersonate(user_agent: str) -> Optional[str]:
-        """Return the curl_cffi impersonate label closest to *user_agent*, or None.
-
-        Picks the highest supported version that does not exceed the browser's major
-        version (falling back to the lowest available for older browsers).
-        """
         try:
             from curl_cffi.requests.impersonate import BrowserType
-        except Exception:  # pragma: no cover - curl_cffi always present in practice
+        except Exception:  # pragma: no cover
             return None
 
         ua = user_agent or ""
@@ -150,7 +194,6 @@ class CurlCffiTransport(Transport):
             return None
         want = int(match.group(1))
 
-        # Only plain "<family><digits>" labels (skip android/ios/beta variants).
         candidates = sorted(
             (int(m.group(1)), bt.value)
             for bt in BrowserType
@@ -161,7 +204,7 @@ class CurlCffiTransport(Transport):
         best = next((label for ver, label in reversed(candidates) if ver <= want), None)
         return best or candidates[0][1]
 
-    # -- Cookies ------------------------------------------------------------------
+    # -- Cookies --------------------------------------------------------------
 
     def put_cookie(self, name: str, value: str, domain: str = "", path: str = "/") -> None:
         self._session.cookies.set(name, value, domain=domain, path=path)
@@ -175,48 +218,110 @@ class CurlCffiTransport(Transport):
     def clear_all_cookies(self) -> None:
         self._session.cookies.clear()
 
-    def export_into(self, jar: RequestsCookieJar) -> None:
-        jar.clear()
+    def export_into(self, jar: Cookies) -> None:
+        jar.jar.clear()
         for cookie in self._session.cookies.jar:
-            jar.set_cookie(cookie)
+            jar.jar.set_cookie(cookie)
 
-    # -- Send ---------------------------------------------------------------------
+    # -- Send -----------------------------------------------------------------
 
-    def send(self, ctx: RequestContext) -> requests.Response:
-        """Send via curl_cffi and adapt the response.
+    async def send(self, ctx: RequestState) -> httpx.Response:
+        import asyncio
 
-        When ``default_headers`` is True (the default) curl-impersonate injects the
-        real browser User-Agent and Accept headers at the libcurl level. Merging our
-        synthetic ``UserAgent`` headers on top would override those and degrade the
-        fingerprint, so we forward only the per-request headers (Origin, Referer,
-        custom user headers). When False, the caller wants full control, so we merge
-        the session headers as a base.
-        """
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self._send_sync, ctx)
+
+    def _send_sync(self, ctx: RequestState) -> httpx.Response:
         kwargs: dict = dict(ctx.kwargs)
+        stream_mode = bool(kwargs.pop("stream", False))
+
         use_default = kwargs.get("default_headers", self._config.impersonate.default_headers)
         if use_default:
-            headers = dict(kwargs.get("headers") or {})
+            headers: dict = dict(kwargs.get("headers") or {})
         else:
             headers = dict(self._session_headers)
             headers.update(kwargs.get("headers") or {})
-        # A pinned UA (e.g. from a reused browser cf_clearance) must override the
-        # impersonation default, since Cloudflare binds the clearance to that UA.
         if self._forced_user_agent:
             headers["User-Agent"] = self._forced_user_agent
         kwargs["headers"] = headers
 
+        # Convert unified "proxy" string → requests-style dict for curl_cffi
+        proxy_url: Optional[str] = kwargs.pop("proxy", None)
+        if proxy_url:
+            kwargs["proxies"] = {"http": proxy_url, "https": proxy_url}
+
         call = {k: kwargs[k] for k in _PASSTHROUGH if k in kwargs}
+        call["headers"] = headers
         call.setdefault("verify", self._config.verify_ssl)
         call.setdefault("allow_redirects", True)
         if self._forced_impersonate:
             call["impersonate"] = self._forced_impersonate
 
-        with self._lock:
-            resp = self._session.request(ctx.method, ctx.url, **call)  # pyright: ignore[reportArgumentType]
+        if stream_mode:
+            # Acquire the lock before starting the request and keep it held
+            # for the lifetime of the stream (_CurlStream.close releases it).
+            # This prevents the session from being used for concurrent sends
+            # while the body is still being consumed.
+            self._lock.acquire()
+            try:
+                resp = self._session.request(ctx.method, ctx.url, stream=True, **call)  # pyright: ignore[reportArgumentType]
+            except Exception as exc:
+                self._lock.release()
+                exc_str = str(exc).lower()
+                if "proxy" in exc_str or "407" in exc_str:
+                    raise ProxyTransportError(str(exc)) from exc
+                if "ssl" in exc_str or "certificate" in exc_str:
+                    raise SSLTransportError(str(exc)) from exc
+                raise
+            return adapt_curl_response_streaming(ctx.method, ctx.url, headers, resp, self._lock)
+
+        try:
+            with self._lock:
+                resp = self._session.request(ctx.method, ctx.url, **call)  # pyright: ignore[reportArgumentType]
+        except Exception as exc:
+            exc_str = str(exc).lower()
+            if "proxy" in exc_str or "407" in exc_str:
+                raise ProxyTransportError(str(exc)) from exc
+            if "ssl" in exc_str or "certificate" in exc_str:
+                raise SSLTransportError(str(exc)) from exc
+            raise
+
         return adapt_curl_response(ctx.method, ctx.url, headers, resp)
+
+    # -- Lifecycle ------------------------------------------------------------
+
+    def reset_session(self) -> None:
+        """Close the current curl_cffi session and open a fresh one.
+
+        Called after Tor NEWNYM so that subsequent requests open new TCP
+        connections through the new circuit rather than reusing pooled ones.
+        """
+        from curl_cffi.requests import Response, Session
+
+        with self._lock:
+            try:
+                self._session.close()
+            except Exception:
+                pass
+            cfg = self._config.impersonate
+            self._session = Session[Response](
+                impersonate=cfg.target,
+                http_version=cfg.http_version,
+                ja3=cfg.ja3,
+                akamai=cfg.akamai,
+                perk=cfg.perk,
+                extra_fp=cfg.extra_fp,
+                default_headers=cfg.default_headers,
+                trust_env=cfg.trust_env,
+                curl_options=cfg.curl_options or {},
+                verify=self._config.verify_ssl,
+            )
 
     def close(self) -> None:
         try:
             self._session.close()
         except Exception:
             pass
+
+    async def aclose(self) -> None:
+        self.close()

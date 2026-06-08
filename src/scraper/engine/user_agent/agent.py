@@ -5,9 +5,7 @@ from __future__ import annotations
 import logging
 import random
 import re
-from typing import get_args
-
-from requests.structures import CaseInsensitiveDict
+from typing import cast, get_args
 
 from ...config import (
     ArchitectureType,
@@ -28,15 +26,19 @@ _IMPERSONATE_TARGET_RE = re.compile(r"([a-zA-Z]+)([0-9]*)(?:[^_]*_(.+))?")
 
 
 def _get_impersonate_browser(target: str) -> BrowserConfig | None:
-    result = _IMPERSONATE_TARGET_RE.findall(target)
+    result = _IMPERSONATE_TARGET_RE.match(target)
     if not result:
         return None
-    browser, version, platform = result[0]
+    browser, version, platform = result.group(1), result.group(2), result.group(3)
     is_mobile = platform in ("android", "ios")
+    if browser not in get_args(BrowserType):
+        return None
+    if platform and platform not in get_args(PlatformType):
+        return None
     return BrowserConfig(
-        browser=browser.lower(),
+        browser=cast("BrowserType", browser),
         version=int(version) if version else 0,
-        platform=platform or None,
+        platform=cast("PlatformType", platform) if platform else None,
         mobile=is_mobile,
         desktop=not is_mobile,
     )
@@ -100,7 +102,7 @@ def _get_user_agent(cfg: BrowserConfig) -> str:
     return generate_ua_fallback(browser_name, platform, cfg.version, rng)
 
 
-def _add_client_hints(cfg: BrowserConfig, headers: CaseInsensitiveDict) -> None:
+def _add_client_hints(cfg: BrowserConfig, headers: dict) -> None:
     """Build Sec-CH-UA Client Hints matching *ua* and architectural variants."""
     ua = headers["User-Agent"]
     family = infer_browser(ua)
@@ -131,7 +133,7 @@ def _add_client_hints(cfg: BrowserConfig, headers: CaseInsensitiveDict) -> None:
         headers["sec-ch-ua-bitness"] = f'"{cfg.bitness}"'
 
 
-def build_ua_headers(config: ScraperConfig) -> CaseInsensitiveDict:
+def build_ua_headers(config: ScraperConfig) -> dict:
     """Selects a browser User-Agent and headers for stealth.
 
     Attempts to use fresh data from intoli/user-agents (cached locally with ETag
@@ -139,7 +141,7 @@ def build_ua_headers(config: ScraperConfig) -> CaseInsensitiveDict:
     """
     from .cache import is_brotli_available
 
-    headers = CaseInsensitiveDict()
+    headers = dict()
     if config.browser.allow_brotli and is_brotli_available():
         headers["Accept-Encoding"] = "gzip, deflate, br"
     else:

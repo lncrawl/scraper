@@ -19,6 +19,10 @@ from scraper.exceptions import CloudflareSolveError
 BASE = "https://example.com"
 
 
+def solve(solver, *args, **kwargs):
+    return asyncio.run(solver.solve(*args, **kwargs))
+
+
 def _install_fake_nodriver(monkeypatch, *, cookies):
     class _Cookie:
         def __init__(self, name, value):
@@ -58,12 +62,12 @@ def _install_fake_nodriver(monkeypatch, *, cookies):
 def test_browser_solver_missing_nodriver(monkeypatch):
     monkeypatch.setitem(sys.modules, "nodriver", None)
     with pytest.raises(CloudflareSolveError, match="browser"):
-        BrowserSolver().solve(BASE)
+        solve(BrowserSolver(), BASE)
 
 
 def test_browser_solver_success(monkeypatch):
     _install_fake_nodriver(monkeypatch, cookies={"cf_clearance": "TOK"})
-    result = BrowserSolver(timeout=5).solve(BASE)
+    result = solve(BrowserSolver(timeout=5), BASE)
     assert isinstance(result, ClearanceResult)
     assert result.cookies["cf_clearance"] == "TOK"
     assert result.user_agent == "FakeUA/1.0"
@@ -71,36 +75,36 @@ def test_browser_solver_success(monkeypatch):
 
 def test_browser_solver_no_clearance_returns_none(monkeypatch):
     _install_fake_nodriver(monkeypatch, cookies={"other": "x"})
-    assert BrowserSolver(timeout=0).solve(BASE) is None
+    assert solve(BrowserSolver(timeout=0), BASE) is None
 
 
 def test_browser_solver_invalid_url(monkeypatch):
     """Invalid URL raises ValueError before the browser is started."""
     _install_fake_nodriver(monkeypatch, cookies={})
     with pytest.raises(ValueError, match="Invalid URL"):
-        BrowserSolver().solve("not-a-url")
+        solve(BrowserSolver(), "not-a-url")
 
 
 def test_browser_solver_with_proxy(monkeypatch):
     """Proxy URL is forwarded as a browser arg."""
     _install_fake_nodriver(monkeypatch, cookies={"cf_clearance": "TOK"})
     monkeypatch.setattr("scraper.challenges.browser_solver.pick_executable", lambda: None)
-    result = BrowserSolver(timeout=5).solve(BASE, proxy="http://p:8080")
+    result = solve(BrowserSolver(timeout=5), BASE, proxy="http://p:8080")
     assert result is not None
     assert result.cookies["cf_clearance"] == "TOK"
 
 
 def test_browser_solver_app_mode_false_fetches_tab(monkeypatch):
-    """app_mode=False → browser.get(url) called to obtain the tab."""
+    """app_mode=False â†’ browser.get(url) called to obtain the tab."""
     _install_fake_nodriver(monkeypatch, cookies={"cf_clearance": "TOK"})
     monkeypatch.setattr("scraper.challenges.browser_solver.pick_executable", lambda: None)
-    result = BrowserSolver(app_mode=False, timeout=5).solve(BASE)
+    result = solve(BrowserSolver(app_mode=False, timeout=5), BASE)
     assert result is not None
     assert result.cookies["cf_clearance"] == "TOK"
 
 
 def test_browser_solver_start_failure_raises(monkeypatch):
-    """uc.start() raising → wrapped as CloudflareSolveError."""
+    """uc.start() raising â†’ wrapped as CloudflareSolveError."""
     module = types.ModuleType("nodriver")
 
     async def _boom(**kwargs):
@@ -110,7 +114,7 @@ def test_browser_solver_start_failure_raises(monkeypatch):
     monkeypatch.setitem(sys.modules, "nodriver", module)
     monkeypatch.setattr("scraper.challenges.browser_solver.pick_executable", lambda: None)
     with pytest.raises(CloudflareSolveError, match="Failed to start"):
-        BrowserSolver(timeout=5).solve(BASE)
+        solve(BrowserSolver(timeout=5), BASE)
 
 
 def test_browser_solver_polls_until_clearance(monkeypatch):
@@ -157,14 +161,14 @@ def test_browser_solver_polls_until_clearance(monkeypatch):
     monkeypatch.setitem(sys.modules, "nodriver", module)
     monkeypatch.setattr("scraper.challenges.browser_solver.pick_executable", lambda: None)
 
-    result = BrowserSolver(timeout=5).solve(BASE)
+    result = solve(BrowserSolver(timeout=5), BASE)
     assert result is not None
     assert result.cookies["cf_clearance"] == "TOK"
     assert call_count[0] >= 2
 
 
 def test_browser_solver_exception_in_loop_raises(monkeypatch):
-    """Unexpected exception in the poll loop → CloudflareSolveError."""
+    """Unexpected exception in the poll loop â†’ CloudflareSolveError."""
 
     class _BoomCookies:
         async def get_all(self):
@@ -193,7 +197,7 @@ def test_browser_solver_exception_in_loop_raises(monkeypatch):
     monkeypatch.setitem(sys.modules, "nodriver", module)
     monkeypatch.setattr("scraper.challenges.browser_solver.pick_executable", lambda: None)
     with pytest.raises(CloudflareSolveError, match="Failed to obtain"):
-        BrowserSolver(timeout=5).solve(BASE)
+        solve(BrowserSolver(timeout=5), BASE)
 
 
 def test_browser_solver_read_cookies_static():
@@ -218,7 +222,7 @@ def test_browser_solver_read_cookies_static():
 
 
 def test_browser_solver_read_user_agent_falsy():
-    """evaluate() returning a falsy value → None returned."""
+    """evaluate() returning a falsy value â†’ None returned."""
 
     class _FalsyTab:
         async def evaluate(self, expr):

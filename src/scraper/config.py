@@ -14,11 +14,16 @@ from __future__ import annotations
 import enum
 import ssl
 from dataclasses import dataclass, field
-from typing import Callable, Literal, Optional, TypedDict
-
-from requests import Response
+from pathlib import Path
+from typing import TYPE_CHECKING, Callable, List, Literal, Optional, Union
 
 from .challenges.clearance import ClearanceSolver
+
+if TYPE_CHECKING:
+    from curl_cffi.const import CurlHttpVersion
+    from curl_cffi.requests.impersonate import BrowserTypeLiteral, ExtraFingerprints, ExtraFpDict
+    from curl_cffi.requests.utils import HttpVersionLiteral
+    from httpx import Response
 
 BrowserType = Literal["chrome", "firefox", "edge", "safari"]
 PlatformType = Literal["windows", "darwin", "linux", "android", "ios"]
@@ -55,6 +60,8 @@ class StealthConfig:
     human_like_delays: bool = True
     randomize_headers: bool = True
     browser_quirks: bool = True
+    # ±fraction jitter applied to throttle delays (0.2 = ±20%)
+    throttle_jitter: float = 0.2
 
 
 @dataclass(frozen=True)
@@ -62,17 +69,16 @@ class ProxyUrl:
     """Proxy URL."""
 
     url: str
-    http_only: bool = False
 
 
 @dataclass(frozen=True)
 class TorProxyUrl(ProxyUrl):
     """Tor Proxy URL for optional Tor control-port settings for rotation."""
 
-    url: str = "socks5://127.0.0.1:9150"
+    url: str = "socks5h://127.0.0.1:9050"
     control_host: str = "127.0.0.1"
-    control_port: int = 9151
-    control_password: str = ""
+    control_port: int = 9051
+    control_password: str = "password"
 
 
 @dataclass
@@ -82,7 +88,6 @@ class ProxyConfig:
     fallback_to_direct: bool = True
     proxy_urls: list[TorProxyUrl | ProxyUrl | str] = field(default_factory=list)
     retry_request_on_failure: int = 3
-    failure_tolerance: int = 3
     tor_rotation_cooldown: float = 10.0
     disable_cooldown: float = 300.0  # 5 minutes
 
@@ -104,68 +109,6 @@ class HttpVersion(enum.IntEnum):
     V3_ONLY = 31
 
 
-class ExtraFingerprints(TypedDict, total=False):
-    """Extra TLS/HTTP2 fingerprint overrides for curl_cffi.
-
-    All keys are optional. Mirrors ``curl_cffi.requests.impersonate.ExtraFingerprints``.
-    """
-
-    tls_min_version: int
-    tls_grease: bool
-    tls_permute_extensions: bool
-    tls_cert_compression: Literal["zlib", "brotli"]
-    tls_signature_algorithms: list[str]
-    tls_delegated_credential: str
-    tls_record_size_limit: int
-    http2_stream_weight: int
-    http2_stream_exclusive: int
-    http2_no_priority: bool
-    http3_sig_hash_algs: str
-    http3_tls_extension_order: str
-
-
-# source: https://curl-cffi.readthedocs.io/en/latest/impersonate/targets.html
-ImersonateTargetType = Literal[
-    "chrome100",
-    "chrome101",
-    "chrome104",
-    "chrome107",
-    "chrome110",
-    "chrome116",
-    "chrome119",
-    "chrome120",
-    "chrome123",
-    "chrome124",
-    "chrome131",
-    "chrome131_android",
-    "chrome133a",
-    "chrome136",
-    "chrome142",
-    "chrome145",
-    "chrome146",
-    "chrome99",
-    "chrome99_android",
-    "edge101",
-    "edge99",
-    "firefox133",
-    "firefox135",
-    "firefox144",
-    "firefox147",
-    "safari153",
-    "safari155",
-    "safari170",
-    "safari172_ios",
-    "safari180",
-    "safari180_ios",
-    "safari184",
-    "safari184_ios",
-    "safari260",
-    "safari260_ios",
-    "safari2601",
-    "tor145",
-]
-
-
 @dataclass
 class ImpersonateConfig:
     """curl_cffi impersonation options — used by the curl_cffi transport.
@@ -176,15 +119,18 @@ class ImpersonateConfig:
     real browser TLS (JA3/JA4) and HTTP/2 fingerprint.
     """
 
-    target: ImersonateTargetType | str | None = None
-    http_version: HttpVersion | int | None = None
-    ja3: str | None = None
-    akamai: str | None = None
-    perk: str | None = None
-    extra_fp: ExtraFingerprints | None = None
+    target: Optional[BrowserTypeLiteral] = None
+    ja3: Optional[str] = None
+    akamai: Optional[str] = None
+    perk: Optional[str] = None
+    extra_fp: Optional[Union[ExtraFingerprints, ExtraFpDict]] = None
     default_headers: bool = True
+    curl_options: Optional[dict] = None
+    curl_infos: Optional[list] = None
+    http_version: Optional[Union[CurlHttpVersion, HttpVersionLiteral]] = None
+    interface: Optional[str] = None
+    cert: Optional[Union[str, tuple[str, str]]] = None
     trust_env: bool = True
-    curl_options: dict | None = None
 
 
 @dataclass
@@ -192,11 +138,9 @@ class CloudflareConfig:
     """Cloudflare challenge detection and optional auto-solve.
 
     Modern Cloudflare challenges (managed challenge / Turnstile) cannot be solved
-    in pure Python. The engine *detects* them and, when a ``solver`` is set,
-    drives it to obtain a ``cf_clearance`` cookie and retries the request
-    transparently. With no solver it raises a clear exception instead — pair the
-    default browser impersonation with
-    :meth:`~scraper.Scraper.apply_browser_clearance` for those sites.
+    in pure Python. The engine *detects* them and, when ``solvers`` is non-empty,
+    drives each in order until one obtains a ``cf_clearance`` cookie, then retries
+    the request transparently. With no solvers it raises a clear exception instead.
     """
 
     enabled: bool = True
@@ -207,11 +151,26 @@ class CloudflareConfig:
     """Log detection/solve decisions."""
 
     solver: Optional[ClearanceSolver] = None
-    """Set to a :class:`ClearanceSolver` to auto-solve detected challenges. Its
-    presence is the auto-solve toggle."""
+    """Single solver (kept for backward compatibility). Takes precedence over
+    ``solvers`` when both are set."""
+
+    solvers: List[ClearanceSolver] = field(default_factory=list)
+    """Ordered solver chain: each is tried in turn until one succeeds."""
 
     max_solve_attempts: int = 1
     """Bounded retries per request chain before giving up (avoids solve loops)."""
+
+    clearance_cache_dir: Optional[Path] = None
+    """Directory for on-disk clearance cache. ``None`` disables persistence."""
+
+    clearance_refresh_buffer: float = 300.0
+    """Seconds before ``cf_clearance`` expiry to proactively re-solve."""
+
+    def effective_solvers(self) -> List[ClearanceSolver]:
+        """Return the active solver list (legacy ``solver`` field merged in)."""
+        if self.solver is not None:
+            return [self.solver] + self.solvers
+        return list(self.solvers)
 
 
 @dataclass
@@ -227,7 +186,7 @@ class ScraperConfig:
     # Challenge handling
     cloudflare: CloudflareConfig = field(default_factory=CloudflareConfig)
 
-    # TLS (urllib transport only)
+    # TLS (httpx fallback transport only)
     cipher_suite: str | None = None
     ecdh_curve: str = "prime256v1"
     source_address: str | tuple | None = None
@@ -235,10 +194,14 @@ class ScraperConfig:
     ssl_context: ssl.SSLContext | None = None
     rotate_tls_ciphers: bool = True
 
+    # SSL — set False to accept self-signed / expired certs;
+    # the scraper also auto-retries with verify=False on SSLError for non-CF URLs.
+    verify_ssl: bool = True
+
     # Session management
-    session_refresh_interval: int = 3600
     auto_refresh_on_403: bool = True
     max_403_retries: int = 3
+    max_429_backoff: float = 60.0
 
     # Request throttling
     min_request_interval: float = 2.0  # when CF protection is active
@@ -253,7 +216,7 @@ class ScraperConfig:
 
     # Network fingerprint impersonation (curl_cffi). When target is set and
     # curl_cffi is installed, requests route through the curl_cffi transport;
-    # otherwise the engine falls back to the urllib3 transport.
+    # otherwise the engine falls back to the httpx transport.
     impersonate: ImpersonateConfig = field(default_factory=ImpersonateConfig)
 
     # Proxy
@@ -262,11 +225,7 @@ class ScraperConfig:
     # Hooks — invoked as pre_hook(engine, method, url, *args, **kwargs) and
     # post_hook(engine, response); both receive the engine instance.
     pre_hook: Callable[..., tuple] | None = None
-    post_hook: Callable[..., Response] | None = None
-
-    # SSL — set False to accept self-signed / expired certs manually;
-    # the scraper also auto-retries with verify=False on SSLError for non-CF URLs.
-    verify_ssl: bool = True
+    post_hook: "Callable[..., Response] | None" = None
 
 
 def default_config() -> ScraperConfig:
@@ -278,7 +237,7 @@ def default_config() -> ScraperConfig:
 
     Impersonation is enabled by default (``impersonate.target = "chrome"``): when
     curl_cffi is installed the request rides a real browser fingerprint, and when
-    it is not the engine transparently falls back to the urllib3 transport.
+    it is not the engine transparently falls back to the httpx transport.
     """
     return ScraperConfig(
         min_request_interval=2.0,
@@ -287,7 +246,6 @@ def default_config() -> ScraperConfig:
         rotate_tls_ciphers=True,
         auto_refresh_on_403=False,
         max_403_retries=3,
-        session_refresh_interval=300,
         stealth=StealthConfig(
             enabled=True,
             min_delay=1.0,
@@ -297,6 +255,7 @@ def default_config() -> ScraperConfig:
             human_like_delays=True,
             randomize_headers=True,
             browser_quirks=True,
+            throttle_jitter=0.2,
         ),
         impersonate=ImpersonateConfig(
             target="chrome",

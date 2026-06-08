@@ -22,8 +22,7 @@ def from_scratch() -> Scraper:
         min_request_interval=2.0,  # min seconds between requests when CF is active
         min_request_interval_fast=0.1,  # min seconds when no CF challenge seen
         max_concurrent_requests=1,
-        # Session
-        session_refresh_interval=300,
+        # Retry
         max_403_retries=3,
         # Stealth
         stealth=StealthConfig(
