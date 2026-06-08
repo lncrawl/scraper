@@ -290,6 +290,36 @@ def test_find_executables_windows_missing_env_var(monkeypatch):
     assert isinstance(result, list)
 
 
+def test_find_executables_windows_branch(monkeypatch):
+    """Windows platform takes the lines-29-40 path (PROGRAMFILES env lookup)."""
+    monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setattr(_platform, "system", lambda: "Windows")
+    monkeypatch.setenv("PROGRAMFILES", "C:\\Program Files")
+    result = _find_executables(
+        windows_path=["Google/Chrome/Application"],
+        mac_app_path=[],
+        linux_app_path=[],
+        posix_app_name=[],
+        windows_exe_name=["chrome.exe"],
+    )
+    assert isinstance(result, list)
+
+
+def test_find_all_chromium_executables_deduplicates(monkeypatch):
+    """Paths returned by multiple sub-finders appear only once in the result."""
+    import scraper.challenges.browser_exe as _exe_mod
+
+    monkeypatch.setattr(_exe_mod, "_find_chrome_executables", lambda: ["/fake/chrome"])
+    monkeypatch.setattr(_exe_mod, "_find_edge_executables", lambda: ["/fake/chrome"])
+    monkeypatch.setattr(_exe_mod, "_find_brave_executables", lambda: [])
+    monkeypatch.setattr(_exe_mod, "_find_vivaldi_executables", lambda: [])
+    monkeypatch.setattr(_exe_mod, "_find_yandex_executables", lambda: [])
+    monkeypatch.setattr(_exe_mod, "_find_whale_executables", lambda: [])
+    _exe_mod.find_all_chromium_executables.cache_clear()
+    result = _exe_mod.find_all_chromium_executables()
+    assert result == ["/fake/chrome"]
+
+
 def test_pick_executable_returns_none_when_empty(monkeypatch):
     monkeypatch.setattr(
         "scraper.challenges.browser_exe.find_all_chromium_executables",
