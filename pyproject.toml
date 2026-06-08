@@ -76,7 +76,7 @@ build = [
   {ref = "test"},
   {cmd = "uv build"},
 ]
-cov = "pytest --cov --cov-report=term-missing --cov-report=html --cov-report=xml"
+cov = "pytest --cov --cov-branch --cov-report=term-missing --cov-report=html --cov-report=xml"
 lint = [
   {cmd = "ruff check"},
   {cmd = "ruff format --check"},
