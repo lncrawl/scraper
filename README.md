@@ -1,4 +1,4 @@
-# LNCrawl Scraper
+﻿# LNCrawl Scraper
 
 [![CI](https://github.com/lncrawl/scraper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lncrawl/scraper/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/lncrawl-scraper.svg)](https://pypi.org/project/lncrawl-scraper/)
@@ -7,26 +7,26 @@ HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth 
 
 ## Features
 
-- **Cloudflare handling** — a convincing browser fingerprint (below) avoids most
+- **Cloudflare handling** - a convincing browser fingerprint (below) avoids most
   non-interactive challenges; managed / Turnstile / captcha challenges are
-  **detected** and either auto-solved with a real browser (see *Solving
-  challenges*) or surfaced as a clear, actionable exception
-- **Browser fingerprint impersonation (on by default)** — a `curl_cffi` transport
+  **detected** and either auto-solved with a real browser (see _Solving
+  challenges_) or surfaced as a clear, actionable exception
+- **Browser fingerprint impersonation (on by default)** - a `curl_cffi` transport
   reproduces a real Chrome/Firefox TLS (JA3/JA4) **and** HTTP/2 fingerprint, with an
-  automatic fallback to the legacy urllib3 transport
-- **Composable engine** — a middleware pipeline over a pluggable transport
+  automatic fallback to the httpx transport
+- **Composable engine** - a middleware pipeline over a pluggable transport
   (`scraper.engine`), so throttling, stealth, proxy, challenge handling, and retries
   are independent, swappable stages
-- **Pluggable challenge solvers** — auto-solve via a remote FlareSolverr/Byparr
+- **Pluggable challenge solvers** - auto-solve via a remote FlareSolverr/Byparr
   service (`RemoteSolver`, no extra deps) or an in-process browser
   (`BrowserSolver`, `[browser]` extra), or reuse a `cf_clearance` cookie solved
   elsewhere via `apply_browser_clearance`
-- **Accurate Client Hints** — `sec-ch-ua` / `sec-fetch-*` derived from the chosen UA
-- **Stealth mode** — human-like delays, randomized headers, browser quirks
-- **Proxy support** — round-robin proxy rotation with Tor integration and direct fallback
-- **Rate limiting** — configurable per-request intervals and concurrency cap
-- **`PageSoup`** — null-safe BeautifulSoup wrapper; selection methods never return `None`
-- **HTTP helpers** — `get_soup`, `get_json`, `get_image`, `get_file`, and more
+- **Accurate Client Hints** - `sec-ch-ua` / `sec-fetch-*` derived from the chosen UA
+- **Stealth mode** - human-like delays, randomized headers, browser quirks
+- **Proxy support** - round-robin proxy rotation with Tor integration (`rotate_proxy()` for NEWNYM) and direct fallback
+- **Rate limiting** - configurable per-request intervals and concurrency cap
+- **`PageSoup`** - null-safe BeautifulSoup wrapper; selection methods never return `None`
+- **HTTP helpers** - `get_soup`, `get_json`, `get_image`, `get_file`, and more
 
 ## Installation
 
@@ -41,7 +41,7 @@ pip install "lncrawl-scraper[all]"      # all of the above
 ```
 
 `curl_cffi` ships as a core dependency so impersonation works out of the box; the
-remaining extras are optional and degrade gracefully when absent — without
+remaining extras are optional and degrade gracefully when absent - without
 `brotli`, the scraper simply stops advertising `br` encoding so responses stay
 decodable.
 
@@ -69,23 +69,25 @@ img = s.get_image("https://example.com/cover.jpg")
 
 ## Examples
 
-Runnable examples live in [`examples/`](examples/) — run any with
+Runnable examples live in [`examples/`](examples/) - run any with
 `uv run python examples/<file>.py`.
 
-| Example                                                             | Shows                                                          |
-| ------------------------------------------------------------------- | -------------------------------------------------------------- |
-| [01_basic_html.py](examples/01_basic_html.py)                       | Fetch a page and extract data with `get_soup` / `PageSoup`     |
-| [02_pagesoup_parsing.py](examples/02_pagesoup_parsing.py)           | PageSoup tour: CSS select, attrs, navigation, XPath            |
-| [03_json_api.py](examples/03_json_api.py)                           | `get_json` / `post_json` and raw `Response` access             |
-| [04_files_and_images.py](examples/04_files_and_images.py)           | `get_file` (streamed, atomic) and `get_image` (Pillow)         |
-| [05_forms_cookies_headers.py](examples/05_forms_cookies_headers.py) | `submit_form`, `set_header`, `set_cookie`, `reset`             |
-| [06_configuration.py](examples/06_configuration.py)                 | `ScraperConfig`, `default_config()`, stealth, browser identity |
-| [07_impersonation.py](examples/07_impersonation.py)                 | Real browser TLS/HTTP-2 fingerprint via `impersonate`          |
-| [08_browser_clearance.py](examples/08_browser_clearance.py)         | Reuse a `cf_clearance` solved by a real browser                |
-| [09_proxies_and_tor.py](examples/09_proxies_and_tor.py)             | Proxy rotation and Tor identity refresh                        |
-| [10_concurrency_and_abort.py](examples/10_concurrency_and_abort.py) | Threaded fetches and cooperative `abort()`                     |
-| [11_error_handling.py](examples/11_error_handling.py)               | HTTP, Cloudflare, and abort error handling                     |
-| [12_auto_solve.py](examples/12_auto_solve.py)                       | Auto-solve challenges with `RemoteSolver` / `BrowserSolver`    |
+| Example                                                             | Shows                                                           |
+| ------------------------------------------------------------------- | --------------------------------------------------------------- |
+| [01_basic_html.py](examples/01_basic_html.py)                       | Fetch a page and extract data with `get_soup` / `PageSoup`      |
+| [02_pagesoup_parsing.py](examples/02_pagesoup_parsing.py)           | PageSoup tour: CSS select, attrs, navigation, XPath             |
+| [03_json_api.py](examples/03_json_api.py)                           | `get_json` / `post_json` and raw `Response` access              |
+| [04_files_and_images.py](examples/04_files_and_images.py)           | `get_file` (streamed, atomic) and `get_image` (Pillow)          |
+| [05_forms_cookies_headers.py](examples/05_forms_cookies_headers.py) | `submit_form`, `set_header`, `set_cookie`, `reset`              |
+| [06_configuration.py](examples/06_configuration.py)                 | `ScraperConfig`, `default_config()`, stealth, browser identity  |
+| [07_impersonation.py](examples/07_impersonation.py)                 | Real browser TLS/HTTP-2 fingerprint via `impersonate`           |
+| [08_browser_clearance.py](examples/08_browser_clearance.py)         | Reuse a `cf_clearance` solved by a real browser                 |
+| [09_proxies.py](examples/09_proxies.py)                             | Round-robin proxy rotation with direct fallback                 |
+| [10_concurrency_and_abort.py](examples/10_concurrency_and_abort.py) | Threaded fetches and cooperative cancellation via `close()`     |
+| [11_error_handling.py](examples/11_error_handling.py)               | HTTP, Cloudflare, and abort error handling                      |
+| [12_browser_auto_solve.py](examples/12_browser_auto_solve.py)       | Auto-solve challenges with `BrowserSolver` (nodriver)           |
+| [13_remote_auto_solve.py](examples/13_remote_auto_solve.py)         | Auto-solve challenges with `RemoteSolver` (FlareSolverr/Byparr) |
+| [14_tor_proxy.py](examples/14_tor_proxy.py)                         | Tor proxy with `rotate_proxy()` for a fresh exit circuit        |
 
 ## Configuration
 
@@ -138,37 +140,36 @@ s = Scraper(origin="https://example.com", config=config)
 ## Browser fingerprint impersonation
 
 A plain `requests` stack has a fixed OpenSSL TLS fingerprint and only speaks
-HTTP/1.1 — both of which modern Cloudflare detects. The `curl_cffi` transport
+HTTP/1.1 - both of which modern Cloudflare detects. The `curl_cffi` transport
 reproduces a real browser's TLS (JA3/JA4) and HTTP/2 fingerprint, and
 **`default_config()` enables it (`impersonate.target = "chrome"`)** out of the box.
-Pick a different target, or disable impersonation to force the legacy urllib3
-transport:
+Pick a different target, or disable impersonation to force the httpx transport:
 
 ```python
 from scraper import Scraper, default_config
 
 config = default_config()
-config.impersonate.target = "firefox"   # or "chrome124", "safari17_0", "edge", …
+config.impersonate.target = "firefox"   # or "chrome124", "safari17_0", "edge", â€¦
 s = Scraper(origin="https://example.com", config=config)
 
-# disable impersonation → urllib3 transport
+# disable impersonation â†’ httpx transport
 config.impersonate.target = None
 ```
 
 The spoofed User-Agent family and Client Hints are aligned with the impersonation
 target automatically. If `curl_cffi` cannot be imported, the engine transparently
-falls back to the urllib3 transport.
+falls back to the httpx transport.
 
 ## Solving challenges
 
 Modern Cloudflare challenges (managed challenge / Turnstile / captcha) **cannot be
-solved in pure Python** — they require a real browser. The engine detects them and,
+solved in pure Python** - they require a real browser. The engine detects them and,
 if no solver is configured, raises a clear exception (`CloudflareChallengeError`,
-`CloudflareTurnstileError`, …). Configure `cloudflare.solver` to pass them
+`CloudflareTurnstileError`, â€¦). Configure `cloudflare.solver` to pass them
 automatically: the engine drives the solver to obtain a `cf_clearance` cookie,
 applies it, and transparently retries the request.
 
-**Remote solver (recommended for servers)** — run a
+**Remote solver (recommended for servers)** - run a
 [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) or
 [Byparr](https://github.com/ThePhaseless/Byparr) container and point `RemoteSolver`
 at it. Keeps the scraper itself lightweight (no browser in its image); no extra
@@ -186,9 +187,9 @@ config.cloudflare.solver = RemoteSolver("http://localhost:8191")
 s = Scraper(origin="https://protected.example.com", config=config)
 ```
 
-**In-process browser solver** — drives Chrome via `nodriver`
+**In-process browser solver** - drives Chrome via `nodriver`
 (`pip install "lncrawl-scraper[browser]"`). On a GUI-less Linux server pass
-`xvfb=True` to run a *headful* browser under a virtual display (true headless is
+`xvfb=True` to run a _headful_ browser under a virtual display (true headless is
 detectable; requires the `Xvfb` binary):
 
 ```python
@@ -200,13 +201,13 @@ s = Scraper(origin="https://protected.example.com", config=config)
 ```
 
 Both implement the `ClearanceSolver` protocol, so you can plug in your own
-(Camoufox, SeleniumBase, a captcha service, …) by providing a `solve()` method.
+(Camoufox, SeleniumBase, a captcha service, â€¦) by providing an `solve()` method.
 
 > Cloudflare binds `cf_clearance` to the User-Agent **and** the IP/TLS fingerprint.
 > When a solver returns clearance, the engine automatically adopts the solver's
 > exact User-Agent **and** aligns the curl_cffi impersonation to that browser's
 > family + major version, so the reused cookie validates. The one thing it can't
-> control is the egress IP — run the solver behind the same IP/proxy as the scraper.
+> control is the egress IP - run the solver behind the same IP/proxy as the scraper.
 
 ### Manual clearance
 
@@ -241,11 +242,12 @@ s.apply_browser_clearance(
 | `set_cookie(name, value)`         | Set a session cookie                                |
 | `put_cookie(name, value, ...)`    | Set a cookie on session + jar                       |
 | `apply_browser_clearance(...)`    | Reuse a browser cf_clearance                        |
-| `abort()`                         | Stop pending/in-flight requests                     |
+| `rotate_proxy()`                  | New Tor circuit (NEWNYM) or advance to next proxy   |
 | `reset()`                         | Clear cookies, headers, and state                   |
+| `close()`                         | Abort in-progress requests and release resources    |
 
 `Scraper` composes a `scraper.engine.Engine` (available as `scraper.engine`); it is
-not a `requests.Session` subclass, but mirrors the common verb methods (`get`,
+not an `httpx.Client` subclass, but mirrors the common verb methods (`get`,
 `post`, `head`, `put`, `patch`, `delete`, `options`) plus `headers`/`cookies`.
 
 ## `PageSoup` API
@@ -256,13 +258,13 @@ not a `requests.Session` subclass, but mirrors the common verb methods (`get`,
 soup = s.get_soup("https://example.com")
 
 # Selection
-soup.select("ul li")                 # → List[PageSoup]
-soup.select_one(".title")            # → PageSoup (empty if not found)
-soup.find("div", class_="content")  # → PageSoup
-soup.find_all("a")                   # → List[PageSoup]
-soup.xpath("//div[@class='body']")  # → List[PageSoup]
-soup.closest(".container")          # → nearest matching ancestor
-soup.parents(".wrapper")            # → generator of matching ancestors
+soup.select("ul li")                 # â†’ List[PageSoup]
+soup.select_one(".title")            # â†’ PageSoup (empty if not found)
+soup.find("div", class_="content")  # â†’ PageSoup
+soup.find_all("a")                   # â†’ List[PageSoup]
+soup.xpath("//div[@class='body']")  # â†’ List[PageSoup]
+soup.closest(".container")          # â†’ nearest matching ancestor
+soup.parents(".wrapper")            # â†’ generator of matching ancestors
 
 # Attribute access
 el["href"]                           # get_attr shorthand, returns "" if missing
@@ -304,8 +306,8 @@ Tasks are managed with [poethepoet](https://poethepoet.natn.io/):
 | `uv run poe lint`     | Run ruff + pyright                    |
 | `uv run poe lint-fix` | Auto-fix ruff violations and reformat |
 | `uv run poe test`     | Run the test suite                    |
-| `uv run poe build`    | Lint → test → build wheel             |
-| `uv run poe publish`  | Build → publish to PyPI               |
+| `uv run poe build`    | Lint â†’ test â†’ build wheel         |
+| `uv run poe publish`  | Build â†’ publish to PyPI             |
 
 ## Testing
 
@@ -320,7 +322,7 @@ uv run pytest -v                   # verbose
 uv run pytest tests/test_dummy.py  # a single file
 ```
 
-Mock HTTP with [responses](https://github.com/getsentry/responses) (a dev dependency) so tests make no real network calls.
+Mock HTTP with [respx](https://github.com/lundberg/respx) (a dev dependency) so tests make no real network calls.
 
 ## Acknowledgements
 

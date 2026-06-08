@@ -37,7 +37,7 @@ Read the staged diff and verify:
 - No TODO/FIXME introduced without an accompanying explanation.
 - If a public name was added, removed, or renamed — `__all__` in
   `src/scraper/__init__.py` is updated and the README reflects it.
-- If `_engine/` or `_utils/` internals changed in a way that affects public
+- If `engine/` or `utils/` internals changed in a way that affects public
   behaviour — `CHANGELOG.md` has a note (or the change is pre-release).
 - If `pyproject.toml` deps changed — `uv.lock` is staged too.
 
