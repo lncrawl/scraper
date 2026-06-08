@@ -488,11 +488,10 @@ def test_curl_send_streaming_raises_ssl_error_on_ssl_failure():
 
 def test_match_impersonate_no_candidates_returns_none(monkeypatch):
     pytest.importorskip("curl_cffi")
-    import curl_cffi.requests.impersonate as _imp
-
+    import scraper.engine.transport.curl as _curl_mod
     from scraper.engine.transport.curl import CurlCffiTransport
 
-    monkeypatch.setattr(_imp, "BrowserType", [])
+    monkeypatch.setattr(_curl_mod, "BrowserType", [])
     assert CurlCffiTransport._match_impersonate("Chrome/131.0.0.0") is None
 
 

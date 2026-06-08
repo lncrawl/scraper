@@ -9,17 +9,29 @@ installed.
 
 from __future__ import annotations
 
+import asyncio
+import http.cookiejar
+import inspect
 import re
 import threading
 from typing import Any, Iterator, Optional
 
 import httpx
+from curl_cffi.requests import Response, Session
+from curl_cffi.requests.impersonate import BrowserType
+from curl_cffi.requests.session import BaseSession as _BaseSession
 from httpx import Cookies, SyncByteStream
 
 from ...config import ScraperConfig
 from ...exceptions import ProxyTransportError, SSLTransportError
 from ..state import RequestState
 from .base import Transport
+
+# curl_cffi 0.13.x (the last release supporting Python 3.9) does not have the
+# 'perk' fingerprint parameter. Detect once at import time so we never pass an
+# unknown keyword argument to BaseSession.__init__ on older installs.
+_CURL_HAS_PERK: bool = "perk" in inspect.signature(_BaseSession.__init__).parameters
+del _BaseSession
 
 # kwargs forwarded to curl_cffi — standard requests ones plus curl_cffi-specific
 # fingerprint and transport overrides. Anything else is dropped so the underlying
@@ -63,8 +75,6 @@ def _resp_headers(resp: object) -> list:
 
 def _attach_cookies(response: httpx.Response, resp: object) -> None:
     """Copy cookies from a curl_cffi response object into an httpx.Response."""
-    import http.cookiejar
-
     jar = http.cookiejar.CookieJar()
     for cookie in getattr(getattr(resp, "cookies", None), "jar", []):
         jar.set_cookie(cookie)
@@ -144,29 +154,27 @@ class CurlCffiTransport(Transport):
 
     def __init__(self, config: ScraperConfig) -> None:
         super().__init__()
-        try:
-            from curl_cffi.requests import Response, Session
-        except ImportError as exc:  # pragma: no cover
-            raise ImportError(
-                "CurlCffiTransport requires curl_cffi: pip install curl_cffi"
-            ) from exc
-
         self._config = config
-        cfg = config.impersonate
         self._lock = threading.Lock()
         self._forced_impersonate: Optional[str] = None
-        self._session = Session[Response](
+        self._session: Session[Response] = self._new_session()
+
+    def _new_session(self) -> Session[Response]:
+        cfg = self._config.impersonate
+        session = Session(
             impersonate=cfg.target,
             http_version=cfg.http_version,
             ja3=cfg.ja3,
             akamai=cfg.akamai,
-            perk=cfg.perk,
             extra_fp=cfg.extra_fp,
             default_headers=cfg.default_headers,
             trust_env=cfg.trust_env,
             curl_options=cfg.curl_options or {},
-            verify=config.verify_ssl,
+            verify=self._config.verify_ssl,
         )
+        if _CURL_HAS_PERK:
+            setattr(session, "perk", cfg.perk)
+        return session
 
     # -- Fingerprint ----------------------------------------------------------
 
@@ -176,11 +184,6 @@ class CurlCffiTransport(Transport):
 
     @staticmethod
     def _match_impersonate(user_agent: str) -> Optional[str]:
-        try:
-            from curl_cffi.requests.impersonate import BrowserType
-        except Exception:  # pragma: no cover
-            return None
-
         ua = user_agent or ""
         if "Edg/" in ua:
             family, match = "edge", re.search(r"Edg/(\d+)", ua)
@@ -226,8 +229,6 @@ class CurlCffiTransport(Transport):
     # -- Send -----------------------------------------------------------------
 
     async def send(self, ctx: RequestState) -> httpx.Response:
-        import asyncio
-
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(None, self._send_sync, ctx)
 
@@ -296,26 +297,12 @@ class CurlCffiTransport(Transport):
         Called after Tor NEWNYM so that subsequent requests open new TCP
         connections through the new circuit rather than reusing pooled ones.
         """
-        from curl_cffi.requests import Response, Session
-
         with self._lock:
             try:
                 self._session.close()
             except Exception:
                 pass
-            cfg = self._config.impersonate
-            self._session = Session[Response](
-                impersonate=cfg.target,
-                http_version=cfg.http_version,
-                ja3=cfg.ja3,
-                akamai=cfg.akamai,
-                perk=cfg.perk,
-                extra_fp=cfg.extra_fp,
-                default_headers=cfg.default_headers,
-                trust_env=cfg.trust_env,
-                curl_options=cfg.curl_options or {},
-                verify=self._config.verify_ssl,
-            )
+            self._session = self._new_session()
 
     def close(self) -> None:
         try:

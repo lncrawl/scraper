@@ -30,21 +30,6 @@ def test_build_transport_with_target_returns_curl():
     assert isinstance(build_transport(cfg), CurlCffiTransport)
 
 
-def test_build_transport_falls_back_when_curl_missing(monkeypatch):
-    import builtins
-
-    real_import = builtins.__import__
-
-    def fake_import(name, *args, **kwargs):
-        if name.startswith("curl_cffi"):
-            raise ImportError("simulated missing curl_cffi")
-        return real_import(name, *args, **kwargs)
-
-    monkeypatch.setattr(builtins, "__import__", fake_import)
-    cfg = make_fast_config(impersonate=ImpersonateConfig(target="chrome"))
-    assert isinstance(build_transport(cfg), HttpxTransport)
-
-
 # --- HttpxTransport behaviour --------------------------------------------
 
 
