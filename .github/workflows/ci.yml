@@ -23,7 +23,7 @@ jobs:
       - name: Setup
         uses: astral-sh/setup-uv@v7
         with:
-          python-version: "3.9"
+          python-version: '3.9'
 
       - name: Install
         run: uv sync --all-groups --all-extras
@@ -45,7 +45,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
         with:
-          python-version: "3.12"
+          python-version: '3.12'
 
       - name: Install
         run: uv sync --all-groups --all-extras
@@ -54,8 +54,10 @@ jobs:
         run: |
           uv run pytest \
             --cov \
+            --cov-branch \
             --cov-report=xml \
             --cov-report=term-missing \
+            --junitxml=junit.xml -o junit_family=legacy \
             --cov-report=markdown-append:$GITHUB_STEP_SUMMARY
 
       - name: Upload coverage.xml
@@ -73,6 +75,20 @@ jobs:
           language: Python
           label: code-coverage/pytest
 
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: lncrawl/scraper
+          files: coverage.xml
+          fail_ci_if_error: false
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   build:
     name: Build (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
@@ -80,7 +96,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
