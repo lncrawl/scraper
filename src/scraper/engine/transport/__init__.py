@@ -31,10 +31,10 @@ def build_transport(config: "ScraperConfig") -> Transport:
             from .curl import CurlCffiTransport
 
             return CurlCffiTransport(config)
-        except ImportError:
+        except Exception:
             logger.warning(
-                "curl_cffi is unavailable — falling back to the httpx transport "
-                "(weaker TLS fingerprint). Install curl_cffi to enable impersonation."
+                "curl_cffi transport is unavailable - "
+                "falling back to the httpx transport (weaker TLS fingerprint)."
             )
 
     from .httpx import HttpxTransport

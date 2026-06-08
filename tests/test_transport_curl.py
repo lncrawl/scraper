@@ -495,6 +495,18 @@ def test_match_impersonate_no_candidates_returns_none(monkeypatch):
     assert CurlCffiTransport._match_impersonate("Chrome/131.0.0.0") is None
 
 
+def test_new_session_sets_perk_when_flag_is_true(monkeypatch):
+    """_new_session() applies session.perk via setattr when _CURL_HAS_PERK is True."""
+    pytest.importorskip("curl_cffi")
+    import scraper.engine.transport.curl as _curl_mod
+    from scraper.engine.transport.curl import CurlCffiTransport
+
+    monkeypatch.setattr(_curl_mod, "_CURL_HAS_PERK", True)
+    t = CurlCffiTransport(make_fast_config(impersonate=ImpersonateConfig(target="chrome")))
+    assert hasattr(t._session, "perk")
+    assert getattr(t._session, "perk") == t._config.impersonate.perk
+
+
 # --- proxy URL conversion -------------------------------------------------
 
 
