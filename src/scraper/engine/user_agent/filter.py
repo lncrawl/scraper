@@ -67,6 +67,8 @@ def filter_ua_data(
 
         # Browser version filter based on inferred or requested browser
         target = browser or inferred
+        if target not in ("edge", "firefox", "safari", "chrome"):
+            continue
         if target == "edge":
             if not _match_version(ua, _EDGE_RE, version, min_edge):
                 continue
@@ -76,11 +78,9 @@ def filter_ua_data(
         elif target == "safari":
             if not _match_version(ua, _SAFARI_RE, version, min_safari):
                 continue
-        elif target == "chrome":
+        else:
             if not _match_version(ua, _CHROME_RE, version, min_chrome):
                 continue
-        else:
-            continue
 
         entries.append(entry)
 

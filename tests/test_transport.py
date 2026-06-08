@@ -30,6 +30,19 @@ def test_build_transport_with_target_returns_curl():
     assert isinstance(build_transport(cfg), CurlCffiTransport)
 
 
+def test_build_transport_falls_back_on_curl_init_exception(monkeypatch):
+    pytest.importorskip("curl_cffi")
+    import scraper.engine.transport.curl as _curl_mod
+
+    class _BrokenTransport:
+        def __init__(self, config):
+            raise RuntimeError("simulated curl init failure")
+
+    monkeypatch.setattr(_curl_mod, "CurlCffiTransport", _BrokenTransport)
+    cfg = make_fast_config(impersonate=ImpersonateConfig(target="chrome"))
+    assert isinstance(build_transport(cfg), HttpxTransport)
+
+
 # --- HttpxTransport behaviour --------------------------------------------
 
 

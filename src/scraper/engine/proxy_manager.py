@@ -100,7 +100,7 @@ class ProxyManager:
 
         now = time.monotonic()
         last_rotate = self._tor_rotated_at.get(entry, 0)
-        if now - last_rotate < self.config.tor_rotation_cooldown:
+        if (now - last_rotate) <= self.config.tor_rotation_cooldown:
             return False  # still under cooldown
         self._tor_rotated_at[entry] = time.monotonic()
 
