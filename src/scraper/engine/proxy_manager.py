@@ -99,7 +99,7 @@ class ProxyManager:
             return False  # no control port
 
         now = time.monotonic()
-        last_rotate = self._tor_rotated_at.get(entry, 0)
+        last_rotate = self._tor_rotated_at.get(entry, float("-inf"))
         if (now - last_rotate) <= self.config.tor_rotation_cooldown:
             return False  # still under cooldown
         self._tor_rotated_at[entry] = time.monotonic()
