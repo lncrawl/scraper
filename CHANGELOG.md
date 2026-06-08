@@ -4,7 +4,7 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.4.0] - 2026-06-08
 
 ### Breaking Changes
 
@@ -13,12 +13,19 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   must be updated.
 - `Scraper` no longer has an `abort_event` attribute. Use `CancelToken` (now
   exported from `scraper`) and pass it as `cancel_token=` to any request method.
-- `EventLock` removed from `scraper.utils` — it was an internal primitive
+- `EventLock` removed from `scraper.utils` - it was an internal primitive
   superseded by `CancelToken`.
-- `ClearanceSolver.solve_async` renamed to `solve` (the sync `solve` wrapper is
-  gone; the solver protocol is now purely async).
+- JS-interpreter-based challenge handlers (`CloudflareV1`, `CloudflareV2`,
+  `CloudflareV3`, `TurnstileSolver`) removed from `scraper.engine.challenges`.
+  Challenge detection is now handled by `CloudflareDetector`; solving is
+  delegated to pluggable `ClearanceSolver` implementations.
+- `scraper.engine.challenges` module removed entirely; challenge classes are now
+  at `scraper.challenges` (detection) and implemented by `RemoteSolver` /
+  `BrowserSolver`.
 - `CloudflareConfig.solver` (single) replaced by `CloudflareConfig.solvers`
   (list). The engine tries each in order.
+- `ClearanceSolver.solve_async` renamed to `solve` (the sync `solve` wrapper is
+  gone; the solver protocol is now purely async).
 - `ProxyManager.get_proxy()` now returns `str | None` instead of
   `dict[str, str] | None`.
 - `RequestChain` and `RequestContext` (`engine.state` / `engine.context`) merged
@@ -28,19 +35,47 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- `CancelToken` — thread-safe per-request cancellation. Exported from `scraper`.
+- `CancelToken` - thread-safe per-request cancellation. Exported from `scraper`.
+- `ClearanceResult` - dataclass holding a solved Cloudflare clearance
+  (`cookie`, `user_agent`, `domain`, `expires`, `cf_bm_expires`, `proxy_key`).
+  Exported from `scraper`.
+- `ClearanceSolver` - ABC for pluggable challenge solvers. Exported from `scraper`.
+- `RemoteSolver` - `ClearanceSolver` adapter for FlareSolverr / Byparr remote
+  solving. Exported from `scraper`.
+- `BrowserSolver` - `ClearanceSolver` using an in-process nodriver browser
+  (requires the `browser` extra). Exported from `scraper`.
+- `scraper.challenges` package: `CloudflareDetector`, `CloudflareChallengeKind`
+  for programmatic challenge detection without a full solver.
 - `RequestHeaders` utility (case-insensitive `dict` for HTTP headers) in
   `scraper.utils`.
-- `ClearanceStore` — in-memory + optional on-disk cache for `cf_clearance`
+- `ClearanceStore` - in-memory + optional on-disk cache for `cf_clearance`
   records, keyed by `(domain, proxy_key)`.
-- `ClearanceResult` extended with `expires`, `cf_bm_expires`, and `proxy_key`
-  fields.
-- `HttpxTransport` — `httpx.AsyncClient`-backed fallback transport with
+- `HttpxTransport` - `httpx.AsyncClient`-backed fallback transport with
   per-proxy client pooling (replaces `UrllibTransport`).
 - Engine pipeline is **fully async**: all middleware and the transport are
   coroutines; a daemon asyncio event loop runs in a background thread.
 - `anyio[trio]` added as dev dependency; `respx` replaces `responses` for
   HTTP mocking in tests.
+
+### Changed
+
+- SVG image support removed (`cairosvg` required a system-level library unavailable
+  on Windows; dropped to keep the package installable on all platforms).
+- `build_transport` now falls back to `HttpxTransport` when `CurlCffiTransport`
+  initialization fails (e.g. missing native library), instead of raising.
+- Package is now also published to GitHub Packages on each release (alongside
+  PyPI), installable with `pip install --index-url https://pypi.pkg.github.com/lncrawl/lncrawl-scraper`.
+
+### Fixed
+
+- Python 3.9 compatibility in `CurlCffiTransport`: the `perk` kwarg (absent in
+  `curl_cffi` 0.13.x, the last release supporting Python 3.9) is now guarded by
+  a runtime capability flag.
+- Tor cooldown boundary: requests arriving exactly at the cooldown threshold are
+  now correctly held back (`<=` comparison instead of `<`).
+- Tor cooldown sentinel changed to `float('-inf')` so the first rotation always
+  succeeds - the previous sentinel of `0` caused flakiness on fresh CI containers
+  where `time.monotonic()` had not yet exceeded the cooldown window.
 
 ## [0.3.0] - 2026-06-06
 
@@ -72,7 +107,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `curl_cffi` is now a **core dependency** (not an optional extra). The
   `impersonate` extra is retained for backwards compatibility but is a no-op;
   plain `pip install lncrawl-scraper` includes it automatically.
-- Default impersonation target is `"chrome"` — requests ride a real Chrome
+- Default impersonation target is `"chrome"` - requests ride a real Chrome
   TLS/HTTP-2 fingerprint out of the box.
 - Updated dependencies to latest compatible versions.
 
@@ -90,7 +125,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `lncrawl-scraper[brotli]` (or `[all]`) to decode brotli (`br`) responses;
   without it the scraper no longer advertises `br` encoding, so bodies stay
   decodable.
-- `default_config()` no longer pins a Firefox/Windows identity — the default
+- `default_config()` no longer pins a Firefox/Windows identity - the default
   User-Agent (and its matching Client Hints) is now randomized across desktop
   browsers and platforms.
 
@@ -106,11 +141,11 @@ Initial public release of `lncrawl-scraper`, extracted from
 
 ### Added
 
-- `Scraper` — a `requests.Session` subclass with transparent Cloudflare
+- `Scraper` - a `requests.Session` subclass with transparent Cloudflare
   challenge handling (v1, v2, v3, Turnstile) and helpers: `get_soup`,
   `post_soup`, `get_json`, `post_json`, `get_file`, `get_image`, `submit_form`,
   `ping`.
-- `PageSoup` — a null-safe BeautifulSoup wrapper; selection methods never return
+- `PageSoup` - a null-safe BeautifulSoup wrapper; selection methods never return
   `None` and text/HTML accessors always return `str`.
 - Typed configuration: `ScraperConfig`, `StealthConfig`, `ProxyConfig`,
   `BrowserConfig`, plus the `default_config()` factory.
@@ -125,6 +160,7 @@ Initial public release of `lncrawl-scraper`, extracted from
   rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[0.4.0]: https://github.com/lncrawl/scraper/releases/tag/v0.4.0
 [0.3.0]: https://github.com/lncrawl/scraper/releases/tag/v0.3.0
 [0.2.0]: https://github.com/lncrawl/scraper/releases/tag/v0.2.0
 [0.1.0]: https://github.com/lncrawl/scraper/releases/tag/v0.1.0

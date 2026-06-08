@@ -152,10 +152,10 @@ Pick a different target, or disable impersonation to force the httpx transport:
 from scraper import Scraper, default_config
 
 config = default_config()
-config.impersonate.target = "firefox"   # or "chrome124", "safari17_0", "edge", â€¦
+config.impersonate.target = "firefox"   # or "chrome124", "safari17_0", "edge", ...
 s = Scraper(origin="https://example.com", config=config)
 
-# disable impersonation â†’ httpx transport
+# disable impersonation -> httpx transport
 config.impersonate.target = None
 ```
 
@@ -168,9 +168,9 @@ falls back to the httpx transport.
 Modern Cloudflare challenges (managed challenge / Turnstile / captcha) **cannot be
 solved in pure Python** - they require a real browser. The engine detects them and,
 if no solver is configured, raises a clear exception (`CloudflareChallengeError`,
-`CloudflareTurnstileError`, â€¦). Configure `cloudflare.solver` to pass them
-automatically: the engine drives the solver to obtain a `cf_clearance` cookie,
-applies it, and transparently retries the request.
+`CloudflareTurnstileError`, ...). Configure `cloudflare.solvers` to pass them
+automatically: the engine tries each solver in order until one obtains a
+`cf_clearance` cookie, then retries the request transparently.
 
 **Remote solver (recommended for servers)** - run a
 [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) or
@@ -186,25 +186,27 @@ docker run -d -p 8191:8191 ghcr.io/flaresolverr/flaresolverr:latest
 from scraper import Scraper, RemoteSolver, default_config
 
 config = default_config()
-config.cloudflare.solver = RemoteSolver("http://localhost:8191")
+config.cloudflare.solvers = [RemoteSolver("http://localhost:8191")]
 s = Scraper(origin="https://protected.example.com", config=config)
 ```
 
 **In-process browser solver** - drives Chrome via `nodriver`
-(`pip install "lncrawl-scraper[browser]"`). On a GUI-less Linux server pass
-`xvfb=True` to run a _headful_ browser under a virtual display (true headless is
-detectable; requires the `Xvfb` binary):
+(`pip install "lncrawl-scraper[browser]"`). Pops up a real browser window for the
+user to view/interact with the challenge. Cloudflare detects true headless Chrome,
+so use `RemoteSolver` for GUI-less server environments:
 
 ```python
 from scraper import Scraper, BrowserSolver, default_config
 
 config = default_config()
-config.cloudflare.solver = BrowserSolver(xvfb=True)   # or headless=True on a desktop
+config.cloudflare.solvers = [BrowserSolver()]
+# Optional: persist Chrome profile to skip solved challenges on repeat runs
+# config.cloudflare.solvers = [BrowserSolver(user_data_dir="/tmp/chrome-profile")]
 s = Scraper(origin="https://protected.example.com", config=config)
 ```
 
 Both implement the `ClearanceSolver` protocol, so you can plug in your own
-(Camoufox, SeleniumBase, a captcha service, â€¦) by providing an `solve()` method.
+(Camoufox, SeleniumBase, a captcha service, ...) by providing an `solve()` method.
 
 > Cloudflare binds `cf_clearance` to the User-Agent **and** the IP/TLS fingerprint.
 > When a solver returns clearance, the engine automatically adopts the solver's
@@ -261,13 +263,13 @@ not an `httpx.Client` subclass, but mirrors the common verb methods (`get`,
 soup = s.get_soup("https://example.com")
 
 # Selection
-soup.select("ul li")                 # â†’ List[PageSoup]
-soup.select_one(".title")            # â†’ PageSoup (empty if not found)
-soup.find("div", class_="content")  # â†’ PageSoup
-soup.find_all("a")                   # â†’ List[PageSoup]
-soup.xpath("//div[@class='body']")  # â†’ List[PageSoup]
-soup.closest(".container")          # â†’ nearest matching ancestor
-soup.parents(".wrapper")            # â†’ generator of matching ancestors
+soup.select("ul li")                 # -> List[PageSoup]
+soup.select_one(".title")            # -> PageSoup (empty if not found)
+soup.find("div", class_="content")   # -> PageSoup
+soup.find_all("a")                   # -> List[PageSoup]
+soup.xpath("//div[@class='body']")   # -> List[PageSoup]
+soup.closest(".container")           # -> nearest matching ancestor
+soup.parents(".wrapper")             # -> generator of matching ancestors
 
 # Attribute access
 el["href"]                           # get_attr shorthand, returns "" if missing
@@ -309,8 +311,8 @@ Tasks are managed with [poethepoet](https://poethepoet.natn.io/):
 | `uv run poe lint`     | Run ruff + pyright                    |
 | `uv run poe lint-fix` | Auto-fix ruff violations and reformat |
 | `uv run poe test`     | Run the test suite                    |
-| `uv run poe build`    | Lint â†’ test â†’ build wheel         |
-| `uv run poe publish`  | Build â†’ publish to PyPI             |
+| `uv run poe build`    | Lint -> test -> build wheel           |
+| `uv run poe publish`  | Build -> publish to PyPI              |
 
 ## Testing
 

@@ -47,7 +47,7 @@ _MANAGED = re.compile(
 )
 
 _SOLVER_HINT = (
-    "Set ScraperConfig.cloudflare.solver (RemoteSolver or BrowserSolver) to "
+    "Set ScraperConfig.cloudflare.solvers (RemoteSolver or BrowserSolver) to "
     "solve it automatically, or pass a cf_clearance solved in a real browser via "
     "Scraper.apply_browser_clearance()."
 )

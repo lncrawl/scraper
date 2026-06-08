@@ -43,7 +43,7 @@ class ChallengeMiddleware(Middleware):
 
         e.state.mark_cf_active()
 
-        solvers = e.config.cloudflare.effective_solvers()
+        solvers = e.config.cloudflare.solvers
         if not solvers:
             detector.raise_for(kind, response)  # NoReturn
 

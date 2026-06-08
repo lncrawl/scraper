@@ -150,10 +150,6 @@ class CloudflareConfig:
     debug: bool = False
     """Log detection/solve decisions."""
 
-    solver: Optional[ClearanceSolver] = None
-    """Single solver (kept for backward compatibility). Takes precedence over
-    ``solvers`` when both are set."""
-
     solvers: List[ClearanceSolver] = field(default_factory=list)
     """Ordered solver chain: each is tried in turn until one succeeds."""
 
@@ -165,12 +161,6 @@ class CloudflareConfig:
 
     clearance_refresh_buffer: float = 300.0
     """Seconds before ``cf_clearance`` expiry to proactively re-solve."""
-
-    def effective_solvers(self) -> List[ClearanceSolver]:
-        """Return the active solver list (legacy ``solver`` field merged in)."""
-        if self.solver is not None:
-            return [self.solver] + self.solvers
-        return list(self.solvers)
 
 
 @dataclass

@@ -85,8 +85,8 @@ class ProxyManager:
             now = time.monotonic()
             to_restore = [
                 url
-                for url, fail_time in self._disabled_at.items()
-                if now - fail_time >= self.config.disable_cooldown
+                for url, add_time in self._disabled_at.items()
+                if now - add_time >= self.config.disable_cooldown
             ]
             for url in to_restore:
                 del self._disabled_at[url]

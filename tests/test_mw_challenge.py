@@ -74,7 +74,7 @@ def test_challenge_clean_response_passes_through():
 
 def test_challenge_solver_solves_and_retries():
     solver = _FakeSolver(ClearanceResult(cookies={"cf_clearance": "TOKEN"}, user_agent="UA/1.0"))
-    e = _engine(cloudflare=CloudflareConfig(solver=solver))
+    e = _engine(cloudflare=CloudflareConfig(solvers=[solver]))
 
     calls = [0]
 
@@ -97,7 +97,7 @@ def test_challenge_solver_solves_and_retries():
 
 def test_challenge_solver_no_clearance_raises():
     solver = _FakeSolver(None)
-    e = _engine(cloudflare=CloudflareConfig(solver=solver))
+    e = _engine(cloudflare=CloudflareConfig(solvers=[solver]))
 
     async def nxt(c):
         return _cf_resp()
@@ -108,7 +108,7 @@ def test_challenge_solver_no_clearance_raises():
 
 def test_challenge_max_attempts_exhausted_raises():
     solver = _FakeSolver(ClearanceResult(cookies={"cf_clearance": "T"}, user_agent="UA"))
-    e = _engine(cloudflare=CloudflareConfig(solver=solver, max_solve_attempts=1))
+    e = _engine(cloudflare=CloudflareConfig(solvers=[solver], max_solve_attempts=1))
 
     async def nxt(c):
         return _cf_resp()
@@ -138,7 +138,7 @@ def test_challenge_solver_receives_proxy():
             return ClearanceResult(cookies={"cf_clearance": "T"}, user_agent=None)
 
     e = _engine(
-        cloudflare=CloudflareConfig(solver=_TrackSolver()),
+        cloudflare=CloudflareConfig(solvers=[_TrackSolver()]),
         proxy=ProxyConfig(proxy_urls=["https://p:8080"]),
     )
 

@@ -1,10 +1,10 @@
 """Auto-solving Cloudflare challenges with a pluggable solver.
 
 Modern CF challenges (managed / Turnstile / captcha) can't be solved in pure
-Python — they need a real browser. Set `cloudflare.solver` and the engine will,
-on a detected challenge, drive the solver to obtain a `cf_clearance` cookie,
-apply it, and transparently retry the request. With no solver configured the
-engine raises a clear exception instead (see 11_error_handling.py).
+Python — they need a real browser. Set `cloudflare.solvers` and the engine will,
+on a detected challenge, drive each solver in turn until one obtains a
+`cf_clearance` cookie, apply it, and transparently retry the request. With no
+solver configured the engine raises a clear exception instead (see 11_error_handling.py).
 
 Two backends ship in the box (both implement the `ClearanceSolver` protocol, so
 you can plug in your own — Camoufox, SeleniumBase, a captcha service, etc):
@@ -25,9 +25,9 @@ TARGET = "https://novelfire.net/book/marvel-starting-with-the-ice-ice-fruit"
 
 def main() -> None:
     config = default_config()
-    config.cloudflare.solver = RemoteSolver("http://localhost:8191", timeout=60)
+    config.cloudflare.solvers = [RemoteSolver("http://localhost:8191", timeout=60)]
     s = Scraper(config=config)
-    print("Solver configured:", type(config.cloudflare.solver).__name__)
+    print("Solver configured:", type(config.cloudflare.solvers[0]).__name__)
 
     # A challenge on this request is now solved and retried automatically; you
     # just get the final page back.
