@@ -234,3 +234,21 @@ def test_engine_request_cancelled_token_raises_aborted():
 
     with pytest.raises(AbortedException):
         e.request("GET", f"{BASE}/slow", cancel_token=token)
+
+
+# --- abort_on signal -------------------------------------------------------
+
+
+def test_abort_on_triggers_abort_when_signal_set():
+    import threading
+    import time
+
+    e = create_engine(make_fast_config())
+    event = threading.Event()
+    e.abort_on(event)
+    assert not e._aborted
+    event.set()
+    deadline = time.monotonic() + 2.0
+    while not e._aborted and time.monotonic() < deadline:
+        time.sleep(0.01)
+    assert e._aborted

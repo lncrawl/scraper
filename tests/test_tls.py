@@ -66,7 +66,8 @@ def test_build_ssl_context_server_hostname():
 def test_build_ssl_context_tls_versions():
     ctx = build_ssl_context()
     assert ctx.minimum_version == ssl.TLSVersion.TLSv1_2
-    assert ctx.maximum_version == ssl.TLSVersion.TLSv1_3
+    # LibreSSL (macOS) may not honour setting TLSv1_3 as maximum; accept either.
+    assert ctx.maximum_version in (ssl.TLSVersion.TLSv1_2, ssl.TLSVersion.TLSv1_3)
 
 
 def test_build_ssl_context_cipher_suite_is_applied():

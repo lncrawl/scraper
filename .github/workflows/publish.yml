@@ -1,9 +1,6 @@
 name: Publish
 
 on:
-  # Triggered explicitly by release.yml after the GitHub Release is created.
-  # GITHUB_TOKEN-created releases do not fire the `release: published` event
-  # in other workflows, so we dispatch directly instead of relying on it.
   workflow_dispatch:
     inputs:
       tag:
@@ -19,7 +16,6 @@ jobs:
     permissions:
       id-token: write
       contents: read
-      packages: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -27,7 +23,7 @@ jobs:
 
       - uses: astral-sh/setup-uv@v7
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
       - name: Build distributions
         run: uv build
@@ -37,10 +33,3 @@ jobs:
 
       - name: Publish to PyPI (trusted publishing)
         uses: pypa/gh-action-pypi-publish@release/v1
-
-      - name: Publish to GitHub Packages
-        run: uv publish
-        env:
-          UV_PUBLISH_URL: https://pypi.pkg.github.com/lncrawl/
-          UV_PUBLISH_USERNAME: ${{ github.actor }}
-          UV_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

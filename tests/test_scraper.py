@@ -199,3 +199,14 @@ def test_config_and_proxy_manager_properties(fast_config):
 
 def test_close_does_not_raise(fast_config):
     make(fast_config).close()
+
+
+def test_abort_on_delegates_to_engine(fast_config):
+    import threading
+    from unittest.mock import patch
+
+    s = make(fast_config)
+    event = threading.Event()
+    with patch.object(s.engine, "abort_on") as mock_abort_on:
+        s.abort_on(event)
+    mock_abort_on.assert_called_once_with(event)

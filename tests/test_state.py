@@ -48,8 +48,11 @@ def test_mark_cf_active_sets_flag():
     assert s.cf_active is True
 
 
-def test_throttle_delay_zero_on_cold_start():
+def test_throttle_delay_zero_on_cold_start(monkeypatch):
     """No prior request → elapsed >> interval → delay is 0."""
+    import scraper.engine.state as mod
+
+    monkeypatch.setattr(mod.time, "monotonic", lambda: 1_000_000.0)
     s = SessionState()
     assert s.throttle_delay(1.0, 2.0) == 0.0
 

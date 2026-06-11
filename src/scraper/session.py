@@ -93,9 +93,9 @@ class Scraper:
         """
         self.engine.rotate_proxy()
 
-    def trigger_cancel(self, signal: threading.Event) -> None:
-        """Abort the scraper once *signal* is set (see :meth:`Engine.trigger_cancel`)."""
-        self.engine.trigger_cancel(signal)
+    def abort_on(self, signal: threading.Event) -> None:
+        """Abort the scraper once *signal* is set (see :meth:`Engine.abort_on`)."""
+        self.engine.abort_on(signal)
 
     def close(self) -> None:
         """Abort all in-progress requests and release transport resources."""

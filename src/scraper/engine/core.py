@@ -3,7 +3,7 @@
 The engine owns the request collaborators (transport, state, stealth, proxy
 manager, challenge handlers) and the ordered middleware chain. It exposes a
 small surface the :class:`~scraper.Scraper` facade composes over: :meth:`request`,
-:meth:`perform_request`, :meth:`abort`, :meth:`trigger_cancel`, :meth:`put_cookie`,
+:meth:`perform_request`, :meth:`abort`, :meth:`abort_on`, :meth:`put_cookie`,
 :meth:`apply_browser_clearance`, and :meth:`reset`.
 
 The pipeline is **fully async** internally: all middleware and the transport
@@ -203,28 +203,30 @@ class Engine:
 
     # -- Public controls ----------------------------------------------------------
 
-    def trigger_cancel(self, signal: threading.Event) -> None:
-        """Abort the engine once *signal* is set.
-
-        Waits inside the engine's own event loop via ``run_in_executor``
-        so no extra polling thread is needed.
-        """
-
-        async def _wait_and_abort() -> None:
-            loop = asyncio.get_running_loop()
-            await loop.run_in_executor(None, signal.wait)
-            self.abort()
-
-        asyncio.run_coroutine_threadsafe(_wait_and_abort(), self._loop)
+    async def _cancel_all_tasks(self) -> None:
+        for task in asyncio.all_tasks(self._loop):
+            task.cancel()
 
     def abort(self) -> None:
         """Signal all pending and in-progress requests to stop, then close."""
         self._aborted = True
         asyncio.run_coroutine_threadsafe(self._cancel_all_tasks(), self._loop)
 
-    async def _cancel_all_tasks(self) -> None:
-        for task in asyncio.all_tasks(self._loop):
-            task.cancel()
+    def abort_on(self, signal: threading.Event) -> None:
+        """Abort the engine once *signal* is set.
+
+        Polls *signal* inside the engine's own event loop so no extra thread
+        is created; the coroutine is cancelled automatically when the engine
+        aborts or closes, so it never blocks process exit.
+        """
+
+        async def _wait_and_abort() -> None:
+            while not self._aborted:
+                if signal.is_set():
+                    return self.abort()
+                await asyncio.sleep(0.05)
+
+        asyncio.run_coroutine_threadsafe(_wait_and_abort(), self._loop)
 
     def put_cookie(self, name: str, value: str, domain: str = "", path: str = "/") -> None:
         """Set a cookie on both the canonical jar and the transport's jar."""
