@@ -2,21 +2,6 @@ name: Bump Version
 
 on:
   workflow_dispatch:
-    inputs:
-      bump:
-        description: Release segment to bump
-        required: true
-        default: patch
-        type: choice
-        # "stable" promotes a pre-release to its final version;
-        # "none" bumps only the pre-release segment (e.g. rc1 -> rc2).
-        options: [patch, minor, major, stable, none]
-      pre:
-        description: Pre-release segment (optional)
-        required: false
-        default: none
-        type: choice
-        options: [none, alpha, beta, rc]
 
 jobs:
   bump:
@@ -26,59 +11,45 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-tags: true
+
       - uses: astral-sh/setup-uv@v7
 
-      - name: Build version args
-        id: args
-        env:
-          BUMP: ${{ inputs.bump }}
-          PRE: ${{ inputs.pre }}
+      - name: Read target version from CHANGELOG
+        id: changelog
         run: |
-          args=()
-          if [ "$BUMP" != "none" ]; then args+=(--bump "$BUMP"); fi
-          if [ "$PRE" != "none" ]; then args+=(--bump "$PRE"); fi
-          if [ ${#args[@]} -eq 0 ]; then
-            echo "::error::Select at least one of 'bump' or 'pre' (both were 'none')."
+          version=$(grep -m1 '^## \[' CHANGELOG.md | sed 's/## \[//;s/\].*//')
+          if [ -z "$version" ]; then
+            echo "::error::No '## [x.y.z]' entry found in CHANGELOG.md."
             exit 1
           fi
-          # Persist as a space-separated string for subsequent steps
-          echo "args=${args[*]}" >> "$GITHUB_OUTPUT"
+          echo "value=$version" >> "$GITHUB_OUTPUT"
+          echo "Target version from CHANGELOG: $version"
 
-      - name: Preview new version (dry-run)
-        id: preview
+      - name: Fail if tag already exists
         run: |
-          new_version=$(uv version --dry-run --short ${{ steps.args.outputs.args }})
-          echo "value=$new_version" >> "$GITHUB_OUTPUT"
-          echo "New version will be: $new_version"
-
-      - name: Verify CHANGELOG has an entry for the new version
-        run: |
-          version="${{ steps.preview.outputs.value }}"
-          if ! grep -qE "^## \[$version\]" CHANGELOG.md; then
-            echo "::error::CHANGELOG.md has no entry for v$version."
-            echo "::error::Add a '## [$version] - YYYY-MM-DD' section and push it to main before releasing."
+          version="${{ steps.changelog.outputs.value }}"
+          if git tag --list "v$version" | grep -q .; then
+            echo "::error::Tag v$version already exists. Add a new version entry to CHANGELOG.md before releasing."
             exit 1
           fi
-          echo "CHANGELOG entry for v$version found."
+          echo "Tag v$version does not exist, proceeding."
 
-      - name: Bump version
-        run: uv version ${{ steps.args.outputs.args }}
-
-      - name: Read new version
-        id: version
-        run: echo "value=$(uv version | awk '{print $NF}')" >> $GITHUB_OUTPUT
+      - name: Set version in pyproject.toml
+        run: uv version "${{ steps.changelog.outputs.value }}"
 
       - name: Commit and tag
         uses: EndBug/add-and-commit@v10
         with:
           add: "pyproject.toml uv.lock"
-          tag: "v${{ steps.version.outputs.value }}"
-          message: "Bump version to v${{ steps.version.outputs.value }}"
+          tag: "v${{ steps.changelog.outputs.value }}"
+          message: "Bump version to v${{ steps.changelog.outputs.value }}"
 
       - name: Trigger release workflow
         run: |
           gh workflow run release.yml \
             --repo "${{ github.repository }}" \
-            --field tag="v${{ steps.version.outputs.value }}"
+            --field tag="v${{ steps.changelog.outputs.value }}"
         env:
           GH_TOKEN: ${{ secrets.LNCRAWL_PAT }}
