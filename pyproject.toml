@@ -24,7 +24,7 @@ license = {file = "LICENSE"}
 name = "lncrawl-scraper"
 readme = "README.md"
 requires-python = ">=3.9"
-version = "0.4.1"
+version = "0.4.2"
 
 dependencies = [
   "httpx[http2,socks]>=0.28",
