@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import base64
 import logging
+import threading
 from io import BytesIO
 from pathlib import Path
 from typing import Any, MutableMapping, Optional
@@ -91,6 +92,10 @@ class Scraper:
         session is recreated so the next request uses fresh TCP connections.
         """
         self.engine.rotate_proxy()
+
+    def trigger_cancel(self, signal: threading.Event) -> None:
+        """Abort the scraper once *signal* is set (see :meth:`Engine.trigger_cancel`)."""
+        self.engine.trigger_cancel(signal)
 
     def close(self) -> None:
         """Abort all in-progress requests and release transport resources."""

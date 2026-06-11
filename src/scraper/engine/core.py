@@ -3,7 +3,7 @@
 The engine owns the request collaborators (transport, state, stealth, proxy
 manager, challenge handlers) and the ordered middleware chain. It exposes a
 small surface the :class:`~scraper.Scraper` facade composes over: :meth:`request`,
-:meth:`perform_request`, :meth:`abort`, :meth:`put_cookie`,
+:meth:`perform_request`, :meth:`abort`, :meth:`trigger_cancel`, :meth:`put_cookie`,
 :meth:`apply_browser_clearance`, and :meth:`reset`.
 
 The pipeline is **fully async** internally: all middleware and the transport
@@ -202,6 +202,20 @@ class Engine:
             return False
 
     # -- Public controls ----------------------------------------------------------
+
+    def trigger_cancel(self, signal: threading.Event) -> None:
+        """Abort the engine once *signal* is set.
+
+        Waits inside the engine's own event loop via ``run_in_executor``
+        so no extra polling thread is needed.
+        """
+
+        async def _wait_and_abort() -> None:
+            loop = asyncio.get_running_loop()
+            await loop.run_in_executor(None, signal.wait)
+            self.abort()
+
+        asyncio.run_coroutine_threadsafe(_wait_and_abort(), self._loop)
 
     def abort(self) -> None:
         """Signal all pending and in-progress requests to stop, then close."""
