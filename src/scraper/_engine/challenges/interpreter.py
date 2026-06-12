@@ -1,7 +1,7 @@
 """JavaScript interpreter for solving Cloudflare challenges.
 
-Backed by the embedded QuickJS engine. Cloudflare's IUAM (V1) challenges ship
-obfuscated JavaScript that must be evaluated to compute the answer token.
+Cloudflare's IUAM (V1) challenges ship obfuscated JavaScript that must be
+evaluated to compute the answer token.
 """
 
 from __future__ import annotations
@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 import re
 
-import quickjs  # type:ignore
+import exejs
 
 from ..exceptions import CloudflareSolveError
 
@@ -75,14 +75,11 @@ def _iuam_template(body: str, domain: str) -> str:
 
 
 class JavaScriptInterpreter:
-    """Evaluates JavaScript using the embedded QuickJS engine."""
-
-    def __init__(self) -> None:
-        self._ctx = quickjs.Context()
+    """Evaluates JavaScript using exejs."""
 
     def eval(self, js: str) -> str:
         """Evaluate a JavaScript expression and return the result as a string."""
-        return str(self._ctx.eval(js))
+        return str(exejs.evaluate(js))
 
     def solve_challenge(self, body: str, domain: str) -> str:
         """Extract the CF IUAM challenge JS from *body* and evaluate it.

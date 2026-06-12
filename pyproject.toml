@@ -30,7 +30,7 @@ dependencies = [
     "requests[socks]>=2.28",
     "beautifulsoup4>=4.14.3",
     "lxml>=6.0.0",
-    "quickjs>=1.19.4",
+    "exejs>=0.0.7",
     "brotli>=1.2.0",
 ]
 

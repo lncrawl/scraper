@@ -142,20 +142,6 @@ s = Scraper(origin="https://site.com", config=cfg)
 - **Never commit automatically after making changes.** Always stop after
   editing files and wait for the user to explicitly ask for a commit.
 
-## Commit messages
-
-Match the existing history (`git log`):
-
-- **No type prefix.** Do NOT use Conventional Commits (`feat:`, `fix:`,
-  `docs:`, …) — subjects are plain capitalized text.
-- **Imperative mood**, capitalized first word, no trailing period, subject
-  ≤ ~60 chars (e.g. `Add coverage reporting to CI`, `Restructure into src layout`).
-- **Body only for non-trivial changes**: a blank line, then a short rationale
-  paragraph and/or `-` bullets covering _what_ changed and _why_ (wrap at ~72
-  chars). Small changes are subject-only.
-- **Do NOT append a `Co-Authored-By` trailer** — this overrides the default
-  Claude Code behaviour; the maintainer's commits never carry it.
-
 ## Testing
 
 `pytest` under [tests/](tests/). The src/ layout means tests import the
@@ -181,3 +167,15 @@ use the editable install).
   `coverage.xml`, and a terminal report (all coverage artifacts are gitignored).
   The deep CF challenge solvers (`cloudflare_v1/v2/v3`, `interpreter`) are
   integration-only and stay low-coverage without live Cloudflare traffic.
+
+## Commit messages
+
+Plain capitalized imperative subjects (no Conventional Commits prefix) and **no
+`Co-Authored-By` trailer**. See the **`commit-messages`** skill for the full
+convention and examples - consult it whenever writing a commit message.
+
+## Releasing
+
+Releases are automated: bump -> tag -> GitHub Release (artifacts + changelog) ->
+PyPI. Update `CHANGELOG.md`, then run the **Bump Version** workflow. For the full
+pipeline, pre-release options, and gotchas, use the **`releasing`** skill.
