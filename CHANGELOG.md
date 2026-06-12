@@ -4,6 +4,16 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-06-12
+
+### Fixed
+
+- `CipherSuiteAdapter.send()`: clear `check_hostname` and set `verify_mode = CERT_NONE`
+  before urllib3 touches the shared SSL context when `verify=False` is requested.
+  Previously, the SSL auto-retry in `_send()` would crash with
+  `ValueError: Cannot set verify_mode to CERT_NONE when check_hostname is enabled`
+  instead of gracefully falling back to unverified mode.
+
 ## [0.1.0] - 2026-06-04
 
 Initial public release of `lncrawl-scraper`, extracted from
@@ -30,4 +40,5 @@ Initial public release of `lncrawl-scraper`, extracted from
   rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[0.1.1]: https://github.com/lncrawl/scraper/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/lncrawl/scraper/releases/tag/v0.1.0

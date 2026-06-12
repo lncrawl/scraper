@@ -79,6 +79,13 @@ class CipherSuiteAdapter(HTTPAdapter):
             context.verify_mode = ssl.CERT_NONE
         return context
 
+    def send(self, request, *args, **kwargs) -> Any:
+        # Must clear check_hostname before urllib3 sets verify_mode=CERT_NONE or Python raises ValueError.
+        if not kwargs.get("verify", True) and self.ssl_context is not None:
+            self.ssl_context.check_hostname = False
+            self.ssl_context.verify_mode = ssl.CERT_NONE
+        return super().send(request, *args, **kwargs)
+
     def _wrap_socket(self, *args, **kwargs) -> Any:
         context = self.ssl_context
         assert context is not None
