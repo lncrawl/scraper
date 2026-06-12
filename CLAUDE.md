@@ -71,7 +71,7 @@ HTTP/1.1 fingerprint — `set_ciphers()` in [tls.py](src/scraper/_engine/tls.py)
 only reorders ciphers, so the ClientHello still reads as Python. Three features
 push past that:
 
-- **Impersonation transport** ([_engine/impersonate.py](src/scraper/_engine/impersonate.py)):
+- **Impersonation transport** ([\_engine/impersonate.py](src/scraper/_engine/impersonate.py)):
   when `ScraperConfig.impersonate` is set (e.g. `"chrome"`), `ScraperEngine.perform_request`
   routes through `curl_cffi` (curl-impersonate) for a real browser TLS + HTTP/2
   fingerprint, and adapts the result back into a `requests.Response`. The
@@ -113,23 +113,34 @@ s = Scraper(origin="https://site.com", config=cfg)
 ## Conventions
 
 - **Python 3.9 compatibility is mandatory.** Bare `X | Y` unions must not be
-  *evaluated at runtime* — only use them in files that have
+  _evaluated at runtime_ - only use them in files that have
   `from __future__ import annotations`, or in pure annotations. Prefer
   `typing.Optional/Union` in new non-future-annotated modules. `importlib`,
   dataclasses, etc. must all work on 3.9.
-- **Keep the public surface in public modules.** `_engine/` and `_utils/` are
-  private; user-facing names live in `__init__.py`/`config.py` and are listed
-  in `__all__`. Update `__all__` and the README when changing that surface.
+- **Explicit relative imports.** All intra-package imports inside `src/scraper/`
+  must use explicit relative paths (e.g. `from .config import X`,
+  `from ..exceptions import Y`, `from ...engine.state import RequestState`).
+  Never import your own package with an absolute `scraper.*` path from within
+  `src/scraper/` - that path only works after install and breaks editable installs
+  in some edge cases.
+- **Type hints on all functions.** Every function or method that is part of
+  `scraper`' module must have fully annotated signatures (parameters + return type).
+  Internal helpers should be annotated too, but pyright clean is the hard gate.
 - **`ruff`**: line-length 100, double quotes, `force-sort-within-sections`,
   combine-as-imports. **`pyright`** runs in `standard` mode over `src` + `tests`
-  — keep it clean (use real `isinstance` narrowing rather than `is_dataclass`,
-  which pyright doesn't narrow on).
+  - keep it clean (use real `isinstance` narrowing rather than `is_dataclass`,
+    which pyright doesn't narrow on).
 - **Dependencies**: core runtime deps live in `[project.dependencies]`. Optional
   extras: `image` (`Pillow`, for `get_image`) and `impersonate` (`curl_cffi`,
   for `ScraperConfig.impersonate`) — both imported lazily so the package works
   without them. Add deps via `uv add` / `uv add --dev`.
 - **Public API** is whatever `src/scraper/__init__.py` exports in `__all__`.
   Update it (and the README) when adding user-facing surface.
+- **Never `git push` automatically.** Commit locally and stop; let the user
+  push when ready. This applies even when asked to "make a commit" - stop
+  after the commit unless a push is explicitly requested.
+- **Never commit automatically after making changes.** Always stop after
+  editing files and wait for the user to explicitly ask for a commit.
 
 ## Commit messages
 
@@ -140,7 +151,7 @@ Match the existing history (`git log`):
 - **Imperative mood**, capitalized first word, no trailing period, subject
   ≤ ~60 chars (e.g. `Add coverage reporting to CI`, `Restructure into src layout`).
 - **Body only for non-trivial changes**: a blank line, then a short rationale
-  paragraph and/or `-` bullets covering *what* changed and *why* (wrap at ~72
+  paragraph and/or `-` bullets covering _what_ changed and _why_ (wrap at ~72
   chars). Small changes are subject-only.
 - **Do NOT append a `Co-Authored-By` trailer** — this overrides the default
   Claude Code behaviour; the maintainer's commits never carry it.
@@ -148,7 +159,7 @@ Match the existing history (`git log`):
 ## Testing
 
 `pytest` under [tests/](tests/). The src/ layout means tests import the
-*installed* package, so run them via `uv run poe test` / `uv run poe cov` (which
+_installed_ package, so run them via `uv run poe test` / `uv run poe cov` (which
 use the editable install).
 
 - **Tests must be offline and fast.** [conftest.py](tests/conftest.py) provides
@@ -166,7 +177,7 @@ use the editable install).
   (`BrowserConfig(platform="windows", mobile=False)`).
 - `curl_cffi`-dependent tests use `pytest.importorskip("curl_cffi")`.
 - **Coverage** config is in `pyproject.toml` (`[tool.coverage]`, `source =
-  ["scraper"]`, `relative_files = true`). `uv run poe cov` writes `htmlcov/`,
+["scraper"]`, `relative_files = true`). `uv run poe cov` writes `htmlcov/`,
   `coverage.xml`, and a terminal report (all coverage artifacts are gitignored).
   The deep CF challenge solvers (`cloudflare_v1/v2/v3`, `interpreter`) are
   integration-only and stay low-coverage without live Cloudflare traffic.

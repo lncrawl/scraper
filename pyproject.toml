@@ -28,15 +28,16 @@ classifiers = [
 
 dependencies = [
     "requests[socks]>=2.28",
-    "beautifulsoup4>=4.12",
-    "lxml>=4.9",
+    "beautifulsoup4>=4.14.3",
+    "lxml>=6.0.0",
     "quickjs>=1.19.4",
-    "brotli>=1.0",
+    "brotli>=1.2.0",
 ]
 
 [project.optional-dependencies]
 image = ["Pillow>=10.0"]
 impersonate = ["curl_cffi>=0.7"]
+all = ["lncrawl-scraper[image,impersonate]"]
 
 [project.urls]
 Homepage = "https://github.com/lncrawl/scraper"
@@ -49,13 +50,14 @@ packages = ["src/scraper"]
 
 [dependency-groups]
 dev = [
-    "pytest>=8.0",
-    "pytest-cov>=5.0",
+    "pytest>=8.4.2",
+    "pytest-cov>=6.3.0",
     "responses>=0.25",
     "pyright>=1.1",
-    "ruff>=0.15.15",
-    "poethepoet>=0.29",
-    "Pillow>=10.0",
+    "ruff>=0.15.16",
+    "poethepoet>=0.37.0",
+    "Pillow>=11.3.0",
+    "lxml-stubs>=0.5.1",
     "curl-cffi>=0.7",
 ]
 
@@ -70,7 +72,7 @@ lint-fix = [
     { cmd = "ruff format" },
 ]
 test = "pytest"
-cov = "pytest --cov --cov-report=term-missing --cov-report=html --cov-report=xml"
+cov = "pytest --cov --cov-branch --cov-report=term-missing --cov-report=html --cov-report=xml"
 build = [
     { ref = "lint" },
     { ref = "test" },
@@ -83,6 +85,9 @@ publish = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+filterwarnings = [
+    "ignore:urllib3 v2 only supports OpenSSL:Warning",
+]
 
 [tool.coverage.run]
 branch = true
@@ -102,7 +107,7 @@ exclude_also = [
 [tool.pyright]
 pythonVersion = "3.9"
 typeCheckingMode = "standard"
-include = ["src", "tests"]
+include = ["src", "tests", "examples"]
 
 [tool.ruff]
 line-length = 100

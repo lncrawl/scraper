@@ -2,38 +2,54 @@ name: Bump Version
 
 on:
   workflow_dispatch:
-    inputs:
-      bump:
-        description: Version part to bump
-        required: true
-        default: patch
-        type: choice
-        options: [patch, minor, major]
 
 jobs:
-  ci:
-    uses: ./.github/workflows/ci.yml
-
   bump:
-    needs: ci
     name: Bump version and push tag
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-tags: true
+
       - uses: astral-sh/setup-uv@v7
 
-      - name: Bump version
-        run: uv version --bump '${{ inputs.bump }}'
+      - name: Read target version from CHANGELOG
+        id: changelog
+        run: |
+          version=$(grep -m1 '^## \[' CHANGELOG.md | sed 's/## \[//;s/\].*//')
+          if [ -z "$version" ]; then
+            echo "::error::No '## [x.y.z]' entry found in CHANGELOG.md."
+            exit 1
+          fi
+          echo "value=$version" >> "$GITHUB_OUTPUT"
+          echo "Target version from CHANGELOG: $version"
 
-      - name: Read new version
-        id: version
-        run: echo "value=$(uv version | awk '{print $NF}')" >> $GITHUB_OUTPUT
+      - name: Fail if tag already exists
+        run: |
+          version="${{ steps.changelog.outputs.value }}"
+          if git tag --list "v$version" | grep -q .; then
+            echo "::error::Tag v$version already exists. Add a new version entry to CHANGELOG.md before releasing."
+            exit 1
+          fi
+          echo "Tag v$version does not exist, proceeding."
+
+      - name: Set version in pyproject.toml
+        run: uv version "${{ steps.changelog.outputs.value }}"
 
       - name: Commit and tag
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v10
         with:
           add: "pyproject.toml uv.lock"
-          tag: "v${{ steps.version.outputs.value }}"
-          message: "Bump version to v${{ steps.version.outputs.value }}"
+          tag: "v${{ steps.changelog.outputs.value }}"
+          message: "Bump version to v${{ steps.changelog.outputs.value }}"
+
+      - name: Trigger release workflow
+        run: |
+          gh workflow run release.yml \
+            --repo "${{ github.repository }}" \
+            --field tag="v${{ steps.changelog.outputs.value }}"
+        env:
+          GH_TOKEN: ${{ secrets.LNCRAWL_PAT }}

@@ -6,39 +6,81 @@ on:
   pull_request:
   workflow_call:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@v7
+
+      - name: Setup
+        uses: astral-sh/setup-uv@v7
         with:
-          python-version: "3.9"
-      - run: uv sync --all-groups --all-extras
-      - run: uv run ruff check
-      - run: uv run ruff format --check
-      - run: uv run pyright
+          python-version: '3.9'
+
+      - name: Install
+        run: uv sync --all-groups --all-extras
+
+      - name: Test
+        run: |
+          uv run ruff check
+          uv run ruff format --check
+          uv run pyright
 
   coverage:
     name: Coverage
     runs-on: ubuntu-latest
     needs: lint
+    permissions:
+      code-quality: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
         with:
-          python-version: "3.12"
-      - run: uv sync --all-groups --all-extras
+          python-version: '3.12'
+
+      - name: Install
+        run: uv sync --all-groups --all-extras
 
       - name: Run tests with coverage
-        run: uv run pytest --cov --cov-report=xml --cov-report=term-missing
+        run: |
+          uv run pytest \
+            --cov \
+            --cov-branch \
+            --cov-report=xml \
+            --cov-report=term-missing \
+            --cov-report=markdown-append:$GITHUB_STEP_SUMMARY
 
       - name: Upload coverage.xml
         uses: actions/upload-artifact@v7
         with:
           name: coverage-xml
           path: coverage.xml
+          retention-days: 7
+
+      - name: Upload coverage report
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/upload-code-coverage@v1
+        with:
+          file: coverage.xml
+          language: Python
+          label: code-coverage/pytest
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: lncrawl/scraper
+          files: coverage.xml
+          fail_ci_if_error: false
 
   build:
     name: Build (Python ${{ matrix.python-version }})
@@ -47,16 +89,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
-      - run: uv sync --all-groups --all-extras
-      - run: uv run pytest
-      - run: uv build
-      - uses: actions/upload-artifact@v7
+
+      - name: Install
+        run: uv sync --all-groups --all-extras
+
+      - name: Build
+        run: uv build
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7
         with:
           name: dist-${{ matrix.python-version }}
           path: dist/
+          retention-days: 30
