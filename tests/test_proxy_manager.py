@@ -28,9 +28,9 @@ def test_get_proxy_none_when_empty():
     assert ProxyManager().get_proxy() is None
 
 
-def test_get_proxy_returns_url_string():
+def test_get_proxy_returns_proxies_dict():
     result = pm("socks5://127.0.0.1:9150").get_proxy()
-    assert result == "socks5://127.0.0.1:9150"
+    assert result == {"http": "socks5://127.0.0.1:9150", "https": "socks5://127.0.0.1:9150"}
 
 
 def test_get_proxy_round_robins():

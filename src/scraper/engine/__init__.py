@@ -311,10 +311,13 @@ class ScraperEngine(requests.Session):
                 self._refresh_session(url)
             self._acquire_slot()
 
+        if not kwargs.get("proxies") and self.proxy_manager.has_proxy:
+            kwargs["proxies"] = self.proxy_manager.get_proxy()
+        if not kwargs.get("proxies") and not self.config.proxy.fallback_to_direct:
+            raise requests.exceptions.ProxyError("No proxies configured")
+
         chain.request_depth += 1
         try:
-            if not kwargs.get("proxies") and self.proxy_manager.has_proxy:
-                kwargs["proxies"] = self.proxy_manager.get_proxy()
             kwargs = self._apply_stealth(method, url, kwargs)
 
             if self.config.pre_hook:

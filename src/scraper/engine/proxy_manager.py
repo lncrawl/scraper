@@ -42,13 +42,16 @@ class ProxyManager:
         self._restore_disabled()
         return bool(self._available)
 
-    def get_proxy(self) -> str | None:
-        """Return the current proxy URL string, or ``None`` when no proxy is active."""
+    def get_proxy(self) -> dict | None:
+        """Return a proxies dict for requests, or ``None`` when no proxy is active."""
         if not self.has_proxy:
             return None
         with self._lock:
             current = self._available[self._index]
-        return current.url
+        return {
+            "http": current.url,
+            "https": current.url,
+        }
 
     def disable_current(self):
         with self._lock:
