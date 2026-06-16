@@ -66,9 +66,10 @@ Runnable examples live in [`examples/`](examples/) — run any with
 | [06_configuration.py](examples/06_configuration.py) | `ScraperConfig`, `default_config()`, stealth, browser identity |
 | [07_impersonation.py](examples/07_impersonation.py) | Real browser TLS/HTTP-2 fingerprint via `impersonate` |
 | [08_browser_clearance.py](examples/08_browser_clearance.py) | Reuse a `cf_clearance` solved by a real browser |
-| [09_proxies_and_tor.py](examples/09_proxies_and_tor.py) | Proxy rotation and Tor identity refresh |
-| [10_concurrency_and_abort.py](examples/10_concurrency_and_abort.py) | Threaded fetches and cooperative `abort()` |
+| [09_proxies.py](examples/09_proxies.py) | Proxy rotation (HTTP/SOCKS/round-robin) |
+| [10_tor_proxy.py](examples/10_tor_proxy.py) | Tor integration and identity refresh |
 | [11_error_handling.py](examples/11_error_handling.py) | HTTP, Cloudflare, and abort error handling |
+| [12_concurrency_and_abort.py](examples/12_concurrency_and_abort.py) | Threaded fetches and cooperative `abort()` |
 
 ## Configuration
 

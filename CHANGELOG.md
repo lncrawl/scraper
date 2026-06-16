@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-06-16
+
+### Changed
+
+- **`scraper._engine` → `scraper.engine`** — the engine sub-package is now a public module; all internal imports updated accordingly
+- **`scraper._utils` → `scraper.utils`** — utilities sub-package promoted to public
+- **`scraper.exceptions`** — `CloudflareException` and `AbortedException` are now importable directly from `scraper.engine.exceptions` (previously `scraper._engine.exceptions`)
+- **`ProxyManager` rewritten** — moved from `scraper._engine.proxy_manager` to `scraper.engine.proxy_manager`; richer proxy rotation, Tor support split into a dedicated example
+- **`ScraperConfig` / proxy config consolidated** — `_engine/config.py` merged into `scraper/config.py`; `EventLock` moved to `scraper/utils/event_lock.py`
+- **Examples reorganised** — `09_proxies.py`, `10_tor_proxy.py` added; `09_proxies_and_tor.py` removed
+
 ## [0.1.2] - 2026-06-13
 
 ### Changed
@@ -49,6 +60,7 @@ Initial public release of `lncrawl-scraper`, extracted from
   rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[0.2.1]: https://github.com/lncrawl/scraper/compare/v0.1.2...v0.2.1
 [0.1.2]: https://github.com/lncrawl/scraper/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/lncrawl/scraper/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/lncrawl/scraper/releases/tag/v0.1.0

@@ -60,8 +60,6 @@ src/scraper/
 - **`engine/`** — `ScraperEngine` (the `requests.Session` subclass with the full
   request pipeline) in `engine/__init__.py`, plus CF challenge handlers v1/v2/v3 +
   Turnstile, TLS cipher rotation, stealth mode, proxy/Tor manager, and UA selection.
-  It is implementation detail — nothing here is part of the public API except
-  what `config.py`/`__init__.py` re-export.
 
 ### Cloudflare-bypass surface
 
@@ -90,8 +88,8 @@ push past that:
 
 All config flows through `ScraperConfig` (a dataclass with nested
 `StealthConfig`, `ProxyConfig`, `BrowserConfig`). The public surface is
-[config.py](src/scraper/config.py), which re-exports the dataclasses from
-`engine.config` and adds the `default_config()` factory:
+[config.py](src/scraper/config.py), which defines the dataclasses and the
+`default_config()` factory:
 
 ```python
 from scraper import Scraper, default_config
