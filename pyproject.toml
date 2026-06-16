@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "lncrawl-scraper"
-version = "0.2.1"
+version = "0.2.2"
 description = "HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth mode, proxy support, and a null-safe BeautifulSoup wrapper."
 readme = "README.md"
 license = { file = "LICENSE" }
