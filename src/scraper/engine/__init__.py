@@ -223,9 +223,14 @@ class ScraperEngine(requests.Session):
             logger.warning("SSL verification failed for %s — retrying without verification.", url)
             kwargs["verify"] = False
             response = self.perform_request(method, url, *args, **kwargs)
-        except (requests.exceptions.ProxyError, requests.exceptions.ConnectionError):
-            if kwargs.get("proxies"):
-                self.proxy_manager.disable_current()
+        except (requests.exceptions.ProxyError, requests.exceptions.ConnectionError) as exc:
+            if kwargs.get("proxies") and self.config.proxy.fallback_to_direct:
+                logger.warning(
+                    "Proxy still unavailable after rotation (%s) — retrying direct.",
+                    type(exc).__name__,
+                )
+                kwargs.pop("proxies", None)
+                return self.perform_request(method, url, *args, **kwargs)
             raise
         return response
 
