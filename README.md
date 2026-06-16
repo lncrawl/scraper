@@ -1,7 +1,10 @@
 # LNCrawl Scraper
 
-[![CI](https://github.com/lncrawl/scraper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lncrawl/scraper/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/lncrawl-scraper.svg)](https://pypi.org/project/lncrawl-scraper/)
+[![codecov](https://codecov.io/gh/lncrawl/scraper/branch/main/graph/badge.svg)](https://codecov.io/gh/lncrawl/scraper)
+[![CI](https://github.com/lncrawl/scraper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lncrawl/scraper/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/lncrawl/scraper/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/lncrawl/scraper/actions/workflows/github-code-scanning/codeql)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lncrawl-scraper)
 
 HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth mode, proxy support, and a null-safe BeautifulSoup wrapper.
 
@@ -56,20 +59,20 @@ img = s.get_image("https://example.com/cover.jpg")
 Runnable examples live in [`examples/`](examples/) — run any with
 `uv run python examples/<file>.py`.
 
-| Example | Shows |
-| ------- | ----- |
-| [01_basic_html.py](examples/01_basic_html.py) | Fetch a page and extract data with `get_soup` / `PageSoup` |
-| [02_pagesoup_parsing.py](examples/02_pagesoup_parsing.py) | PageSoup tour: CSS select, attrs, navigation, XPath |
-| [03_json_api.py](examples/03_json_api.py) | `get_json` / `post_json` and raw `Response` access |
-| [04_files_and_images.py](examples/04_files_and_images.py) | `get_file` (streamed, atomic) and `get_image` (Pillow) |
-| [05_forms_cookies_headers.py](examples/05_forms_cookies_headers.py) | `submit_form`, `set_header`, `set_cookie`, `reset` |
-| [06_configuration.py](examples/06_configuration.py) | `ScraperConfig`, `default_config()`, stealth, browser identity |
-| [07_impersonation.py](examples/07_impersonation.py) | Real browser TLS/HTTP-2 fingerprint via `impersonate` |
-| [08_browser_clearance.py](examples/08_browser_clearance.py) | Reuse a `cf_clearance` solved by a real browser |
-| [09_proxies.py](examples/09_proxies.py) | Proxy rotation (HTTP/SOCKS/round-robin) |
-| [10_tor_proxy.py](examples/10_tor_proxy.py) | Tor integration and identity refresh |
-| [11_error_handling.py](examples/11_error_handling.py) | HTTP, Cloudflare, and abort error handling |
-| [12_concurrency_and_abort.py](examples/12_concurrency_and_abort.py) | Threaded fetches and cooperative `abort()` |
+| Example                                                             | Shows                                                          |
+| ------------------------------------------------------------------- | -------------------------------------------------------------- |
+| [01_basic_html.py](examples/01_basic_html.py)                       | Fetch a page and extract data with `get_soup` / `PageSoup`     |
+| [02_pagesoup_parsing.py](examples/02_pagesoup_parsing.py)           | PageSoup tour: CSS select, attrs, navigation, XPath            |
+| [03_json_api.py](examples/03_json_api.py)                           | `get_json` / `post_json` and raw `Response` access             |
+| [04_files_and_images.py](examples/04_files_and_images.py)           | `get_file` (streamed, atomic) and `get_image` (Pillow)         |
+| [05_forms_cookies_headers.py](examples/05_forms_cookies_headers.py) | `submit_form`, `set_header`, `set_cookie`, `reset`             |
+| [06_configuration.py](examples/06_configuration.py)                 | `ScraperConfig`, `default_config()`, stealth, browser identity |
+| [07_impersonation.py](examples/07_impersonation.py)                 | Real browser TLS/HTTP-2 fingerprint via `impersonate`          |
+| [08_browser_clearance.py](examples/08_browser_clearance.py)         | Reuse a `cf_clearance` solved by a real browser                |
+| [09_proxies.py](examples/09_proxies.py)                             | Proxy rotation (HTTP/SOCKS/round-robin)                        |
+| [10_tor_proxy.py](examples/10_tor_proxy.py)                         | Tor integration and identity refresh                           |
+| [11_error_handling.py](examples/11_error_handling.py)               | HTTP, Cloudflare, and abort error handling                     |
+| [12_concurrency_and_abort.py](examples/12_concurrency_and_abort.py) | Threaded fetches and cooperative `abort()`                     |
 
 ## Configuration
 
