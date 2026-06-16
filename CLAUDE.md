@@ -42,8 +42,8 @@ src/scraper/
 ├── soup.py             # PageSoup — null-safe BeautifulSoup wrapper
 ├── config.py           # public config surface + default_config() factory
 ├── py.typed            # PEP 561 marker
-├── _utils/             # internal helpers (event_lock, url_tools, file_tools)
-└── _engine/            # internal Cloudflare-bypass engine (private)
+├── utils/              # internal helpers (event_lock, url_tools, file_tools)
+└── engine/             # internal Cloudflare-bypass engine (private)
 ```
 
 ### Layers
@@ -57,21 +57,20 @@ src/scraper/
   Selection methods (`select`, `select_one`, `find`, `xpath`, `closest`, …)
   always return `PageSoup`/`list`, never `None`; text/HTML accessors always
   return `str`. An empty `PageSoup` is falsy. Reach the raw tag via `.tag`.
-- **`_engine/`** — the private engine: `ScraperEngine` (the `requests.Session`
-  subclass with the full request pipeline) in `_engine/__init__.py`, plus CF
-  challenge handlers v1/v2/v3 + Turnstile, TLS cipher rotation, stealth mode,
-  proxy/Tor manager, and UA selection. It is implementation detail — nothing
-  here is part of the public API except what `config.py`/`__init__.py`
-  re-export.
+- **`engine/`** — `ScraperEngine` (the `requests.Session` subclass with the full
+  request pipeline) in `engine/__init__.py`, plus CF challenge handlers v1/v2/v3 +
+  Turnstile, TLS cipher rotation, stealth mode, proxy/Tor manager, and UA selection.
+  It is implementation detail — nothing here is part of the public API except
+  what `config.py`/`__init__.py` re-export.
 
 ### Cloudflare-bypass surface
 
 The realistic ceiling of a `requests`-based engine is its TLS (JA3/JA4) and
-HTTP/1.1 fingerprint — `set_ciphers()` in [tls.py](src/scraper/_engine/tls.py)
+HTTP/1.1 fingerprint — `set_ciphers()` in [tls.py](src/scraper/engine/tls.py)
 only reorders ciphers, so the ClientHello still reads as Python. Three features
 push past that:
 
-- **Impersonation transport** ([\_engine/impersonate.py](src/scraper/_engine/impersonate.py)):
+- **Impersonation transport** ([\engine/impersonate.py](src/scraper/engine/impersonate.py)):
   when `ScraperConfig.impersonate` is set (e.g. `"chrome"`), `ScraperEngine.perform_request`
   routes through `curl_cffi` (curl-impersonate) for a real browser TLS + HTTP/2
   fingerprint, and adapts the result back into a `requests.Response`. The
@@ -92,7 +91,7 @@ push past that:
 All config flows through `ScraperConfig` (a dataclass with nested
 `StealthConfig`, `ProxyConfig`, `BrowserConfig`). The public surface is
 [config.py](src/scraper/config.py), which re-exports the dataclasses from
-`_engine.config` and adds the `default_config()` factory:
+`engine.config` and adds the `default_config()` factory:
 
 ```python
 from scraper import Scraper, default_config
@@ -149,7 +148,7 @@ _installed_ package, so run them via `uv run poe test` / `uv run poe cov` (which
 use the editable install).
 
 - **Tests must be offline and fast.** [conftest.py](tests/conftest.py) provides
-  an autouse fixture that stubs `scraper._engine.user_agent._load_ua_data` to
+  an autouse fixture that stubs `scraper.engine.user_agent._load_ua_data` to
   `None` (forces the deterministic embedded UA generator, no network), plus
   `fast_config` / `make_fast_config()` which disable stealth delays, throttling,
   and session refresh. Use these in any test that constructs a `Scraper`.

@@ -5,8 +5,8 @@ import os
 import pytest
 
 from scraper import AbortedException, CloudflareException
-from scraper._utils.file_tools import atomic_write
-from scraper._utils.url_tools import extract_base, extract_host, validate_url
+from scraper.utils.file_tools import atomic_write
+from scraper.utils.url_tools import extract_base, extract_host, validate_url
 
 # --- url_tools ------------------------------------------------------------
 
@@ -37,6 +37,15 @@ def test_extract_host_without_scheme_uses_path_fallback():
 def test_extract_host_empty_returns_empty():
     assert extract_host("") == ""
     assert extract_host("/just/a/path") == ""
+
+
+def test_extract_host_idna_fallback_on_invalid_label():
+    # A label that is valid unicode but fails IDNA encoding (e.g. too long or
+    # contains characters that break the IDNA codec) should still return the
+    # normalised host rather than raising.
+    long_label = "a" * 64  # IDNA labels must be ≤63 chars → UnicodeError
+    host = extract_host(f"https://{long_label}.com/")
+    assert long_label in host
 
 
 def test_validate_url():

@@ -21,7 +21,7 @@ from typing import Dict
 
 from requests.structures import CaseInsensitiveDict
 
-from .config import BrowserConfig
+from ..config import BrowserConfig
 
 logger = logging.getLogger(__name__)
 

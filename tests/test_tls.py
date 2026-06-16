@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from requests import PreparedRequest
 
-from scraper._engine.tls import CipherSuiteAdapter
+from scraper.engine.tls import CipherSuiteAdapter
 
 
 def _make_request(url: str = "https://example.com/") -> PreparedRequest:
@@ -102,7 +102,7 @@ def test_send_verify_false_no_ssl_context_is_safe():
 
 
 def test_cipher_rotator_single_suite_returns_none():
-    from scraper._engine.tls import CipherRotator
+    from scraper.engine.tls import CipherRotator
 
     rotator = CipherRotator(["AES256-SHA"])
     assert rotator.suite_for(0) is None
@@ -110,13 +110,13 @@ def test_cipher_rotator_single_suite_returns_none():
 
 
 def test_cipher_rotator_empty_returns_none():
-    from scraper._engine.tls import CipherRotator
+    from scraper.engine.tls import CipherRotator
 
     assert CipherRotator([]).suite_for(0) is None
 
 
 def test_cipher_rotator_rotates_window():
-    from scraper._engine.tls import CipherRotator
+    from scraper.engine.tls import CipherRotator
 
     ciphers = [f"CIPHER-{i}" for i in range(10)]
     rotator = CipherRotator(ciphers)
@@ -129,7 +129,7 @@ def test_cipher_rotator_rotates_window():
 
 @pytest.mark.parametrize("rotation", [0, 1, 7, 100])
 def test_cipher_rotator_always_returns_string(rotation):
-    from scraper._engine.tls import CipherRotator
+    from scraper.engine.tls import CipherRotator
 
     ciphers = [f"C{i}" for i in range(5)]
     result = CipherRotator(ciphers).suite_for(rotation)

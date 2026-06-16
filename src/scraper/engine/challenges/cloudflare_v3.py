@@ -12,7 +12,7 @@ from urllib.parse import urljoin, urlparse
 
 from requests import Response
 
-from ..exceptions import CloudflareChallengeError, CloudflareSolveError
+from ...exceptions import CloudflareChallengeError, CloudflareSolveError
 from .base import ChallengeHandler
 from .interpreter import JavaScriptInterpreter
 

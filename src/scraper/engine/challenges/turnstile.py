@@ -5,7 +5,7 @@ from typing import Callable
 
 from requests import Response
 
-from ..exceptions import CloudflareTurnstileError
+from ...exceptions import CloudflareTurnstileError
 from .base import ChallengeHandler
 
 

@@ -7,20 +7,134 @@ the recommended way to obtain tuned defaults.
 
 from __future__ import annotations
 
-from ._engine.config import (
-    BrowserConfig,
-    ProxyConfig,
-    ScraperConfig,
-    StealthConfig,
-)
+import ssl
+from dataclasses import dataclass, field
+from typing import Callable
 
-__all__ = [
-    "ScraperConfig",
-    "BrowserConfig",
-    "ProxyConfig",
-    "StealthConfig",
-    "default_config",
-]
+from requests import Response
+
+
+@dataclass
+class StealthConfig:
+    """Anti-detection behaviour: pacing, header randomisation, and browser quirks."""
+
+    enabled: bool = True
+    # Delays when Cloudflare is active
+    min_delay: float = 1.0
+    max_delay: float = 3.0
+    # Delays when no CF challenge has been seen (fast path)
+    min_delay_fast: float = 0.0
+    max_delay_fast: float = 0.1
+    human_like_delays: bool = True
+    randomize_headers: bool = True
+    browser_quirks: bool = True
+
+
+@dataclass
+class BrowserConfig:
+    """Identity to spoof — drives the User-Agent and matching Client Hints."""
+
+    # Browser engine to spoof: "chrome" | "firefox" | None (random choice).
+    browser: str | None = None
+    # Target platform: "windows" | "darwin" | "linux" | "android" | "ios" | None.
+    platform: str | None = None
+    desktop: bool = True
+    mobile: bool = True
+    # Explicit User-Agent string; when set, it overrides browser/platform.
+    custom: str | None = None
+
+
+@dataclass(frozen=True)
+class ProxyUrl:
+    """Proxy URL."""
+
+    url: str
+
+
+@dataclass(frozen=True)
+class TorProxyUrl(ProxyUrl):
+    """Tor Proxy URL for optional Tor control-port settings for rotation."""
+
+    url: str = "socks5h://127.0.0.1:9050"
+    control_host: str = "127.0.0.1"
+    control_port: int = 9051
+    control_password: str = "password"
+
+
+@dataclass
+class ProxyConfig:
+    """Proxy configuration."""
+
+    fallback_to_direct: bool = True
+    proxy_urls: list[TorProxyUrl | ProxyUrl | str] = field(default_factory=list)
+    retry_request_on_failure: int = 3
+    tor_rotation_cooldown: float = 10.0
+    disable_cooldown: float = 300.0  # 5 minutes
+
+
+@dataclass
+class ScraperConfig:
+    """Top-level scraper configuration.
+
+    Groups challenge-handling, TLS, session, throttling, stealth, browser, and
+    proxy settings. Use :func:`scraper.default_config` for tuned defaults rather
+    than constructing this directly when you only need a few overrides.
+    """
+
+    # Challenge handling
+    disable_v1: bool = False
+    disable_v2: bool = False
+    disable_v3: bool = False
+    disable_turnstile: bool = False
+    solve_depth: int = 3
+    double_down: bool = True
+
+    # TLS
+    cipher_suite: str | None = None
+    ecdh_curve: str = "prime256v1"
+    source_address: str | tuple | None = None
+    server_hostname: str | None = None
+    ssl_context: ssl.SSLContext | None = None
+    rotate_tls_ciphers: bool = True
+
+    # Session management
+    session_refresh_interval: int = 3600
+    auto_refresh_on_403: bool = True
+    max_403_retries: int = 3
+
+    # Request throttling
+    min_request_interval: float = 2.0  # when CF protection is active
+    min_request_interval_fast: float = 0.1  # when no CF has been detected
+    max_concurrent_requests: int = 1
+
+    # Stealth
+    stealth: StealthConfig = field(default_factory=StealthConfig)
+
+    # Browser / User-Agent
+    browser: BrowserConfig | dict | None = None
+    allow_brotli: bool = True
+
+    # Network fingerprint impersonation (requires the `impersonate` extra).
+    # When set to a curl-impersonate target (e.g. "chrome", "firefox",
+    # "chrome124"), requests are routed through curl_cffi to reproduce a real
+    # browser's TLS (JA3/JA4) and HTTP/2 fingerprint instead of the urllib3
+    # default. None keeps the standard transport.
+    impersonate: str | None = None
+
+    # Proxy
+    proxy: ProxyConfig = field(default_factory=ProxyConfig)
+
+    # Hooks — invoked as pre_hook(scraper, method, url, *args, **kwargs) and
+    # post_hook(scraper, response); both receive the scraper engine instance.
+    pre_hook: Callable[..., tuple] | None = None
+    post_hook: Callable[..., Response] | None = None
+
+    # SSL — set False to accept self-signed / expired certs manually;
+    # the scraper also auto-retries with verify=False on SSLError for non-CF URLs.
+    verify_ssl: bool = True
+
+    # Debug
+    debug: bool = False
 
 
 def default_config() -> ScraperConfig:

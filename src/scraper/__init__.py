@@ -16,14 +16,17 @@ Example:
 
 from importlib.metadata import PackageNotFoundError, version
 
-from ._engine.exceptions import AbortedException, CloudflareException
 from .config import (
     BrowserConfig,
     ProxyConfig,
+    ProxyUrl,
     ScraperConfig,
     StealthConfig,
+    TorProxyUrl,
     default_config,
 )
+from .engine import ScraperEngine
+from .exceptions import AbortedException, CloudflareException
 from .session import Scraper
 from .soup import PageSoup
 
@@ -35,6 +38,9 @@ except PackageNotFoundError:  # pragma: no cover - running from a source tree
 __all__ = [
     "Scraper",
     "PageSoup",
+    "ProxyUrl",
+    "TorProxyUrl",
+    "ScraperEngine",
     "default_config",
     "ScraperConfig",
     "BrowserConfig",

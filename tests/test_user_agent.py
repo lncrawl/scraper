@@ -1,6 +1,6 @@
 """Tests for User-Agent selection and Client Hints derivation."""
 
-from scraper._engine.user_agent import UserAgent, _ch_platform, _client_hints
+from scraper.engine.user_agent import UserAgent, _ch_platform, _client_hints
 
 # --- Client Hints ---------------------------------------------------------
 

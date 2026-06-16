@@ -11,7 +11,7 @@ from urllib.parse import urljoin, urlparse
 
 from requests import Response
 
-from ..exceptions import (
+from ...exceptions import (
     CloudflareCaptchaError,
     CloudflareChallengeError,
     CloudflareSolveError,

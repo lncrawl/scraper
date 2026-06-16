@@ -8,6 +8,8 @@ from urllib.parse import urlparse
 
 import requests
 
+from ..config import BrowserConfig, ScraperConfig
+from ..exceptions import AbortedException, CloudflareLoopProtection
 from .challenges import (
     ChallengeHandler,
     CloudflareV1Handler,
@@ -15,8 +17,6 @@ from .challenges import (
     CloudflareV3Handler,
     TurnstileHandler,
 )
-from .config import BrowserConfig, ScraperConfig
-from .exceptions import AbortedException, CloudflareLoopProtection
 from .impersonate import ImpersonateTransport, build_transport
 from .proxy_manager import ProxyManager
 from .session import SessionState
@@ -160,6 +160,7 @@ class ScraperEngine(requests.Session):
 
     def _refresh_session(self, url: str) -> bool:
         try:
+            self.proxy_manager.rotate()
             for domain in list(self.cookies.list_domains()):
                 for name in _CF_COOKIE_NAMES:
                     try:
@@ -222,20 +223,9 @@ class ScraperEngine(requests.Session):
             logger.warning("SSL verification failed for %s — retrying without verification.", url)
             kwargs["verify"] = False
             response = self.perform_request(method, url, *args, **kwargs)
-        except (requests.exceptions.ProxyError, requests.exceptions.ConnectionError) as exc:
+        except (requests.exceptions.ProxyError, requests.exceptions.ConnectionError):
             if kwargs.get("proxies"):
-                self.proxy_manager.rotate_identity()
-                try:
-                    return self.perform_request(method, url, *args, **kwargs)
-                except (requests.exceptions.ProxyError, requests.exceptions.ConnectionError):
-                    pass
-                if self.config.proxy.fallback_to_direct:
-                    logger.warning(
-                        "Proxy still unavailable after rotation (%s) — retrying direct.",
-                        type(exc).__name__,
-                    )
-                    kwargs.pop("proxies", None)
-                    return self.perform_request(method, url, *args, **kwargs)
+                self.proxy_manager.disable_current()
             raise
         return response
 
@@ -268,9 +258,6 @@ class ScraperEngine(requests.Session):
             return None
         if not self._state.register_403(self.config.max_403_retries):
             return None
-        if self.proxy_manager.has_proxy:
-            self.proxy_manager.rotate_identity()
-            return self.request(method, url, *args, **kwargs)
         if self.config.auto_refresh_on_403 and self._refresh_session(url):
             return self.request(method, url, *args, **kwargs)
         return None

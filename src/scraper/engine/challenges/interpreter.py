@@ -11,7 +11,7 @@ import re
 
 import exejs
 
-from ..exceptions import CloudflareSolveError
+from ...exceptions import CloudflareSolveError
 
 logger = logging.getLogger(__name__)
 

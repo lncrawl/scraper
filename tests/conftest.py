@@ -15,7 +15,7 @@ from scraper import ScraperConfig, StealthConfig
 def _offline_user_agent(monkeypatch):
     """Force the embedded UA fallback generator (no network, deterministic)."""
     monkeypatch.setattr(
-        "scraper._engine.user_agent._load_ua_data",
+        "scraper.engine.user_agent._load_ua_data",
         lambda: None,
     )
 

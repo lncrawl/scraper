@@ -3,8 +3,8 @@
 import pytest
 
 from scraper import Scraper, ScraperConfig
-from scraper._engine import _impersonate_family
-from scraper._engine.impersonate import ImpersonateTransport, build_transport
+from scraper.engine import _impersonate_family
+from scraper.engine.impersonate import ImpersonateTransport, build_transport
 
 from .conftest import make_fast_config
 

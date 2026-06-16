@@ -14,7 +14,7 @@ import lxml.etree as etree
 from bs4 import BeautifulSoup, Tag
 from requests import Response
 
-from ._utils.event_lock import EventLock
+from .utils.event_lock import EventLock
 
 
 class PageSoup:

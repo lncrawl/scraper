@@ -14,7 +14,7 @@ class SessionState:
     def __init__(self) -> None:
         self._lock = threading.Lock()
         self._session_start = time.monotonic()
-        self._last_request = 0.0
+        self._last_request = float("-inf")
         self._cf_active = False
         self._retry_403 = 0
         self._last_403 = 0.0

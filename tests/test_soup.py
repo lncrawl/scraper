@@ -1,5 +1,7 @@
 """Tests for the null-safe PageSoup wrapper."""
 
+from unittest.mock import MagicMock
+
 from scraper import PageSoup
 
 HTML = """
@@ -228,3 +230,79 @@ def test_contents_includes_text_nodes():
     contents = s.select_one("p").contents
     assert any(isinstance(c, str) for c in contents)
     assert any(isinstance(c, PageSoup) for c in contents)
+
+
+# --- edge-case / branch coverage ------------------------------------------
+
+
+def test_getattr_before_tag_is_set():
+    # Access an attribute on a PageSoup whose __init__ has not run yet
+    # (object.__new__ skips __init__) → __getattr__ hits the AttributeError
+    # branch and returns None instead of raising.
+    ps = object.__new__(PageSoup)
+    assert ps.some_missing_attr is None
+
+
+def test_select_one_exception_returns_empty():
+    from unittest.mock import patch
+
+    s = soup().select_one(".book")
+    with patch.object(s._tag, "select_one", side_effect=RuntimeError("boom")):
+        assert not s.select_one(".title")
+
+
+def test_closest_on_empty_returns_empty():
+    assert not PageSoup().closest(".book")
+
+
+def test_closest_no_match_returns_empty():
+    li = soup().select_one("li")
+    assert not li.closest(".nonexistent-9999")
+
+
+def test_get_attr_exception_returns_default():
+    from unittest.mock import patch
+
+    s = soup().select_one(".book")
+    with patch.object(s._tag, "get", side_effect=RuntimeError("boom")):
+        assert s.get_attr("data-id", "fallback") == "fallback"
+
+
+def test_parent_when_parent_is_not_a_tag(monkeypatch):
+    s = soup().select_one(".title")
+    # Replace parent with a non-Tag truthy object so the isinstance check fails
+    mock_parent = MagicMock(spec=[])  # not a Tag
+    monkeypatch.setattr(s._tag, "parent", mock_parent)
+    assert not s.parent  # returns empty PageSoup()
+
+
+def test_root_for_orphan_tag_returns_none():
+    from bs4 import BeautifulSoup
+
+    # new_tag creates an orphan with no parents → root returns None
+    orphan = BeautifulSoup("", "lxml").new_tag("div")
+    ps = PageSoup(orphan)
+    assert ps.root is None
+
+
+def test_decompose_self_without_selector():
+    s = soup()
+    ads = s.select_one(".ads")
+    assert ads
+    ads.decompose()  # no selector → decomposes the element itself
+    assert not s.select_one(".ads")
+
+
+def test_decompose_with_multiple_matches():
+    # Exercises the for-loop back-edge (branch 457→456) by matching >1 element
+    s = soup()
+    s.select_one(".book").decompose("li")
+    assert s.select("li") == []
+
+
+def test_replace_with_empty_pagesoup_is_skipped():
+    # Passing an empty PageSoup (no _tag) should not crash; it is skipped.
+    s = soup()
+    title = s.select_one(".title")
+    title.replace_with(PageSoup())  # empty PageSoup — skipped in contents loop
+    # The title tag is now replaced with nothing; no exception raised.
