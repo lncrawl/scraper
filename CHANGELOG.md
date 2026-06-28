@@ -4,6 +4,21 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2026-06-28
+
+### Fixed
+
+- `ScraperEngine.close()` now closes the curl_cffi impersonation transport.
+  Previously `requests.Session.close()` only disposed the standard urllib3
+  adapters, leaking the curl_cffi session (libcurl handle + connection pool)
+  when impersonation was enabled, causing per-job scrapers to accumulate native
+  handles.
+- Re-mounting TLS adapter to repalce the existing `https://` adapter in
+  `self.adapters`. Close the old one first so its `urllib3` `PoolManager`
+  (open sockets) and `SSLContext` are released now; cipher rotation
+  re-mounts almost every request, so relying on cyclic GC lets these native
+  handles accumulate.
+
 ## [0.2.3] - 2026-06-16
 
 ### Changed
@@ -77,6 +92,7 @@ Initial public release of `lncrawl-scraper`, extracted from
   rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[0.2.4]: https://github.com/lncrawl/scraper/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/lncrawl/scraper/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/lncrawl/scraper/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/lncrawl/scraper/compare/v0.1.2...v0.2.1

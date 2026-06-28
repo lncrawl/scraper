@@ -66,6 +66,14 @@ class ImpersonateTransport:
         except Exception:
             pass
 
+    def close(self) -> None:
+        """Release the underlying curl_cffi session (libcurl handle + connections)."""
+        with self._lock:
+            try:
+                self._session.close()
+            except Exception:
+                pass
+
     def request(self, method: str, url: str, **kwargs) -> requests.Response:
         call = {k: kwargs[k] for k in _PASSTHROUGH if k in kwargs}
         call.setdefault("verify", self._verify)

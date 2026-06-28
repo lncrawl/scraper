@@ -138,6 +138,11 @@ class ScraperEngine(requests.Session):
 
     def _mount_tls_adapter(self) -> None:
         cfg = self.config
+        # Re-mounting replaces the existing "https://" adapter in self.adapters.
+        # Close the old one first so its urllib3 PoolManager (open sockets) and
+        # SSLContext are released now; cipher rotation re-mounts almost every
+        # request, so relying on cyclic GC lets these native handles accumulate.
+        old = self.adapters.get("https://")
         self.mount(
             "https://",
             CipherSuiteAdapter(
@@ -149,6 +154,11 @@ class ScraperEngine(requests.Session):
                 verify_ssl=cfg.verify_ssl,
             ),
         )
+        if old is not None:
+            try:
+                old.close()
+            except Exception:
+                pass
 
     def _rotate_tls_cipher_suite(self) -> None:
         suite = self._cipher_rotator.suite_for(self._state.next_cipher_rotation())
@@ -352,6 +362,18 @@ class ScraperEngine(requests.Session):
     def abort(self) -> None:
         """Signal all pending and in-progress requests (incl. streaming downloads) to stop."""
         self.signal.set()
+
+    def close(self) -> None:
+        """Close the session, including the curl_cffi impersonation transport.
+
+        ``requests.Session.close()`` only disposes the standard urllib3 adapters,
+        leaking the curl_cffi session (libcurl handle + connection pool) when
+        impersonation is enabled. Close it explicitly so per-job scrapers don't
+        accumulate native handles.
+        """
+        if self._impersonate is not None:
+            self._impersonate.close()
+        super().close()
 
     def put_cookie(self, name: str, value: str, domain: str = "", path: str = "/") -> None:
         """Set a cookie on this session (and the impersonation jar, if active)."""
