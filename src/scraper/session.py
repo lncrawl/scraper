@@ -45,7 +45,7 @@ class Scraper(ScraperEngine):
         config: Optional[ScraperConfig] = None,
         **kwargs,
     ) -> None:
-        super().__init__(config=config or default_config())
+        super().__init__(config=config or default_config(), **kwargs)
         self.origin = origin or ""
         self.parser = parser or "lxml"
         self.last_soup_url = self.origin

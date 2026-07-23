@@ -19,7 +19,7 @@ from .challenges import (
 )
 from .impersonate import ImpersonateTransport, build_transport
 from .proxy_manager import ProxyManager
-from .session import SessionState
+from .session import SessionState, SharedLimiter
 from .stealth import StealthMode
 from .tls import CipherRotator, CipherSuiteAdapter
 from .user_agent import UserAgent
@@ -59,15 +59,23 @@ class ScraperEngine(requests.Session):
     registry on top of a normal session.
     """
 
-    def __init__(self, config: ScraperConfig | None = None) -> None:
+    def __init__(
+        self,
+        config: ScraperConfig | None = None,
+        limiter: SharedLimiter | None = None,
+    ) -> None:
         self.config = config or ScraperConfig()
 
         # Cross-thread abort signal — public so callers can swap in a shared Event.
         self.signal = threading.Event()
 
         self._local = threading.local()
-        self._state = SessionState()
-        self._slots = threading.BoundedSemaphore(max(1, self.config.max_concurrent_requests))
+        if limiter is not None:
+            self._state = limiter.state
+            self._slots = limiter.slots
+        else:
+            self._state = SessionState()
+            self._slots = threading.BoundedSemaphore(max(1, self.config.max_concurrent_requests))
 
         # When impersonating, route requests through curl_cffi for a real
         # browser TLS/HTTP-2 fingerprint, and keep the spoofed UA family aligned
@@ -118,6 +126,17 @@ class ScraperEngine(requests.Session):
         if not hasattr(self._local, "chain"):
             self._local.chain = _RequestChain()
         return self._local.chain
+
+    # -- Shared limiter -------------------------------------------------------------
+
+    def adopt_limiter(self, limiter: SharedLimiter) -> None:
+        """Share *limiter*'s throttle clock and concurrency slots with this engine.
+
+        Call before the first request; an in-flight request would release its
+        slot into the wrong semaphore.
+        """
+        self._state = limiter.state
+        self._slots = limiter.slots
 
     # -- Initialisation helpers ---------------------------------------------------
 

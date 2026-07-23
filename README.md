@@ -164,7 +164,29 @@ s.apply_browser_clearance(
 | `make_soup(data, encoding, ...)`  | Parse `Response`, `bytes`, or `str` into `PageSoup` |
 | `set_header(key, value)`          | Set a default session header                        |
 | `set_cookie(name, value)`         | Set a session cookie                                |
+| `adopt_limiter(limiter)`          | Share a `SharedLimiter` (see below)                 |
 | `reset()`                         | Clear cookies, headers, and state                   |
+
+## Shared rate limiting across scrapers
+
+Each `Scraper` throttles and concurrency-limits itself. When several scraper
+instances talk to the *same host* (e.g. worker threads that each own a scraper),
+give them one `SharedLimiter` so the host-wide request rate and in-flight cap
+are enforced across all of them, while each scraper keeps its own cookies,
+headers, and abort signal:
+
+```python
+from scraper import Scraper, SharedLimiter
+
+limiter = SharedLimiter.create(max_concurrent_requests=2)
+a = Scraper(origin="https://example.com", limiter=limiter)
+b = Scraper(origin="https://example.com")
+b.adopt_limiter(limiter)  # post-construction; call before the first request
+```
+
+The limiter bundles the throttle clock (`min_request_interval*` pacing spans
+all adopters) and the concurrency semaphore. Scrapers for different hosts
+should use different limiters.
 
 ## `PageSoup` API
 

@@ -26,6 +26,7 @@ from .config import (
     default_config,
 )
 from .engine import ScraperEngine
+from .engine.session import SharedLimiter
 from .exceptions import AbortedException, CloudflareException
 from .session import Scraper
 from .soup import PageSoup
@@ -41,6 +42,7 @@ __all__ = [
     "ProxyUrl",
     "TorProxyUrl",
     "ScraperEngine",
+    "SharedLimiter",
     "default_config",
     "ScraperConfig",
     "BrowserConfig",

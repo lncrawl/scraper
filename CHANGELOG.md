@@ -4,6 +4,18 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.5] - 2026-07-23
+
+### Added
+
+- `SharedLimiter`: a shareable throttle clock + concurrency semaphore. Give the
+  same limiter to every `Scraper` that talks to one host — via the new
+  `limiter=` constructor argument or `adopt_limiter()` — and the host-wide
+  request rate and in-flight cap are enforced across all of them, while each
+  scraper keeps its own cookies, headers, and abort signal.
+- `Scraper` now forwards extra keyword arguments (e.g. `limiter=`) to the
+  underlying `ScraperEngine`.
+
 ## [0.2.4] - 2026-06-28
 
 ### Fixed

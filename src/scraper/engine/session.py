@@ -67,3 +67,24 @@ class SessionState:
             self._retry_403 += 1
             self._last_403 = time.monotonic()
             return True
+
+
+class SharedLimiter:
+    """Throttle clock + concurrency slots shareable across scraper instances.
+
+    Give the same limiter to every :class:`~scraper.Scraper` that talks to one
+    host (via the engine's ``limiter=`` argument or ``adopt_limiter``) and the
+    host-wide request rate and in-flight cap are enforced across all of them,
+    while each scraper keeps its own cookies, headers, and abort signal.
+    """
+
+    def __init__(self, state: SessionState, slots: threading.BoundedSemaphore) -> None:
+        self.state = state
+        self.slots = slots
+
+    @classmethod
+    def create(cls, max_concurrent_requests: int = 1) -> SharedLimiter:
+        return cls(
+            state=SessionState(),
+            slots=threading.BoundedSemaphore(max(1, max_concurrent_requests)),
+        )
