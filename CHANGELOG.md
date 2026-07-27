@@ -4,6 +4,28 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `TorPoolProxyUrl`: support for [tor-pool](https://github.com/lncrawl/tor-pool),
+  which fronts many Tor instances with one sticky SOCKS port. The SOCKS5
+  username is a session key, so a scrape keeps the same exit IP until it
+  rotates; rotation goes through the pool's API and skips Tor's ~10s NEWNYM
+  cooldown by reassigning to an already-built instance.
+- `ProxyManager.report_failure()`: reports 403s, challenges and transport errors
+  to the pool. This is the only signal that catches a soft block — a proxy
+  relaying bytes cannot see a 403 or a captcha inside an HTTPS tunnel — and it
+  is what lets the pool quarantine a burnt exit. Sent automatically by the
+  engine; call it directly when your own code detects a block.
+- `examples/11_tor_pool.py`.
+
+### Fixed
+
+- Rotating a proxy now drops pooled connections. A live keep-alive stays bound
+  to its original exit, so without this the exit IP appeared not to change until
+  the socket happened to be evicted.
+
 ## [0.2.5] - 2026-07-23
 
 ### Added

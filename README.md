@@ -18,6 +18,9 @@ HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth 
 - **Accurate Client Hints** — `sec-ch-ua` / `sec-fetch-*` derived from the chosen UA
 - **Stealth mode** — human-like delays, randomized headers, browser quirks
 - **Proxy support** — round-robin proxy rotation with Tor integration and direct fallback
+- **[tor-pool](https://github.com/lncrawl/tor-pool) support** — many Tor exits behind one
+  sticky endpoint: stay on an exit until you rotate, rotate without Tor's ~10s cooldown,
+  and report soft blocks (403/429/captcha) so the pool can retire a burnt exit
 - **Rate limiting** — configurable per-request intervals and concurrency cap
 - **`PageSoup`** — null-safe BeautifulSoup wrapper; selection methods never return `None`
 - **HTTP helpers** — `get_soup`, `get_json`, `get_image`, `get_file`, and more

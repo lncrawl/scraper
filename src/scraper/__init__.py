@@ -22,6 +22,7 @@ from .config import (
     ProxyUrl,
     ScraperConfig,
     StealthConfig,
+    TorPoolProxyUrl,
     TorProxyUrl,
     default_config,
 )
@@ -40,6 +41,7 @@ __all__ = [
     "Scraper",
     "PageSoup",
     "ProxyUrl",
+    "TorPoolProxyUrl",
     "TorProxyUrl",
     "ScraperEngine",
     "SharedLimiter",

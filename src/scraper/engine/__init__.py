@@ -179,6 +179,19 @@ class ScraperEngine(requests.Session):
             except Exception:
                 pass
 
+    def _reset_connection_pools(self) -> None:
+        """Close pooled sockets so the next request dials fresh.
+
+        Rotating a proxy only affects *new* connections: a live keep-alive is
+        already bound to the old exit. Without this the exit IP appears not to
+        change until the pool happens to evict the socket.
+
+        Only the urllib3 transport is reset. The impersonate transport's
+        ``close()`` releases its libcurl handle for good rather than recycling
+        it, so a rotation there takes effect once curl retires the connection.
+        """
+        self._mount_tls_adapter()
+
     def _rotate_tls_cipher_suite(self) -> None:
         suite = self._cipher_rotator.suite_for(self._state.next_cipher_rotation())
         if suite and suite != self._cipher_suite:
@@ -190,6 +203,10 @@ class ScraperEngine(requests.Session):
     def _refresh_session(self, url: str) -> bool:
         try:
             self.proxy_manager.rotate()
+            # Load-bearing: a proxy connection is pinned to its exit for its
+            # whole life, so a pooled keep-alive would keep using the old one
+            # and the rotation would look like it silently did nothing.
+            self._reset_connection_pools()
             for domain in list(self.cookies.list_domains()):
                 for name in _CF_COOKIE_NAMES:
                     try:
@@ -253,6 +270,7 @@ class ScraperEngine(requests.Session):
             kwargs["verify"] = False
             response = self.perform_request(method, url, *args, **kwargs)
         except (requests.exceptions.ProxyError, requests.exceptions.ConnectionError) as exc:
+            self.proxy_manager.report_failure("transport")
             if kwargs.get("proxies") and self.config.proxy.fallback_to_direct:
                 logger.warning(
                     "Proxy still unavailable after rotation (%s) — retrying direct.",
@@ -277,6 +295,8 @@ class ScraperEngine(requests.Session):
                 )
             chain.solve_depth += 1
             self._state.mark_cf_active()
+            # A challenge means this exit is being treated as suspicious.
+            self.proxy_manager.report_failure("challenge")
             return handler.handle(
                 response,
                 request=self.request,
@@ -290,6 +310,7 @@ class ScraperEngine(requests.Session):
     ) -> requests.Response | None:
         if response.status_code != 403:
             return None
+        self.proxy_manager.report_failure("http_403")
         if not self._state.register_403(self.config.max_403_retries):
             return None
         if self.config.auto_refresh_on_403 and self._refresh_session(url):

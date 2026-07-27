@@ -61,12 +61,37 @@ class TorProxyUrl(ProxyUrl):
     control_password: str = "password"
 
 
+@dataclass(frozen=True)
+class TorPoolProxyUrl(ProxyUrl):
+    """A `tor-pool <https://github.com/lncrawl/tor-pool>`_ endpoint.
+
+    A pool runs many Tor instances behind one sticky SOCKS port: the SOCKS5
+    username is a session key, and the caller stays on the same instance — and
+    so the same exit IP — until it asks to rotate. Rotation goes through the
+    pool's HTTP API and is near-instant, because it reassigns the session to an
+    already-built instance instead of waiting out Tor's ~10s NEWNYM cooldown.
+
+    Unlike :class:`TorProxyUrl` there is no control port and no password: the
+    pool owns the control ports and never exposes them.
+    """
+
+    url: str = "socks5h://127.0.0.1:9250"
+    api_url: str = "http://127.0.0.1:8080"
+    # Blank generates one per ProxyManager, so two Scrapers in one process get
+    # independent exit IPs by default.
+    session: str = ""
+    # Report 403/429/captcha/transport failures back to the pool. This is the
+    # only signal that catches soft blocks: the pool cannot see inside an HTTPS
+    # tunnel, so without it a burnt exit is never noticed.
+    report_failures: bool = True
+
+
 @dataclass
 class ProxyConfig:
     """Proxy configuration."""
 
     fallback_to_direct: bool = True
-    proxy_urls: list[TorProxyUrl | ProxyUrl | str] = field(default_factory=list)
+    proxy_urls: list[TorPoolProxyUrl | TorProxyUrl | ProxyUrl | str] = field(default_factory=list)
     retry_request_on_failure: int = 3
     tor_rotation_cooldown: float = 10.0
     disable_cooldown: float = 300.0  # 5 minutes
