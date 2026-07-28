@@ -13,6 +13,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   username is a session key, so a scrape keeps the same exit IP until it
   rotates; rotation goes through the pool's API and skips Tor's ~10s NEWNYM
   cooldown by reassigning to an already-built instance.
+
+  Set `token` to a `proxy`-scoped token from the pool — it is required by
+  tor-pool 0.2 and later, and is sent both as the SOCKS5 password and as a
+  bearer token on the pool's API. Without it the pool answers `401`, and because
+  those calls are best-effort the failure would otherwise pass as a warning while
+  the pool quietly stopped hearing about soft blocks; that specific case is
+  logged at `error` instead.
 - `ProxyManager.report_failure()`: reports 403s, challenges and transport errors
   to the pool. This is the only signal that catches a soft block — a proxy
   relaying bytes cannot see a 403 or a captcha inside an HTTPS tunnel — and it

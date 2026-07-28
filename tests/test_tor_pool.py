@@ -11,11 +11,15 @@ import pytest
 from scraper.config import ProxyConfig, ProxyUrl, TorPoolProxyUrl, TorProxyUrl
 from scraper.engine.proxy_manager import ProxyManager, _with_credentials
 
+# TOKEN is the proxy credential tor-pool 0.2 and later require.
+TOKEN = "tp_7Kq2mXvR8nB4jL6wYtZaPc"
+
 
 class _PoolHandler(BaseHTTPRequestHandler):
     """Records what the manager sent, and replies like a real pool."""
 
     calls: list[tuple[str, dict]] = []
+    auth: list[str | None] = []
     status = 200
 
     def do_POST(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
@@ -23,6 +27,7 @@ class _PoolHandler(BaseHTTPRequestHandler):
         raw = self.rfile.read(length) if length else b""
         body = json.loads(raw) if raw else {}
         type(self).calls.append((self.path, body))
+        type(self).auth.append(self.headers.get("authorization"))
 
         self.send_response(type(self).status)
         self.send_header("content-type", "application/json")
@@ -39,6 +44,7 @@ class _PoolHandler(BaseHTTPRequestHandler):
 def pool_api():
     """A stand-in tor-pool API on a real socket."""
     _PoolHandler.calls = []
+    _PoolHandler.auth = []
     _PoolHandler.status = 200
 
     server = HTTPServer(("127.0.0.1", 0), _PoolHandler)
@@ -52,6 +58,7 @@ def pool_api():
 
 
 def make_manager(api_url: str, **kwargs) -> ProxyManager:
+    kwargs.setdefault("token", TOKEN)
     entry = TorPoolProxyUrl(url="socks5h://127.0.0.1:9250", api_url=api_url, **kwargs)
     return ProxyManager(ProxyConfig(proxy_urls=[entry]))
 
@@ -62,7 +69,7 @@ def test_session_key_is_injected_as_socks_username(pool_api):
 
     proxies = manager.get_proxy()
     assert proxies is not None
-    assert proxies["https"] == "socks5h://my-session:x@127.0.0.1:9250"
+    assert proxies["https"] == f"socks5h://my-session:{TOKEN}@127.0.0.1:9250"
     # Both schemes must route through the same session, or http and https
     # requests would land on different exits.
     assert proxies["http"] == proxies["https"]
@@ -173,19 +180,49 @@ def test_tor_proxy_entries_still_work():
 
 
 @pytest.mark.parametrize(
-    ("url", "username", "expected"),
+    ("url", "username", "token", "expected"),
     [
-        ("socks5h://host:9250", "abc", "socks5h://abc:x@host:9250"),
-        # Explicit credentials win: the operator named their own session.
-        ("socks5h://mine:pw@host:9250", "abc", "socks5h://mine:pw@host:9250"),
+        ("socks5h://host:9250", "abc", "tp_tok", "socks5h://abc:tp_tok@host:9250"),
+        # Explicit credentials win: the operator named their own session, and
+        # owns the password that goes with it.
+        ("socks5h://mine:pw@host:9250", "abc", "tp_tok", "socks5h://mine:pw@host:9250"),
         # A key needing escaping must not corrupt the authority.
-        ("socks5h://host:9250", "a@b/c", "socks5h://a%40b%2Fc:x@host:9250"),
+        ("socks5h://host:9250", "a@b/c", "tp_tok", "socks5h://a%40b%2Fc:tp_tok@host:9250"),
         # IPv6 literals must stay bracketed.
-        ("socks5h://[::1]:9250", "abc", "socks5h://abc:x@[::1]:9250"),
+        ("socks5h://[::1]:9250", "abc", "tp_tok", "socks5h://abc:tp_tok@[::1]:9250"),
         # No port is still valid.
-        ("socks5h://host", "abc", "socks5h://abc:x@host"),
-        ("socks5h://host:9250", "", "socks5h://host:9250"),
+        ("socks5h://host", "abc", "tp_tok", "socks5h://abc:tp_tok@host"),
+        ("socks5h://host:9250", "", "tp_tok", "socks5h://host:9250"),
+        # No token: the username still goes on, which is all tor-pool 0.1.x
+        # needed. 0.2 and later refuse the handshake.
+        ("socks5h://host:9250", "abc", "", "socks5h://abc@host:9250"),
     ],
 )
-def test_with_credentials(url: str, username: str, expected: str):
-    assert _with_credentials(url, username) == expected
+def test_with_credentials(url: str, username: str, token: str, expected: str):
+    assert _with_credentials(url, username, token) == expected
+
+
+def test_pool_calls_carry_the_token(pool_api):
+    """Without this the pool 401s and the failure is swallowed as a warning.
+
+    The proxy half of a missing token fails loudly on every request; this half
+    fails silently, so the pool stops hearing about captchas and soft blocks
+    while both sides look healthy.
+    """
+    api_url, handler = pool_api
+    manager = make_manager(api_url, session="my-session")
+
+    manager.rotate()
+    manager.report_failure("http_403")
+
+    assert handler.calls, "no request reached the pool"
+    assert handler.auth == [f"Bearer {TOKEN}"] * len(handler.calls)
+
+
+def test_pool_calls_omit_the_header_without_a_token(pool_api):
+    api_url, handler = pool_api
+    manager = make_manager(api_url, session="my-session", token="")
+
+    manager.rotate()
+
+    assert handler.auth == [None]

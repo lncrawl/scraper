@@ -9,16 +9,24 @@ reassigns you to an instance that has already built its circuits.
 Start one first:
 
     docker run -d --name tor-pool \\
-      -e POOL_SIZE=5 \\
+      -e POOL_SIZE=5 -v tor_data:/var/lib/tor \\
       -p 127.0.0.1:9250:9250 -p 127.0.0.1:8080:8080 \\
       ghcr.io/lncrawl/tor-pool:latest
 
+It prints a proxy token once, on its first boot:
+
+    docker logs tor-pool | grep 'proxy token'
+
 Then run:
 
-    uv run python examples/11_tor_pool.py
+    TOR_POOL_TOKEN=tp_... uv run python examples/11_tor_pool.py
 """
 
+import os
+
 from scraper import Scraper, TorPoolProxyUrl, default_config
+
+TOKEN = os.environ.get("TOR_POOL_TOKEN", "")
 
 
 def exit_ip(s: Scraper) -> str:
@@ -26,11 +34,17 @@ def exit_ip(s: Scraper) -> str:
 
 
 def main() -> None:
+    if not TOKEN:
+        raise SystemExit("set TOR_POOL_TOKEN — tor-pool 0.2+ requires a proxy token")
+
     config = default_config()
     config.proxy.proxy_urls = [
         TorPoolProxyUrl(
             url="socks5h://127.0.0.1:9250",
             api_url="http://127.0.0.1:8080",
+            # The pool's proxy credential. It is the SOCKS5 password and the
+            # bearer token on the pool's API — one token authenticates both.
+            token=TOKEN,
             # Omit to get a generated key, so each Scraper is its own session.
             session="example",
         )
@@ -56,7 +70,7 @@ def main() -> None:
 
     print("\n--- a second session gets its own exit ---")
     other = default_config()
-    other.proxy.proxy_urls = [TorPoolProxyUrl(session="example-2")]
+    other.proxy.proxy_urls = [TorPoolProxyUrl(token=TOKEN, session="example-2")]
     print(f"  other session: {exit_ip(Scraper(config=other))}")
 
 

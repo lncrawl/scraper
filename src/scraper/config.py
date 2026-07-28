@@ -71,12 +71,21 @@ class TorPoolProxyUrl(ProxyUrl):
     pool's HTTP API and is near-instant, because it reassigns the session to an
     already-built instance instead of waiting out Tor's ~10s NEWNYM cooldown.
 
-    Unlike :class:`TorProxyUrl` there is no control port and no password: the
-    pool owns the control ports and never exposes them.
+    Unlike :class:`TorProxyUrl` there is no control port: the pool owns those
+    and never exposes them.
+
+    A ``token`` is required by tor-pool 0.2 and later. Mint one in the pool's
+    dashboard with the ``proxy`` scope, or take the one it prints on first boot.
+    It authenticates both the proxy port and the session calls made here, and a
+    ``proxy``-scoped token cannot resize the pool or restart instances if this
+    config leaks.
     """
 
     url: str = "socks5h://127.0.0.1:9250"
     api_url: str = "http://127.0.0.1:8080"
+    # The proxy credential. Sent as the SOCKS5 password and as a bearer token on
+    # the pool's API. Empty works only against tor-pool 0.1.x, which ignored it.
+    token: str = ""
     # Blank generates one per ProxyManager, so two Scrapers in one process get
     # independent exit IPs by default.
     session: str = ""

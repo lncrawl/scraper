@@ -70,7 +70,7 @@ class ProxyManager:
         """Return the URL to dial, with a pool session key applied."""
         if not isinstance(entry, TorPoolProxyUrl):
             return entry.url
-        return _with_credentials(entry.url, self._session_key(entry))
+        return _with_credentials(entry.url, self._session_key(entry), entry.token)
 
     def _session_key(self, entry: TorPoolProxyUrl) -> str:
         """Return this entry's session key, generating one on first use."""
@@ -166,16 +166,33 @@ class ProxyManager:
         """POST to the pool's API, returning the decoded body or None on failure."""
         url = entry.api_url.rstrip("/") + path
         data = json.dumps(payload).encode() if payload is not None else b""
+        headers = {"content-type": "application/json"}
+        if entry.token:
+            headers["authorization"] = f"Bearer {entry.token}"
         request = urllib.request.Request(  # noqa: S310 - operator-configured URL
             url,
             data=data,
             method="POST",
-            headers={"content-type": "application/json"},
+            headers=headers,
         )
         try:
             with urllib.request.urlopen(request, timeout=POOL_API_TIMEOUT) as resp:  # noqa: S310
                 raw = resp.read()
             return json.loads(raw) if raw else {}
+        except urllib.error.HTTPError as exc:
+            # Called out because it degrades silently otherwise: without a valid
+            # token the pool stops hearing about captchas and soft blocks, burnt
+            # exits keep taking traffic, and neither side looks broken.
+            if exc.code in (401, 403):
+                logger.error(
+                    "tor-pool rejected the credential for %s (%s). Set TorPoolProxyUrl.token "
+                    "to a proxy-scoped token; failure reporting and rotation are not working.",
+                    path,
+                    exc.code,
+                )
+            else:
+                logger.warning("tor-pool request to %s failed: %s", path, exc)
+            return None
         except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
             logger.warning("tor-pool request to %s failed: %s", path, exc)
             return None
@@ -218,15 +235,16 @@ class ProxyManager:
             return False
 
 
-def _with_credentials(url: str, username: str) -> str:
-    """Return ``url`` with ``username`` as the SOCKS5 user.
+def _with_credentials(url: str, username: str, token: str) -> str:
+    """Return ``url`` with ``username`` as the user and ``token`` as the password.
 
-    The pool reads the SOCKS5 username as a session key, which is how a caller
-    stays pinned to one exit IP. A password is required by the SOCKS5 user/pass
-    handshake but ignored by the pool, so a constant placeholder is sent.
+    The pool reads the username as a session key, which is how a caller stays
+    pinned to one exit IP, and the password as the credential that authorises the
+    connection at all. tor-pool 0.1.x ignored the password; 0.2 and later refuse
+    the handshake without a valid one.
 
-    Any credentials already in the URL win — an explicitly configured username
-    is the operator naming their own session.
+    Any credentials already in the URL win — an explicitly configured username is
+    the operator naming their own session, and they own the password too.
     """
     parsed = urllib.parse.urlsplit(url)
     if parsed.username or not username:
@@ -238,9 +256,11 @@ def _with_credentials(url: str, username: str) -> str:
     if parsed.port:
         host = f"{host}:{parsed.port}"
 
-    quoted = urllib.parse.quote(username, safe="")
+    userinfo = urllib.parse.quote(username, safe="")
+    if token:
+        userinfo = f"{userinfo}:{urllib.parse.quote(token, safe='')}"
     return urllib.parse.urlunsplit(
-        (parsed.scheme, f"{quoted}:x@{host}", parsed.path, parsed.query, parsed.fragment)
+        (parsed.scheme, f"{userinfo}@{host}", parsed.path, parsed.query, parsed.fragment)
     )
 
 
