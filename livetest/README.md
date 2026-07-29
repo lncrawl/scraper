@@ -8,7 +8,9 @@ challenge-marker false positive) made whole features silently useless while ever
 test passed. `compare.py` is the other half: it A/B's this release against the previous
 one, which is how the first-contact referrer and the JavaScript-redirect hop were found.
 
-The current output is [report.html](report.html). Open it in a browser.
+The current output is [report.html](report.html) — open the local copy in a browser, or read
+the published one at <https://lncrawl.github.io/scraper/live-report/>. The Pages workflow
+republishes it whenever a rebuilt `report.html` lands on `main`.
 
 ## Running it
 

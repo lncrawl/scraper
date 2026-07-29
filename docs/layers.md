@@ -6,7 +6,7 @@ memory files and log lines refer to. The mechanisms and product names are Cloudf
 
 The authoritative version of this table is `scraper.layers.LAYERS`, which carries a
 one-paragraph summary per layer. Print it with
-[`examples/02_the_model.py`](../examples/02_the_model.py).
+[`examples/02_the_model.py`](https://github.com/lncrawl/scraper/blob/main/examples/02_the_model.py).
 
 | # | Layer | Reads | Stance | Bypassable |
 | --- | --- | --- | --- | --- |

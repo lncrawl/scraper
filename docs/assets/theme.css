@@ -1,0 +1,150 @@
+/* Palette and type lifted from livetest/report.html so the documentation and the live
+   report read as one document rather than two projects. report.py owns the source of
+   truth for these values; keep them in sync when it changes. */
+
+[data-md-color-scheme="default"] {
+  --lnc-page: #f9f9f7;
+  --lnc-surface: #fcfcfb;
+  --lnc-ink: #0b0b0b;
+  --lnc-ink2: #52514e;
+  --lnc-muted: #898781;
+  --lnc-grid: #e1e0d9;
+  --lnc-rule: #c3c2b7;
+  --lnc-link: #2a78d6;
+  --lnc-accent: #eb6834;
+}
+
+[data-md-color-scheme="slate"] {
+  --lnc-page: #0d0d0d;
+  --lnc-surface: #1a1a19;
+  --lnc-ink: #ffffff;
+  --lnc-ink2: #c3c2b7;
+  --lnc-muted: #898781;
+  --lnc-grid: #2c2c2a;
+  --lnc-rule: #383835;
+  --lnc-link: #3987e5;
+  --lnc-accent: #d95926;
+}
+
+[data-md-color-scheme] {
+  --md-default-bg-color: var(--lnc-page);
+  --md-default-fg-color: var(--lnc-ink);
+  --md-default-fg-color--light: var(--lnc-ink2);
+  --md-default-fg-color--lighter: var(--lnc-muted);
+  --md-default-fg-color--lightest: var(--lnc-grid);
+
+  --md-typeset-color: var(--lnc-ink);
+  --md-typeset-a-color: var(--lnc-link);
+  --md-typeset-table-color: var(--lnc-grid);
+
+  /* Chrome-free header: same paper as the body, separated by a hairline. A tinted bar
+     reads as a frame around the content, which the report deliberately does without. */
+  --md-primary-fg-color: var(--lnc-page);
+  --md-primary-fg-color--light: var(--lnc-surface);
+  --md-primary-fg-color--dark: var(--lnc-page);
+  --md-primary-bg-color: var(--lnc-ink);
+  --md-primary-bg-color--light: var(--lnc-ink2);
+  --md-accent-fg-color: var(--lnc-accent);
+
+  --md-code-bg-color: var(--lnc-surface);
+  --md-code-fg-color: var(--lnc-ink);
+
+  --md-footer-bg-color: var(--lnc-ink);
+  --md-footer-bg-color--dark: var(--lnc-ink);
+  --md-footer-fg-color--light: var(--lnc-muted);
+  --md-footer-fg-color--lighter: var(--lnc-muted);
+}
+
+body,
+input,
+.md-typeset {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+code,
+kbd,
+pre,
+.md-typeset code,
+.md-typeset pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.md-header {
+  border-bottom: 1px solid var(--lnc-rule);
+  box-shadow: none;
+}
+
+.md-search__form {
+  background: color-mix(in srgb, var(--lnc-ink) 7%, transparent);
+}
+
+.md-search__form:hover {
+  background: color-mix(in srgb, var(--lnc-ink) 12%, transparent);
+}
+
+.md-search__input::placeholder {
+  color: var(--lnc-muted);
+}
+
+.md-typeset h1,
+.md-typeset h2 {
+  color: var(--lnc-ink);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.md-typeset h2 {
+  border-bottom: 1px solid var(--lnc-rule);
+  padding-bottom: 0.3em;
+}
+
+/* Hairline tables, uppercase heads — the report's grid, not Material's card. */
+.md-typeset table:not([class]) {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 0.9rem;
+}
+
+.md-typeset table:not([class]) th {
+  background: transparent;
+  border-bottom: 1px solid var(--lnc-rule);
+  color: var(--lnc-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.md-typeset table:not([class]) td {
+  border-bottom: 1px solid var(--lnc-grid);
+  border-top: 0;
+  vertical-align: top;
+}
+
+.md-typeset blockquote {
+  border-left: 2px solid var(--lnc-grid);
+  color: var(--lnc-ink2);
+}
+
+.md-typeset hr {
+  border-bottom-color: var(--lnc-grid);
+}
+
+.md-typeset pre > code,
+.md-typeset .highlight > pre {
+  border-radius: 8px;
+}
+
+.md-typeset code {
+  border-radius: 4px;
+}
+
+/* The README's badge row is centred markup; keep it from inheriting list spacing. */
+.md-typeset div[align="center"] p {
+  margin: 0.4em 0;
+}
+
+.md-typeset div[align="center"] img {
+  vertical-align: middle;
+}

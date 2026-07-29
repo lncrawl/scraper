@@ -7,8 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.0] - 2026-07-29
 
 A complete rewrite. There are no compatibility shims: almost every import changes.
-[docs/migration.md](docs/migration.md) is the mapping, and
-[docs/model.md](docs/model.md) is why.
+[Migration](https://lncrawl.github.io/scraper/migration/) is the mapping, and
+[The model](https://lncrawl.github.io/scraper/model/) is why.
 
 ### The change
 
@@ -166,8 +166,8 @@ on, total reach was 73% against 39%.
 - `livetest/` — a live verification harness that exercises every path against real
   Cloudflare deployments, using every host in lightnovel-crawler's source index as
   the corpus. Separate from `tests/`, which stays offline. See
-  [livetest/README.md](livetest/README.md); the current run is
-  `livetest/report.html`.
+  [livetest/README.md](https://github.com/lncrawl/scraper/blob/main/livetest/README.md);
+  the current run is the [live report](https://lncrawl.github.io/scraper/live-report/).
 
 ### Fixed before release, found by live traffic
 

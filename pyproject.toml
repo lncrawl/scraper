@@ -51,7 +51,8 @@ image = ["Pillow>=10.0"]
 all = ["lncrawl-scraper[browser,botauth,image]"]
 
 [project.urls]
-Homepage = "https://github.com/lncrawl/scraper"
+Homepage = "https://lncrawl.github.io/scraper/"
+Documentation = "https://lncrawl.github.io/scraper/"
 Repository = "https://github.com/lncrawl/scraper"
 Issues = "https://github.com/lncrawl/scraper/issues"
 Changelog = "https://github.com/lncrawl/scraper/blob/main/CHANGELOG.md"
@@ -72,6 +73,9 @@ dev = [
     "curl-cffi>=0.7",
     "cryptography>=47.0.0",
     "nodriver>=0.50.3",
+]
+docs = [
+    "mkdocs-material>=9.7.0",
 ]
 
 [tool.poe.tasks]
@@ -95,6 +99,12 @@ publish = [
     { ref = "build" },
     { cmd = "uv publish" },
 ]
+
+# The docs site published to https://lncrawl.github.io/scraper/. Both tasks must run
+# from the project root — pymdownx.snippets pulls README.md, CHANGELOG.md and
+# examples/*.py in relative to it.
+docs = "mkdocs serve"
+docs-build = "mkdocs build --strict"
 
 # Live verification against real Cloudflare deployments. Not part of `test` — it needs
 # the network, and the tor-pool tasks need a local pool. See livetest/README.md.

@@ -1,4 +1,5 @@
-<div align="center">
+<!-- markdown="1" lets the docs site parse this block; GitHub ignores the attribute. -->
+<div align="center" markdown="1">
 
 # lncrawl-scraper
 
@@ -8,16 +9,17 @@ and escalates only as far as that layer requires.**
 [![PyPI](https://img.shields.io/pypi/v/lncrawl-scraper.svg?logo=pypi&logoColor=white)](https://pypi.org/project/lncrawl-scraper/)
 [![PyPI Wheel](https://img.shields.io/pypi/wheel/lncrawl-scraper)](https://pypi.org/project/lncrawl-scraper/)
 [![CI](https://github.com/lncrawl/scraper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lncrawl/scraper/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-lncrawl.github.io-0b0b0b)](https://lncrawl.github.io/scraper/)
 [![codecov](https://codecov.io/gh/lncrawl/scraper/branch/main/graph/badge.svg)](https://codecov.io/gh/lncrawl/scraper)
 [![CodeQL](https://github.com/lncrawl/scraper/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/lncrawl/scraper/actions/workflows/github-code-scanning/codeql)
 [![License](https://img.shields.io/pypi/l/lncrawl-scraper.svg)](https://github.com/lncrawl/scraper/blob/main/LICENSE)
 
-[**The model**](https://github.com/lncrawl/scraper/blob/main/docs/model.md) ·
-[**Documentation**](https://github.com/lncrawl/scraper/tree/main/docs) ·
-[**Examples**](https://github.com/lncrawl/scraper/tree/main/examples) ·
-[**White paper**](https://github.com/lncrawl/scraper/blob/main/whitepaper/Cloudflare_Bypass.pdf) ·
-[**Live report**](https://github.com/lncrawl/scraper/blob/main/livetest/report.html) ·
-[**Changelog**](https://github.com/lncrawl/scraper/blob/main/CHANGELOG.md)
+[**The model**](https://lncrawl.github.io/scraper/model/) ·
+[**Documentation**](https://lncrawl.github.io/scraper/) ·
+[**Examples**](https://lncrawl.github.io/scraper/examples/) ·
+[**White paper**](https://lncrawl.github.io/scraper/whitepaper/Cloudflare_Bypass.pdf) ·
+[**Live report**](https://lncrawl.github.io/scraper/live-report/) ·
+[**Changelog**](https://lncrawl.github.io/scraper/changelog/)
 
 </div>
 
@@ -63,11 +65,11 @@ binding layer reads a possessed property, it does not rotate.** Rotating discard
 history the detector is measuring, so it holds the address still and slows down. And two
 layers raise instead of retrying, because they read a secret you either hold or do not.
 
-Full treatment: [docs/model.md](https://github.com/lncrawl/scraper/blob/main/docs/model.md). The
+Full treatment: [the model](https://lncrawl.github.io/scraper/model/). The
 layer model, the emit/possess distinction and the reference patterns come from the paper this
 library implements — _A Layered Model of Modern Web Bot Protection and the Structural Limits of
 Its Circumvention_, included as
-[whitepaper/Cloudflare_Bypass.pdf](https://github.com/lncrawl/scraper/blob/main/whitepaper/Cloudflare_Bypass.pdf).
+[a PDF](https://lncrawl.github.io/scraper/whitepaper/Cloudflare_Bypass.pdf).
 
 ## What it does
 
@@ -96,7 +98,7 @@ Its Circumvention_, included as
 
 The planner picks the cheapest rung that covers the binding layer, and stops with an
 explanation when no configured rung does. Writing your own rung:
-[docs/tiers.md](https://github.com/lncrawl/scraper/blob/main/docs/tiers.md).
+[tiers](https://lncrawl.github.io/scraper/tiers/).
 
 ## Installation
 
@@ -172,18 +174,18 @@ except Exhausted as exc:
 
 ## Documentation
 
-| Page                                                                                   |                                                       |
-| -------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| [model.md](https://github.com/lncrawl/scraper/blob/main/docs/model.md)                 | The bound, and emit vs. possess. **Start here.**      |
-| [layers.md](https://github.com/lncrawl/scraper/blob/main/docs/layers.md)               | The nineteen layers and what moves each.              |
-| [tiers.md](https://github.com/lncrawl/scraper/blob/main/docs/tiers.md)                 | The escalation ladder; writing a tier.                |
-| [configuration.md](https://github.com/lncrawl/scraper/blob/main/docs/configuration.md) | Every `ScraperConfig` field.                          |
-| [behaviour.md](https://github.com/lncrawl/scraper/blob/main/docs/behaviour.md)         | Pacing, warm-up, persistence, shared state.           |
-| [decoy-content.md](https://github.com/lncrawl/scraper/blob/main/docs/decoy-content.md) | The layer that returns no error.                      |
-| [web-bot-auth.md](https://github.com/lncrawl/scraper/blob/main/docs/web-bot-auth.md)   | Signed requests and the key directory.                |
-| [diagnostics.md](https://github.com/lncrawl/scraper/blob/main/docs/diagnostics.md)     | `explain()`, exceptions, common conclusions.          |
-| [migration.md](https://github.com/lncrawl/scraper/blob/main/docs/migration.md)         | Porting from 0.2.x.                                   |
-| [examples/](https://github.com/lncrawl/scraper/tree/main/examples)                     | Ten runnable programs, ordered to explain the design. |
+| Page                                                              |                                                       |
+| ----------------------------------------------------------------- | ----------------------------------------------------- |
+| [The model](https://lncrawl.github.io/scraper/model/)             | The bound, and emit vs. possess. **Start here.**      |
+| [Layers](https://lncrawl.github.io/scraper/layers/)               | The nineteen layers and what moves each.              |
+| [Tiers](https://lncrawl.github.io/scraper/tiers/)                 | The escalation ladder; writing a tier.                |
+| [Configuration](https://lncrawl.github.io/scraper/configuration/) | Every `ScraperConfig` field.                          |
+| [Behaviour](https://lncrawl.github.io/scraper/behaviour/)         | Pacing, warm-up, persistence, shared state.           |
+| [Decoy content](https://lncrawl.github.io/scraper/decoy-content/) | The layer that returns no error.                      |
+| [Web-bot-auth](https://lncrawl.github.io/scraper/web-bot-auth/)   | Signed requests and the key directory.                |
+| [Diagnostics](https://lncrawl.github.io/scraper/diagnostics/)     | `explain()`, exceptions, common conclusions.          |
+| [Migration](https://lncrawl.github.io/scraper/migration/)         | Porting from 0.2.x.                                   |
+| [Examples](https://lncrawl.github.io/scraper/examples/)           | Ten runnable programs, ordered to explain the design. |
 
 ## Scope
 
@@ -218,11 +220,10 @@ tor-pool and a real browser.
 uv run poe live-all
 ```
 
-The recorded output is
-[livetest/report.html](https://github.com/lncrawl/scraper/blob/main/livetest/report.html) —
+The recorded output is the [live report](https://lncrawl.github.io/scraper/live-report/) —
 scenario results, which layer each client meets across the corpus, and what a Tor exit
-actually costs. It is a standalone page; GitHub shows the source, so download it or open the
-local copy in a browser.
+actually costs. It is a standalone page, regenerated in place at `livetest/report.html` and
+published with the docs.
 
 Nearly every defect found before 1.0 was invisible to a stubbed transport, and two
 of them made whole features silently useless while every unit test passed. Anything the
