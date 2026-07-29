@@ -226,3 +226,54 @@ def test_pool_calls_omit_the_header_without_a_token(pool_api):
     manager.rotate()
 
     assert handler.auth == [None]
+
+
+def scrape_status(fast_config, api_url: str, status: int, body: str = "") -> list[str]:
+    """Drive a real Scraper through one response and return the reasons reported."""
+    import requests
+    import responses
+
+    from scraper import Scraper
+
+    fast_config.proxy = ProxyConfig(
+        proxy_urls=[
+            TorPoolProxyUrl(
+                url="socks5h://127.0.0.1:9250",
+                api_url=api_url,
+                session="my-session",
+                token=TOKEN,
+            )
+        ]
+    )
+    url = "https://example.com/probe"
+    with responses.RequestsMock() as rsps:
+        rsps.add(rsps.GET, url, status=status, body=body)
+        scraper = Scraper(origin="https://example.com", config=fast_config)
+        # The session raises on any error status, which is not what is under test.
+        with pytest.raises(requests.HTTPError):
+            scraper.get(url)
+    return [body.get("reason") for path, body in _PoolHandler.calls if path.endswith("/failure")]
+
+
+def test_a_throttle_is_reported_as_a_rate_limit(pool_api, fast_config):
+    """The reason is what the pool weighs the report by.
+
+    Sent as a generic failure a 429 spends a working exit and the next one is
+    throttled just the same, so this has to stay distinct from the 403 path.
+    """
+    api_url, _ = pool_api
+    assert scrape_status(fast_config, api_url, 429, "slow down") == ["rate_limited"]
+
+
+def test_a_block_is_still_reported_as_a_block(pool_api, fast_config):
+    # The two must not collapse into one another: a 403 says the exit is
+    # unwelcome, a 429 says it is working and busy.
+    api_url, _ = pool_api
+    assert scrape_status(fast_config, api_url, 403, "nope") == ["http_403"]
+
+
+def test_an_ordinary_error_is_not_reported(pool_api, fast_config):
+    # Only the statuses that say something about the exit. A 404 is the site's
+    # answer about a path and has nothing to do with which IP asked.
+    api_url, _ = pool_api
+    assert scrape_status(fast_config, api_url, 404) == []

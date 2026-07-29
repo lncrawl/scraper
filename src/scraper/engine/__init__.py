@@ -391,6 +391,9 @@ class ScraperEngine(requests.Session):
             if retried is not None:
                 return retried
 
+            if response.status_code == 429:
+                self.proxy_manager.report_failure("rate_limited")
+
             return response
         finally:
             chain.request_depth -= 1

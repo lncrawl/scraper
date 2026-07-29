@@ -20,11 +20,17 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   those calls are best-effort the failure would otherwise pass as a warning while
   the pool quietly stopped hearing about soft blocks; that specific case is
   logged at `error` instead.
-- `ProxyManager.report_failure()`: reports 403s, challenges and transport errors
-  to the pool. This is the only signal that catches a soft block — a proxy
-  relaying bytes cannot see a 403 or a captcha inside an HTTPS tunnel — and it
-  is what lets the pool quarantine a burnt exit. Sent automatically by the
+- `ProxyManager.report_failure()`: reports 403s, challenges, rate limits and
+  transport errors to the pool. This is the only signal that catches a soft block
+  — a proxy relaying bytes cannot see a 403 or a captcha inside an HTTPS tunnel —
+  and it is what lets the pool quarantine a burnt exit. Sent automatically by the
   engine; call it directly when your own code detects a block.
+
+  The reason is what the pool weighs the report by, so a 429 that no challenge
+  handler claimed is sent as `rate_limited` rather than as a generic failure. A
+  throttle says the exit works and is being asked for too much: reported as a
+  block it would retire a working exit, and the next one is throttled just the
+  same.
 - `examples/11_tor_pool.py`.
 
 ### Fixed
