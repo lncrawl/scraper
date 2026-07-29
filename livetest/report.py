@@ -46,246 +46,6 @@ def sh(command: str) -> str:
         return ""
 
 
-# -- findings ------------------------------------------------------------------------
-#
-# Hand-written because the point of each row is *why it mattered*, which no harness can
-# infer. "how" distinguishes what live traffic surfaced from what the offline suite
-# caught, because that distinction is the whole argument for running this.
-
-FINDINGS: List[Dict[str, str]] = [
-    {
-        "id": "F1",
-        "sev": "critical",
-        "where": "diagnosis.py",
-        "what": "Cloudflare's injected JavaScript-Detections script was read as a challenge",
-        "how": "live",
-        "detail": "Cloudflare injects a script from <code>/cdn-cgi/challenge-platform/scripts/"
-        "jsd/…</code> into ordinary <em>successful</em> pages. That path was in the challenge "
-        "marker list, so content pages were diagnosed as interstitials.",
-        "impact": "18 of 22 hosts reported as challenged were serving content normally. A "
-        "caller would pay for a browser launch it did not need, or abandon a page it already "
-        "had. The same marker also meant the browser solve loop never detected 'cleared' and "
-        "burned the entire timeout on every solve — including the successful ones.",
-        "fix": "Require the challenge-only <code>/h/</code> orchestrate sub-path. Measured "
-        "across two live populations before changing: the bare prefix appeared on 9 of 10 "
-        "normal pages, the <code>/h/</code> path on 0.",
-        "test": "test_the_injected_detections_script_is_not_a_challenge, "
-        "test_the_orchestrate_path_still_is_a_challenge",
-    },
-    {
-        "id": "F2",
-        "sev": "critical",
-        "where": "tiers/archive.py",
-        "what": "A negative CDX <code>limit</code> silently returns an empty body",
-        "how": "live",
-        "detail": "The Wayback index documents <code>limit=-N</code> as 'the last N rows', but "
-        "combined with a filter it answers with nothing at all.",
-        "impact": "The archive tier reported 'no usable capture' for every URL — "
-        "indistinguishable from a URL the archive has never seen. The whole tier was dead, and "
-        "the offline suite could not see it because it stubs the transport.",
-        "fix": "Bound the window server-side with <code>from=</code> and take the newest rows "
-        "from the tail.",
-        "test": "test_the_index_is_never_asked_for_a_negative_row_count",
-    },
-    {
-        "id": "F3",
-        "sev": "serious",
-        "where": "tiers/archive.py",
-        "what": "An unbounded index query times out on a popular URL",
-        "how": "live",
-        "detail": "With no maximum age the query asked for a URL's entire history, which for a "
-        "large site is slow enough to hit the timeout.",
-        "impact": "Same symptom as F2 and the same misreading: a timeout looks exactly like "
-        "'never archived', so the tier appears permanently empty rather than slow.",
-        "fix": "The query is now always bounded — by the caller's maximum age when set, "
-        "otherwise by a default window.",
-        "test": "test_the_query_is_always_bounded",
-    },
-    {
-        "id": "F4",
-        "sev": "serious",
-        "where": "tiers/archive.py",
-        "what": "An index that would not answer was reported as an empty archive",
-        "how": "live",
-        "detail": "The index rate-limits. A single 503 came back as 'no usable capture'.",
-        "impact": "The caller stops considering the archive for a URL it does hold.",
-        "fix": "Tell the two apart: a lookup failure now says so, an empty index says so, an "
-        "age limit says so. Plus one retry, since a single 503 is routine.",
-        "test": "test_an_index_that_will_not_answer_is_reported_as_such, "
-        "test_the_index_is_retried_once_before_giving_up",
-    },
-    {
-        "id": "F5",
-        "sev": "serious",
-        "where": "links.py",
-        "what": "Icon-font anchors were dropped as 'nothing rendered'",
-        "how": "live",
-        "detail": 'A home link written as <code>&lt;a&gt;&lt;i class="fas fa-home"&gt;'
-        "&lt;/i&gt;&lt;/a&gt;</code> has no text and no <code>&lt;img&gt;</code>, but renders a "
-        "visible clickable icon. Icon fonts are how a large share of real navigation is marked "
-        "up.",
-        "impact": "Menus, pagination and home links silently skipped — the failure direction "
-        "that actually costs content, as opposed to following a decoy.",
-        "fix": "Any element child counts as rendered. Only a genuinely empty anchor is a decoy "
-        "signal.",
-        "test": "test_an_icon_font_link_is_clickable",
-    },
-    {
-        "id": "F6",
-        "sev": "serious",
-        "where": "links.py",
-        "what": "One URL took the verdict of whichever anchor came first",
-        "how": "live",
-        "detail": "A content card is routinely an empty overlay anchor <em>plus</em> a text "
-        "anchor to the same page, and the overlay comes first in the markup.",
-        "impact": "On one real page, 11 of 11 rejections were wrong — the page yielded 77 "
-        "followable links instead of 89. Combined with F5, whole navigation blocks vanished.",
-        "fix": "A URL reachable by any followable anchor is followable; the informative anchor "
-        "wins.",
-        "test": "test_a_url_reachable_by_any_anchor_is_followable, "
-        "test_a_url_only_reachable_by_a_decoy_anchor_stays_rejected",
-    },
-    {
-        "id": "F7",
-        "sev": "serious",
-        "where": "planner.py",
-        "what": "The stop advised configuring a capability that was already configured",
-        "how": "live",
-        "detail": "A browser solver ran, produced no clearance cookie, and the resulting "
-        "message said 'Configure a browser solver'.",
-        "impact": "Sends the reader to check their configuration instead of the solver's "
-        "output, which is where the actual reason is.",
-        "fix": "When the tier that owns the layer is present and still failed, the message says "
-        "so and quotes what the tier reported.",
-        "test": "test_a_configured_tier_that_failed_is_not_advised_to_be_configured",
-    },
-    {
-        "id": "F8",
-        "sev": "warning",
-        "where": "exits.py, planner.py",
-        "what": "Rotating with nowhere to go spent the rotation budget on one address",
-        "how": "live",
-        "detail": "A host banning this machine's whole ASN (Cloudflare 1005) produced a rotate "
-        "decision, and with a single address configured each 'rotation' landed on the address "
-        "that had just been refused.",
-        "impact": "Wasted requests against a host that already said no, then a message that did "
-        "not name the real problem.",
-        "fix": "The pool reports whether an alternative exists at all; with none, the stop is "
-        "immediate and says to add a residential or mobile exit.",
-        "test": "test_rotating_with_nowhere_to_go_is_refused_immediately",
-    },
-    {
-        "id": "F9",
-        "sev": "warning",
-        "where": "browser.py, pyproject",
-        "what": "The browser extra failed with a raw dependency error on old Pythons",
-        "how": "live",
-        "detail": "nodriver evaluates a PEP 604 union at import time, so it raises "
-        "<code>TypeError</code> before Python 3.10 — not <code>ImportError</code>. On 3.14 one "
-        "of its generated modules has a non-UTF-8 byte and raises <code>SyntaxError</code>.",
-        "impact": "An unrelated error from inside a dependency, with nothing pointing at the "
-        "version floor.",
-        "fix": "Catch the wider failure, name the version in the message, and mark the extra so "
-        "it does not install where it cannot load.",
-        "test": "test_a_missing_solver_dependency_names_the_version_floor",
-    },
-    {
-        "id": "F10",
-        "sev": "critical",
-        "where": "transport.py",
-        "what": "The impersonated transport never copied the response body",
-        "how": "suite",
-        "detail": "Response adaptation set status, headers and URL but not the content, so every "
-        "impersonated response arrived empty.",
-        "impact": "Nothing worked. Caught by running the two transports against a loopback "
-        "server rather than a mock — the streaming path passed precisely because it did not "
-        "read the body.",
-        "fix": "Copy the body, except on a streamed response where reading it would consume the "
-        "iterator the caller is about to use.",
-        "test": "test_a_body_comes_back_as_a_requests_response (both transports)",
-    },
-    {
-        "id": "F11",
-        "sev": "serious",
-        "where": "session.py",
-        "what": "A throttle never widened the interval",
-        "how": "suite",
-        "detail": "The pacer was handed the decision's wait, which falls back to the interval "
-        "already in force — so the widening was 'grow to what it already is'.",
-        "impact": "The remedy for the hardest layer did nothing.",
-        "fix": "Feed the pacer the server's own <code>Retry-After</code>, not the fallback.",
-        "test": "test_a_throttle_widens_the_learned_interval",
-    },
-    {
-        "id": "F12",
-        "sev": "warning",
-        "where": "session.py",
-        "what": "Success recorded the previously remembered tier, not the one that worked",
-        "how": "suite",
-        "detail": "A run that escalated to a browser wrote the old tier name back to memory.",
-        "impact": "Every subsequent run started from scratch, defeating the point of persistence.",
-        "fix": "Record the tier that actually served the request.",
-        "test": "test_a_challenge_escalates_to_the_solver_and_then_succeeds",
-    },
-    {
-        "id": "F13",
-        "sev": "warning",
-        "where": "exceptions.py",
-        "what": "An impassable failure suppressed its own remedy",
-        "how": "suite",
-        "detail": "The route ('retrieve it with a properly obtained account') was a fallback, so "
-        "any diagnosis that supplied its own detail hid it.",
-        "impact": "The reader got a status code and no next step, for the one class of failure "
-        "where there is exactly one next step.",
-        "fix": "Append the route rather than falling back to it.",
-        "test": "test_an_impassable_failure_always_carries_the_legitimate_route",
-    },
-    {
-        "id": "F14",
-        "sev": "critical",
-        "where": "diagnosis.py",
-        "what": "A proxy refusing our own credential was diagnosed as the site's IP reputation",
-        "how": "live",
-        "detail": "A tor-pool that enforces authentication rejects the SOCKS5 handshake, which "
-        "never becomes an HTTP response — so it arrived at <code>diagnose_transport</code>, "
-        "which blamed the exit for <em>every</em> proxied transport error. The HTTP equivalent "
-        "was already handled correctly: a 407 is reported as our credential, not a layer.",
-        "impact": "Three wrong things followed from one wrong attribution. The address was "
-        "rotated though nothing was wrong with it; the pool was told a healthy exit was "
-        "<code>blocked</code>, damaging its health score; and — the durable one — layer 1 was "
-        "written to the origin's persisted profile, so a missing environment variable left "
-        "behind a permanent verdict that the <em>site</em> refuses this address. The visible "
-        "symptom was four scenarios reporting that only a residential exit could help.",
-        "fix": "Distinguish 'the proxy refused us' from 'the path beyond it failed' on curl's "
-        "own wording, and answer the first with <code>REFUSE</code> and no layer. Matched on "
-        "the message rather than the exception class deliberately: an unreachable destination "
-        "reported through a SOCKS5 reply raises the same <code>ProxyError</code>, and that one "
-        "really is evidence about the exit.",
-        "test": "test_a_socks5_credential_rejection_is_not_layer_one, "
-        "test_a_dead_destination_behind_a_good_proxy_still_blames_the_exit (+2)",
-    },
-    {
-        "id": "F15",
-        "sev": "serious",
-        "where": "exceptions.py, session.py",
-        "what": "A failure with nothing to attribute was reported as layer 15",
-        "how": "live",
-        "detail": "<code>Blocked</code> required a layer, so a stop with none — a proxy "
-        "credential, an origin that never answered — was given <code>Layer.WORKERS</code> as a "
-        "placeholder.",
-        "impact": "'L15 Operator edge code' is indistinguishable from a Cloudflare Worker "
-        "refusing the request, so a mistyped proxy token produced a message pointing at the "
-        "site. Surfaced while fixing F14: the attribution was gone and the message still lied.",
-        "fix": "<code>Blocked.layer</code> is <code>Optional</code> and renders as 'no "
-        "detection layer'. An honest absence beats a plausible attribution — and pyright "
-        "located both callers that had to learn about it.",
-        "test": "test_a_block_with_nothing_to_attribute_says_so",
-    },
-]
-
-SEV_ORDER = {"critical": 0, "serious": 1, "warning": 2}
-
-
 # -- rendering -----------------------------------------------------------------------
 
 
@@ -304,11 +64,6 @@ def stat_tiles(results: List[Dict[str, Any]], probe: Optional[List[Dict[str, Any
         (f"{passed}/{len(results)}", "scenarios passed", ""),
         (str(checks), "assertions verified live", f"{failed} failed"),
         (str(hosts), "hosts probed", f"{cf} behind Cloudflare"),
-        (
-            str(len(FINDINGS)),
-            "defects found and fixed",
-            f"{sum(1 for f in FINDINGS if f['how'] == 'live')} only visible live",
-        ),
     ]
     cells = "".join(
         f'<div class="tile"><div class="tile-v">{esc(v)}</div>'
@@ -369,28 +124,6 @@ def layer_chart(probe: List[Dict[str, Any]]) -> str:
   </div>
   <div class="bars">{"".join(rows)}</div>
 </figure>"""
-
-
-def findings_section() -> str:
-    rows = []
-    for f in sorted(FINDINGS, key=lambda f: (SEV_ORDER[f["sev"]], f["id"])):
-        badge = "live traffic" if f["how"] == "live" else "offline suite"
-        rows.append(
-            f"""<article class="finding sev-{f["sev"]}">
-  <header>
-    <span class="fid">{esc(f["id"])}</span>
-    <span class="pill p-{f["sev"]}">{esc(f["sev"])}</span>
-    <span class="pill p-how p-{f["how"]}">{esc(badge)}</span>
-    <code class="where">{esc(f["where"])}</code>
-  </header>
-  <h4>{f["what"]}</h4>
-  <p>{f["detail"]}</p>
-  <p class="why"><strong>Why it mattered.</strong> {f["impact"]}</p>
-  <p class="fixed"><strong>Fix.</strong> {f["fix"]}</p>
-  <p class="reg"><strong>Regression test.</strong> <code>{esc(f["test"])}</code></p>
-</article>"""
-        )
-    return "".join(rows)
 
 
 AREAS = [
@@ -563,7 +296,7 @@ CSS = """
 :root{
   --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
   --grid:#e1e0d9; --rule:#c3c2b7; --ring:rgba(11,11,11,.10);
-  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+  --good:#0ca30c; --crit:#d03b3b;
   --s-plain:#2a78d6; --s-imp:#eb6834;
   color-scheme:light;
 }
@@ -628,29 +361,8 @@ figcaption .cap{display:block;color:var(--muted);font-size:.82rem;font-weight:40
   margin-left:10px;white-space:nowrap;background:var(--ink);color:var(--page);
   padding:5px 9px;border-radius:6px;font-size:.76rem;z-index:5}
 
-.finding{background:var(--surface);border:1px solid var(--ring);border-left-width:3px;
-  border-radius:8px;padding:14px 18px;margin:12px 0}
-.sev-critical{border-left-color:var(--crit)}
-.sev-serious{border-left-color:var(--serious)}
-.sev-warning{border-left-color:var(--warn)}
-.finding header{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
-.fid{font-weight:600;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
-.finding h4{margin:2px 0 6px;font-size:1rem}
-.finding p{font-size:.9rem;color:var(--ink2);margin:6px 0}
-.finding .why{color:var(--ink)}
-.where{margin-left:auto;color:var(--muted)}
 .pill{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700;
   padding:2px 7px;border-radius:20px;border:1px solid transparent;white-space:nowrap}
-.p-critical{color:var(--crit);border-color:var(--crit)}
-.p-serious{color:var(--serious);border-color:var(--serious)}
-.p-warning{color:#8a6100;border-color:var(--warn)}
-@media (prefers-color-scheme:dark){
-  :root:where(:not([data-theme="light"])) .p-warning{color:var(--warn)}
-}
-:root[data-theme="dark"] .p-warning{color:var(--warn)}
-.p-how{font-weight:600}
-.p-live{color:var(--s-imp);border-color:var(--s-imp)}
-.p-suite{color:var(--muted);border-color:var(--rule)}
 .p-pass{color:var(--good);border-color:var(--good)}
 .p-fail{color:var(--crit);border-color:var(--crit)}
 .p-inconclusive,.p-skip{color:var(--muted);border-color:var(--rule)}
@@ -714,21 +426,13 @@ def main() -> None:
 
 <p class="sub">lncrawl-scraper 1.0.0 · {esc(stamp)}</p>
 <h1>Live verification against real Cloudflare-protected sites</h1>
-<p class="lede">Every code path in the rewritten scraper, exercised against production
-Cloudflare deployments rather than fixtures — the transport group, the diagnosis
-classifier, the escalation ladder, a real browser solve, the archive tier, and a live
-tor-pool. {passed} of {len(results)} scenarios pass. The interesting output is the
-{len(FINDINGS)} defects this found, {sum(1 for f in FINDINGS if f["how"] == "live")} of
-which no offline test could have seen.</p>
+<p class="lede">Every code path in the scraper, exercised against production Cloudflare
+deployments rather than fixtures — the transport group, the diagnosis classifier, the
+escalation ladder, a real browser solve, the archive tier, and a live tor-pool.
+{passed} of {len(results)} scenarios pass. A stubbed transport can confirm that the code
+does what it says; only this can confirm that what it says is true of a real server.</p>
 
 {stat_tiles(results, probe)}
-
-<h2>What this found</h2>
-<p>Ordered by severity. The <span class="pill p-how p-live">live traffic</span> badge marks
-defects only reachable by talking to real servers; <span class="pill p-how p-suite">offline
-suite</span> marks the ones the unit tests caught while the rewrite was being written.
-Every one has a regression test.</p>
-{findings_section()}
 
 <h2>The corpus</h2>
 {corpus_section(probe, tor)}
@@ -763,9 +467,8 @@ hardcoded, because site configuration moves: one host in this corpus switched fr
 Turnstile to plain scoring between two runs an hour apart.</p>
 </div>
 
-<footer>Generated by <code>livetest/report.py</code>. Verdicts and observed values come
-from the JSON the harness wrote; the findings section is written by hand, because why a
-defect mattered is not something a harness can infer.</footer>
+<footer>Generated by <code>livetest/report.py</code>. Every verdict and observed value on
+this page comes from the JSON the harness wrote.</footer>
 
 </div></body></html>"""
 
@@ -773,7 +476,6 @@ defect mattered is not something a harness can infer.</footer>
     out.write_text(page, "utf-8")
     print(f"wrote {out}  ({len(page) // 1024} KB)")
     print(f"  scenarios: {passed}/{len(results)} pass")
-    print(f"  findings:  {len(FINDINGS)}")
 
 
 if __name__ == "__main__":

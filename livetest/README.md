@@ -61,10 +61,10 @@ operator login (`TORPOOL_USER`/`TORPOOL_PASSWORD`, defaulting to `admin`/`admin`
 Minting rather than requiring an exported `TORPOOL_TOKEN` is deliberate, and it is
 worth knowing why: an `export` does not survive the shell that ran it, so the second
 person to run this — or the same person in a new terminal — got a pool that rejected
-every SOCKS5 handshake. That failure is quiet. Before F14 was fixed the library read
-it as the *destination* refusing our address, so four scenarios confidently reported a
-layer-1 reputation block that did not exist, and `tor_probe.py` would have inverted
-its own finding. Set `TORPOOL_TOKEN` explicitly to override, for a real deployment.
+every SOCKS5 handshake. That failure is quiet, and it used to read as the *destination*
+refusing our address — four scenarios confidently reported a layer-1 reputation block
+that did not exist, and `tor_probe.py` would have inverted its own finding. Set
+`TORPOOL_TOKEN` explicitly to override, for a real deployment.
 
 **A browser and a Python that can load nodriver**, for `clearance.py` only:
 

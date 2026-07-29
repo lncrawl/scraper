@@ -170,6 +170,9 @@ stubbed transport cannot see. Each has a regression test.
   nodriver raises `TypeError` before 3.10 and `SyntaxError` on 3.14; both now
   produce a message naming the version floor, and the extra is marked so it does not
   install where it cannot load.
+
+### Fixed
+
 - **One share-button link took out a page's whole crawl frontier.** `extract_host`
   read `urlparse(...).port`, which raises rather than returning `None` when the
   netloc's `:` is followed by something that is not a number — so an ordinary
