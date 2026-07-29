@@ -72,7 +72,7 @@
   "detail": ""
  },
  {
-  "url": "https://lightnovelpub.org/",
+  "url": "https://www.lightnovelpub.org/",
   "status": 200,
   "action": "accept",
   "layer": null,
@@ -80,7 +80,7 @@
   "detail": ""
  },
  {
-  "url": "https://www.lightnovelpub.org/",
+  "url": "https://lightnovelpub.org/",
   "status": 200,
   "action": "accept",
   "layer": null,
@@ -96,14 +96,6 @@
   "detail": ""
  },
  {
-  "url": "https://www.lightnovelpub.com/",
-  "status": 403,
-  "action": "solve",
-  "layer": 9,
-  "layer_name": "L9 Managed JavaScript challenge",
-  "detail": "challenge served with 403"
- },
- {
   "url": "https://www.webnovel.com/",
   "status": 200,
   "action": "accept",
@@ -113,14 +105,6 @@
  },
  {
   "url": "https://m.webnovel.com/",
-  "status": 200,
-  "action": "accept",
-  "layer": null,
-  "layer_name": null,
-  "detail": ""
- },
- {
-  "url": "https://wuxiaworld.io/",
   "status": 200,
   "action": "accept",
   "layer": null,
@@ -142,6 +126,22 @@
   "layer": 12,
   "layer_name": "L12 Super Bot Fight Mode",
   "detail": "scored as automated"
+ },
+ {
+  "url": "https://readlightnovel.me/",
+  "status": 522,
+  "action": "retry",
+  "layer": null,
+  "layer_name": null,
+  "detail": "upstream error (HTTP 522)"
+ },
+ {
+  "url": "https://www.readlightnovel.me/",
+  "status": 522,
+  "action": "retry",
+  "layer": null,
+  "layer_name": null,
+  "detail": "upstream error (HTTP 522)"
  },
  {
   "url": "https://yukinovel.me/",
@@ -168,7 +168,7 @@
   "detail": ""
  },
  {
-  "url": "https://toonily.com/",
+  "url": "https://sonicmtl.com/",
   "status": 200,
   "action": "accept",
   "layer": null,
@@ -182,22 +182,6 @@
   "layer": null,
   "layer_name": null,
   "detail": ""
- },
- {
-  "url": "https://sonicmtl.com/",
-  "status": 200,
-  "action": "accept",
-  "layer": null,
-  "layer_name": null,
-  "detail": ""
- },
- {
-  "url": "https://888novel.com/",
-  "status": 403,
-  "action": "solve",
-  "layer": 9,
-  "layer_name": "L9 Managed JavaScript challenge",
-  "detail": "challenge served with 403"
  },
  {
   "url": "https://wbnovel.com/",
@@ -256,31 +240,7 @@
   "detail": "scored as automated"
  },
  {
-  "url": "https://www.idqidian.us/",
-  "status": 200,
-  "action": "accept",
-  "layer": null,
-  "layer_name": null,
-  "detail": ""
- },
- {
   "url": "https://ranobes.top/",
-  "status": 200,
-  "action": "accept",
-  "layer": null,
-  "layer_name": null,
-  "detail": ""
- },
- {
-  "url": "https://www.noveluniverse.com/",
-  "status": 403,
-  "action": "solve",
-  "layer": 9,
-  "layer_name": "L9 Managed JavaScript challenge",
-  "detail": "challenge served with 403"
- },
- {
-  "url": "https://blnovels.net/",
   "status": 200,
   "action": "accept",
   "layer": null,
@@ -312,14 +272,6 @@
   "detail": ""
  },
  {
-  "url": "https://tunovelaligera.com/",
-  "status": 403,
-  "action": "solve",
-  "layer": 9,
-  "layer_name": "L9 Managed JavaScript challenge",
-  "detail": "challenge served with 403"
- },
- {
   "url": "https://darktranslation.com/",
   "status": 200,
   "action": "accept",
@@ -329,11 +281,11 @@
  },
  {
   "url": "https://illusia.com.br/",
-  "status": 403,
-  "action": "escalate",
-  "layer": 12,
-  "layer_name": "L12 Super Bot Fight Mode",
-  "detail": "scored as automated"
+  "status": 200,
+  "action": "accept",
+  "layer": null,
+  "layer_name": null,
+  "detail": ""
  },
  {
   "url": "https://re-library.com/",
@@ -344,7 +296,7 @@
   "detail": ""
  },
  {
-  "url": "https://wuxia.click/",
+  "url": "https://noblemtl.com/",
   "status": 200,
   "action": "accept",
   "layer": null,
@@ -352,11 +304,59 @@
   "detail": ""
  },
  {
-  "url": "https://novelcrush.com/",
+  "url": "https://wtr-lab.com/",
+  "status": 200,
+  "action": "accept",
+  "layer": null,
+  "layer_name": null,
+  "detail": ""
+ },
+ {
+  "url": "https://wuxiaworldsite.co/",
+  "status": 200,
+  "action": "accept",
+  "layer": null,
+  "layer_name": null,
+  "detail": ""
+ },
+ {
+  "url": "https://novelgo.id/",
   "status": 403,
   "action": "solve",
   "layer": 9,
   "layer_name": "L9 Managed JavaScript challenge",
   "detail": "challenge served with 403"
+ },
+ {
+  "url": "https://mangabuddy.com/",
+  "status": 200,
+  "action": "accept",
+  "layer": null,
+  "layer_name": null,
+  "detail": ""
+ },
+ {
+  "url": "https://dragontea.ink/",
+  "status": 403,
+  "action": "escalate",
+  "layer": 12,
+  "layer_name": "L12 Super Bot Fight Mode",
+  "detail": "scored as automated"
+ },
+ {
+  "url": "https://www.69shuba.com/",
+  "status": 200,
+  "action": "accept",
+  "layer": null,
+  "layer_name": null,
+  "detail": ""
+ },
+ {
+  "url": "https://www.69shu.com/",
+  "status": 200,
+  "action": "accept",
+  "layer": null,
+  "layer_name": null,
+  "detail": ""
  }
 ]

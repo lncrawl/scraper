@@ -33,7 +33,7 @@ The browser tier runs separately, under its own interpreter — see below.
 
 | File | |
 | --- | --- |
-| `pool.py` | tor-pool credentials: operator login, and a `proxy`-scoped token **minted on demand**. |
+| `pool.py` | Reaching the local tor-pool: whether it checks credentials at all, and against one that does, an operator login and a `proxy`-scoped token **minted on demand**. |
 | `targets.py` | Reads lncrawl's `sources/_index.json` into a de-duplicated host list. |
 | `probe.py` | Hits every host with a plain **and** an impersonated client, and records the library's own diagnosis of each response. The pairing is the measurement. |
 | `tor_probe.py` | The same classification through the local tor-pool, on one sticky session. |
@@ -56,12 +56,20 @@ The browser tier runs separately, under its own interpreter — see below.
 
 ```bash
 docker run -d --name tor-pool -p 127.0.0.1:8080:8080 -p 127.0.0.1:9250:9250 \
-  -e ADMIN_PASSWORD=admin ghcr.io/lncrawl/tor-pool:latest
+  -e AUTH_DISABLED=true -e ADMIN_PASSWORD=admin ghcr.io/lncrawl/tor-pool:latest
 ```
 
-That is all the setup there is. tor-pool enforces authentication on both the API and
-the proxy listeners, and `pool.py` **mints its own `proxy`-scoped token** using the
-operator login (`TORPOOL_USER`/`TORPOOL_PASSWORD`, defaulting to `admin`/`admin`).
+That is all the setup there is. `AUTH_DISABLED=true` turns off every credential check —
+both ports are on `127.0.0.1`, so a token to talk to a container on this machine is
+friction that buys nothing, and the dashboard opens straight to the pool. Never set it
+on a pool anything else can reach: whoever opens a socket gets the Tor bandwidth, the
+session table, and the ability to restart instances.
+
+`pool.py` does not assume it. `/api/auth/status` says which kind of pool answered, and
+against a closed one it **mints its own `proxy`-scoped token** using the operator login
+(`TORPOOL_USER`/`TORPOOL_PASSWORD`, defaulting to `admin`/`admin`) — which is why
+`ADMIN_PASSWORD` is still set above: flipping to `AUTH_DISABLED=false` then needs no
+second edit.
 
 Minting rather than requiring an exported `TORPOOL_TOKEN` is deliberate, and it is
 worth knowing why: an `export` does not survive the shell that ran it, so the second
@@ -70,6 +78,11 @@ every SOCKS5 handshake. That failure is quiet, and it used to read as the *desti
 refusing our address — four scenarios confidently reported a layer-1 reputation block
 that did not exist, and `tor_probe.py` would have inverted its own finding. Set
 `TORPOOL_TOKEN` explicitly to override, for a real deployment.
+
+**S29 needs a pool that still checks.** Its subject is a *refused* credential, so an
+open pool accepts the wrong token and the scenario would report the inverse of what it
+measures. It reports `inconclusive` with that reason instead; run it with
+`AUTH_DISABLED=false`.
 
 **A browser and a Python that can load nodriver**, for `clearance.py` only:
 

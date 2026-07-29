@@ -632,7 +632,7 @@ def pool_config(**overrides: Any) -> ScraperConfig:
     "Traffic leaves through a tor-pool exit",
     ["L1"],
     "The pool is wired end to end: the session key becomes the SOCKS username, the "
-    "credential authenticates, and the egress IP is a Tor exit.",
+    "credential travels as its password, and the egress IP is a Tor exit.",
     TOR_CHECK,
     requires=pool.ready,
 )
@@ -847,7 +847,7 @@ def s16(result: Result) -> None:
     "attributing it to layer 1 caused a rotation, a false 'blocked' report against a "
     "healthy exit, and a persisted verdict that the site refuses our address.",
     "tor-pool with a deliberately wrong token",
-    requires=pool.ready,
+    requires=pool.enforcing,
 )
 def s29(result: Result) -> None:
     store = WORKDIR / "badcred"

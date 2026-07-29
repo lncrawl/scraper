@@ -6,7 +6,7 @@
 and escalates only as far as that layer requires.**
 
 [![PyPI](https://img.shields.io/pypi/v/lncrawl-scraper.svg?logo=pypi&logoColor=white)](https://pypi.org/project/lncrawl-scraper/)
-[![Python](https://img.shields.io/pypi/pyversions/lncrawl-scraper?logo=python&logoColor=white)](https://pypi.org/project/lncrawl-scraper/)
+[![PyPI Wheel](https://img.shields.io/pypi/wheel/lncrawl-scraper)](https://pypi.org/project/lncrawl-scraper/)
 [![CI](https://github.com/lncrawl/scraper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lncrawl/scraper/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/lncrawl/scraper/branch/main/graph/badge.svg)](https://codecov.io/gh/lncrawl/scraper)
 [![CodeQL](https://github.com/lncrawl/scraper/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/lncrawl/scraper/actions/workflows/github-code-scanning/codeql)
@@ -15,6 +15,8 @@ and escalates only as far as that layer requires.**
 [**The model**](https://github.com/lncrawl/scraper/blob/main/docs/model.md) ·
 [**Documentation**](https://github.com/lncrawl/scraper/tree/main/docs) ·
 [**Examples**](https://github.com/lncrawl/scraper/tree/main/examples) ·
+[**White paper**](https://github.com/lncrawl/scraper/blob/main/whitepaper/Cloudflare_Bypass.pdf) ·
+[**Live report**](https://github.com/lncrawl/scraper/blob/main/livetest/report.html) ·
 [**Changelog**](https://github.com/lncrawl/scraper/blob/main/CHANGELOG.md)
 
 </div>
@@ -46,36 +48,40 @@ trust score. Admission behaves as a near-conjunction, so:
 ```
 
 **The weakest layer bounds the outcome.** If a strategy fails on address reputation,
-perfecting its TLS profile gains *nothing* — not a little, zero. So this library diagnoses
+perfecting its TLS profile gains _nothing_ — not a little, zero. So this library diagnoses
 which layer is binding before it changes anything.
 
 **What a detector reads decides whether it can be satisfied.**
 
-| | The detector reads | Reproducible? | What actually moves it |
-| --- | --- | --- | --- |
-| **Emitted** | an artifact the client *sends* — a TLS `ClientHello`, an HTTP/2 frame order, a header order | yes | imitate it faithfully |
-| **Possessed** | a property the client must *hold* — accumulated per-zone history, a private signing key | no | accrue it, rent it, or hold the key |
+|               | The detector reads                                                                          | Reproducible? | What actually moves it              |
+| ------------- | ------------------------------------------------------------------------------------------- | ------------- | ----------------------------------- |
+| **Emitted**   | an artifact the client _sends_ — a TLS `ClientHello`, an HTTP/2 frame order, a header order | yes           | imitate it faithfully               |
+| **Possessed** | a property the client must _hold_ — accumulated per-zone history, a private signing key     | no            | accrue it, rent it, or hold the key |
 
 That second distinction produces the behaviour that most sets this library apart: **when the
 binding layer reads a possessed property, it does not rotate.** Rotating discards the very
 history the detector is measuring, so it holds the address still and slows down. And two
 layers raise instead of retrying, because they read a secret you either hold or do not.
 
-Full treatment: [docs/model.md](https://github.com/lncrawl/scraper/blob/main/docs/model.md).
+Full treatment: [docs/model.md](https://github.com/lncrawl/scraper/blob/main/docs/model.md). The
+layer model, the emit/possess distinction and the reference patterns come from the paper this
+library implements — _A Layered Model of Modern Web Bot Protection and the Structural Limits of
+Its Circumvention_, included as
+[whitepaper/Cloudflare_Bypass.pdf](https://github.com/lncrawl/scraper/blob/main/whitepaper/Cloudflare_Bypass.pdf).
 
 ## What it does
 
-| | |
-| --- | --- |
-| **Diagnoses instead of reacting** | `scraper.diagnose` maps a response to one of nineteen layers. A `200` carrying a challenge is a failure; a `429` is a pacing problem, not a bad address; a `403` with error 1010 is about the automation channel, and rotating the exit changes nothing. |
-| **Escalates on evidence** | Four tiers, ordered by real cost. The cheapest one whose reach covers the binding layer is chosen, so a site needing only a header profile never pays for a browser launch. |
-| **Treats identity as indivisible** | A clearance is bound to the address, User-Agent and TLS fingerprint that earned it, and `Clearance.usable_by()` refuses to replay it under any other — which makes the classic rotating-proxy failure structurally impossible. |
-| **Solves once and reuses** | A browser runs for the challenge, its exact User-Agent is adopted, and everything after is a cheap request on the same identity until the cookie expires. |
-| **Accumulates rather than fakes** | Gamma-distributed pacing, homepage warm-up, real referrer chains, one address per origin, capped concurrency — and it all persists between runs, because a process that forgets cannot accumulate. |
-| **Avoids the trap with no error response** | `safe_links` enumerates only anchors a person could click; `TopicGuard` notices content that stopped being about the site. |
-| **Signs requests, to be welcome** | RFC 9421 / Ed25519 Web Bot Auth. A valid signature skips the challenge machinery entirely, making it the cheapest tier there is. |
-| **Tells you why** | `scraper.explain(url)` names the binding layer, the working tier, the learned pacing and the ladder available. Exceptions carry `.layer`, not just a status code. |
-| **`PageSoup`** | Null-safe BeautifulSoup wrapper; selectors never return `None`. |
+|                                            |                                                                                                                                                                                                                                                          |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Diagnoses instead of reacting**          | `scraper.diagnose` maps a response to one of nineteen layers. A `200` carrying a challenge is a failure; a `429` is a pacing problem, not a bad address; a `403` with error 1010 is about the automation channel, and rotating the exit changes nothing. |
+| **Escalates on evidence**                  | Four tiers, ordered by real cost. The cheapest one whose reach covers the binding layer is chosen, so a site needing only a header profile never pays for a browser launch.                                                                              |
+| **Treats identity as indivisible**         | A clearance is bound to the address, User-Agent and TLS fingerprint that earned it, and `Clearance.usable_by()` refuses to replay it under any other — which makes the classic rotating-proxy failure structurally impossible.                           |
+| **Solves once and reuses**                 | A browser runs for the challenge, its exact User-Agent is adopted, and everything after is a cheap request on the same identity until the cookie expires.                                                                                                |
+| **Accumulates rather than fakes**          | Gamma-distributed pacing, homepage warm-up, real referrer chains, one address per origin, capped concurrency — and it all persists between runs, because a process that forgets cannot accumulate.                                                       |
+| **Avoids the trap with no error response** | `safe_links` enumerates only anchors a person could click; `TopicGuard` notices content that stopped being about the site.                                                                                                                               |
+| **Signs requests, to be welcome**          | RFC 9421 / Ed25519 Web Bot Auth. A valid signature skips the challenge machinery entirely, making it the cheapest tier there is.                                                                                                                         |
+| **Tells you why**                          | `scraper.explain(url)` names the binding layer, the working tier, the learned pacing and the ladder available. Exceptions carry `.layer`, not just a status code.                                                                                        |
+| **`PageSoup`**                             | Null-safe BeautifulSoup wrapper; selectors never return `None`.                                                                                                                                                                                          |
 
 ## The ladder
 
@@ -98,12 +104,12 @@ explanation when no configured rung does. Writing your own rung:
 pip install lncrawl-scraper
 ```
 
-| Extra | Pulls in | Needed for |
-| --- | --- | --- |
-| `lncrawl-scraper[browser]` | nodriver | solving a challenge with a real browser |
-| `lncrawl-scraper[botauth]` | cryptography | signed requests (Web Bot Auth) |
-| `lncrawl-scraper[image]` | Pillow | `get_image()` |
-| `lncrawl-scraper[all]` | all three | |
+| Extra                      | Pulls in     | Needed for                              |
+| -------------------------- | ------------ | --------------------------------------- |
+| `lncrawl-scraper[browser]` | nodriver     | solving a challenge with a real browser |
+| `lncrawl-scraper[botauth]` | cryptography | signed requests (Web Bot Auth)          |
+| `lncrawl-scraper[image]`   | Pillow       | `get_image()`                           |
+| `lncrawl-scraper[all]`     | all three    |                                         |
 
 Impersonation is **not** an extra. Layers 2–5 are one barrier and an ordinary Python client
 fails all four in the first round trip, so a build without it would not be a degraded scraper
@@ -111,7 +117,7 @@ but one that cannot reach a protected page.
 
 ## Adding reach
 
-Two settings change what this library can *do*. The rest adjust how it does it.
+Two settings change what this library can _do_. The rest adjust how it does it.
 
 ```python
 from scraper import ExitKind, ExitSpec, Scraper, ScraperConfig
@@ -166,18 +172,18 @@ except Exhausted as exc:
 
 ## Documentation
 
-| Page | |
-| --- | --- |
-| [model.md](https://github.com/lncrawl/scraper/blob/main/docs/model.md) | The bound, and emit vs. possess. **Start here.** |
-| [layers.md](https://github.com/lncrawl/scraper/blob/main/docs/layers.md) | The nineteen layers and what moves each. |
-| [tiers.md](https://github.com/lncrawl/scraper/blob/main/docs/tiers.md) | The escalation ladder; writing a tier. |
-| [configuration.md](https://github.com/lncrawl/scraper/blob/main/docs/configuration.md) | Every `ScraperConfig` field. |
-| [behaviour.md](https://github.com/lncrawl/scraper/blob/main/docs/behaviour.md) | Pacing, warm-up, persistence, shared state. |
-| [decoy-content.md](https://github.com/lncrawl/scraper/blob/main/docs/decoy-content.md) | The layer that returns no error. |
-| [web-bot-auth.md](https://github.com/lncrawl/scraper/blob/main/docs/web-bot-auth.md) | Signed requests and the key directory. |
-| [diagnostics.md](https://github.com/lncrawl/scraper/blob/main/docs/diagnostics.md) | `explain()`, exceptions, common conclusions. |
-| [migration.md](https://github.com/lncrawl/scraper/blob/main/docs/migration.md) | Porting from 0.2.x. |
-| [examples/](https://github.com/lncrawl/scraper/tree/main/examples) | Ten runnable programs, ordered to explain the design. |
+| Page                                                                                   |                                                       |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| [model.md](https://github.com/lncrawl/scraper/blob/main/docs/model.md)                 | The bound, and emit vs. possess. **Start here.**      |
+| [layers.md](https://github.com/lncrawl/scraper/blob/main/docs/layers.md)               | The nineteen layers and what moves each.              |
+| [tiers.md](https://github.com/lncrawl/scraper/blob/main/docs/tiers.md)                 | The escalation ladder; writing a tier.                |
+| [configuration.md](https://github.com/lncrawl/scraper/blob/main/docs/configuration.md) | Every `ScraperConfig` field.                          |
+| [behaviour.md](https://github.com/lncrawl/scraper/blob/main/docs/behaviour.md)         | Pacing, warm-up, persistence, shared state.           |
+| [decoy-content.md](https://github.com/lncrawl/scraper/blob/main/docs/decoy-content.md) | The layer that returns no error.                      |
+| [web-bot-auth.md](https://github.com/lncrawl/scraper/blob/main/docs/web-bot-auth.md)   | Signed requests and the key directory.                |
+| [diagnostics.md](https://github.com/lncrawl/scraper/blob/main/docs/diagnostics.md)     | `explain()`, exceptions, common conclusions.          |
+| [migration.md](https://github.com/lncrawl/scraper/blob/main/docs/migration.md)         | Porting from 0.2.x.                                   |
+| [examples/](https://github.com/lncrawl/scraper/tree/main/examples)                     | Ten runnable programs, ordered to explain the design. |
 
 ## Scope
 
@@ -212,6 +218,12 @@ tor-pool and a real browser.
 uv run poe live-all
 ```
 
+The recorded output is
+[livetest/report.html](https://github.com/lncrawl/scraper/blob/main/livetest/report.html) —
+scenario results, which layer each client meets across the corpus, and what a Tor exit
+actually costs. It is a standalone page; GitHub shows the source, so download it or open the
+local copy in a browser.
+
 Nearly every defect found before 1.0 was invisible to a stubbed transport, and two
 of them made whole features silently useless while every unit test passed. Anything the
 harness finds gets a unit test whose docstring says it was found live, so those docstrings are
@@ -220,9 +232,5 @@ the record of which assumptions turned out to be wrong.
 </details>
 
 ## Credits
-
-The layer model, the emit/possess distinction and the reference patterns are drawn from
-*A Layered Model of Modern Web Bot Protection and the Structural Limits of Its Circumvention*
-(Sudipto Chandra, 2026). This package is that paper's argument implemented.
 
 Extracted from [lightnovel-crawler](https://github.com/lncrawl/lightnovel-crawler).
