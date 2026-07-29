@@ -7,14 +7,13 @@ selector matches nothing.
 
 from __future__ import annotations
 
+import threading
 from functools import cached_property
 from typing import Any, Dict, Generator, List, Optional, Union
 
 import lxml.etree as etree
 from bs4 import BeautifulSoup, Tag
 from requests import Response
-
-from .utils.event_lock import EventLock
 
 
 class PageSoup:
@@ -29,7 +28,10 @@ class PageSoup:
     """
 
     def __init__(self, tag: Optional[Tag] = None):
-        self._lock = EventLock()
+        # Guards the replace-in-place in the text setter, which builds a
+        # replacement node and swaps it: two threads doing that on one tag can
+        # detach the same node twice.
+        self._lock = threading.Lock()
         self._tag = tag if isinstance(tag, Tag) else None
 
     def __bool__(self) -> bool:

@@ -4,6 +4,114 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - Unreleased
+
+A complete rewrite. There are no compatibility shims: almost every import changes.
+[docs/migration.md](docs/migration.md) is the mapping, and
+[docs/model.md](docs/model.md) is why.
+
+### The change
+
+The library is now organised around a model of what it is up against, rather than
+around a request pipeline with anti-detection features bolted on. A mitigation engine
+folds many detectors into one score, and admission is close to a conjunction — so the
+weakest layer bounds the outcome, and effort spent on any other layer buys nothing.
+Detectors that read an artifact the client *emits* are reproducible; detectors that
+read a property it must *possess* are not.
+
+Every behaviour below follows from those two statements.
+
+### Breaking
+
+- **`ScraperEngine` is gone**, and `Scraper` is no longer a `requests.Session`
+  subclass. The transport is a two-method seam, so the escalation ladder can move
+  between transports and every tier is testable without a network.
+- **The in-process Cloudflare solvers are gone** (v1, v2, v3, Turnstile), along with
+  the `exejs` dependency. They cannot keep up with the challenge format, and the layer
+  they targeted is only reachable by a real browser. A challenged site now needs
+  `ScraperConfig.browser`; without one it raises and says so, instead of attempting a
+  solve that usually failed.
+- **TLS cipher rotation is gone.** Reordering the cipher list per request does not
+  produce a browser fingerprint, it produces an unstable one — and an unstable TLS
+  fingerprint invalidates any clearance bound to it. The feature was breaking the layer
+  above it.
+- **Header randomisation is gone.** Header *order* is read, not just header values. An
+  impersonation profile emits a complete, correctly ordered set;
+  `scraper.identity.OVERRIDABLE` now caps what may be written over it.
+- **The User-Agent is taken from the transport, not imposed on it.** The generated-UA
+  machinery is gone. A profile supplies the User-Agent until a real browser earns a
+  clearance, at which point the browser is the source of truth and its exact string is
+  reproduced — because that is what the clearance is bound to.
+- **Impersonation is a core dependency**, not the `impersonate` extra. An ordinary
+  Python client fails layers 2–5 in the first round trip, so a build without it is not
+  a degraded scraper but one that cannot reach a protected page.
+- `default_config()`, `StealthConfig`, `BrowserConfig`, `ProxyConfig`, `ProxyUrl`,
+  `TorProxyUrl`, `apply_browser_clearance()` and the `scraper.engine` package are
+  removed. `SharedLimiter` becomes `SharedState`. `AbortedException` becomes `Aborted`,
+  and the `CloudflareException` hierarchy becomes `Blocked` / `Impassable` /
+  `Exhausted`, each carrying the layer it is attributed to.
+- New extras: `browser` (nodriver) and `botauth` (cryptography). `impersonate` is gone.
+
+### Added
+
+- `scraper.layers` — the model as code: nineteen layers, what each reads
+  (`Trait`), what this library does about it (`Stance`), the bound (`weakest`) and the
+  arithmetic that shows why fixing the wrong layer gains nothing (`marginal_gain`).
+  Layers 2–5 are declared as one barrier, and `expand()` keeps any reach set closed
+  over the group.
+- `scraper.diagnosis` — a response becomes a binding layer plus an action, as a pure
+  function over primitives. Three readings that a status-code table gets wrong: a `200`
+  carrying a challenge is a failure, a `429` is a pacing problem rather than a spent
+  address, and a `403` with error 1010 is about the automation channel rather than the
+  address. A `407` is reported as our own proxy credential, not as the site needing a
+  login.
+- `scraper.planner` — chooses the cheapest capability whose reach covers the binding
+  layer. Three rules that contradict the conventional table: a possessed property is
+  never rotated away from; rotation requires somewhere better to go, so a pool of
+  published ranges stops with an explanation instead of cycling; and escalation only
+  goes to a tier that actually reaches the layer. Repeated failure at an
+  already-covered emitted layer is re-attributed to the per-zone composite, because
+  recurrence is the only evidence available from outside.
+- `scraper.identity` — the emitted signals as one indivisible thing.
+  `Clearance.usable_by()` refuses to replay a clearance under a different identity,
+  which makes the classic rotating-proxy failure structurally impossible rather than
+  merely documented.
+- `scraper.exits` — addresses described by *kind*, and `ExitKind.reach` deciding what
+  layer 1 can be told. Leased per origin and held; rotation happens on evidence, never
+  on a timer. tor-pool support is retained, and a failure report now carries the kind
+  derived from the binding layer.
+- `scraper.pacing` — inter-request gaps drawn from a gamma distribution rather than set
+  to a constant, occasional reading pauses, homepage warm-up, and a real referrer chain
+  with fetch metadata. Throttles widen a learned per-origin interval that persists.
+- `scraper.memory` — per-origin state that survives the process: the binding layer, the
+  working tier, a clearance and the identity it belongs to, the learned interval,
+  observed JSON endpoints, and recorded decoy URLs. On by default, because the layer it
+  exists for cannot be satisfied by a process that forgets.
+- `scraper.state.SharedState` — shares the address, identity, history, pacing, referrer
+  chain and decoy list between scrapers pointed at one site. Two scrapers with separate
+  state do not look like one visitor going faster; they look like two who contradict
+  each other.
+- `scraper.tiers` — `archive` (Wayback, serving the original URL so links resolve
+  against the real site), `direct` (the baseline), `clearance` (solve once, reuse many,
+  delegating every request to `direct` so the solve and the fetch cannot diverge), and
+  `managed` (a provider callable; none bundled, since a wrapper that guesses a vendor
+  format wrong fails in a way that looks like the site blocking you).
+- `scraper.browser` — a two-method `BrowserSolver` protocol, a `nodriver` adapter, and
+  `CallableSolver` for anything else. Headed and WebRTC-disabled by default, both
+  deliberately: a headless build reports a software renderer, and a STUN request reports
+  the host's real address past the proxy without any request failing. One browser
+  profile directory per address.
+- `scraper.links` — `safe_links` enumerates only anchors a person could click, and
+  `TopicGuard` notices content that stopped being about the site. This is the only
+  defence against the one layer that returns no error, so the guard runs on the way out
+  rather than on demand.
+- `scraper.botauth` — RFC 9421 Ed25519 request signing with the `web-bot-auth` tag,
+  plus the key directory document to publish. The one layer with no bypass, and for a
+  crawler willing to identify itself, the cheapest tier in the stack.
+- `Scraper.explain(url)` and `Scraper.knows(url)` — what the library concluded is
+  binding, which tier settled, how fast it has learned it can go, and what it has
+  available.
+
 ## [0.2.6] - 2026-07-29
 
 ### Added
@@ -152,6 +260,7 @@ Initial public release of `lncrawl-scraper`, extracted from
   rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[1.0.0]: https://github.com/lncrawl/scraper/compare/v0.2.6...v1.0.0
 [0.2.6]: https://github.com/lncrawl/scraper/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/lncrawl/scraper/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/lncrawl/scraper/compare/v0.2.3...v0.2.4

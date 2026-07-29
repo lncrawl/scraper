@@ -4,7 +4,8 @@ import os
 
 import pytest
 
-from scraper import AbortedException, CloudflareException
+from scraper import Aborted, Blocked, Exhausted, Impassable, ScraperError
+from scraper.layers import Layer
 from scraper.utils.file_tools import atomic_write
 from scraper.utils.url_tools import extract_base, extract_host, validate_url
 
@@ -100,6 +101,22 @@ def test_atomic_write_swallows_unlink_error(tmp_path, monkeypatch):
 # --- exception hierarchy --------------------------------------------------
 
 
-def test_aborted_is_a_cloudflare_exception():
-    assert issubclass(AbortedException, CloudflareException)
-    assert issubclass(CloudflareException, Exception)
+def test_everything_shares_one_root():
+    for kind in (Aborted, Blocked, Exhausted, Impassable):
+        assert issubclass(kind, ScraperError)
+
+
+def test_a_block_names_the_layer_and_the_url():
+    error = Blocked(Layer.BEHAVIOURAL, "rate limited", "https://example.com/x")
+    assert error.layer is Layer.BEHAVIOURAL
+    assert "L8" in str(error)
+    assert "https://example.com/x" in str(error)
+    assert error.layer_info.trait.value == "possess"
+
+
+def test_an_impassable_failure_always_carries_the_legitimate_route():
+    # The only actionable half of the message. A diagnosis that supplied its own
+    # detail must not suppress it.
+    error = Impassable(Layer.ACCESS, "authentication required (HTTP 401)")
+    assert "account" in str(error)
+    assert "401" in str(error)

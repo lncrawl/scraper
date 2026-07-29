@@ -1,38 +1,25 @@
 # Examples
 
-Runnable usage examples for `lncrawl-scraper`. Each file is standalone:
+Run them with `uv run python examples/<file>`. They are ordered so that reading them
+in sequence explains the design; each one is self-contained.
+
+| Example | What it shows |
+| --- | --- |
+| [01_quickstart.py](01_quickstart.py) | The shortest useful program. Nothing configured. |
+| [02_the_model.py](02_the_model.py) | The 19 layers, what each reads, and the bound — read this first. |
+| [03_challenged_site.py](03_challenged_site.py) | A JavaScript challenge: solve once with a browser, reuse after. |
+| [04_addresses.py](04_addresses.py) | Exit kinds, sticky leases, tor-pool, and why rotation needs somewhere better. |
+| [05_behaviour.py](05_behaviour.py) | Pacing drawn from a distribution, warm-up, and sharing site state. |
+| [06_decoy_content.py](06_decoy_content.py) | The layer that returns no error: safe link extraction and topic drift. |
+| [07_web_bot_auth.py](07_web_bot_auth.py) | Signed requests (RFC 9421) and the key directory to publish. |
+| [08_archive_and_managed.py](08_archive_and_managed.py) | The cheapest rung and the most expensive one. |
+| [09_diagnostics.py](09_diagnostics.py) | `explain()`, the exception taxonomy, and offline diagnosis. |
+| [10_files_and_soup.py](10_files_and_soup.py) | Soup, JSON, forms, files, images. |
+
+Some examples need an extra:
 
 ```bash
-uv run python examples/01_basic_html.py
-# or, once installed:
-python examples/01_basic_html.py
+pip install "lncrawl-scraper[browser]"   # 03
+pip install "lncrawl-scraper[botauth]"   # 07
+pip install "lncrawl-scraper[image]"     # 10, for get_image
 ```
-
-| File                                                       | Shows                                                                      |
-| ---------------------------------------------------------- | -------------------------------------------------------------------------- |
-| [01_basic_html.py](01_basic_html.py)                       | Fetch a page and extract data with `get_soup` / `PageSoup`                 |
-| [02_pagesoup_parsing.py](02_pagesoup_parsing.py)           | PageSoup tour: CSS select, attrs, navigation, XPath, raw tag access        |
-| [03_json_api.py](03_json_api.py)                           | `get_json` / `post_json` and raw `Response` access                         |
-| [04_files_and_images.py](04_files_and_images.py)           | `get_file` (streamed, atomic) and `get_image` (Pillow)                     |
-| [05_forms_cookies_headers.py](05_forms_cookies_headers.py) | `submit_form`, `set_header`, `set_cookie`, `post_soup`, `reset`            |
-| [06_configuration.py](06_configuration.py)                 | `ScraperConfig`, `default_config()`, stealth, throttling, browser identity |
-| [07_impersonation.py](07_impersonation.py)                 | Real browser TLS/HTTP-2 fingerprint via `impersonate` (curl_cffi)          |
-| [08_browser_clearance.py](08_browser_clearance.py)         | Reuse a `cf_clearance` solved by a real browser                            |
-| [09_proxies.py](09_proxies.py)                             | Proxy rotation (HTTP/SOCKS/round-robin)                                    |
-| [10_tor_proxy.py](10_tor_proxy.py)                         | Tor integration and identity refresh                                       |
-| [11_error_handling.py](11_error_handling.py)               | HTTP, Cloudflare, and abort error handling                                 |
-| [12_concurrency_and_abort.py](12_concurrency_and_abort.py) | Threaded fetches and cooperative `abort()`                                 |
-| [13_tor_pool.py](13_tor_pool.py)                           | tor-pool: sticky exits, instant rotation, reporting a block                |
-
-## Notes
-
-- Examples 04 and 07 need optional extras:
-
-```bash
-pip install "lncrawl-scraper[image]"        # get_image
-pip install "lncrawl-scraper[impersonate]"  # impersonate=
-```
-
-- Several examples hit `httpbin.org` / `example.com` for live demonstration.
-- Examples 08 and 09 use placeholder credentials/hosts — they illustrate the
-  API shape and won't perform real network calls as written.

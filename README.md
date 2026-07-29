@@ -6,265 +6,177 @@
 [![CodeQL](https://github.com/lncrawl/scraper/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/lncrawl/scraper/actions/workflows/github-code-scanning/codeql)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lncrawl-scraper)
 
-HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth mode, proxy support, and a null-safe BeautifulSoup wrapper.
+A scraper that works out **which detection layer is blocking it** and escalates only as far as
+that layer requires — instead of running a fixed remedy per status code.
 
-## Features
+```python
+from scraper import Scraper
 
-- **Cloudflare bypass** — handles CF challenges v1, v2, v3, and Turnstile transparently
-- **Browser fingerprint impersonation** — optional `curl_cffi` transport that
-  reproduces a real Chrome/Firefox TLS (JA3/JA4) **and** HTTP/2 fingerprint
-- **Browser-assisted clearance** — reuse a `cf_clearance` cookie solved by a real
-  browser for managed-challenge / Turnstile sites
-- **Accurate Client Hints** — `sec-ch-ua` / `sec-fetch-*` derived from the chosen UA
-- **Stealth mode** — human-like delays, randomized headers, browser quirks
-- **Proxy support** — round-robin proxy rotation with Tor integration and direct fallback
-- **[tor-pool](https://github.com/lncrawl/tor-pool) support** — many Tor exits behind one
-  sticky endpoint: stay on an exit until you rotate, rotate without Tor's ~10s cooldown,
-  and report soft blocks (403/429/captcha) so the pool can retire a burnt exit
-- **Rate limiting** — configurable per-request intervals and concurrency cap
-- **`PageSoup`** — null-safe BeautifulSoup wrapper; selection methods never return `None`
-- **HTTP helpers** — `get_soup`, `get_json`, `get_image`, `get_file`, and more
+with Scraper(origin="https://example.com") as scraper:
+    soup = scraper.get_soup("https://example.com/")
+    print(soup.select_one("h1").text)
+```
+
+That already reproduces a real browser's TLS and HTTP/2 fingerprint, holds one address per
+origin, paces itself like a person reading, and refuses to follow decoy links.
+
+## The idea
+
+A modern mitigation engine runs many largely independent detectors and folds them into one trust
+score. Admission behaves as a near-conjunction, so:
+
+**The weakest layer bounds the outcome.** `P(evade) ≲ min(p₁ … pₙ)`. If a strategy fails on
+address reputation, perfecting its TLS profile gains *nothing* — not a little, zero — until
+reputation stops being the minimum. So this library diagnoses which layer is binding before it
+changes anything.
+
+**What a detector reads decides whether it can be satisfied.** Some read an artifact the client
+**emits** — a TLS `ClientHello`, an HTTP/2 frame order, a header order — which a faithful
+imitator can reproduce. Others read a property the client must **possess** — accumulated
+per-zone history, a private signing key — which it cannot.
+
+That second distinction produces the behaviour that most sets this library apart: **when the
+binding layer reads a possessed property, it does not rotate.** Rotating discards the very
+history the detector is measuring, so it holds the address still and slows down. And two layers
+raise instead of retrying, because they read a secret you either hold or do not.
+
+Full treatment: [docs/model.md](docs/model.md).
+
+## What it does
+
+- **Diagnoses instead of reacting.** `scraper.diagnose` maps a response to one of nineteen
+  layers. A `200` carrying a challenge is a failure; a `429` is a pacing problem, not a bad
+  address; a `403` with error 1010 is about the automation channel and rotating the exit changes
+  nothing.
+- **Escalates on evidence.** Four tiers — archive, impersonated HTTP, browser solve, managed
+  provider — ordered by real cost. The cheapest one whose reach covers the binding layer is
+  chosen, so a site needing only a header profile never pays for a browser launch.
+- **Treats identity as indivisible.** A clearance is bound to the address, User-Agent and TLS
+  fingerprint that earned it, so `Clearance.usable_by()` refuses to replay it under any other —
+  which makes the classic rotating-proxy failure structurally impossible.
+- **Solves once and reuses.** A browser runs for the challenge, its exact User-Agent is adopted,
+  and everything after is a cheap request on the same identity until the cookie expires.
+- **Accumulates rather than fakes.** Gamma-distributed pacing, homepage warm-up, real referrer
+  chains, one address per origin, capped concurrency — and it all persists between runs, because
+  a process that forgets cannot accumulate.
+- **Avoids the trap with no error response.** `safe_links` enumerates only anchors a person could
+  click; `TopicGuard` notices content that stopped being about the site.
+- **Signs requests, if you want to be welcome.** RFC 9421 / Ed25519 Web Bot Auth. A valid
+  signature skips the challenge machinery entirely, making it the cheapest tier there is.
+- **Tells you why.** `scraper.explain(url)` names the binding layer, the working tier, the
+  learned pacing and the ladder available. Exceptions carry `.layer`, not just a status code.
+- **`PageSoup`** — null-safe BeautifulSoup wrapper; selectors never return `None`.
 
 ## Installation
 
 ```bash
 pip install lncrawl-scraper
 
-# optional extras:
-pip install "lncrawl-scraper[impersonate]"   # browser TLS/HTTP-2 impersonation (curl_cffi)
-pip install "lncrawl-scraper[image]"         # get_image() support (Pillow)
+pip install "lncrawl-scraper[browser]"   # challenge solving (nodriver)
+pip install "lncrawl-scraper[botauth]"   # signed requests (cryptography)
+pip install "lncrawl-scraper[image]"     # get_image() (Pillow)
+pip install "lncrawl-scraper[all]"
 ```
 
-## Quick start
+Impersonation is **not** an extra. Layers 2–5 are one barrier and an ordinary Python client fails
+all four in the first round trip, so a build without it would not be a degraded scraper but one
+that cannot reach a protected page.
+
+## Adding reach
+
+Two settings change what this library can *do*. The rest adjust how it does it.
 
 ```python
-from scraper import Scraper
-
-s = Scraper(origin="https://example.com")
-
-# HTML
-soup = s.get_soup("https://example.com/page")
-title = soup.select_one("h1.title").text          # "" if not found, never raises
-links = [a["href"] for a in soup.select("a")]
-
-# JSON
-data = s.get_json("https://example.com/api/data")
-
-# File download
-s.get_file("https://example.com/file.zip", output_file="file.zip")
-
-# Image (returns PIL.Image)
-img = s.get_image("https://example.com/cover.jpg")
-```
-
-## Examples
-
-Runnable examples live in [`examples/`](examples/) — run any with
-`uv run python examples/<file>.py`.
-
-| Example                                                             | Shows                                                          |
-| ------------------------------------------------------------------- | -------------------------------------------------------------- |
-| [01_basic_html.py](examples/01_basic_html.py)                       | Fetch a page and extract data with `get_soup` / `PageSoup`     |
-| [02_pagesoup_parsing.py](examples/02_pagesoup_parsing.py)           | PageSoup tour: CSS select, attrs, navigation, XPath            |
-| [03_json_api.py](examples/03_json_api.py)                           | `get_json` / `post_json` and raw `Response` access             |
-| [04_files_and_images.py](examples/04_files_and_images.py)           | `get_file` (streamed, atomic) and `get_image` (Pillow)         |
-| [05_forms_cookies_headers.py](examples/05_forms_cookies_headers.py) | `submit_form`, `set_header`, `set_cookie`, `reset`             |
-| [06_configuration.py](examples/06_configuration.py)                 | `ScraperConfig`, `default_config()`, stealth, browser identity |
-| [07_impersonation.py](examples/07_impersonation.py)                 | Real browser TLS/HTTP-2 fingerprint via `impersonate`          |
-| [08_browser_clearance.py](examples/08_browser_clearance.py)         | Reuse a `cf_clearance` solved by a real browser                |
-| [09_proxies.py](examples/09_proxies.py)                             | Proxy rotation (HTTP/SOCKS/round-robin)                        |
-| [10_tor_proxy.py](examples/10_tor_proxy.py)                         | Tor integration and identity refresh                           |
-| [11_error_handling.py](examples/11_error_handling.py)               | HTTP, Cloudflare, and abort error handling                     |
-| [12_concurrency_and_abort.py](examples/12_concurrency_and_abort.py) | Threaded fetches and cooperative `abort()`                     |
-
-## Configuration
-
-Pass a `ScraperConfig` for full control:
-
-```python
-from scraper import Scraper
-from scraper.config import ScraperConfig, ProxyConfig, StealthConfig, BrowserConfig
+from scraper import ExitKind, ExitSpec, Scraper, ScraperConfig
+from scraper.browser import NoDriverSolver
 
 config = ScraperConfig(
-    min_request_interval=2.0,
-    max_concurrent_requests=1,
-    rotate_tls_ciphers=True,
-    stealth=StealthConfig(
-        enabled=True,
-        min_delay=1.0,
-        max_delay=3.0,
-        human_like_delays=True,
-        randomize_headers=True,
-        browser_quirks=True,
-    ),
-    proxy=ProxyConfig(
-        proxy_urls=["http://proxy1:8080", "http://proxy2:8080"],
-        fallback_to_direct=True,
-    ),
-    browser=BrowserConfig(browser="firefox", platform="windows", desktop=True),
+    # The only thing that moves layer 1: reputation is not something a client emits.
+    # Declare the kind honestly — claiming MOBILE for a datacenter range only stops
+    # this library from telling you that layer 1 is why nothing works.
+    exits=[ExitSpec(url="http://user:pw@residential.test:8000", kind=ExitKind.RESIDENTIAL)],
+    # The only thing that reaches the challenge layers.
+    browser=NoDriverSolver(),
 )
 
-s = Scraper(origin="https://example.com", config=config)
+with Scraper(origin="https://site.test", config=config) as scraper:
+    scraper.get("https://site.test/deep/page")
+    print(scraper.explain("https://site.test/deep/page"))
 ```
 
-Or start from the library's tuned defaults and tweak:
+```
+site.test
+  binding layer : L9 Managed JavaScript challenge — reads a hybrid property, solve
+  tier          : clearance
+  pacing        : 4.2s mean interval
+  requests      : 48 ok / 3 failed
+  clearance     : 712s left
+  ladder        : direct(10) clearance(100)
+  exits         : residential
+```
+
+## When it stops
+
+Failures name the layer and what would move it, because "403 after 3 retries" is the message that
+sends people to rewrite the part that was already working.
 
 ```python
-from scraper import Scraper, default_config
+from scraper import Layer
+from scraper.exceptions import Exhausted, Impassable
 
-config = default_config()
-config.max_concurrent_requests = 4
-s = Scraper(origin="https://example.com", config=config)
+try:
+    scraper.get(url)
+except Impassable as exc:
+    # Layers 18 and 19 read a secret. Nothing to retry; the message names the route.
+    print(exc.detail)
+except Exhausted as exc:
+    # A bypass may exist; this configuration does not reach it.
+    if exc.layer is Layer.IP_REPUTATION:
+        print(exc.detail)
+        # "no configured exit clears the reputation layer — datacenter and Tor ranges
+        #  are published, so rotating between them cannot help."
 ```
 
-## Browser fingerprint impersonation
+## Documentation
 
-A plain `requests` stack has a fixed OpenSSL TLS fingerprint and only speaks
-HTTP/1.1 — both of which modern Cloudflare detects. Set `impersonate` (requires
-the `impersonate` extra) to route requests through `curl_cffi`, reproducing a
-real browser's TLS (JA3/JA4) and HTTP/2 fingerprint:
+| Page | |
+| --- | --- |
+| [docs/model.md](docs/model.md) | The bound, and emit vs. possess. **Start here.** |
+| [docs/layers.md](docs/layers.md) | The nineteen layers and what moves each. |
+| [docs/tiers.md](docs/tiers.md) | The escalation ladder; writing a tier. |
+| [docs/configuration.md](docs/configuration.md) | Every `ScraperConfig` field. |
+| [docs/behaviour.md](docs/behaviour.md) | Pacing, warm-up, persistence, shared state. |
+| [docs/decoy-content.md](docs/decoy-content.md) | The layer that returns no error. |
+| [docs/web-bot-auth.md](docs/web-bot-auth.md) | Signed requests and the key directory. |
+| [docs/diagnostics.md](docs/diagnostics.md) | `explain()`, exceptions, common conclusions. |
+| [docs/migration.md](docs/migration.md) | Porting from 0.2.x. |
+| [examples/](examples/) | Ten runnable programs, ordered to explain the design. |
 
-```python
-from scraper import Scraper, default_config
+## Scope
 
-config = default_config()
-config.impersonate = "chrome"   # or "firefox", "chrome124", "safari", …
-s = Scraper(origin="https://example.com", config=config)
-```
-
-The spoofed User-Agent family and Client Hints are aligned with the
-impersonation target automatically.
-
-## Browser-assisted clearance
-
-For managed challenges / Turnstile that can't be solved headlessly, solve the
-challenge once in a real browser (e.g. `nodriver`/Playwright), then hand the
-`cf_clearance` cookie and the browser's **exact** User-Agent to the session:
-
-```python
-s.apply_browser_clearance(
-    "https://protected.example.com",
-    cf_clearance="<value from the browser>",
-    user_agent="<the browser's exact UA>",
-    cookies={"__cf_bm": "<optional>"},
-)
-```
-
-## `Scraper` API
-
-| Method                            | Description                                         |
-| --------------------------------- | --------------------------------------------------- |
-| `get(url, **kwargs)`              | GET request, returns `Response`                     |
-| `post(url, **kwargs)`             | POST request, returns `Response`                    |
-| `ping(url, timeout=5)`            | HEAD request for reachability check                 |
-| `submit_form(url, data, ...)`     | POST with form encoding or multipart                |
-| `get_json(url, headers, ...)`     | GET and parse response as JSON                      |
-| `post_json(url, data, ...)`       | POST and parse response as JSON                     |
-| `get_soup(url, headers, ...)`     | GET and return a `PageSoup`                         |
-| `post_soup(url, data, ...)`       | POST and return a `PageSoup`                        |
-| `get_image(url, ...)`             | GET and return a `PIL.Image`                        |
-| `get_file(url, output_file, ...)` | Stream download to file (abort-safe)                |
-| `make_soup(data, encoding, ...)`  | Parse `Response`, `bytes`, or `str` into `PageSoup` |
-| `set_header(key, value)`          | Set a default session header                        |
-| `set_cookie(name, value)`         | Set a session cookie                                |
-| `adopt_limiter(limiter)`          | Share a `SharedLimiter` (see below)                 |
-| `reset()`                         | Clear cookies, headers, and state                   |
-
-## Shared rate limiting across scrapers
-
-Each `Scraper` throttles and concurrency-limits itself. When several scraper
-instances talk to the *same host* (e.g. worker threads that each own a scraper),
-give them one `SharedLimiter` so the host-wide request rate and in-flight cap
-are enforced across all of them, while each scraper keeps its own cookies,
-headers, and abort signal:
-
-```python
-from scraper import Scraper, SharedLimiter
-
-limiter = SharedLimiter.create(max_concurrent_requests=2)
-a = Scraper(origin="https://example.com", limiter=limiter)
-b = Scraper(origin="https://example.com")
-b.adopt_limiter(limiter)  # post-construction; call before the first request
-```
-
-The limiter bundles the throttle clock (`min_request_interval*` pacing spans
-all adopters) and the concurrency semaphore. Scrapers for different hosts
-should use different limiters.
-
-## `PageSoup` API
-
-`PageSoup` wraps a BeautifulSoup `Tag`. Every selection method returns a `PageSoup` (never `None`); an empty `PageSoup` is falsy and returns safe defaults for all operations.
-
-```python
-soup = s.get_soup("https://example.com")
-
-# Selection
-soup.select("ul li")                 # → List[PageSoup]
-soup.select_one(".title")            # → PageSoup (empty if not found)
-soup.find("div", class_="content")  # → PageSoup
-soup.find_all("a")                   # → List[PageSoup]
-soup.xpath("//div[@class='body']")  # → List[PageSoup]
-soup.closest(".container")          # → nearest matching ancestor
-soup.parents(".wrapper")            # → generator of matching ancestors
-
-# Attribute access
-el["href"]                           # get_attr shorthand, returns "" if missing
-el.get_attr("src", default="/")
-el.has_attr("data-id")
-
-# Text / HTML
-el.text                              # stripped text, always str
-el.get_text(separator="\n")
-el.inner_html
-el.outer_html
-
-# Navigation
-el.parent
-el.children                          # List[PageSoup], excludes text nodes
-el.next_sibling
-el.previous_sibling
-
-# Mutation
-soup.decompose(".ads")               # remove elements matching selector
-el.replace_with(new_el)
-el.append(child)
-```
+This library is for retrieving **publicly accessible** content. It does not attempt
+authentication bypass, credential abuse, or circumvention of access controls protecting
+non-public data — layer 19 raises rather than trying, and layer 18 raises where a signature is
+mandated. Where a site publishes an API or an archive holds what you need, both are cheaper than
+anything else here and are supported first-class for that reason.
 
 ## Development
 
-[uv](https://docs.astral.sh/uv/) is required. Clone the repo and install all dependencies including dev extras:
-
 ```bash
-git clone https://github.com/lncrawl/scraper.git
-cd scraper
-uv sync --all-groups --all-extras
+uv sync                 # deps + editable install
+uv run poe lint         # ruff + pyright
+uv run poe test         # pytest
+uv run poe cov          # with coverage
 ```
 
-Tasks are managed with [poethepoet](https://poethepoet.natn.io/):
+Tests are offline: the pipeline talks to a two-method `Transport`, so `tests/conftest.py`'s
+`FakeTransport` covers every tier without a network. The modules that encode judgement —
+`diagnosis`, `planner`, `layers` — are pure functions over primitives and are tested as such.
 
-| Command               | Description                           |
-| --------------------- | ------------------------------------- |
-| `uv run poe lint`     | Run ruff + pyright                    |
-| `uv run poe lint-fix` | Auto-fix ruff violations and reformat |
-| `uv run poe test`     | Run the test suite                    |
-| `uv run poe build`    | Lint → test → build wheel             |
-| `uv run poe publish`  | Build → publish to PyPI               |
+## Credits
 
-## Testing
+The layer model, the emit/possess distinction and the reference patterns are drawn from
+*A Layered Model of Modern Web Bot Protection and the Structural Limits of Its Circumvention*
+(Sudipto Chandra, 2026). This package is that paper's argument implemented.
 
-Tests live in [`tests/`](tests/) and run with [pytest](https://pytest.org):
-
-```bash
-uv run poe test
-
-# or directly
-uv run pytest
-uv run pytest -v                   # verbose
-uv run pytest tests/test_dummy.py  # a single file
-```
-
-Mock HTTP with [responses](https://github.com/getsentry/responses) (a dev dependency) so tests make no real network calls.
-
-## License
-
-[Apache-2.0](LICENSE)
+Extracted from [lightnovel-crawler](https://github.com/lncrawl/lightnovel-crawler).

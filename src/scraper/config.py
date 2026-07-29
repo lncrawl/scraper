@@ -1,208 +1,167 @@
-"""Public configuration surface.
+"""Configuration, shaped as policy rather than as knobs.
 
-Re-exports the config dataclasses (:class:`ScraperConfig`, :class:`BrowserConfig`,
-:class:`ProxyConfig`, :class:`StealthConfig`) and provides :func:`default_config`,
-the recommended way to obtain tuned defaults.
+The previous generation of this library had thirty-odd settings, and most of them
+were levers on layers that were rarely the binding constraint — cipher rotation,
+header randomisation, per-request User-Agent choice. Tuning those is the activity
+the bound says is wasted: it moves a term that is not the minimum.
+
+So what is configurable here is the set of *capabilities* available and how patient
+the run is allowed to be. Which capability gets used, and when, is decided from
+evidence at runtime.
+
+Everything has a working default. The two settings that most change what this
+library can do are :attr:`ScraperConfig.exits` and :attr:`ScraperConfig.browser`,
+because they are the two that add reach rather than adjust it.
 """
 
 from __future__ import annotations
 
-import ssl
+import os
 from dataclasses import dataclass, field
-from typing import Callable
+from pathlib import Path
+from typing import Any, List, Optional, Tuple
 
-from requests import Response
+from .botauth import BotAuthConfig
+from .browser import BrowserSolver
+from .exits import ExitSpec
+from .pacing import PacingPolicy
+from .tiers.managed import Provider
+from .transport import Transport
 
-
-@dataclass
-class StealthConfig:
-    """Anti-detection behaviour: pacing, header randomisation, and browser quirks."""
-
-    enabled: bool = True
-    # Delays when Cloudflare is active
-    min_delay: float = 1.0
-    max_delay: float = 3.0
-    # Delays when no CF challenge has been seen (fast path)
-    min_delay_fast: float = 0.0
-    max_delay_fast: float = 0.1
-    human_like_delays: bool = True
-    randomize_headers: bool = True
-    browser_quirks: bool = True
+APP_DIR_NAME = "lncrawl-scraper"
 
 
-@dataclass
-class BrowserConfig:
-    """Identity to spoof — drives the User-Agent and matching Client Hints."""
+def default_data_dir() -> Path:
+    """Where learned state goes when the caller does not say.
 
-    # Browser engine to spoof: "chrome" | "firefox" | None (random choice).
-    browser: str | None = None
-    # Target platform: "windows" | "darwin" | "linux" | "android" | "ios" | None.
-    platform: str | None = None
-    desktop: bool = True
-    mobile: bool = True
-    # Explicit User-Agent string; when set, it overrides browser/platform.
-    custom: str | None = None
-
-
-@dataclass(frozen=True)
-class ProxyUrl:
-    """Proxy URL."""
-
-    url: str
-
-
-@dataclass(frozen=True)
-class TorProxyUrl(ProxyUrl):
-    """Tor Proxy URL for optional Tor control-port settings for rotation."""
-
-    url: str = "socks5h://127.0.0.1:9050"
-    control_host: str = "127.0.0.1"
-    control_port: int = 9051
-    control_password: str = "password"
-
-
-@dataclass(frozen=True)
-class TorPoolProxyUrl(ProxyUrl):
-    """A `tor-pool <https://github.com/lncrawl/tor-pool>`_ endpoint.
-
-    A pool runs many Tor instances behind one sticky SOCKS port: the SOCKS5
-    username is a session key, and the caller stays on the same instance — and
-    so the same exit IP — until it asks to rotate. Rotation goes through the
-    pool's HTTP API and is near-instant, because it reassigns the session to an
-    already-built instance instead of waiting out Tor's ~10s NEWNYM cooldown.
-
-    Unlike :class:`TorProxyUrl` there is no control port: the pool owns those
-    and never exposes them.
-
-    A ``token`` is required by tor-pool 0.2 and later. Mint one in the pool's
-    dashboard with the ``proxy`` scope, or take the one it prints on first boot.
-    It authenticates both the proxy port and the session calls made here, and a
-    ``proxy``-scoped token cannot resize the pool or restart instances if this
-    config leaks.
+    Honours ``SCRAPER_DATA_DIR`` first so a deployment can place it on a volume;
+    otherwise the platform's cache location. It has to default to *somewhere* real
+    rather than to nothing, because the layer this state exists for cannot be
+    satisfied by a process that forgets everything on exit.
     """
-
-    url: str = "socks5h://127.0.0.1:9250"
-    api_url: str = "http://127.0.0.1:8080"
-    # The proxy credential. Sent as the SOCKS5 password and as a bearer token on
-    # the pool's API. Empty works only against tor-pool 0.1.x, which ignored it.
-    token: str = ""
-    # Blank generates one per ProxyManager, so two Scrapers in one process get
-    # independent exit IPs by default.
-    session: str = ""
-    # Report 403/429/captcha/transport failures back to the pool. This is the
-    # only signal that catches soft blocks: the pool cannot see inside an HTTPS
-    # tunnel, so without it a burnt exit is never noticed.
-    report_failures: bool = True
-
-
-@dataclass
-class ProxyConfig:
-    """Proxy configuration."""
-
-    fallback_to_direct: bool = True
-    proxy_urls: list[TorPoolProxyUrl | TorProxyUrl | ProxyUrl | str] = field(default_factory=list)
-    retry_request_on_failure: int = 3
-    tor_rotation_cooldown: float = 10.0
-    disable_cooldown: float = 300.0  # 5 minutes
+    override = os.environ.get("SCRAPER_DATA_DIR")
+    if override:
+        return Path(override).expanduser()
+    if os.name == "nt":
+        base = os.environ.get("LOCALAPPDATA") or "~/AppData/Local"
+    else:
+        base = os.environ.get("XDG_CACHE_HOME") or "~/.cache"
+    return Path(base).expanduser() / APP_DIR_NAME
 
 
 @dataclass
 class ScraperConfig:
-    """Top-level scraper configuration.
+    """Everything a :class:`~scraper.Scraper` needs.
 
-    Groups challenge-handling, TLS, session, throttling, stealth, browser, and
-    proxy settings. Use :func:`scraper.default_config` for tuned defaults rather
-    than constructing this directly when you only need a few overrides.
+    Args:
+        impersonate: curl-impersonate target. Keep the family alias: a pinned
+            profile ages into a signal of its own, and the library warns when it
+            detects one older than the installed build offers.
+        prefer_http3: Offer HTTP/3 where the origin advertises it. Current browsers
+            prefer it, so a client that never does is a mild mismatch — mild enough
+            that it is off by default, since HTTP/3 through some proxies is worse
+            than the mismatch.
+        transport: Inject a transport instead of building one. The seam tests use,
+            and the way to supply a client this library does not know about.
+        exits: Configured addresses, best kind first after sorting. The single most
+            consequential setting: reputation is not something a client emits, so
+            no amount of transport fidelity substitutes for a better address.
+        browser: A challenge solver. The second most consequential: without one,
+            every challenged page is out of reach no matter how patient the run is.
+        archive: Allow serving pages from the Wayback Machine. Off by default
+            because it trades freshness for cost, which only the caller can weigh.
+        managed: A provider callable for the last rung. See
+            :data:`scraper.tiers.Provider`.
+        remember: Persist what is learned per origin. On by default, and turning it
+            off costs more than it looks like: every run then rediscovers the
+            binding layer with the same number of failed requests, and those
+            failures are themselves what the behavioural layer counts.
+        data_dir: Where learned state and browser profiles live.
+        max_attempts: Attempts for one retrieval across all tiers.
+        max_rotations: Addresses to spend on one retrieval. Deliberately small —
+            burning a pool one request at a time is a misdiagnosis, not bad luck.
+        guard_topic: Watch for decoy content. The only defence against the layer
+            that returns no error.
+        on_decoy: ``"warn"``, ``"raise"`` or ``"ignore"``. Warning is the default
+            because the check is a heuristic and a false positive should not be
+            able to fail a job; ``"raise"`` is right for anything that trains on
+            or republishes what it collects.
+        raise_for_status: Raise :class:`requests.HTTPError` on a non-2xx that
+            survived the ladder. A 404 reaches the caller either way; this only
+            decides whether it arrives as a return value or an exception.
     """
 
-    # Challenge handling
-    disable_v1: bool = False
-    disable_v2: bool = False
-    disable_v3: bool = False
-    disable_turnstile: bool = False
-    solve_depth: int = 3
-    double_down: bool = True
+    # -- transport -------------------------------------------------------------------
+    impersonate: str = "chrome"
+    prefer_http3: bool = False
+    verify_tls: bool = True
+    transport: Optional[Transport] = None
 
-    # TLS
-    cipher_suite: str | None = None
-    ecdh_curve: str = "prime256v1"
-    source_address: str | tuple | None = None
-    server_hostname: str | None = None
-    ssl_context: ssl.SSLContext | None = None
-    rotate_tls_ciphers: bool = True
+    # -- addresses -------------------------------------------------------------------
+    exits: List[ExitSpec] = field(default_factory=list)
+    max_sessions_per_exit: int = 2
+    allow_rotation: bool = True
+    retire_exit_for: float = 600.0
 
-    # Session management
-    session_refresh_interval: int = 3600
-    auto_refresh_on_403: bool = True
-    max_403_retries: int = 3
+    # -- behaviour -------------------------------------------------------------------
+    pacing: PacingPolicy = field(default_factory=PacingPolicy)
 
-    # Request throttling
-    min_request_interval: float = 2.0  # when CF protection is active
-    min_request_interval_fast: float = 0.1  # when no CF has been detected
-    max_concurrent_requests: int = 1
+    # -- capabilities ----------------------------------------------------------------
+    browser: Optional[BrowserSolver] = None
+    archive: bool = False
+    archive_max_age: float = 0.0
+    managed: Optional[Provider] = None
+    botauth: BotAuthConfig = field(default_factory=BotAuthConfig)
 
-    # Stealth
-    stealth: StealthConfig = field(default_factory=StealthConfig)
+    # -- persistence -----------------------------------------------------------------
+    remember: bool = True
+    data_dir: Optional[Path] = None
 
-    # Browser / User-Agent
-    browser: BrowserConfig | dict | None = None
-    allow_brotli: bool = True
+    # -- patience --------------------------------------------------------------------
+    max_attempts: int = 5
+    max_rotations: int = 2
+    promote_after: int = 3
+    solve_timeout: float = 90.0
 
-    # Network fingerprint impersonation (requires the `impersonate` extra).
-    # When set to a curl-impersonate target (e.g. "chrome", "firefox",
-    # "chrome124"), requests are routed through curl_cffi to reproduce a real
-    # browser's TLS (JA3/JA4) and HTTP/2 fingerprint instead of the urllib3
-    # default. None keeps the standard transport.
-    impersonate: str | None = None
+    # -- content safety --------------------------------------------------------------
+    guard_topic: bool = True
+    on_decoy: str = "warn"
 
-    # Proxy
-    proxy: ProxyConfig = field(default_factory=ProxyConfig)
+    # -- request defaults ------------------------------------------------------------
+    timeout: Any = (15, 120)
+    parser: str = "lxml"
+    raise_for_status: bool = True
 
-    # Hooks — invoked as pre_hook(scraper, method, url, *args, **kwargs) and
-    # post_hook(scraper, response); both receive the scraper engine instance.
-    pre_hook: Callable[..., tuple] | None = None
-    post_hook: Callable[..., Response] | None = None
+    def __post_init__(self) -> None:
+        if self.on_decoy not in ("warn", "raise", "ignore"):
+            raise ValueError(f"on_decoy must be warn, raise or ignore, not {self.on_decoy!r}")
+        if self.data_dir is not None:
+            self.data_dir = Path(self.data_dir).expanduser()
 
-    # SSL — set False to accept self-signed / expired certs manually;
-    # the scraper also auto-retries with verify=False on SSLError for non-CF URLs.
-    verify_ssl: bool = True
+    @property
+    def state_dir(self) -> Optional[Path]:
+        """The directory to keep learned state in, or ``None`` when not remembering."""
+        if not self.remember:
+            return None
+        return self.data_dir or default_data_dir()
 
-    # Debug
-    debug: bool = False
+    @property
+    def memory_path(self) -> Optional[Path]:
+        root = self.state_dir
+        return None if root is None else root / "origins.json"
 
+    @property
+    def profile_root(self) -> Optional[Path]:
+        """Where per-address browser profiles go.
 
-def default_config() -> ScraperConfig:
-    """Build a fresh :class:`ScraperConfig` with the library's tuned defaults.
+        ``None`` when there is no browser, because creating profile directories for
+        a solver that does not exist leaves litter and explains nothing.
+        """
+        root = self.state_dir
+        if root is None or self.browser is None:
+            return None
+        return root / "profiles"
 
-    A new instance is returned on every call so that each :class:`~scraper.Scraper`
-    owns its config (and nested proxy/stealth objects) instead of sharing a single
-    mutable module-level instance.
-    """
-    return ScraperConfig(
-        min_request_interval=2.0,
-        min_request_interval_fast=0.1,
-        max_concurrent_requests=1,
-        rotate_tls_ciphers=True,
-        auto_refresh_on_403=False,
-        max_403_retries=3,
-        session_refresh_interval=300,
-        stealth=StealthConfig(
-            enabled=True,
-            min_delay=1.0,
-            max_delay=3.0,
-            min_delay_fast=0.0,
-            max_delay_fast=0.1,
-            human_like_delays=True,
-            randomize_headers=True,
-            browser_quirks=True,
-        ),
-        browser=BrowserConfig(
-            browser="firefox",
-            platform="windows",
-            desktop=True,
-            mobile=False,
-        ),
-        proxy=ProxyConfig(
-            fallback_to_direct=True,
-        ),
-    )
+    def capabilities_enabled(self) -> Tuple[bool, bool, bool]:
+        """``(archive, browser, managed)`` — which optional tiers are available."""
+        return bool(self.archive), self.browser is not None, self.managed is not None

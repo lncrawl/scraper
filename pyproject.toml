@@ -4,13 +4,21 @@ build-backend = "hatchling.build"
 
 [project]
 name = "lncrawl-scraper"
-version = "0.2.6"
-description = "HTTP scraper with Cloudflare bypass, browser fingerprint impersonation, stealth mode, proxy support, and a null-safe BeautifulSoup wrapper."
+version = "1.0.0"
+description = "A scraper that diagnoses which detection layer is blocking it and escalates only as far as that layer requires."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.9"
 authors = [{ name = "Sudipta Chandra", email = "dipu.sudipta@gmail.com" }]
-keywords = ["scraper", "cloudflare", "beautifulsoup", "http", "stealth"]
+keywords = [
+    "scraper",
+    "cloudflare",
+    "bot-detection",
+    "tls-fingerprint",
+    "impersonate",
+    "web-bot-auth",
+    "beautifulsoup",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -27,17 +35,20 @@ classifiers = [
 ]
 
 dependencies = [
+    "curl_cffi>=0.13",
     "requests[socks]>=2.28",
     "beautifulsoup4>=4.14.3",
     "lxml>=6.0.0",
-    "exejs>=0.0.7",
-    "brotli>=1.2.0",
 ]
 
 [project.optional-dependencies]
+# nodriver evaluates PEP 604 unions at import time, so it cannot load before 3.10.
+# Marked rather than left to fail: without this the extra installs on 3.9 and the
+# failure surfaces as a TypeError from inside a dependency.
+browser = ["nodriver>=0.50; python_version >= '3.10'"]
+botauth = ["cryptography>=44.0"]
 image = ["Pillow>=10.0"]
-impersonate = ["curl_cffi>=0.7"]
-all = ["lncrawl-scraper[image,impersonate]"]
+all = ["lncrawl-scraper[browser,botauth,image]"]
 
 [project.urls]
 Homepage = "https://github.com/lncrawl/scraper"
@@ -59,6 +70,8 @@ dev = [
     "Pillow>=11.3.0",
     "lxml-stubs>=0.5.1",
     "curl-cffi>=0.7",
+    "cryptography>=47.0.0",
+    "nodriver>=0.50.3",
 ]
 
 [tool.poe.tasks]

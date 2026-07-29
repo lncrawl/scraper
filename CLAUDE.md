@@ -1,178 +1,145 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code working in this repository.
 
 ## What this is
 
-`lncrawl-scraper` (import name `scraper`) is a standalone HTTP scraping library
-extracted from [lightnovel-crawler](https://github.com/lncrawl/lightnovel-crawler).
-It is a `requests.Session` subclass that transparently handles Cloudflare
-challenges, plus a null-safe BeautifulSoup wrapper and a set of HTTP helpers.
+`lncrawl-scraper` (import name `scraper`) is a scraping library organised around a model
+of bot detection rather than around a request pipeline. Published to PyPI as
+`lncrawl-scraper`, imported as `scraper`. Targets Python **3.9+**.
 
-Published to PyPI as `lncrawl-scraper`; imported as `scraper`. Targets Python
-**3.9+**.
+**Read [docs/model.md](docs/model.md) before changing anything.** Almost every design
+decision in this package is a consequence of two statements in it, and a change that
+looks like an obvious improvement is usually a re-introduction of something that was
+deliberately removed. The removals are listed in the 1.0.0 section of
+[CHANGELOG.md](CHANGELOG.md) with reasons.
 
 ## Commands
 
-Tooling is driven by [uv](https://docs.astral.sh/uv/) + [poethepoet](https://poethepoet.natn.io/).
-
 ```bash
-uv sync                 # install deps + editable package into .venv
+uv sync                 # deps + editable install
 uv run poe lint         # ruff check + ruff format --check + pyright
 uv run poe lint-fix     # ruff check --fix + ruff format
 uv run poe test         # pytest
-uv run poe cov          # pytest with coverage (term-missing + html + xml)
-uv run poe build        # lint + test + uv build (wheel/sdist)
-uv run poe publish      # build + uv publish
+uv run poe cov          # pytest with coverage
+uv run poe build        # lint + test + uv build
 ```
 
-Always run `uv run poe lint` before considering a change done. CI
-(`.github/workflows/ci.yml`) runs three jobs: `lint` (ruff + pyright), a
-`build` matrix testing on Python 3.9–3.14, and `coverage` (which posts a PR
-comment + badge via `python-coverage-comment-action` and a job-summary table).
+Always run `uv run poe lint` before considering a change done. CI runs `lint`, a `build`
+matrix across the supported Python versions, and `coverage`.
 
 ## Architecture
 
-The package is a thin, ergonomic layer over an in-house Cloudflare-bypass engine.
-
 ```text
 src/scraper/
-├── __init__.py         # public API + __version__ (via importlib.metadata)
-├── session.py          # Scraper — the main class (subclasses ScraperEngine)
-├── soup.py             # PageSoup — null-safe BeautifulSoup wrapper
-├── config.py           # public config surface + default_config() factory
-├── py.typed            # PEP 561 marker
-├── utils/              # internal helpers (event_lock, url_tools, file_tools)
-└── engine/             # internal Cloudflare-bypass engine (private)
+├── layers.py       # THE MODEL: 19 layers, Trait (emit/possess), Stance, the bound
+├── diagnosis.py    # response -> (binding layer, action). Pure.
+├── planner.py      # (binding layer, context) -> what to change. Pure.
+├── identity.py     # the emitted signals as one indivisible thing + Clearance binding
+├── exits.py        # addresses by kind, sticky per-origin leases, tor-pool
+├── pacing.py       # gamma-distributed gaps, warm-up, referrer chain
+├── memory.py       # per-origin state that survives the process
+├── state.py        # SharedState: what belongs to a site, not to a scraper object
+├── transport.py    # Transport seam + curl_cffi impersonation + plain requests
+├── browser.py      # BrowserSolver protocol + nodriver adapter
+├── botauth.py      # RFC 9421 Ed25519 signing (layer 18)
+├── links.py        # safe link extraction + TopicGuard (layer 17)
+├── tiers/          # archive, direct, clearance, managed
+├── session.py      # Scraper: the retrieval loop. Small on purpose.
+├── config.py       # ScraperConfig
+├── soup.py         # PageSoup — null-safe BeautifulSoup wrapper
+└── utils/          # url_tools, file_tools
 ```
 
-### Layers
+The loop in `session.py` is deliberately thin. Everything that encodes judgement lives in
+`layers`, `diagnosis` and `planner`, which are pure and tested as such. **Put new
+judgement there, not in the session.**
 
-- **`Scraper`** ([session.py](src/scraper/session.py)) — the public entry point.
-  Adds Origin/Referer injection, default timeouts, and helpers: `get_soup`,
-  `post_soup`, `get_json`, `post_json`, `get_image` (returns a PIL Image),
-  `get_file` (streamed, abortable), `submit_form`, `ping`. Subclasses
-  `ScraperEngine`, so all of `requests.Session` is available too.
-- **`PageSoup`** ([soup.py](src/scraper/soup.py)) — wraps a BeautifulSoup `Tag`.
-  Selection methods (`select`, `select_one`, `find`, `xpath`, `closest`, …)
-  always return `PageSoup`/`list`, never `None`; text/HTML accessors always
-  return `str`. An empty `PageSoup` is falsy. Reach the raw tag via `.tag`.
-- **`engine/`** — `ScraperEngine` (the `requests.Session` subclass with the full
-  request pipeline) in `engine/__init__.py`, plus CF challenge handlers v1/v2/v3 +
-  Turnstile, TLS cipher rotation, stealth mode, proxy/Tor manager, and UA selection.
+### Invariants
 
-### Cloudflare-bypass surface
+Each of these is a place where a plausible change is wrong.
 
-The realistic ceiling of a `requests`-based engine is its TLS (JA3/JA4) and
-HTTP/1.1 fingerprint — `set_ciphers()` in [tls.py](src/scraper/engine/tls.py)
-only reorders ciphers, so the ClientHello still reads as Python. Three features
-push past that:
+1. **Nothing reacts to a status code.** Responses go through `diagnose()` to a layer, and
+   layers go through `Planner.react()` to a decision. A new `if response.status_code ==`
+   in the session is a bug.
+2. **A possessed-property layer is never rotated away from.** Rotation resets the history
+   the layer measures. `Planner._slow_down` handles that axis; do not add a rotation path
+   around it.
+3. **Rotation requires somewhere better to go.** If `ExitKind.reach` says no configured
+   address clears layer 1, rotating cannot help and the planner stops with an explanation.
+4. **No tier claims layers 18 or 19.** They read a secret. A reach set listing them would
+   make the planner offer a stronger tier for something no tier can do.
+5. **The transport owns the header set.** Identity contributions stay inside
+   `identity.OVERRIDABLE` — values a profile already sends. Never add headers there;
+   order is read.
+6. **The impersonation profile owns the User-Agent** until a browser earns a clearance.
+   Do not reintroduce a UA generator.
+7. **A clearance is only ever sent under the identity that earned it.**
+   `Clearance.usable_by()` is the gate; nothing may bypass it.
+8. **Layers 2–5 travel together.** Build reach sets through `layers.expand()`.
+9. **A tier that cannot serve a call raises `TierUnavailable`**, never `Blocked`. Only a
+   real detection event may be attributed to a layer and written to memory.
+10. **`diagnosis` and `planner` stay pure** — primitives in, dataclasses out, no I/O, no
+    clock beyond `time` in the modules that must have one.
 
-- **Impersonation transport** ([\engine/impersonate.py](src/scraper/engine/impersonate.py)):
-  when `ScraperConfig.impersonate` is set (e.g. `"chrome"`), `ScraperEngine.perform_request`
-  routes through `curl_cffi` (curl-impersonate) for a real browser TLS + HTTP/2
-  fingerprint, and adapts the result back into a `requests.Response`. The
-  curl_cffi session is the cookie authority and is mirrored into `self.cookies`
-  after each request (`_mirror_transport_cookies`). Cipher rotation is skipped
-  while impersonating. Requires the `impersonate` extra (`curl_cffi`).
-- **Client Hints** are derived from the actual UA in
-  `UserAgent._client_hints` (Chromium only; Firefox sends none) so `sec-ch-ua`
-  version/platform always match the User-Agent. `stealth.py` no longer hardcodes
-  them — it only defaults the non-version-specific `Sec-Fetch-*` nav hints.
-- **`apply_browser_clearance(domain, cf_clearance=, user_agent=, cookies=)`**
-  injects a clearance solved by an external real browser; the UA must match the
-  one that obtained it. `put_cookie` keeps the requests jar and the impersonation
-  jar in sync.
+### Things removed on purpose
 
-### Configuration
-
-All config flows through `ScraperConfig` (a dataclass with nested
-`StealthConfig`, `ProxyConfig`, `BrowserConfig`). The public surface is
-[config.py](src/scraper/config.py), which defines the dataclasses and the
-`default_config()` factory:
-
-```python
-from scraper import Scraper, default_config
-from scraper.config import BrowserConfig, StealthConfig
-
-cfg = default_config()                 # fresh, fully-populated defaults
-cfg.browser = BrowserConfig(browser="chrome", platform="darwin")
-s = Scraper(origin="https://site.com", config=cfg)
-```
-
-- **`default_config()` returns a fresh instance every call.** Never reintroduce
-  a shared module-level config singleton — `ScraperEngine` hands the nested
-  `proxy`/`stealth` objects to managers that may mutate them, so sharing would
-  leak state across `Scraper` instances.
-- `ScraperConfig.browser` accepts `BrowserConfig | dict | None`; the dict form
-  is accepted as a convenience and normalized via `asdict` in `UserAgent.load`.
+Do not add back: TLS cipher rotation, header randomisation, in-process challenge solving,
+a User-Agent generator, `fallback_to_direct`, pre/post request hooks, or a session-refresh
+timer. Each is argued in the CHANGELOG's 1.0.0 section; several were actively breaking a
+layer above them.
 
 ## Conventions
 
-- **Python 3.9 compatibility is mandatory.** Bare `X | Y` unions must not be
-  _evaluated at runtime_ - only use them in files that have
-  `from __future__ import annotations`, or in pure annotations. Prefer
-  `typing.Optional/Union` in new non-future-annotated modules. `importlib`,
-  dataclasses, etc. must all work on 3.9.
-- **Explicit relative imports.** All intra-package imports inside `src/scraper/`
-  must use explicit relative paths (e.g. `from .config import X`,
-  `from ..exceptions import Y`, `from ...engine.state import RequestState`).
-  Never import your own package with an absolute `scraper.*` path from within
-  `src/scraper/` - that path only works after install and breaks editable installs
-  in some edge cases.
-- **Type hints on all functions.** Every function or method that is part of
-  `scraper`' module must have fully annotated signatures (parameters + return type).
-  Internal helpers should be annotated too, but pyright clean is the hard gate.
-- **`ruff`**: line-length 100, double quotes, `force-sort-within-sections`,
-  combine-as-imports. **`pyright`** runs in `standard` mode over `src` + `tests`
-  - keep it clean (use real `isinstance` narrowing rather than `is_dataclass`,
-    which pyright doesn't narrow on).
-- **Dependencies**: core runtime deps live in `[project.dependencies]`. Optional
-  extras: `image` (`Pillow`, for `get_image`) and `impersonate` (`curl_cffi`,
-  for `ScraperConfig.impersonate`) — both imported lazily so the package works
-  without them. Add deps via `uv add` / `uv add --dev`.
-- **Public API** is whatever `src/scraper/__init__.py` exports in `__all__`.
-  Update it (and the README) when adding user-facing surface.
-- **Never `git push` automatically.** Commit locally and stop; let the user
-  push when ready. This applies even when asked to "make a commit" - stop
-  after the commit unless a push is explicitly requested.
-- **Never commit automatically after making changes.** Always stop after
-  editing files and wait for the user to explicitly ask for a commit.
+- **Python 3.9 compatibility is mandatory.** `X | Y` unions only under
+  `from __future__ import annotations` or in pure annotations. Prefer
+  `typing.Optional/Union` elsewhere.
+- **Explicit relative imports** inside `src/scraper/` (`from .config import X`,
+  `from ..layers import Y`). Never `import scraper.*` from within the package.
+- **Full type annotations** on every function and method. `pyright` in `standard` mode
+  over `src`, `tests` and `examples` is the hard gate.
+- **ruff**: line length and rules in [pyproject.toml](pyproject.toml).
+- **Comments explain why, never what.** The reason a line exists — a constraint, a failure
+  mode it prevents, an ordering that is load-bearing — is worth writing down. Restating
+  the code is not. Most of this package's comments name the specific bug the code avoids;
+  match that.
+- **Docstrings carry the model.** A module docstring should say which layer the module
+  addresses and why the approach is the one that works. This is the package's primary
+  documentation and it is expected to be substantial.
+- **Public API** is `src/scraper/__init__.py`'s `__all__`. Update it, the README, and the
+  relevant `docs/` page together.
+- Dependencies via `uv add` / `uv add --dev`. Core deps must stay minimal; a new
+  capability is an extra, imported lazily, raising `MissingDependency`.
 
 ## Testing
 
-`pytest` under [tests/](tests/). The src/ layout means tests import the
-_installed_ package, so run them via `uv run poe test` / `uv run poe cov` (which
-use the editable install).
+`pytest` under [tests/](tests/), offline and fast.
 
-- **Tests must be offline and fast.** [conftest.py](tests/conftest.py) provides
-  an autouse fixture that stubs `scraper.engine.user_agent._load_ua_data` to
-  `None` (forces the deterministic embedded UA generator, no network), plus
-  `fast_config` / `make_fast_config()` which disable stealth delays, throttling,
-  and session refresh. Use these in any test that constructs a `Scraper`.
-- **Mock HTTP with `responses`** (`responses.RequestsMock()`), never real
-  requests. It patches `HTTPAdapter.send`, so it intercepts the mounted TLS
-  adapter too. Note: a set abort signal trips the pre-send check, so the request
-  never fires — use `assert_all_requests_are_fired=False` in that case.
-- **UA-family gotcha**: the offline generator can pick iOS, where Chrome's UA is
-  `CriOS/…` and Firefox's is `FxiOS/…` (neither contains `Chrome/` / `Firefox/`).
-  When asserting on UA family, pin a desktop platform
-  (`BrowserConfig(platform="windows", mobile=False)`).
-- `curl_cffi`-dependent tests use `pytest.importorskip("curl_cffi")`.
-- **Coverage** config is in `pyproject.toml` (`[tool.coverage]`, `source =
-["scraper"]`, `relative_files = true`). `uv run poe cov` writes `htmlcov/`,
-  `coverage.xml`, and a terminal report (all coverage artifacts are gitignored).
-  The deep CF challenge solvers (`cloudflare_v1/v2/v3`, `interpreter`) are
-  integration-only and stay low-coverage without live Cloudflare traffic.
+- **`tests/conftest.py`'s `FakeTransport`** is the seam. The pipeline talks to a
+  two-method `Transport`, so a fake covers every tier with no network and no HTTP-adapter
+  patching.
+- **`fast_config` / `make_config`** disable pacing, persistence and the topic guard. Any
+  test that constructs a `Scraper` needs them: `remember` defaults to a real path, and a
+  suite that wrote to it would leak learned state into the developer's cache directory.
+- **Test the judgement modules as pure functions.** `test_layers`, `test_diagnosis` and
+  `test_planner` need no fixtures at all, and that is the point.
+- **Name the failure mode.** These tests are documentation; a test called
+  `test_a_throttle_slows_down_and_keeps_the_address` says why it exists in its name, and
+  a comment explaining what breaks without it is worth more than an assertion count.
+- `cryptography` / `nodriver` tests use `pytest.importorskip`.
 
 ## Commit messages
 
-Plain capitalized imperative subjects (no Conventional Commits prefix) and **no
-`Co-Authored-By` trailer**. See the **`commit-messages`** skill for the full
-convention and examples - consult it whenever writing a commit message.
+Plain capitalised imperative subjects, no Conventional Commits prefix, and **no
+`Co-Authored-By` trailer**. See the **`commit-messages`** skill.
 
 ## Releasing
 
-Releases are automated: bump -> tag -> GitHub Release (artifacts + changelog) ->
-PyPI. Update `CHANGELOG.md`, then run the **Bump Version** workflow. For the full
-pipeline, pre-release options, and gotchas, use the **`releasing`** skill.
+Automated: bump → tag → GitHub Release → PyPI. Update `CHANGELOG.md` first, then run the
+**Bump Version** workflow. See the **`releasing`** skill. Note that some version numbers
+are unavailable because tags already exist for them; the skill covers this.
+
+## Never
+
+- **Never commit or push automatically.** Stop when the work is done and draft a message
+  for the user. Prior approval does not carry over to the next change.
