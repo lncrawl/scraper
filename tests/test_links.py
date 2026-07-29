@@ -91,6 +91,40 @@ class TestOnlyWhatAPersonCouldClick:
         urls = [link.url for link in safe_links(PAGE, BASE, same_host=False)]
         assert "https://other.test/off" in urls
 
+    def test_an_icon_font_link_is_clickable(self):
+        """Found live: a home link marked up as `<i class="fas fa-home">`.
+
+        Icon fonts are how a large share of real navigation is written, and treating
+        them as invisible silently drops menus, pagination and home links — the
+        failure direction that actually costs content.
+        """
+        html = '<a href="/home" class="home"><i class="fas fa-home"></i></a>'
+        assert [link.url for link in safe_links(html, BASE)] == ["https://example.com/home"]
+
+    def test_a_url_reachable_by_any_anchor_is_followable(self):
+        """Found live: a card is an empty overlay anchor *plus* a text anchor.
+
+        The overlay comes first in the markup, so keeping the first verdict per URL
+        rejected the page even though a perfectly visible text link existed.
+        """
+        html = (
+            '<a class="overlay" href="/novel/x"></a>'
+            '<a class="title" href="/novel/x">The Novel Title</a>'
+        )
+        kept = safe_links(html, BASE)
+        assert [link.url for link in kept] == ["https://example.com/novel/x"]
+        assert kept[0].text == "The Novel Title", "the informative anchor should win"
+
+    def test_a_url_only_reachable_by_a_decoy_anchor_stays_rejected(self):
+        # The rescue must not work the other way round.
+        html = (
+            '<a href="/maze/1" rel="nofollow">bait</a><a href="/maze/1" style="display:none">x</a>'
+        )
+        assert safe_links(html, BASE) == []
+
+    def test_a_truly_empty_anchor_is_still_dropped(self):
+        assert safe_links('<a href="/nothing"></a>', BASE) == []
+
     def test_duplicates_collapse(self):
         html = '<a href="/x">one</a><a href="/x#frag">two</a><a href="/x">three</a>'
         assert len(safe_links(html, BASE)) == 1

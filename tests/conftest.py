@@ -118,9 +118,19 @@ class FakeTransport(Transport):
         return self.calls[index][2].get("proxies")
 
 
+# Shaped after what real interstitials actually send: the orchestrate path carries the
+# `/h/` segment, which is what distinguishes a challenge from the detections script
+# Cloudflare injects into ordinary pages.
 CHALLENGE_BODY = """<!doctype html><html><head><title>Just a moment...</title></head>
 <body><div id="cf-wrapper"><script>window._cf_chl_opt={cvId:"3"}</script>
-<form id="challenge-form" action="/cdn-cgi/challenge-platform/x"></form></body></html>"""
+<script src="/cdn-cgi/challenge-platform/h/b/orchestrate/chl_page/v1?ray=a1"></script>
+</body></html>"""
+
+# A page that was served normally but carries the injected detections script. Anything
+# that reads this as a challenge is wrong about a page it already has.
+SERVED_WITH_JSD = """<!doctype html><html><head><title>Chapter 12</title>
+<script src="/cdn-cgi/challenge-platform/scripts/jsd/main.js"></script></head>
+<body><h1>Chapter 12</h1><p>Real content.</p></body></html>"""
 
 BLOCK_BODY = """<!doctype html><html><body><h1>Access denied</h1>
 <span class="cf-error-code">1020</span><p>Error 1020</p></body></html>"""

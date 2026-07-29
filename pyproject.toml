@@ -96,6 +96,20 @@ publish = [
     { cmd = "uv publish" },
 ]
 
+# Live verification against real Cloudflare deployments. Not part of `test` — it needs
+# the network, and the tor-pool tasks need a local pool. See livetest/README.md.
+live-targets = "python livetest/targets.py"
+live-probe = "python livetest/probe.py"
+live-tor = "python livetest/tor_probe.py 45"
+live = "python livetest/scenarios.py"
+live-report = "python livetest/report.py"
+live-all = [
+    { ref = "live-probe" },
+    { ref = "live-tor" },
+    { ref = "live" },
+    { ref = "live-report" },
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 filterwarnings = [

@@ -78,7 +78,11 @@ Each of these is a place where a plausible change is wrong.
    `Clearance.usable_by()` is the gate; nothing may bypass it.
 8. **Layers 2–5 travel together.** Build reach sets through `layers.expand()`.
 9. **A tier that cannot serve a call raises `TierUnavailable`**, never `Blocked`. Only a
-   real detection event may be attributed to a layer and written to memory.
+   real detection event may be attributed to a layer and written to memory. This binds
+   the transport path too: a proxy that refuses our credential, or an origin that never
+   answered, gets `layer=None`. Substituting a plausible layer is not a cosmetic choice
+   — the attribution rotates an innocent address, reports it to the pool as blocked,
+   and persists to the origin's profile, where it outlives the typo that caused it.
 10. **`diagnosis` and `planner` stay pure** — primitives in, dataclasses out, no I/O, no
     clock beyond `time` in the modules that must have one.
 
@@ -127,6 +131,28 @@ layer above them.
   `test_a_throttle_slows_down_and_keeps_the_address` says why it exists in its name, and
   a comment explaining what breaks without it is worth more than an assertion count.
 - `cryptography` / `nodriver` tests use `pytest.importorskip`.
+
+### The live harness
+
+`livetest/` runs the same paths against **real Cloudflare deployments**, using every
+host in lightnovel-crawler's source index as the corpus. It is not part of `poe test`
+— it needs the network, and some scenarios need a local tor-pool and a real browser.
+See [livetest/README.md](livetest/README.md).
+
+**Run it after changing anything that talks to a real server** — the transport, the
+diagnosis markers, a tier, the exit pool. Eleven of the fifteen defects found before
+1.0 were invisible to a stubbed transport, and two of them made whole features
+silently useless while every unit test passed. The pattern to expect: an offline test
+that mocks the thing under test will confirm the code does what it says, not that
+what it says is true of the real server.
+
+The harness needs its infrastructure declared, not assumed: a scenario that runs
+without a working tor-pool still emits steps and a verdict, and those read as findings
+about the library. Use `requires=` for that, and `inconclusive` when a third party goes
+away mid-run.
+
+Anything the harness finds gets a unit test with a docstring saying it was found live
+— those docstrings are the record of which assumptions turned out to be wrong.
 
 ## Commit messages
 

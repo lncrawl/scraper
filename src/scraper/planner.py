@@ -119,6 +119,12 @@ class Context:
     rotations: int = 0
     warmed: bool = True
     interval: float = 0.0
+    can_rotate: bool = True
+    """Whether the exit pool has an alternative address at all.
+
+    Distinct from whether rotating *would help*: with a single proxy or none, a
+    rotation lands on the address that was just refused.
+    """
 
 
 class Planner:
@@ -275,6 +281,16 @@ class Planner:
                 layer=diagnosis.layer,
                 reason="rotation is disabled and the address is blocked",
             )
+        if not context.can_rotate:
+            return Decision(
+                Move.STOP,
+                layer=diagnosis.layer,
+                reason=(
+                    f"{diagnosis.detail} and there is no other address configured — "
+                    "rotating would land on the one that was just refused. Add a "
+                    "residential or mobile exit"
+                ),
+            )
         if context.rotations >= self.max_rotations:
             return Decision(
                 Move.STOP,
@@ -336,7 +352,7 @@ class Planner:
         return Decision(
             Move.STOP,
             layer=layer,
-            reason=self._nothing_left(layer, current),
+            reason=self._nothing_left(layer, current, diagnosis.detail),
         )
 
     def _promote(
@@ -364,7 +380,7 @@ class Planner:
         )
         return Layer.BOT_MANAGEMENT
 
-    def _nothing_left(self, layer: Optional[Layer], current: Capability) -> str:
+    def _nothing_left(self, layer: Optional[Layer], current: Capability, detail: str = "") -> str:
         if layer is None:
             return f"{current.name} failed and there is no stronger tier configured"
         missing = [
@@ -372,6 +388,13 @@ class Planner:
         ]
         if missing:
             return f"{layer} needs {', '.join(missing)}, which is not enabled"
+        if current.covers(layer):
+            # The tier that owns this layer is configured and still did not deliver.
+            # The generic hint would tell the caller to configure the very thing they
+            # already have, which sends them to check their config instead of the
+            # solver's own output — where the actual reason is.
+            because = f": {detail}" if detail else ""
+            return f"{layer} is handled by {current.name}, which ran and did not succeed{because}"
         return (
             f"{layer} is beyond every configured tier ({current.name} is the strongest). "
             f"{_hint(layer)}"

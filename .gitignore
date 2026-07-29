@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Live verification harness: recorded output is committed, working state is not.
+livetest/state/

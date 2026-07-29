@@ -1,0 +1,94 @@
+[
+ {
+  "id": "S27",
+  "title": "A real browser solves a real challenge, then the cheap tier reuses it",
+  "layers": [
+   "L6",
+   "L7",
+   "L9",
+   "L10"
+  ],
+  "proves": "solve-once-and-reuse: the expensive tier runs once and the clearance is replayed on the identity that earned it, so later pages cost one HTTP request.",
+  "target": "https://m.webnovel.com/",
+  "verdict": "pass",
+  "seconds": 21.67,
+  "steps": [
+   {
+    "what": "direct tier against https://www.webnovel.com/",
+    "value": "{'status': 200, 'action': 'accept', 'layer': None}",
+    "ok": null
+   },
+   {
+    "what": "direct tier against https://m.webnovel.com/",
+    "value": "{'status': 403, 'action': 'solve', 'layer': 'L9 Managed JavaScript challenge'}",
+    "ok": null
+   },
+   {
+    "what": "target chosen",
+    "value": "https://m.webnovel.com/",
+    "ok": null
+   },
+   {
+    "what": "ladder",
+    "value": "direct(10) -> clearance(100)",
+    "ok": null
+   },
+   {
+    "what": "the challenged host was retrieved",
+    "value": "HTTP 200, 137604 bytes",
+    "ok": true
+   },
+   {
+    "what": "the browser ran exactly once",
+    "value": "1 solve(s)",
+    "ok": true
+   },
+   {
+    "what": "the clearance tier is what worked",
+    "value": "clearance",
+    "ok": true
+   },
+   {
+    "what": "a clearance was stored",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "clearance cookies",
+    "value": "['NEXT_LOCALE', '__cf_bm', '_csrfToken', 'bookCitysex', 'e1', 'e2', 'sessionid', 'webnovel-content-language', 'webnovel-language', 'webnovel_uuid']",
+    "ok": null
+   },
+   {
+    "what": "bound to User-Agent",
+    "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+    "ok": null
+   },
+   {
+    "what": "valid for",
+    "value": "1797s",
+    "ok": null
+   },
+   {
+    "what": "reuse #1 served without a new solve",
+    "value": "HTTP 200, 1 solve(s) total",
+    "ok": true
+   },
+   {
+    "what": "reuse #2 served without a new solve",
+    "value": "HTTP 200, 1 solve(s) total",
+    "ok": true
+   },
+   {
+    "what": "reuse #3 served without a new solve",
+    "value": "HTTP 200, 1 solve(s) total",
+    "ok": true
+   },
+   {
+    "what": "explain()",
+    "value": "m.webnovel.com\n  binding layer : L9 Managed JavaScript challenge \u2014 reads a hybrid property, solve\n  tier          : clearance\n  pacing        : 1.5s mean interval\n  requests      : 4 ok / 3 failed\n  clearance     : 1787s left\n  ladder        : direct(10) clearance(100)\n  exits         : direct",
+    "ok": null
+   }
+  ],
+  "error": ""
+ }
+]

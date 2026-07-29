@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import logging
+import time
 from typing import Any, Dict, List, Optional
 
 import requests
@@ -43,6 +44,15 @@ the HTML carries injected banner markup that no selector on the real site expect
 SOURCE_HEADER = "x-scraper-archive"
 """Timestamp of the capture, so a caller can tell how stale the answer is."""
 
+DEFAULT_WINDOW = 3 * 365 * 86400
+"""How far back the index is queried when the caller set no maximum age.
+
+The query is always bounded. Asking for a popular URL's entire history returns a
+response large enough to time out, and a timeout here is indistinguishable from a URL
+the archive has never seen — so an unbounded query makes the tier look permanently
+empty rather than slow. Captures older than this window are not enumerated.
+"""
+
 
 class ArchiveTier(Tier):
     """Serves pages out of the Wayback Machine.
@@ -60,11 +70,17 @@ class ArchiveTier(Tier):
     name = "archive"
 
     def __init__(
-        self, transport: Transport, *, max_age: float = 0.0, timeout: float = 30.0
+        self,
+        transport: Transport,
+        *,
+        max_age: float = 0.0,
+        timeout: float = 30.0,
+        retry_after: float = 2.0,
     ) -> None:
         self.transport = transport
         self.max_age = max_age
         self.timeout = timeout
+        self.retry_after = retry_after
 
     def send(self, call: Call) -> requests.Response:
         # Both of these escalate rather than being recorded as a block. Neither says
@@ -74,9 +90,17 @@ class ArchiveTier(Tier):
             raise TierUnavailable(
                 self.name, f"the archive only serves GET, not {call.method}", call.url
             )
-        snapshot = self.latest(call.url)
+        rows = self._index(call.url)
+        if rows is None:
+            # Told apart from an empty index on purpose. Both used to report "no usable
+            # capture", which reads as "this URL was never archived" when what actually
+            # happened was the index rate-limiting us — and the caller then stops
+            # considering the archive for a URL it does hold.
+            raise TierUnavailable(self.name, "the archive index did not answer", call.url)
+        snapshot = self._newest(rows)
         if snapshot is None:
-            raise TierUnavailable(self.name, "no usable capture", call.url)
+            what = "no capture within the age limit" if rows else "no capture on record"
+            raise TierUnavailable(self.name, what, call.url)
 
         timestamp, original = snapshot
         raw_url = f"{WAYBACK_URL}/{timestamp}{RAW_SUFFIX}/{original}"
@@ -91,39 +115,76 @@ class ArchiveTier(Tier):
 
     def latest(self, url: str) -> Optional["tuple[str, str]"]:
         """The most recent acceptable capture of *url*, as ``(timestamp, url)``."""
-        for timestamp, original in reversed(self.captures(url)):
+        return self._newest(self._index(url) or [])
+
+    def _newest(self, rows: List["tuple[str, str]"]) -> Optional["tuple[str, str]"]:
+        for timestamp, original in reversed(rows):
             if not self.max_age or _age(timestamp) <= self.max_age:
                 return timestamp, original
         return None
 
     def captures(self, url: str, *, limit: int = 12) -> List["tuple[str, str]"]:
-        """Index entries for *url*, oldest first.
+        """Index entries for *url*, oldest first, newest last.
 
-        ``collapse=digest`` drops consecutive identical captures, so the entries
-        that come back are the ones where the page actually changed rather than
-        every crawl of an unchanged page.
+        Empty both when the archive holds nothing and when the index would not answer;
+        :meth:`send` uses the internal form that tells those apart.
+        """
+        rows = self._index(url)
+        if rows is None:
+            return []
+        return rows[-abs(limit) :] if limit else rows
+
+    def _index(self, url: str) -> Optional[List["tuple[str, str]"]]:
+        """Index rows for *url*, or ``None`` when the lookup itself failed.
+
+        ``collapse=digest`` drops consecutive identical captures, so what comes back is
+        the crawls where the page actually changed.
+
+        The index is *not* asked for the last N rows, even though that is the obvious
+        way to want them: a negative ``limit`` is documented but returns an empty body
+        once combined with a filter. The window is bounded server-side instead and the
+        newest rows are taken from the tail here.
+
+        Retried once. The index rate-limits, and a single 503 is common enough that
+        treating it as "never archived" would make the tier look far less useful than it
+        is.
         """
         params: Dict[str, Any] = {
             "url": url,
             "output": "json",
             "collapse": "digest",
             "filter": "statuscode:200",
-            "limit": -abs(limit),
             "fl": "timestamp,original",
+            "from": _stamp_before(self.max_age or DEFAULT_WINDOW),
         }
-        try:
-            response = self.transport.send("GET", CDX_URL, params=params, timeout=self.timeout)
-            rows = json.loads(response.content or b"[]")
-        except (ValueError, OSError) as exc:
-            logger.debug("archive index lookup failed for %s: %s", url, exc)
-            return []
-        if not isinstance(rows, list) or len(rows) < 2:
-            return []
-        out: List["tuple[str, str]"] = []
-        for row in rows[1:]:
-            if isinstance(row, list) and len(row) >= 2:
-                out.append((str(row[0]), str(row[1])))
-        return out
+        for attempt in (0, 1):
+            try:
+                response = self.transport.send("GET", CDX_URL, params=params, timeout=self.timeout)
+                if response.status_code >= 500:
+                    raise OSError(f"index returned HTTP {response.status_code}")
+                rows = json.loads(response.content or b"[]")
+            except (ValueError, OSError) as exc:
+                logger.debug("archive index lookup failed for %s: %s", url, exc)
+                if attempt == 0:
+                    time.sleep(self.retry_after)
+                    continue
+                return None
+            if not isinstance(rows, list):
+                return None
+            out: List["tuple[str, str]"] = []
+            for row in rows[1:]:
+                if isinstance(row, list) and len(row) >= 2:
+                    out.append((str(row[0]), str(row[1])))
+            return out
+        return None
+
+
+def _stamp_before(seconds: float) -> str:
+    """A CDX ``from`` bound *seconds* in the past, as ``YYYYMMDD``."""
+    import datetime as dt
+
+    moment = dt.datetime.now(dt.timezone.utc) - dt.timedelta(seconds=seconds)
+    return moment.strftime("%Y%m%d")
 
 
 def _age(timestamp: str) -> float:

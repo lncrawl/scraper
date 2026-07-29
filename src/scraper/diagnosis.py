@@ -28,10 +28,20 @@ from typing import Dict, Mapping, Optional, Tuple
 from .layers import Layer, Trait, trait
 
 # Body markers, matched case-insensitively against a bounded prefix of the page.
+#
+# The `/h/` is load-bearing and was measured, not guessed. Cloudflare injects a
+# JavaScript-Detections script from `/cdn-cgi/challenge-platform/scripts/jsd/…` into
+# ordinary successful pages, so the bare prefix fires on content: across a sample of
+# real hosts it appeared on 9 of 10 pages that were served normally. The `/h/`
+# orchestrate path belongs to an actual interstitial and appeared on none of them.
+#
+# Getting this wrong is expensive in the direction that matters least visibly: a page
+# that arrived fine is reported as a challenge, so the caller pays for a browser launch
+# it did not need, or gives up on a page it already had.
 _CHALLENGE_MARKERS = (
     "__cf_chl_",
     "cf_chl_opt",
-    "/cdn-cgi/challenge-platform/",
+    "/cdn-cgi/challenge-platform/h/",
     "checking your browser",
     "just a moment",
     "enable javascript and cookies to continue",
@@ -286,6 +296,29 @@ def _declared_crawler(user_agent: str) -> str:
     return ""
 
 
+def _proxy_fault(error: BaseException) -> str:
+    """Whether the proxy refused *us*, rather than the path beyond it failing.
+
+    Matched on the message rather than an exception class because this module stays
+    free of transport imports: curl_cffi and requests both raise a ``ProxyError``,
+    but so does an unreachable destination reported through a SOCKS5 reply, and the
+    class alone cannot tell those apart. The phrases below are curl's own, and each
+    describes something on this side of the proxy.
+    """
+    text = f"{type(error).__name__} {error}".lower()
+    if "rejected by the socks5 server" in text:
+        # RFC 1929 said no. The SOCKS5 handshake has no status code, so this is the
+        # exact analogue of the HTTP 407 above and gets the same answer.
+        return "the proxy rejected the credential (SOCKS5 handshake)"
+    if "no authentication method was acceptable" in text:
+        return "the proxy requires a credential that was not offered"
+    if "code 407 from proxy" in text or "proxy authentication" in text:
+        return "the proxy rejected the credential (HTTP 407 to CONNECT)"
+    if "resolve proxy" in text:
+        return "the proxy hostname does not resolve"
+    return ""
+
+
 def diagnose_transport(error: BaseException, *, through_proxy: bool) -> Diagnosis:
     """Classify a failure that never produced a response.
 
@@ -293,8 +326,18 @@ def diagnose_transport(error: BaseException, *, through_proxy: bool) -> Diagnosi
     connection that will not complete is evidence about the exit and nothing
     else, so the exit is what changes. Direct, the same error is about the
     network or the origin, and swapping anything client-side is superstition.
+
+    Unless the proxy is what refused us, which is neither. It is our own
+    configuration, and the three things that follow from a layer attribution are
+    all wrong for it: the address gets rotated though nothing is wrong with it, a
+    pool is told an innocent exit is blocked, and — the durable one — layer 1 is
+    written to the origin's profile, so a missing token leaves behind a permanent
+    verdict that the *site* refuses us. That outlives the typo that caused it.
     """
     name = type(error).__name__
     if through_proxy:
+        fault = _proxy_fault(error)
+        if fault:
+            return Diagnosis(Action.REFUSE, None, fault)
         return Diagnosis(Action.ROTATE, Layer.IP_REPUTATION, f"exit unusable ({name})")
     return Diagnosis(Action.RETRY, None, f"transport failure ({name})")

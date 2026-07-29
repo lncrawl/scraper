@@ -46,6 +46,30 @@ class TestChallengeWithASuccessStatus:
         assert result.action is Action.SOLVE
         assert result.layer is Layer.MANAGED_CHALLENGE
 
+    def test_the_injected_detections_script_is_not_a_challenge(self):
+        """Found live, and the most expensive false positive available.
+
+        Cloudflare injects a JavaScript-Detections script into ordinary successful
+        pages. Treating its path as a challenge marker reported content as a challenge
+        on 9 of 10 real pages sampled — so the caller pays for a browser launch it does
+        not need, or abandons a page it already has.
+        """
+        served = (
+            "<!doctype html><html><head><title>Chapter 12</title>"
+            '<script src="/cdn-cgi/challenge-platform/scripts/jsd/main.js"></script>'
+            "</head><body><h1>Chapter 12</h1><p>Real content.</p></body></html>"
+        )
+        assert diagnose(status=200, body=served).ok
+
+    def test_the_orchestrate_path_still_is_a_challenge(self):
+        # The `/h/` sub-path belongs to an actual interstitial.
+        interstitial = (
+            "<!doctype html><html><body><script>"
+            '"/cdn-cgi/challenge-platform/h/b/orchestrate/chl_page/v1?ray=abc"'
+            "</script></body></html>"
+        )
+        assert diagnose(status=200, body=interstitial).action is Action.SOLVE
+
 
 class TestThrottling:
     """A 429 is not a bad exit, and conflating the two costs working addresses."""
@@ -175,6 +199,46 @@ class TestTransportFailures:
         result = diagnose_transport(OSError("dns failure"), through_proxy=False)
         assert result.action is Action.RETRY
         assert result.layer is None
+
+    class TestAProxyThatRefusesUsIsNotTheSitesDoing:
+        """Found live, by running the harness with the pool credential unset.
+
+        A tor-pool that enforces authentication rejects the SOCKS5 handshake, which
+        never becomes a response, so it arrived here and was attributed to layer 1.
+        The visible symptom was four scenarios reporting that the *destination*
+        blocks datacenter ranges and only a residential exit could help, when the
+        real cause was one missing environment variable.
+        """
+
+        # curl's own wording, which is what the matcher has to survive.
+        REJECTED = "Failed to perform, curl: (97) User was rejected by the SOCKS5 server (1 1)."
+
+        def test_a_socks5_credential_rejection_is_not_layer_one(self):
+            result = diagnose_transport(OSError(self.REJECTED), through_proxy=True)
+            assert result.action is Action.REFUSE
+            assert result.layer is None
+            assert "credential" in result.detail
+
+        def test_a_407_to_connect_is_not_layer_one(self):
+            error = OSError("Received HTTP code 407 from proxy after CONNECT")
+            result = diagnose_transport(error, through_proxy=True)
+            assert result.action is Action.REFUSE
+            assert result.layer is None
+
+        def test_an_unresolvable_proxy_host_is_not_layer_one(self):
+            error = OSError("Could not resolve proxy: tor-poool")
+            result = diagnose_transport(error, through_proxy=True)
+            assert result.action is Action.REFUSE
+            assert result.layer is None
+
+        def test_a_dead_destination_behind_a_good_proxy_still_blames_the_exit(self):
+            # The other half of the distinction, and the reason this cannot key off
+            # the ProxyError class: curl reports an unreachable destination through
+            # the same exception. That one really is evidence about the exit.
+            error = OSError("Can't complete SOCKS5 connection to example.com:443")
+            result = diagnose_transport(error, through_proxy=True)
+            assert result.action is Action.ROTATE
+            assert result.layer is Layer.IP_REPUTATION
 
 
 def test_only_the_head_of_a_large_body_is_examined():

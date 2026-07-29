@@ -10,6 +10,8 @@ retry loop, so they surface immediately.
 
 from __future__ import annotations
 
+from typing import Optional
+
 from .layers import Layer, LayerInfo, info
 
 
@@ -53,20 +55,29 @@ class TierUnavailable(ScraperError):
 
 
 class Blocked(ScraperError):
-    """Retrieval failed and the model attributes it to a specific layer."""
+    """Retrieval failed. *layer* is what the model attributes it to, if anything.
 
-    def __init__(self, layer: Layer, detail: str = "", url: str = "") -> None:
+    ``layer`` is ``None`` when the failure is ours rather than the site's — a proxy
+    credential the proxy would not take, an origin that never answered. Naming a
+    layer anyway was worse than it sounds: the placeholder used to be layer 15, so a
+    mistyped proxy token was reported as "Operator edge code", which is precisely
+    what a Cloudflare Worker block looks like. An honest absence is more useful than
+    a plausible attribution.
+    """
+
+    def __init__(self, layer: Optional[Layer], detail: str = "", url: str = "") -> None:
         self.layer = layer
         self.detail = detail
         self.url = url
         where = f" for {url}" if url else ""
         because = f": {detail}" if detail else ""
-        super().__init__(f"{layer}{where}{because}")
+        blame = f"{layer}" if layer is not None else "no detection layer"
+        super().__init__(f"{blame}{where}{because}")
 
     @property
-    def layer_info(self) -> LayerInfo:
-        """Static facts about the layer this failure is attributed to."""
-        return info(self.layer)
+    def layer_info(self) -> Optional[LayerInfo]:
+        """Static facts about the layer this failure is attributed to, if any."""
+        return info(self.layer) if self.layer is not None else None
 
 
 class Impassable(Blocked):
@@ -105,7 +116,7 @@ class Exhausted(Blocked):
     would.
     """
 
-    def __init__(self, layer: Layer, detail: str = "", url: str = "") -> None:
+    def __init__(self, layer: Optional[Layer], detail: str = "", url: str = "") -> None:
         super().__init__(layer, detail, url)
 
 

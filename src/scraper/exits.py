@@ -215,6 +215,22 @@ class ExitPool:
         return bool(self._specs)
 
     @property
+    def rotatable(self) -> bool:
+        """Whether there is anywhere else to go.
+
+        A single plain proxy, or no proxy at all, has no alternative: "rotating" lands
+        on the same address, and doing that twice before giving up wastes requests on a
+        host that already said no. A pool endpoint is different — it reassigns the
+        session to another instance behind the same URL, so one spec is still several
+        addresses.
+        """
+        with self._lock:
+            usable = [spec for spec in self._specs if spec.name not in self._retired]
+        if any(isinstance(spec, TorPoolSpec) for spec in usable):
+            return True
+        return len(usable) > 1
+
+    @property
     def best_kind(self) -> ExitKind:
         """The best address kind on offer, which caps what layer 1 can be told."""
         available = [spec.kind for spec in self._specs if spec.name not in self._retired]

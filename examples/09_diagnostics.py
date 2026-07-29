@@ -37,12 +37,18 @@ with Scraper(config=ScraperConfig(remember=True)) as scraper:
         # A bypass may exist; this configuration does not reach it.
         print("out of reach:", exc.layer)
         print("  ", exc.detail)
-        if exc.layer is Layer.IP_REPUTATION:
+        if exc.layer is None:
+            # Worth branching on: the failure is ours, not the site's — a proxy
+            # credential, an origin that never answered. Nothing about the site's
+            # defences was learned, and no exit is worth rotating over it.
+            print("   -> check the configuration, not the target")
+        elif exc.layer is Layer.IP_REPUTATION:
             print("   -> configure a residential or mobile exit")
         elif exc.layer in (Layer.MANAGED_CHALLENGE, Layer.TURNSTILE, Layer.CDP):
             print("   -> configure a browser solver")
     except Blocked as exc:
-        print("blocked at", exc.layer, "which reads a", exc.layer_info.trait.value, "property")
+        trait = exc.layer_info.trait.value if exc.layer_info else "unattributed"
+        print("blocked at", exc.layer, "which reads a", trait, "property")
 
     print()
     print(scraper.explain(URL))

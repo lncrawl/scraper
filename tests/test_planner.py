@@ -129,6 +129,20 @@ class TestRotationNeedsSomewhereBetter:
         assert decision.layer is Layer.IP_REPUTATION
         assert "residential" in decision.reason
 
+    def test_rotating_with_nowhere_to_go_is_refused_immediately(self):
+        """Found live: readwn.com bans this machine's ASN (Cloudflare 1005).
+
+        With one address or none, a rotation lands on the address that was just
+        refused. Spending the rotation budget to discover that is pure waste.
+        """
+        decision = full_planner().react(
+            Diagnosis(Action.ROTATE, Layer.IP_REPUTATION, "Cloudflare error 1005"),
+            Context(tier="direct", exit_reach=RESIDENTIAL, can_rotate=False),
+        )
+        assert decision.move is Move.STOP
+        assert "no other address configured" in decision.reason
+        assert "1005" in decision.reason
+
     def test_rotation_is_bounded(self):
         decision = full_planner(max_rotations=1).react(
             Diagnosis(Action.ROTATE, Layer.IP_REPUTATION, "blocked"),
@@ -238,6 +252,36 @@ class TestStopping:
         )
         assert decision.move is Move.STOP
         assert "managed" in decision.reason
+
+    def test_a_configured_tier_that_failed_is_not_advised_to_be_configured(self):
+        """Found live: a browser solver ran, produced no clearance, and the stop said
+        "Configure a browser solver".
+
+        That sends the reader to check their configuration instead of the solver's own
+        output, which is where the reason actually is.
+        """
+        planner = Planner(default_capabilities(browser=True))
+        decision = planner.react(
+            Diagnosis(
+                Action.ESCALATE,
+                Layer.MANAGED_CHALLENGE,
+                "nodriver finished without a clearance cookie",
+            ),
+            Context(tier="clearance", attempt=2),
+        )
+        assert decision.move is Move.STOP
+        assert "Configure a browser solver" not in decision.reason
+        assert "clearance, which ran and did not succeed" in decision.reason
+        assert "without a clearance cookie" in decision.reason
+
+    def test_a_layer_genuinely_out_of_reach_still_gets_the_hint(self):
+        # The hint is right when the capability is actually absent.
+        decision = direct_only().react(
+            Diagnosis(Action.ESCALATE, Layer.CDP, "1010"),
+            Context(tier="direct", attempt=2),
+        )
+        assert decision.move is Move.STOP
+        assert "browser solver" in decision.reason
 
 
 class TestPlainMoves:

@@ -56,9 +56,16 @@ the resulting challenge reads as a solver failure.
 _SOLVED_COOKIES = ("cf_clearance", "__cf_bm", "cf_chl_rc_ni")
 
 _STILL_CHALLENGED = re.compile(
-    r"__cf_chl_|cf_chl_opt|challenge-platform|just a moment|checking your browser",
+    r"__cf_chl_|cf_chl_opt|challenge-platform/h/|just a moment|checking your browser",
     re.IGNORECASE,
 )
+"""Whether the page in the browser is still an interstitial.
+
+The `/h/` matters here for a second reason beyond correctness. Cloudflare injects a
+JavaScript-Detections script from `challenge-platform/scripts/…` into ordinary pages,
+so matching the bare path means this never reports "cleared" — and the solve loop then
+burns the entire timeout on every single solve, including the successful ones.
+"""
 
 
 class SolveResult(NamedTuple):

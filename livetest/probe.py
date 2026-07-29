@@ -1,0 +1,130 @@
+"""Classify every lncrawl source host by what actually defends it today.
+
+Two clients hit each host: a plain `requests` session and the new impersonating
+transport. The pair is the measurement — the difference between them *is* the
+transport-layer group, and running only one of them would not show it.
+
+Writes livetest/probe.json.
+"""
+
+from __future__ import annotations
+
+import concurrent.futures as futures
+import json
+import pathlib
+import sys
+import time
+from typing import Any, Dict, Optional
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
+
+import requests  # noqa: E402
+import urllib3  # noqa: E402
+
+from scraper.diagnosis import diagnose  # noqa: E402
+from scraper.transport import ImpersonateTransport  # noqa: E402
+
+urllib3.disable_warnings()
+
+HERE = pathlib.Path(__file__).parent
+TIMEOUT = 20.0
+WORKERS = 24
+PEEK = 48 * 1024
+
+
+def classify(headers: Dict[str, str]) -> str:
+    lowered = {k.lower(): (v or "").lower() for k, v in headers.items()}
+    server = lowered.get("server", "")
+    if "cloudflare" in server or lowered.get("cf-ray"):
+        return "cloudflare"
+    if "sucuri" in server or lowered.get("x-sucuri-id"):
+        return "sucuri"
+    if lowered.get("x-amz-cf-id") or "cloudfront" in server:
+        return "cloudfront"
+    if "ddos-guard" in server or lowered.get("__ddg1"):
+        return "ddos-guard"
+    return server.split("/")[0] or "unknown"
+
+
+def one(client: Any, url: str, *, plain: bool) -> Dict[str, Any]:
+    started = time.monotonic()
+    try:
+        if plain:
+            response = client.request(
+                "GET", url, timeout=TIMEOUT, allow_redirects=True, verify=False
+            )
+        else:
+            response = client.send("GET", url, timeout=TIMEOUT, verify=False)
+        body = (response.content or b"")[:PEEK].decode(response.encoding or "utf-8", "ignore")
+        headers = dict(response.headers)
+        verdict = diagnose(
+            status=response.status_code,
+            headers=headers,
+            body=body,
+            url=url,
+            user_agent=str((response.request.headers or {}).get("user-agent", ""))
+            if response.request
+            else "",
+        )
+        return {
+            "ok": True,
+            "status": response.status_code,
+            "edge": classify(headers),
+            "action": verdict.action.value,
+            "layer": int(verdict.layer) if verdict.layer else None,
+            "layer_name": str(verdict.layer) if verdict.layer else None,
+            "detail": verdict.detail,
+            "bytes": len(response.content or b""),
+            "seconds": round(time.monotonic() - started, 2),
+        }
+    except Exception as exc:  # noqa: BLE001 - a probe records failures, never raises
+        return {
+            "ok": False,
+            "error": f"{type(exc).__name__}: {str(exc)[:120]}",
+            "seconds": round(time.monotonic() - started, 2),
+        }
+
+
+def probe(entry: Dict[str, Any]) -> Dict[str, Any]:
+    url = entry["url"]
+    plain_client = requests.Session()
+    imp: Optional[ImpersonateTransport] = None
+    try:
+        imp = ImpersonateTransport(verify=False)
+        return {
+            **entry,
+            "plain": one(plain_client, url, plain=True),
+            "impersonate": one(imp, url, plain=False),
+        }
+    finally:
+        plain_client.close()
+        if imp is not None:
+            imp.close()
+
+
+def main() -> None:
+    targets = json.loads((HERE / "targets.json").read_text())
+    limit = int(sys.argv[1]) if len(sys.argv) > 1 else len(targets)
+    targets = targets[:limit]
+    results = []
+    done = 0
+    with futures.ThreadPoolExecutor(max_workers=WORKERS) as pool:
+        for result in pool.map(probe, targets):
+            results.append(result)
+            done += 1
+            if done % 25 == 0:
+                print(f"  {done}/{len(targets)}", flush=True)
+    (HERE / "probe.json").write_text(json.dumps(results, indent=1))
+
+    edges: Dict[str, int] = {}
+    for row in results:
+        imp = row.get("impersonate") or {}
+        key = imp.get("edge", "unreachable") if imp.get("ok") else "unreachable"
+        edges[key] = edges.get(key, 0) + 1
+    print("\nedge distribution (impersonated client):")
+    for name, count in sorted(edges.items(), key=lambda kv: -kv[1]):
+        print(f"  {count:4}  {name}")
+
+
+if __name__ == "__main__":
+    main()

@@ -49,7 +49,9 @@ Every behaviour below follows from those two statements.
   `TorProxyUrl`, `apply_browser_clearance()` and the `scraper.engine` package are
   removed. `SharedLimiter` becomes `SharedState`. `AbortedException` becomes `Aborted`,
   and the `CloudflareException` hierarchy becomes `Blocked` / `Impassable` /
-  `Exhausted`, each carrying the layer it is attributed to.
+  `Exhausted`, each carrying the layer it is attributed to — or `None`, when the
+  failure is ours rather than the site's. Code that dereferences `exc.layer` or
+  `exc.layer_info` must handle that; a type checker will point at every such place.
 - New extras: `browser` (nodriver) and `botauth` (cryptography). `impersonate` is gone.
 
 ### Added
@@ -111,6 +113,63 @@ Every behaviour below follows from those two statements.
 - `Scraper.explain(url)` and `Scraper.knows(url)` — what the library concluded is
   binding, which tier settled, how fast it has learned it can go, and what it has
   available.
+- `livetest/` — a live verification harness that exercises every path against real
+  Cloudflare deployments, using every host in lightnovel-crawler's source index as
+  the corpus. Separate from `tests/`, which stays offline. See
+  [livetest/README.md](livetest/README.md); the current run is
+  `livetest/report.html`.
+
+### Fixed before release, found by live traffic
+
+Eleven of the fifteen defects fixed before release were found this way. These are not
+regressions from 0.2.x — they are defects in the new code that a
+stubbed transport cannot see. Each has a regression test.
+
+- **Cloudflare's injected JavaScript-Detections script was read as a challenge.**
+  The script is served from `/cdn-cgi/challenge-platform/scripts/jsd/…` on ordinary
+  *successful* pages, and that path was a challenge marker — so content pages were
+  diagnosed as interstitials. Measured across two live populations before changing
+  it: the bare prefix appeared on 9 of 10 normally-served pages, the challenge-only
+  `/h/` orchestrate sub-path on none. 18 of 22 hosts reported as challenged were
+  serving content fine. The same marker also stopped the browser solve loop from
+  ever detecting "cleared", so every solve burned its full timeout.
+- **The archive tier could never find a capture.** A negative Wayback CDX `limit`
+  is documented as "the last N rows" but returns an empty body once a filter is
+  applied. The query is now bounded server-side and the newest rows taken from the
+  tail. Separately, an unbounded query timed out on popular URLs, and a
+  rate-limited index was reported as "nothing archived" — all three produced the
+  same misleading message, so a lookup failure, an empty index and an age limit now
+  say which they are, and the index is retried once.
+- **Real navigation was being dropped as decoy content.** An anchor containing only
+  an icon-font element counted as "nothing rendered", and a URL took the verdict of
+  whichever anchor appeared first — so a card's empty overlay anchor rejected a page
+  its own text anchor linked to. On one real page 11 of 11 rejections were wrong.
+- **A stop could advise configuring a capability that was already configured.** A
+  browser solver that ran and produced no clearance yielded "Configure a browser
+  solver". The message now says the tier ran and failed, and quotes what it
+  reported.
+- **Rotating with nowhere to go spent the rotation budget on one address.** Found
+  against a host that bans this machine's ASN outright. The pool now reports whether
+  an alternative exists, and with none the stop is immediate.
+- **A proxy refusing our own credential was diagnosed as the site's IP reputation.**
+  tor-pool 0.2 enforces authentication, and a rejected SOCKS5 handshake never becomes
+  an HTTP response — so it reached `diagnose_transport`, which blamed the exit for
+  every proxied transport error. Three wrong things followed: the address was rotated
+  though nothing was wrong with it, the pool was told a healthy exit was `blocked`,
+  and layer 1 was written to the origin's persisted profile — so a missing token left
+  behind a permanent verdict that the *site* refuses this address. A proxy that
+  refuses us is now `REFUSE` with no layer, matching how HTTP 407 was already handled.
+  The distinction is drawn on curl's wording rather than the exception class, because
+  an unreachable destination reported through a SOCKS5 reply raises the same
+  `ProxyError` and that one really is evidence about the exit.
+- **A failure with nothing to attribute was reported as layer 15.** `Blocked`
+  required a layer, so a layer-less stop borrowed `Layer.WORKERS` — and "L15 Operator
+  edge code" is indistinguishable from a Cloudflare Worker refusing the request.
+  `Blocked.layer` is now `Optional` and renders as "no detection layer".
+- **The `browser` extra failed with a raw dependency error on unsupported Pythons.**
+  nodriver raises `TypeError` before 3.10 and `SyntaxError` on 3.14; both now
+  produce a message naming the version floor, and the extra is marked so it does not
+  install where it cannot load.
 
 ## [0.2.6] - 2026-07-29
 

@@ -111,7 +111,21 @@ def test_a_block_names_the_layer_and_the_url():
     assert error.layer is Layer.BEHAVIOURAL
     assert "L8" in str(error)
     assert "https://example.com/x" in str(error)
+    assert error.layer_info is not None
     assert error.layer_info.trait.value == "possess"
+
+
+def test_a_block_with_nothing_to_attribute_says_so():
+    """Found live: a rejected proxy credential used to be reported as layer 15.
+
+    "L15 Operator edge code" is indistinguishable from a Cloudflare Worker refusing
+    the request, so the message pointed at the site when the fault was a token.
+    """
+    error = Blocked(None, "the proxy rejected the credential", "https://example.com/x")
+    assert error.layer is None
+    assert error.layer_info is None
+    assert "no detection layer" in str(error)
+    assert "L15" not in str(error)
 
 
 def test_an_impassable_failure_always_carries_the_legitimate_route():

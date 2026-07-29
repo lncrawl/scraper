@@ -161,13 +161,85 @@ class TestArchiveTier:
         # An archive gap says nothing about the site's defences, so recording it as a
         # block would teach the memory something false.
         transport = FakeTransport([make_response(body="[]")])
-        with pytest.raises(TierUnavailable, match="no usable capture"):
+        with pytest.raises(TierUnavailable, match="no capture on record"):
             ArchiveTier(transport).send(call_for())
+
+    def test_an_index_that_will_not_answer_is_reported_as_such(self):
+        """Found live: the index rate-limits, and a 503 read as "never archived".
+
+        The caller then stops considering the archive for a URL it does hold, which is
+        the same misleading-message class as the negative-limit bug.
+        """
+        transport = FakeTransport([make_response(503, "Service Unavailable")])
+        with pytest.raises(TierUnavailable, match="did not answer"):
+            ArchiveTier(transport, retry_after=0.0).send(call_for())
+
+    def test_the_index_is_retried_once_before_giving_up(self):
+        index = self._index([[stamp(1), URL]])
+        replies = [
+            make_response(503, "Service Unavailable"),
+            make_response(body=index),
+            make_response(body="<html>archived</html>"),
+        ]
+        transport = FakeTransport(replies)
+        response = ArchiveTier(transport, retry_after=0.0).send(call_for())
+        assert response.status_code == 200
+
+    def test_an_age_limit_is_reported_differently_from_an_empty_index(self):
+        # Two different problems: one is a caller policy, the other is coverage.
+        index = self._index([[stamp(400), URL]])
+        transport = FakeTransport(
+            handler=lambda method, url, kwargs: make_response(body=index, url=url)
+        )
+        with pytest.raises(TierUnavailable, match="within the age limit"):
+            ArchiveTier(transport, max_age=86400).send(call_for())
 
     def test_a_post_has_no_snapshot(self):
         transport = FakeTransport([make_response(body="[]")])
         with pytest.raises(TierUnavailable, match="only serves GET"):
             ArchiveTier(transport).send(call_for(method="POST"))
+
+    def test_the_index_is_never_asked_for_a_negative_row_count(self):
+        """A negative CDX ``limit`` returns an empty body once a filter is applied.
+
+        Found live: the tier reported "no usable capture" for every URL, which is
+        indistinguishable from a URL the archive has genuinely never seen. Asserted on
+        the request rather than the response, because a stubbed transport will happily
+        answer a broken query.
+        """
+        transport = FakeTransport([make_response(body="[]")])
+        with pytest.raises(TierUnavailable):
+            ArchiveTier(transport).send(call_for())
+        params = transport.calls[0][2]["params"]
+        assert "limit" not in params or int(params["limit"]) > 0
+
+    def test_the_query_is_always_bounded(self):
+        """Found live: an unbounded query on a popular URL times out.
+
+        A timeout is indistinguishable from a URL the archive has never seen, so an
+        unbounded query makes the tier look permanently empty rather than slow.
+        """
+        index = self._index([[stamp(1), URL]])
+        transport = FakeTransport(
+            handler=lambda method, url, kwargs: make_response(
+                body=index if "cdx" in url else "x", url=url
+            )
+        )
+        # Both with and without a caller-supplied maximum age.
+        ArchiveTier(transport, max_age=30 * 86400).send(call_for())
+        assert len(transport.calls[0][2]["params"]["from"]) == 8
+        ArchiveTier(transport).send(call_for())
+        assert len(transport.calls[-2][2]["params"]["from"]) == 8
+
+    def test_the_newest_rows_are_kept_when_the_index_is_long(self):
+        rows = [[stamp(n), URL] for n in range(40, 0, -1)]
+        index = self._index(rows)
+        transport = FakeTransport(
+            handler=lambda method, url, kwargs: make_response(body=index, url=url)
+        )
+        found = ArchiveTier(transport).captures(URL, limit=5)
+        assert len(found) == 5
+        assert found[-1][0] == rows[-1][0], "the tail is the newest capture"
 
     def test_a_broken_index_response_is_survivable(self):
         transport = FakeTransport([make_response(body="not json at all")])

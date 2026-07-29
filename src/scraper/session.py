@@ -325,11 +325,9 @@ class Scraper:
         detail = f"{decision.reason} [{attempt.trail()}]"
         if layer is not None and is_impassable(layer):
             return Impassable(layer, decision.reason, url)
-        if layer is None:
-            # Nothing to attribute — a proxy credential, an origin that will not
-            # answer. Reported against the layer that owns "the operator's own
-            # setup" rather than inventing a detection story.
-            return Exhausted(Layer.WORKERS, detail, url)
+        # A layer of None is carried through rather than substituted. Standing in
+        # layer 15 for "nothing to attribute" turned a mistyped proxy token into
+        # "L15 Operator edge code", which reads as the site's Worker refusing us.
         return Exhausted(layer, detail, url)
 
     def _accept(
@@ -469,6 +467,7 @@ class Scraper:
             rotations=attempt.rotations,
             warmed=not needs_warmup(url, profile.warmed_at, self.config.pacing),
             interval=self.pacer.interval_for(key),
+            can_rotate=self.exits.rotatable,
         )
 
     def _warmup(self, url: str) -> None:

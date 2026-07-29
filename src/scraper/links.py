@@ -152,17 +152,14 @@ def safe_links(
     is followed causes lasting harm; a real link that is skipped costs one page.
     """
     host = extract_host(base_url) if base_url else ""
-    seen: Set[str] = set()
-    out: List[Link] = []
+    order: List[str] = []
+    best: Dict[str, Link] = {}
 
     for tag in _tags(source):
         href = _attr(tag, "href").strip()
         if not href or href.startswith(("#", "javascript:", "mailto:", "tel:", "data:")):
             continue
         url = urldefrag(urljoin(base_url, href) if base_url else href)[0]
-        if url in seen:
-            continue
-        seen.add(url)
 
         rel = _attr(tag, "rel").lower()
         text = ""
@@ -181,27 +178,41 @@ def safe_links(
             reason = "off-site"
         else:
             reason = _hidden_reason(tag) or _ancestor_hidden(tag)
-            if not reason and not text and not _visible_surrogate(tag):
-                # No text, no image, no label: nothing rendered for a person to
-                # click. A legitimate empty anchor is rare; a decoy one is not.
+            if not reason and not text and not _renders_something(tag):
+                # Nothing rendered for a person to click at all. A legitimate empty
+                # anchor is rare; a decoy one is not.
                 reason = "nothing rendered"
 
-        if reason and not include_rejected:
-            continue
-        out.append(Link(url=url, text=text, rel=rel, rejected=reason))
+        candidate = Link(url=url, text=text, rel=rel, rejected=reason)
+        if url not in best:
+            order.append(url)
+            best[url] = candidate
+        elif best[url].rejected and not reason:
+            # One URL, several anchors. Keeping the first verdict drops real links:
+            # a card is routinely an empty overlay anchor *plus* a text anchor to the
+            # same page, and the overlay comes first in the markup. A URL a person can
+            # reach by any route is reachable.
+            best[url] = candidate
 
-    return out
+    out = [best[url] for url in order]
+    return out if include_rejected else [link for link in out if link.followable]
 
 
-def _visible_surrogate(tag: Any) -> bool:
-    """Whether an anchor with no text still renders something clickable."""
+def _renders_something(tag: Any) -> bool:
+    """Whether an anchor with no text still puts something on screen.
+
+    Broader than an image check on purpose. Icon fonts — ``<i class="fas fa-home">``
+    and its equivalents — are how a large share of real navigation is marked up, and
+    treating those as invisible silently drops menus, pagination and home links. The
+    signal for a decoy is an anchor with *nothing* inside it, not one whose content is
+    not an ``<img>``.
+    """
     if _attr(tag, "title") or _attr(tag, "aria-label"):
         return True
-    finder = getattr(tag, "find", None)
-    if finder is None:
-        return False
     try:
-        return finder(["img", "svg", "picture", "video", "canvas"]) is not None
+        from bs4 import Tag
+
+        return any(isinstance(child, Tag) for child in tag.children)
     except Exception:  # noqa: BLE001 - foreign node types
         return False
 

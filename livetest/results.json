@@ -1,0 +1,1092 @@
+[
+ {
+  "id": "S01",
+  "title": "A plain client is refused where an impersonated one is served",
+  "layers": [
+   "L2",
+   "L3",
+   "L4",
+   "L5"
+  ],
+  "proves": "Layers 2-5 are one barrier: the only difference between these two requests is the network signature, and it decides the outcome.",
+  "target": "https://chrysanthemumgarden.com/",
+  "verdict": "pass",
+  "seconds": 10.06,
+  "steps": [
+   {
+    "what": "https://chrysanthemumgarden.com/ \u2014 plain refused, impersonated served",
+    "value": "plain=403 impersonated=200 (108919 bytes)",
+    "ok": true
+   },
+   {
+    "what": "https://novelfull.com/ \u2014 plain refused, impersonated served",
+    "value": "plain=403 impersonated=200 (52247 bytes)",
+    "ok": true
+   },
+   {
+    "what": "the profile sends a browser User-Agent we never wrote",
+    "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+    "ok": true
+   },
+   {
+    "what": "no Python client string is present",
+    "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+    "ok": true
+   },
+   {
+    "what": "header set the profile emitted",
+    "value": "Accept, Accept-Encoding, Accept-Language, Host, Priority, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site, Sec-Fetch-User, User-Agent, Via, X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto, X-Forwarded-Ssl, X-Request-Start",
+    "ok": null
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S02",
+  "title": "A pinned old profile is flagged; a family alias is not",
+  "layers": [
+   "L3"
+  ],
+  "proves": "A stale impersonation profile predates the post-quantum key share current builds send, so pinning one contradicts the User-Agent it claims.",
+  "target": "",
+  "verdict": "pass",
+  "seconds": 0.0,
+  "steps": [
+   {
+    "what": "the bare alias is accepted silently",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "a two-year-old pin is flagged",
+    "value": "impersonation target 'chrome99' is older than the available 'chrome136'. A stale profile is itself a signal: use the bare 'chrome' alias so the fingerprint tracks the newest supported build.",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S03",
+  "title": "A Cloudflare-fronted page is retrieved and parsed",
+  "layers": [
+   "L2-L5",
+   "L11",
+   "L12"
+  ],
+  "proves": "The baseline tier handles a real protected site end to end, including the soup, JSON and file helpers.",
+  "target": "https://novelfull.net/",
+  "verdict": "pass",
+  "seconds": 2.65,
+  "steps": [
+   {
+    "what": "a page came back with a title",
+    "value": "Read free English translated Light Novel - NovelFull",
+    "ok": true
+   },
+   {
+    "what": "the tier used was the cheapest one",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "nothing was recorded as binding",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "links were extracted",
+    "value": "139 followable",
+    "ok": true
+   },
+   {
+    "what": "get_file wrote the body",
+    "value": "101582 bytes",
+    "ok": true
+   },
+   {
+    "what": "explain()",
+    "value": "novelfull.net binding layer : nothing has blocked yet tier : direct pacing : 1.2s mean interval requests : 12 ok / 0 failed clearance : none ladder : direct(10) exits : direct",
+    "ok": null
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S04",
+  "title": "Warm-up and the referrer chain are visible on the wire",
+  "layers": [
+   "L8"
+  ],
+  "proves": "A deep page arriving with no referrer and no prior history is a navigation pattern no person produces; both mechanisms are observable in the requests actually sent.",
+  "target": "https://httpbingo.org",
+  "verdict": "pass",
+  "seconds": 1.61,
+  "steps": [
+   {
+    "what": "a first request carries no referrer",
+    "value": "Accept, Accept-Encoding, Accept-Language, Host, Priority, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site, Sec-Fetch-User, User-Agent, Via, X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto, X-Forwarded-Ssl, X-Request-Start",
+    "ok": null
+   },
+   {
+    "what": "the first navigation declares no origin",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "the next request cites the page before it",
+    "value": "https://httpbingo.org/html",
+    "ok": true
+   },
+   {
+    "what": "fetch metadata says same-origin",
+    "value": "same-origin",
+    "ok": true
+   },
+   {
+    "what": "a cold deep page wants a homepage visit first",
+    "value": "https://example.com/",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S05",
+  "title": "A challenge served with a 403 is diagnosed as a challenge",
+  "layers": [
+   "L9",
+   "L10"
+  ],
+  "proves": "The status code says 'forbidden' and the correct remedy is a browser, not a new address. A conventional client rotates its proxy here and gets nowhere.",
+  "target": "https://www.webnovel.com/",
+  "verdict": "pass",
+  "seconds": 2.07,
+  "steps": [
+   {
+    "what": "https://www.novelhall.com/ -> L9 Managed JavaScript challenge",
+    "value": "HTTP 403 diagnosed solve (L9 Managed JavaScript challenge): challenge served with 403",
+    "ok": true
+   },
+   {
+    "what": "https://www.novelhall.com/ asks for a solve, not a rotation",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "no host is presenting L10 Turnstile right now",
+    "value": "skipped",
+    "ok": null
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S06",
+  "title": "A challenge with no solver configured stops and names what is missing",
+  "layers": [
+   "L9"
+  ],
+  "proves": "The failure is actionable: it names the layer and the capability that would reach it, instead of exhausting retries on a 403.",
+  "target": "https://www.webnovel.com/",
+  "verdict": "pass",
+  "seconds": 1.14,
+  "steps": [
+   {
+    "what": "stopped at the challenge layer",
+    "value": "L9 Managed JavaScript challenge",
+    "ok": true
+   },
+   {
+    "what": "the message names the missing capability",
+    "value": "L9 Managed JavaScript challenge is beyond every configured tier (direct is the strongest). Configure a browser solver. [stop: L9 Managed JavaScript challenge is beyond every configured tier (direct is the strongest). Configure a browser solver.]",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S07",
+  "title": "A host scored as automated escalates rather than rotating",
+  "layers": [
+   "L12"
+  ],
+  "proves": "Nothing distinguishes the scoring tiers from outside, so the diagnosis names the strictest emit-only one and asks for a stronger tier \u2014 not a new address.",
+  "target": "https://reaperscans.com/",
+  "verdict": "pass",
+  "seconds": 1.16,
+  "steps": [
+   {
+    "what": "diagnosed as scoring rather than reputation",
+    "value": "escalate (L12 Super Bot Fight Mode): scored as automated",
+    "ok": true
+   },
+   {
+    "what": "the action is to escalate, not rotate",
+    "value": "",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S08",
+  "title": "An identity-provider gate raises immediately and is never retried",
+  "layers": [
+   "L19"
+  ],
+  "proves": "The layer reads a secret. Retrying is an infinite loop against a wall, so a single request is spent and the message names the only legitimate route.",
+  "target": "https://dummynovels.com/",
+  "verdict": "pass",
+  "seconds": 1.16,
+  "steps": [
+   {
+    "what": "raised as impassable",
+    "value": "L19 Identity-provider gate",
+    "ok": true
+   },
+   {
+    "what": "the message names the legitimate route",
+    "value": "L19 Identity-provider gate for https://dummynovels.com/: authentication required (HTTP 401); the content is behind an identity provider; retrieve it with a properly obtained account",
+    "ok": true
+   },
+   {
+    "what": "exactly one request was spent",
+    "value": "1 request(s)",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S09",
+  "title": "Synthetic statuses are each diagnosed correctly, live",
+  "layers": [
+   "L1",
+   "L7",
+   "L8",
+   "L19"
+  ],
+  "proves": "The classifier is exercised against responses a real server produced, not fixtures.",
+  "target": "https://httpbingo.org",
+  "verdict": "pass",
+  "seconds": 5.41,
+  "steps": [
+   {
+    "what": "HTTP 429: a throttle is a pacing problem",
+    "value": "-> backoff (L8 Per-zone behavioural model): rate limited",
+    "ok": true
+   },
+   {
+    "what": "HTTP 503: a plain outage is worth one more try",
+    "value": "-> retry: origin unavailable",
+    "ok": true
+   },
+   {
+    "what": "HTTP 401: authentication has no bypass",
+    "value": "-> refuse (L19 Identity-provider gate): authentication required (HTTP 401)",
+    "ok": true
+   },
+   {
+    "what": "HTTP 404: the site's answer about a path is not a layer",
+    "value": "-> accept: HTTP 404",
+    "ok": true
+   },
+   {
+    "what": "HTTP 502: an upstream error is transient",
+    "value": "-> retry: upstream error (HTTP 502)",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S10",
+  "title": "A throttle widens the interval and keeps the address",
+  "layers": [
+   "L8"
+  ],
+  "proves": "The rule that matters most: a 429 says the address works and is being asked for too much, so the remedy is arithmetic \u2014 not a new exit, which would reset the history the layer measures.",
+  "target": "https://httpbingo.org",
+  "verdict": "pass",
+  "seconds": 3.47,
+  "steps": [
+   {
+    "what": "gave up at the behavioural layer, not at reputation",
+    "value": "L8 Per-zone behavioural model",
+    "ok": true
+   },
+   {
+    "what": "the trail shows a backoff and no rotation",
+    "value": "gave up after 2 attempts; rate limited [backoff -> direct after 1.0s: rate limited | stop: gave up after 2 attempts; rate limited]",
+    "ok": true
+   },
+   {
+    "what": "the interval widened",
+    "value": "1.0 -> 2.0",
+    "ok": true
+   },
+   {
+    "what": "the address was NOT rotated",
+    "value": "direct == direct",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S11",
+  "title": "Traffic leaves through a tor-pool exit",
+  "layers": [
+   "L1"
+  ],
+  "proves": "The pool is wired end to end: the session key becomes the SOCKS username, the credential authenticates, and the egress IP is a Tor exit.",
+  "target": "https://check.torproject.org/api/ip",
+  "verdict": "pass",
+  "seconds": 2.8,
+  "steps": [
+   {
+    "what": "this machine's own address",
+    "value": "37.27.22.110 (IsTor=False)",
+    "ok": null
+   },
+   {
+    "what": "lease",
+    "value": "127.0.0.1:9250#s-231c609c23c3 via socks5h://s-231c609c23c3:tp_l52hUtFMTGgNX-e2OBSVXw@127.0.0.1:9250",
+    "ok": null
+   },
+   {
+    "what": "egress is a Tor exit",
+    "value": "{'IsTor': True, 'IP': '192.42.116.45'}",
+    "ok": true
+   },
+   {
+    "what": "the exit differs from the local address",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "pool instances",
+    "value": "[{'id': 0, 'exit_ip': '45.84.107.55', 'country': 'SE', 'score': 0, 'state': 'degraded', 'kinds': {'blocked': 3, 'captcha': 1}}, {'id': 1, 'exit_ip': '109.70.100.12', 'country': 'AT', 'score': 0, 'state': 'degraded', 'kinds': {'captcha': 2}}, {'id': 2, 'exit_ip': '192.42.116.100', 'country': 'NL', 'score': 0, 'state': 'degraded', 'kinds': {'captcha': 1}}, {'id': 3, 'exit_ip': '185.220.101.20', 'co\u2026",
+    "ok": null
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S12",
+  "title": "A session stays pinned to one exit across requests",
+  "layers": [
+   "L1",
+   "L8"
+  ],
+  "proves": "Stickiness is what makes a clearance reusable and lets per-zone history accrue. A rotating address would invalidate both.",
+  "target": "https://check.torproject.org/api/ip",
+  "verdict": "pass",
+  "seconds": 4.27,
+  "steps": [
+   {
+    "what": "all four requests left from one exit",
+    "value": "185.220.100.242, 185.220.100.242, 185.220.100.242, 185.220.100.242",
+    "ok": true
+   },
+   {
+    "what": "exit IP",
+    "value": "185.220.100.242",
+    "ok": null
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S13",
+  "title": "Rotating moves the session to a different exit",
+  "layers": [
+   "L1"
+  ],
+  "proves": "Rotation is a reassignment inside the pool: the endpoint URL is unchanged, but the address behind it \u2014 and therefore the identity \u2014 is not.",
+  "target": "https://check.torproject.org/api/ip",
+  "verdict": "pass",
+  "seconds": 3.42,
+  "steps": [
+   {
+    "what": "the endpoint URL is unchanged",
+    "value": "socks5h://127.0.0.1:9250",
+    "ok": true
+   },
+   {
+    "what": "the exit identifier changed",
+    "value": "127.0.0.1:9250#s-724f1c0b101d -> 127.0.0.1:9250#s-8c2b4098d938",
+    "ok": true
+   },
+   {
+    "what": "the session key changed",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "exit IP before/after",
+    "value": "109.70.100.12 -> 109.70.100.12",
+    "ok": null
+   },
+   {
+    "what": "egress is still Tor",
+    "value": "",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S14",
+  "title": "A failure report reaches the pool with the kind derived from the layer",
+  "layers": [
+   "L1",
+   "L9"
+  ],
+  "proves": "This is the only signal that catches a soft block \u2014 a proxy relaying bytes cannot see a 403 or a captcha inside an HTTPS tunnel \u2014 and the pool weighs a report by its kind.",
+  "target": "http://127.0.0.1:8080",
+  "verdict": "pass",
+  "seconds": 3.06,
+  "steps": [
+   {
+    "what": "L9 Managed JavaScript challenge -> 'captcha'",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "L1 IP reputation -> 'blocked'",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "L8 Per-zone behavioural model -> 'rate_limited'",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "None -> 'transport'",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "the pool's health score moved for exactly one instance",
+    "value": "[(4, 0, 6, {'captcha': 1})]",
+    "ok": true
+   },
+   {
+    "what": "it was weighed as a captcha",
+    "value": "{'captcha': 1}",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S15",
+  "title": "Rotating between published ranges is refused, against live pool state",
+  "layers": [
+   "L1"
+  ],
+  "proves": "THE headline rule. Every Tor exit is on the same published lists, so a reputation block cannot be fixed by another one \u2014 and the decision is driven by what the running pool actually offers, not by a hardcoded assumption.",
+  "target": "http://127.0.0.1:8080",
+  "verdict": "pass",
+  "seconds": 0.0,
+  "steps": [
+   {
+    "what": "live pool offers",
+    "value": "tor, clearing layers []",
+    "ok": null
+   },
+   {
+    "what": "a Tor pool clears nothing at layer 1",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "the planner refuses to rotate",
+    "value": "Move.STOP",
+    "ok": true
+   },
+   {
+    "what": "and names the address kind as the constraint",
+    "value": "no configured exit clears the reputation layer \u2014 datacenter and Tor ranges are published, so rotating between them cannot help. A residential or mobile-carrier exit is the only thing that moves this layer",
+    "ok": true
+   },
+   {
+    "what": "with a residential exit it does rotate",
+    "value": "Move.ROTATE",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S16",
+  "title": "A throttle through Tor still does not rotate",
+  "layers": [
+   "L8"
+  ],
+  "proves": "The possess-side veto holds even when a rotation is cheaply available: discarding the address would reset the accumulated history the layer reads.",
+  "target": "https://httpbingo.org",
+  "verdict": "pass",
+  "seconds": 3.24,
+  "steps": [
+   {
+    "what": "gave up at the behavioural layer",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "no rotation appears in the trail",
+    "value": "gave up after 2 attempts; rate limited [backoff -> direct after 1.0s: rate limited | stop: gave up after 2 attempts; rate limited]",
+    "ok": true
+   },
+   {
+    "what": "the Tor session was kept even though rotating was available",
+    "value": "127.0.0.1:9250#s-999480e3c0c1",
+    "ok": true
+   },
+   {
+    "what": "the interval widened instead",
+    "value": "1.0",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S17",
+  "title": "A page is served from the archive with the original URL",
+  "layers": [
+   "L0"
+  ],
+  "proves": "The cheapest way past a protected site is not to touch it. The response must carry the real URL, or relative links redirect the whole crawl into the snapshot.",
+  "target": "https://www.webnovel.com/",
+  "verdict": "pass",
+  "seconds": 45.57,
+  "steps": [
+   {
+    "what": "the archive has captures",
+    "value": "5 found",
+    "ok": true
+   },
+   {
+    "what": "newest captures",
+    "value": "20260714072704, 20260722162035, 20260725072943",
+    "ok": null
+   },
+   {
+    "what": "a snapshot came back",
+    "value": "136501 bytes",
+    "ok": true
+   },
+   {
+    "what": "the response carries the ORIGINAL url, not the archive's",
+    "value": "https://www.webnovel.com/",
+    "ok": true
+   },
+   {
+    "what": "the capture timestamp is reported",
+    "value": "20260725072943",
+    "ok": true
+   },
+   {
+    "what": "this is a host the live stack refuses",
+    "value": "https://www.webnovel.com/ serves a challenge to the direct tier (see S05)",
+    "ok": null
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S18",
+  "title": "Hidden and nofollow links are dropped from real pages",
+  "layers": [
+   "L17"
+  ],
+  "proves": "The only layer that returns no error. Following a decoy link poisons the store and flags the session, and nothing in the response says so.",
+  "target": "https://novelfull.net/",
+  "verdict": "pass",
+  "seconds": 8.5,
+  "steps": [
+   {
+    "what": "https://novelfull.net/",
+    "value": "139 followable, 0 rejected",
+    "ok": null
+   },
+   {
+    "what": "https://chrysanthemumgarden.com/",
+    "value": "85 followable, 0 rejected",
+    "ok": null
+   },
+   {
+    "what": "https://freewebnovel.com/",
+    "value": "119 followable, 1 rejected",
+    "ok": null
+   },
+   {
+    "what": "https://toonily.com/",
+    "value": "91 followable, 2 rejected",
+    "ok": null
+   },
+   {
+    "what": "https://www.mangaread.org/",
+    "value": "204 followable, 1 rejected",
+    "ok": null
+   },
+   {
+    "what": "real links survive across every page",
+    "value": "{'kept': 638, 'rejected': 4}",
+    "ok": true
+   },
+   {
+    "what": "genuine decoy markers were found and dropped",
+    "value": "{'inside an element hidden by inline style': 1, 'rel=nofollow': 3}",
+    "ok": true
+   },
+   {
+    "what": "rejection reasons seen on real pages",
+    "value": "{'inside an element hidden by inline style': 1, 'rel=nofollow': 3}",
+    "ok": null
+   },
+   {
+    "what": "false positives fixed during this run",
+    "value": "icon-font anchors and overlay/text anchor pairs were being dropped; both are real navigation. 11 of 11 rejections on one host were wrong.",
+    "ok": null
+   },
+   {
+    "what": "a page from the site is not suspected",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "off-topic prose is flagged",
+    "value": "vocabulary overlap 0% against 3 known pages (threshold 30%)",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S19",
+  "title": "A clearance is refused under an identity that did not earn it",
+  "layers": [
+   "L9"
+  ],
+  "proves": "The classic rotating-proxy failure, made structurally impossible: the cookie is bound to the address, User-Agent and TLS profile together.",
+  "target": "",
+  "verdict": "pass",
+  "seconds": 0.0,
+  "steps": [
+   {
+    "what": "valid under the identity that earned it",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "refused after the address moved",
+    "value": "the identity changed since the clearance was earned",
+    "ok": true
+   },
+   {
+    "what": "refused after the User-Agent changed",
+    "value": "the identity changed since the clearance was earned",
+    "ok": true
+   },
+   {
+    "what": "refused after the TLS profile changed",
+    "value": "the identity changed since the clearance was earned",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S20",
+  "title": "What was learned survives the process",
+  "layers": [
+   "L8"
+  ],
+  "proves": "A process that forgets cannot accumulate, and the behavioural layer reads exactly what accumulates. The binding layer is the most valuable thing to keep.",
+  "target": "https://www.webnovel.com/",
+  "verdict": "pass",
+  "seconds": 0.81,
+  "steps": [
+   {
+    "what": "first run concluded",
+    "value": "binding=L9 Managed JavaScript challenge failures=1",
+    "ok": null
+   },
+   {
+    "what": "a fresh scraper starts from the conclusion",
+    "value": "L9 Managed JavaScript challenge",
+    "ok": true
+   },
+   {
+    "what": "the ledger came back",
+    "value": "1",
+    "ok": true
+   },
+   {
+    "what": "the tier it would now start with",
+    "value": "direct",
+    "ok": null
+   },
+   {
+    "what": "the store is a real file",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "written owner-only, since it holds clearance cookies",
+    "value": "600",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S21",
+  "title": "Two scrapers on one host share one identity",
+  "layers": [
+   "L8"
+  ],
+  "proves": "Separate state would present as two visitors who contradict each other, arriving in bursts, one of them always cold.",
+  "target": "https://httpbingo.org",
+  "verdict": "pass",
+  "seconds": 1.44,
+  "steps": [
+   {
+    "what": "the second scraper sees the first's history",
+    "value": "1",
+    "ok": true
+   },
+   {
+    "what": "both hold the same address",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "both use the same pacing clock",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "the referrer chain is shared",
+    "value": "https://httpbingo.org/html",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S22",
+  "title": "Requests are signed, and the signature verifies",
+  "layers": [
+   "L18"
+  ],
+  "proves": "The one layer with no bypass. Deployed fail-open today, so a valid signature is a positive identification that skips the challenge machinery entirely.",
+  "target": "https://httpbingo.org",
+  "verdict": "pass",
+  "seconds": 0.75,
+  "steps": [
+   {
+    "what": "the server received Signature-Input",
+    "value": "sig1=(\"signature-agent\" \"@authority\");created=1785329511;expires=1785329811;keyid=\"qtbJKmcKO21vliYTryabqJvErFMtn0DYn9vPXT66Hdg\";alg=\"ed25519\";tag=\"web-bot-auth\"",
+    "ok": true
+   },
+   {
+    "what": "the server received Signature",
+    "value": "sig1=:9UqQxPWhXflJWSFqbbCxlnUgrY0+gBYBu+3pjtPAKdBYvibR1J49xGW8xXwhFyrmX15pbJ7YGW",
+    "ok": true
+   },
+   {
+    "what": "the agent was declared",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "the tag is web-bot-auth",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "the algorithm is ed25519",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "the signature verifies against the published key",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "and does not verify for another authority",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "directory to publish",
+    "value": "/.well-known/http-message-signatures-directory -> kid qtbJKmcKO21vliYTryabqJvErFMtn0DYn9vPXT66Hdg",
+    "ok": null
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S23",
+  "title": "The ladder escalates on evidence and settles on the cheapest tier that works",
+  "layers": [
+   "L9",
+   "L14"
+  ],
+  "proves": "The planner walks up only as far as required, and the archive rescues a host the live stack refuses.",
+  "target": "https://www.webnovel.com/",
+  "verdict": "pass",
+  "seconds": 31.5,
+  "steps": [
+   {
+    "what": "configured ladder",
+    "value": "archive(0) -> direct(10)",
+    "ok": null
+   },
+   {
+    "what": "the challenged host was retrieved",
+    "value": "HTTP 200, 136501 bytes",
+    "ok": true
+   },
+   {
+    "what": "via the archive, which the planner reached first",
+    "value": "archive",
+    "ok": true
+   },
+   {
+    "what": "explain()",
+    "value": "webnovel.com binding layer : nothing has blocked yet tier : archive pacing : 1.2s mean interval requests : 1 ok / 0 failed clearance : none ladder : archive(0) direct(10) exits : direct",
+    "ok": null
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S24",
+  "title": "A 404 is returned rather than blamed on a layer",
+  "layers": [
+   "-"
+  ],
+  "proves": "The site's answer about a path says nothing about the client. Attributing it to a layer would retire a healthy address over a typo in a URL.",
+  "target": "https://novelfull.net/",
+  "verdict": "pass",
+  "seconds": 1.04,
+  "steps": [
+   {
+    "what": "a 4xx came back as a value",
+    "value": "HTTP 404",
+    "ok": true
+   },
+   {
+    "what": "nothing was recorded as binding",
+    "value": "None",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S25",
+  "title": "Every layer the corpus actually produces is diagnosed, and impersonation measurably reduces challenges",
+  "layers": [
+   "L8",
+   "L9",
+   "L10",
+   "L12",
+   "L13",
+   "L15",
+   "L19"
+  ],
+  "proves": "The population-level result: what 501 real hosts do today, and what the transport profile is worth measured across all of them rather than anecdotally.",
+  "target": "501 hosts from lncrawl's source index",
+  "verdict": "pass",
+  "seconds": 0.01,
+  "steps": [
+   {
+    "what": "hosts probed",
+    "value": "501",
+    "ok": null
+   },
+   {
+    "what": "reachable",
+    "value": "370",
+    "ok": null
+   },
+   {
+    "what": "Cloudflare-fronted",
+    "value": "176",
+    "ok": null
+   },
+   {
+    "what": "layers seen by a plain client",
+    "value": "{'L1 IP reputation': 1, 'L12 Super Bot Fight Mode': 16, 'L15 Operator edge code': 7, 'L19 Identity-provider gate': 1, 'L8 Per-zone behavioural model': 23, 'L9 Managed JavaScript challenge': 82}",
+    "ok": null
+   },
+   {
+    "what": "layers seen by the impersonated client",
+    "value": "{'L1 IP reputation': 1, 'L12 Super Bot Fight Mode': 7, 'L15 Operator edge code': 2, 'L19 Identity-provider gate': 1, 'L8 Per-zone behavioural model': 25, 'L9 Managed JavaScript challenge': 47}",
+    "ok": null
+   },
+   {
+    "what": "impersonation converts refusals into content on real hosts",
+    "value": "55 hosts",
+    "ok": true
+   },
+   {
+    "what": "and reduces the number of hosts that challenge at all",
+    "value": "82 -> 47 challenged hosts",
+    "ok": true
+   },
+   {
+    "what": "at least four distinct layers were exercised by real traffic",
+    "value": "L1 IP reputation, L12 Super Bot Fight Mode, L15 Operator edge code, L19 Identity-provider gate, L8 Per-zone behavioural model, L9 Managed JavaScript challenge",
+    "ok": true
+   },
+   {
+    "what": "reputation blocks (L1) observed: 1 of 501",
+    "value": "https://www.readwn.com/",
+    "ok": null
+   },
+   {
+    "what": "the reputation layer is rare here, so a browser buys more than a proxy would",
+    "value": "1 hosts",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S26",
+  "title": "The reputation layer is not uniformly hostile to Tor",
+  "layers": [
+   "L1"
+  ],
+  "proves": "A negative result worth recording: assuming every Cloudflare host refuses Tor would make the address strategy look more important than it is on this corpus.",
+  "target": "45 Cloudflare hosts via tor-pool",
+  "verdict": "pass",
+  "seconds": 0.0,
+  "steps": [
+   {
+    "what": "hosts probed through a Tor exit",
+    "value": "45",
+    "ok": null
+   },
+   {
+    "what": "most were served outright",
+    "value": "28/45 served",
+    "ok": true
+   },
+   {
+    "what": "challenged instead",
+    "value": "10/45",
+    "ok": null
+   },
+   {
+    "what": "none produced a reputation block",
+    "value": "0 found",
+    "ok": true
+   },
+   {
+    "what": "consequence",
+    "value": "on this corpus the binding layer is the managed challenge, not the address \u2014 so a browser solver buys more than a residential proxy would.",
+    "ok": null
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S28",
+  "title": "A real ASN ban is diagnosed as reputation and stops without wasting addresses",
+  "layers": [
+   "L1"
+  ],
+  "proves": "The naturally-occurring case: this host bans the machine's whole ASN, so no client change of any kind can help. With no alternative address the stop is immediate rather than after spending the rotation budget on the same address.",
+  "target": "https://www.readwn.com/",
+  "verdict": "pass",
+  "seconds": 2.21,
+  "steps": [
+   {
+    "what": "diagnosed as the reputation layer",
+    "value": "rotate (L1 IP reputation): Cloudflare error 1005",
+    "ok": true
+   },
+   {
+    "what": "the remedy is a different address",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "the whole ASN is banned, so no client change helps",
+    "value": "Cloudflare error 1005",
+    "ok": null
+   },
+   {
+    "what": "the pool reports nothing to rotate to",
+    "value": "",
+    "ok": true
+   },
+   {
+    "what": "stopped at the reputation layer",
+    "value": "L1 IP reputation",
+    "ok": true
+   },
+   {
+    "what": "without spending the rotation budget on the same address",
+    "value": "Cloudflare error 1005 and there is no other address configured \u2014 rotating would land on the one that was just refused. Add a residential or mobile exit [stop: Cloudflare error 1005 and there is no other address configured \u2014 rotating would land on the one that was just refused. Add a residential or mobile exit]",
+    "ok": true
+   },
+   {
+    "what": "a pool endpoint does report alternatives",
+    "value": "",
+    "ok": true
+   }
+  ],
+  "error": ""
+ },
+ {
+  "id": "S29",
+  "title": "A proxy that refuses our credential is not blamed on the site",
+  "layers": [
+   "L0"
+  ],
+  "proves": "A failure on our side of the proxy must not become a detection story. The SOCKS5 handshake has no status code, so this arrives as a bare transport error \u2014 and attributing it to layer 1 caused a rotation, a false 'blocked' report against a healthy exit, and a persisted verdict that the site refuses our address.",
+  "target": "tor-pool with a deliberately wrong token",
+  "verdict": "pass",
+  "seconds": 0.01,
+  "steps": [
+   {
+    "what": "nothing is attributed to a layer",
+    "value": "None",
+    "ok": true
+   },
+   {
+    "what": "the message names the credential, not the site",
+    "value": "the proxy rejected the credential (SOCKS5 handshake) [stop: the proxy rejected the credential (SOCKS5 handshake)]",
+    "ok": true
+   },
+   {
+    "what": "no rotation was attempted",
+    "value": "the proxy rejected the credential (SOCKS5 handshake) [stop: the proxy rejected the credential (SOCKS5 handshake)]",
+    "ok": true
+   },
+   {
+    "what": "no layer was written to the origin's memory \u2014 the durable half",
+    "value": "None",
+    "ok": true
+   },
+   {
+    "what": "no pool instance was reported as failing",
+    "value": "{0: 0, 1: 4, 2: 0, 3: 0, 4: 6} -> {0: 0, 1: 4, 2: 0, 3: 0, 4: 6}",
+    "ok": true
+   }
+  ],
+  "error": ""
+ }
+]
