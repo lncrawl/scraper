@@ -212,7 +212,7 @@ tor-pool and a real browser.
 uv run poe live-all
 ```
 
-Eleven of the fifteen defects found before 1.0 were invisible to a stubbed transport, and two
+Nearly every defect found before 1.0 was invisible to a stubbed transport, and two
 of them made whole features silently useless while every unit test passed. Anything the
 harness finds gets a unit test whose docstring says it was found live, so those docstrings are
 the record of which assumptions turned out to be wrong.

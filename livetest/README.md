@@ -2,10 +2,11 @@
 
 Exercises every code path against **real Cloudflare deployments** rather than fixtures.
 This is separate from `tests/` on purpose: the unit suite is offline, fast and
-deterministic, and this is none of those things. It earns its keep anyway — eleven of
-the fifteen defects listed in the report were invisible to a stubbed transport, and two
-of them (the archive index and the challenge-marker false positive) made whole features
-silently useless while every unit test passed.
+deterministic, and this is none of those things. It earns its keep anyway — nearly every
+defect fixed before 1.0 was found here, and two of them (the archive index and the
+challenge-marker false positive) made whole features silently useless while every unit
+test passed. `compare.py` is the other half: it A/B's this release against the previous
+one, which is how the first-contact referrer and the JavaScript-redirect hop were found.
 
 The current output is [report.html](report.html). Open it in a browser.
 
@@ -39,6 +40,10 @@ The browser tier runs separately, under its own interpreter — see below.
 | `scenarios.py` | The scenarios. Each declares the layers it exercises and what a pass proves. |
 | `clearance.py` | The browser tier. Separate because it needs a different Python and a real Chrome. |
 | `report.py` | Renders `report.html` from whatever JSON exists. No network. |
+| `compare.py` | A/B against a previous release. Spawns `arm_v1.py` / `arm_v026.py` under each version's own interpreter, grades both with one classifier. |
+| `compare_analyze.py` | Reads `compare.json` and answers whether the new version is better, head to head. No network. |
+| `profile_sweep.py` | Which impersonation profile wins, across the corpus. How the default came to be Firefox. |
+| `referer_probe.py` | Sizes one header's effect: same transport, same profile, `Referer` the only difference. |
 | `probe.json`, `tor_probe.json`, `results.json`, `clearance.json` | Recorded output. Committed as a baseline — a diff after a change is the fastest way to see what moved. |
 | `state/` | Scraper data dir for the runs (learned memory, browser profiles, downloads). Gitignored; safe to delete. |
 

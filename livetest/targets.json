@@ -10,11 +10,6 @@
   "lang": "en"
  },
  {
-  "url": "https://pandamtl.com/",
-  "file": "sources/en/p/pandamtl.py",
-  "lang": "en"
- },
- {
   "url": "https://novelfull.com/",
   "file": "sources/en/n/novelfull.py",
   "lang": "en"
@@ -32,16 +27,6 @@
  {
   "url": "https://dummynovels.com/",
   "file": "sources/en/d/dummynovels.py",
-  "lang": "en"
- },
- {
-  "url": "https://bestoflightnovels.com/",
-  "file": "sources/en/f/fsapk.py",
-  "lang": "en"
- },
- {
-  "url": "https://fsapk.com/",
-  "file": "sources/en/f/fsapk.py",
   "lang": "en"
  },
  {
@@ -75,11 +60,6 @@
   "lang": "en"
  },
  {
-  "url": "https://daonovel.com/",
-  "file": "sources/en/d/daonovel.py",
-  "lang": "en"
- },
- {
   "url": "https://mostnovel.com/",
   "file": "sources/en/m/mostnovel.py",
   "lang": "en"
@@ -88,11 +68,6 @@
   "url": "https://puretl.com/",
   "file": "sources/en/p/puretl.py",
   "lang": "en"
- },
- {
-  "url": "https://www.daocaorenshuwu.com/",
-  "file": "sources/zh/daocaorenshuwu.py",
-  "lang": "zh"
  },
  {
   "url": "https://lightnovelpub.org/",
@@ -107,11 +82,6 @@
  {
   "url": "https://www.novelmtl.com/",
   "file": "sources/en/n/novelmtl.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.lightnovelpub.com/",
-  "file": "sources/en/l/lightnovelpub.py",
   "lang": "en"
  },
  {
@@ -130,64 +100,14 @@
   "lang": "en"
  },
  {
-  "url": "https://totallytranslations.com/",
-  "file": "sources/en/t/totallytranslations.py",
-  "lang": "en"
- },
- {
-  "url": "https://tw.uukanshu.net/",
-  "file": "sources/zh/uukanshu.py",
-  "lang": "zh"
- },
- {
-  "url": "https://www.uukanshu.net/",
-  "file": "sources/zh/uukanshu.py",
-  "lang": "zh"
- },
- {
-  "url": "https://arangscans.com/",
-  "file": "sources/en/a/arangscans.py",
-  "lang": "en"
- },
- {
-  "url": "https://randomnovel.com/",
-  "file": "sources/en/r/randomnovel.py",
-  "lang": "en"
- },
- {
-  "url": "https://manga-tx.com/",
-  "file": "sources/en/m/manga-tx.py",
-  "lang": "en"
- },
- {
   "url": "https://wuxiaworld.name/",
   "file": "sources/en/w/wuxiaworldio.py",
-  "lang": "en"
- },
- {
-  "url": "https://wuxiaworld.io/",
-  "file": "sources/en/w/wuxiaworldio.py",
-  "lang": "en"
- },
- {
-  "url": "https://isekaiscan.eu/",
-  "file": "sources/en/i/isekaiscaneu.py",
-  "lang": "en"
- },
- {
-  "url": "https://clicknovel.net/",
-  "file": "sources/en/c/clicknovel.py",
   "lang": "en"
  },
  {
   "url": "https://centralnovel.com/",
   "file": "sources/pt/centralnovel.py",
   "lang": "pt"
- },
- {
-  "url": "https://www.neosekaitranslations.com/",
-  "file": "sources/en/n/neosekaitranslations.py",
-  "lang": "en"
  },
  {
   "url": "https://pandanovel.org/",
@@ -225,11 +145,6 @@
   "lang": "en"
  },
  {
-  "url": "https://yukinovel.id/",
-  "file": "sources/id/yukinovel.py",
-  "lang": "id"
- },
- {
   "url": "https://yukinovel.me/",
   "file": "sources/id/yukinovel.py",
   "lang": "id"
@@ -237,16 +152,6 @@
  {
   "url": "https://novelonlinefree.com/",
   "file": "sources/en/n/novelonlinefree.py",
-  "lang": "en"
- },
- {
-  "url": "http://boxnovel.org/",
-  "file": "sources/en/b/boxnovelorg.py",
-  "lang": "en"
- },
- {
-  "url": "https://raeitranslations.com/",
-  "file": "sources/en/r/raeitranslations.py",
   "lang": "en"
  },
  {
@@ -258,11 +163,6 @@
   "url": "https://renovels.org/",
   "file": "sources/ru/renovels.py",
   "lang": "ru"
- },
- {
-  "url": "https://reincarnationpalace.com/",
-  "file": "sources/en/r/reincarnationpalace.py",
-  "lang": "en"
  },
  {
   "url": "https://snowycodex.com/",
@@ -277,11 +177,6 @@
  {
   "url": "https://bakapervert.wordpress.com/",
   "file": "sources/en/b/bakapervert.py",
-  "lang": "en"
- },
- {
-  "url": "https://noobchan.xyz/",
-  "file": "sources/en/n/noobchan.py",
   "lang": "en"
  },
  {
@@ -300,11 +195,6 @@
   "lang": "en"
  },
  {
-  "url": "https://888novel.com/",
-  "file": "sources/en/8/888novel.py",
-  "lang": "en"
- },
- {
   "url": "https://www.webnovelover.com/",
   "file": "sources/id/webnovelover.py",
   "lang": "id"
@@ -313,11 +203,6 @@
   "url": "https://wbnovel.com/",
   "file": "sources/id/wbnovel.py",
   "lang": "id"
- },
- {
-  "url": "https://veratales.com/",
-  "file": "sources/en/v/veratales.py",
-  "lang": "en"
  },
  {
   "url": "https://www.chereads.com/",
@@ -345,11 +230,6 @@
   "lang": "en"
  },
  {
-  "url": "https://fenrirtranslations.com/",
-  "file": "sources/en/f/fenrirtranslations.py",
-  "lang": "en"
- },
- {
   "url": "https://wordrain69.com/",
   "file": "sources/en/w/wordrain.py",
   "lang": "en"
@@ -358,11 +238,6 @@
   "url": "https://latestnovel.net/",
   "file": "sources/en/l/latestnovel.py",
   "lang": "en"
- },
- {
-  "url": "https://www.idqidian.us/",
-  "file": "sources/id/idqidian.py",
-  "lang": "id"
  },
  {
   "url": "http://zhi-end.blogspot.com/",
@@ -390,33 +265,8 @@
   "lang": "en"
  },
  {
-  "url": "https://newsite.kolnovel.com/",
-  "file": "sources/en/k/kolnovelnewsite.py",
-  "lang": "en"
- },
- {
   "url": "https://engnovel.com/",
   "file": "sources/en/e/engnovel.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.mtlnation.com/",
-  "file": "sources/en/m/mtlnation.py",
-  "lang": "en"
- },
- {
-  "url": "https://mtlnation.com/",
-  "file": "sources/en/m/mtlnation.py",
-  "lang": "en"
- },
- {
-  "url": "https://manhwachill.com/",
-  "file": "sources/en/m/manhwachill.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.noveluniverse.com/",
-  "file": "sources/en/n/noveluniverse.py",
   "lang": "en"
  },
  {
@@ -432,16 +282,6 @@
  {
   "url": "https://www.novelpassion.com/",
   "file": "sources/en/n/novelpassion.py",
-  "lang": "en"
- },
- {
-  "url": "https://tamagotl.com/",
-  "file": "sources/en/t/tamagotl.py",
-  "lang": "en"
- },
- {
-  "url": "https://bronovel.com/",
-  "file": "sources/en/b/bronovel.py",
   "lang": "en"
  },
  {
@@ -480,21 +320,6 @@
   "lang": "en"
  },
  {
-  "url": "https://imperfectcomic.org/",
-  "file": "sources/en/i/imperfectcomic.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.translateindo.com/",
-  "file": "sources/en/t/translateindo.py",
-  "lang": "en"
- },
- {
-  "url": "https://tunovelaligera.com/",
-  "file": "sources/en/t/tunovelaligera.py",
-  "lang": "en"
- },
- {
   "url": "https://darktranslation.com/",
   "file": "sources/id/darktrans.py",
   "lang": "id"
@@ -510,33 +335,13 @@
   "lang": "en"
  },
  {
-  "url": "https://wuxia.click/",
-  "file": "sources/en/w/wuxiaclick.py",
-  "lang": "en"
- },
- {
-  "url": "https://novelcake.com/",
-  "file": "sources/en/n/novelcake.py",
-  "lang": "en"
- },
- {
   "url": "https://webnovelonline.com/",
   "file": "sources/en/w/webnovelonlinecom.py",
   "lang": "en"
  },
  {
-  "url": "https://novelcrush.com/",
-  "file": "sources/en/n/novelcrush.py",
-  "lang": "en"
- },
- {
   "url": "https://infinitenoveltranslations.net/",
   "file": "sources/en/i/infinitetrans.py",
-  "lang": "en"
- },
- {
-  "url": "https://overabook.com/",
-  "file": "sources/en/o/overabook.py",
   "lang": "en"
  },
  {
@@ -575,19 +380,9 @@
   "lang": "en"
  },
  {
-  "url": "https://novelku.id/",
-  "file": "sources/id/novelku.py",
-  "lang": "id"
- },
- {
   "url": "https://dragontea.ink/",
   "file": "sources/en/d/dragon_tea.py",
   "lang": "en"
- },
- {
-  "url": "https://www.69xinshu.com/",
-  "file": "sources/zh/69shuba.py",
-  "lang": "zh"
  },
  {
   "url": "https://www.69shuba.com/",
@@ -605,16 +400,6 @@
   "lang": "zh"
  },
  {
-  "url": "https://www.69shuba.pro/",
-  "file": "sources/zh/69shuba.py",
-  "lang": "zh"
- },
- {
-  "url": "https://novelplanet.com/",
-  "file": "sources/en/n/novelplanet.py",
-  "lang": "en"
- },
- {
   "url": "https://mangatoon.mobi/",
   "file": "sources/en/m/mangatoon.py",
   "lang": "en"
@@ -628,11 +413,6 @@
   "url": "https://www.webnovelpub.pro/",
   "file": "sources/en/w/webnovelpub.py",
   "lang": "en"
- },
- {
-  "url": "https://lnmtlfr.com/",
-  "file": "sources/fr/lnmtlfr.py",
-  "lang": "fr"
  },
  {
   "url": "https://genesistls.com/",
@@ -665,11 +445,6 @@
   "lang": "en"
  },
  {
-  "url": "https://innnovel.com/",
-  "file": "sources/en/i/innnovel.py",
-  "lang": "en"
- },
- {
   "url": "https://novel-bin.net/",
   "file": "sources/en/n/novel-bin.net.py",
   "lang": "en"
@@ -695,19 +470,9 @@
   "lang": "vi"
  },
  {
-  "url": "https://truyentr.info/",
-  "file": "sources/vi/truenfull.py",
-  "lang": "vi"
- },
- {
   "url": "https://tl.rulate.ru/",
   "file": "sources/ru/rulate.py",
   "lang": "ru"
- },
- {
-  "url": "https://meownovel.com/",
-  "file": "sources/en/m/meownovel.py",
-  "lang": "en"
  },
  {
   "url": "https://home.novel-gate.com/",
@@ -717,16 +482,6 @@
  {
   "url": "https://novelgate.net/",
   "file": "sources/en/n/novelgate.py",
-  "lang": "en"
- },
- {
-  "url": "https://dsrealmtranslations.com/",
-  "file": "sources/en/d/dsrealmtrans.py",
-  "lang": "en"
- },
- {
-  "url": "https://4scanlation.com/",
-  "file": "sources/en/4/4scanlation.py",
   "lang": "en"
  },
  {
@@ -765,11 +520,6 @@
   "lang": "en"
  },
  {
-  "url": "https://www.rebirth.online/",
-  "file": "sources/en/r/rebirthonline.py",
-  "lang": "en"
- },
- {
   "url": "https://labnovel.ru/",
   "file": "sources/ru/labnovel.py",
   "lang": "ru"
@@ -800,11 +550,6 @@
   "lang": "en"
  },
  {
-  "url": "https://novelsala.com/",
-  "file": "sources/en/n/novelsala.py",
-  "lang": "en"
- },
- {
   "url": "https://www.divinedaolibrary.com/",
   "file": "sources/en/d/divinedaolibrary.py",
   "lang": "en"
@@ -825,11 +570,6 @@
   "lang": "en"
  },
  {
-  "url": "https://systemtranslation.com/",
-  "file": "sources/en/s/systemtranslation.py",
-  "lang": "en"
- },
- {
   "url": "https://f-w-o.com/",
   "file": "sources/en/f/fantasyworldonline.py",
   "lang": "en"
@@ -838,11 +578,6 @@
   "url": "https://www.f-w-o.com/",
   "file": "sources/en/f/fantasyworldonline.py",
   "lang": "en"
- },
- {
-  "url": "http://id.mtlnovel.com/",
-  "file": "sources/multi/mtlnovel.py",
-  "lang": "multi"
  },
  {
   "url": "http://fr.mtlnovels.com/",
@@ -860,22 +595,7 @@
   "lang": "multi"
  },
  {
-  "url": "http://www.mtlnovel.com/",
-  "file": "sources/multi/mtlnovel.py",
-  "lang": "multi"
- },
- {
   "url": "http://id.mtlnovels.com/",
-  "file": "sources/multi/mtlnovel.py",
-  "lang": "multi"
- },
- {
-  "url": "https://fr.mtlnovel.com/",
-  "file": "sources/multi/mtlnovel.py",
-  "lang": "multi"
- },
- {
-  "url": "https://es.mtlnovel.com/",
   "file": "sources/multi/mtlnovel.py",
   "lang": "multi"
  },
@@ -910,17 +630,7 @@
   "lang": "en"
  },
  {
-  "url": "https://bato.to/",
-  "file": "sources/en/b/bato.py",
-  "lang": "en"
- },
- {
   "url": "https://battwo.com/",
-  "file": "sources/en/b/bato.py",
-  "lang": "en"
- },
- {
-  "url": "https://mangatoto.com/",
   "file": "sources/en/b/bato.py",
   "lang": "en"
  },
@@ -970,34 +680,14 @@
   "lang": "en"
  },
  {
-  "url": "https://batocc.com/",
-  "file": "sources/en/b/bato.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.machine-translation.org/",
-  "file": "sources/en/m/machinetransorg.py",
-  "lang": "en"
- },
- {
   "url": "https://creativenovels.com/",
   "file": "sources/en/c/creativenovels.py",
-  "lang": "en"
- },
- {
-  "url": "https://novelsrock.com/",
-  "file": "sources/en/n/novelsrock.py",
   "lang": "en"
  },
  {
   "url": "https://www.scribblehub.com/",
   "file": "sources/en/s/scribblehub.py",
   "lang": "en"
- },
- {
-  "url": "https://morenovel.net/",
-  "file": "sources/id/morenovel.py",
-  "lang": "id"
  },
  {
   "url": "https://novlove.com/",
@@ -1025,18 +715,8 @@
   "lang": "en"
  },
  {
-  "url": "https://mangachill.io/",
-  "file": "sources/en/m/mangachilllove.py",
-  "lang": "en"
- },
- {
   "url": "https://mangachill.love/",
   "file": "sources/en/m/mangachilllove.py",
-  "lang": "en"
- },
- {
-  "url": "https://asadatranslations.com/",
-  "file": "sources/en/a/asadatrans.py",
   "lang": "en"
  },
  {
@@ -1065,18 +745,8 @@
   "lang": "en"
  },
  {
-  "url": "https://listnovel.com/",
-  "file": "sources/en/l/listnovel.py",
-  "lang": "en"
- },
- {
   "url": "https://www.kitenovel.com/",
   "file": "sources/en/k/kitenovel.py",
-  "lang": "en"
- },
- {
-  "url": "http://gravitytales.com/",
-  "file": "sources/en/g/gravitytales.py",
   "lang": "en"
  },
  {
@@ -1097,11 +767,6 @@
  {
   "url": "https://www.volarenovels.com/",
   "file": "sources/en/v/volarenovels.py",
-  "lang": "en"
- },
- {
-  "url": "https://wuxiaworld.live/",
-  "file": "sources/en/w/wuxiaworldlive.py",
   "lang": "en"
  },
  {
@@ -1135,11 +800,6 @@
   "lang": "en"
  },
  {
-  "url": "https://fanstranslations.com/",
-  "file": "sources/en/f/fanstrans.py",
-  "lang": "en"
- },
- {
   "url": "https://88tangeatdrinkread.wordpress.com/",
   "file": "sources/en/8/88tang.py",
   "lang": "en"
@@ -1165,23 +825,8 @@
   "lang": "en"
  },
  {
-  "url": "https://mtled-novels.com/",
-  "file": "sources/en/m/mtlednovels.py",
-  "lang": "en"
- },
- {
   "url": "https://www.wuxiaworld.com/",
   "file": "sources/en/w/wuxiaworldcom.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.xiainovel.com/",
-  "file": "sources/en/x/xiainovel.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.wuxiar.com/",
-  "file": "sources/en/w/wuxiar.py",
   "lang": "en"
  },
  {
@@ -1200,18 +845,8 @@
   "lang": "zh"
  },
  {
-  "url": "http://wspadancewichita.com/",
-  "file": "sources/en/w/wspadancewichita.py",
-  "lang": "en"
- },
- {
   "url": "https://requiemtls.com/",
   "file": "sources/en/r/requiemtls.py",
-  "lang": "en"
- },
- {
-  "url": "https://myoniyonitranslations.com/",
-  "file": "sources/en/m/myoniyonitrans.py",
   "lang": "en"
  },
  {
@@ -1230,23 +865,8 @@
   "lang": "en"
  },
  {
-  "url": "https://lightnovelbastion.com/",
-  "file": "sources/en/l/lightnovelbastion.py",
-  "lang": "en"
- },
- {
   "url": "https://mydramanovel.com/",
   "file": "sources/en/m/mydramanovel.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.xnunu.com/",
-  "file": "sources/zh/xnunu.py",
-  "lang": "zh"
- },
- {
-  "url": "https://usefulnovel.com/",
-  "file": "sources/en/u/usefulnovel.py",
   "lang": "en"
  },
  {
@@ -1262,11 +882,6 @@
  {
   "url": "https://www.ddtxt8.cc/",
   "file": "sources/zh/ddxsss.py",
-  "lang": "zh"
- },
- {
-  "url": "https://www.soxs.cc/",
-  "file": "sources/zh/soxs.py",
   "lang": "zh"
  },
  {
@@ -1286,11 +901,6 @@
  },
  {
   "url": "https://chapmanganato.com/",
-  "file": "sources/en/r/readmanganato.py",
-  "lang": "en"
- },
- {
-  "url": "https://readmanganato.com/",
   "file": "sources/en/r/readmanganato.py",
   "lang": "en"
  },
@@ -1315,19 +925,9 @@
   "lang": "en"
  },
  {
-  "url": "https://lightnovelkiss.com/",
-  "file": "sources/en/l/lightnovelkiss.py",
-  "lang": "en"
- },
- {
   "url": "https://litnet.com/",
   "file": "sources/ru/litnet.py",
   "lang": "ru"
- },
- {
-  "url": "https://anime-sama.fr/",
-  "file": "sources/fr/animesama.py",
-  "lang": "fr"
  },
  {
   "url": "https://fenrirscans.com/",
@@ -1340,26 +940,6 @@
   "lang": "en"
  },
  {
-  "url": "https://www.wuxianovelhub.com/",
-  "file": "sources/en/w/wuxianovelhub.py",
-  "lang": "en"
- },
- {
-  "url": "http://www.fujitranslation.com/",
-  "file": "sources/en/f/fujitrans.py",
-  "lang": "en"
- },
- {
-  "url": "https://fujitranslation.com/",
-  "file": "sources/en/f/fujitrans.py",
-  "lang": "en"
- },
- {
-  "url": "http://fullnovel.live/",
-  "file": "sources/en/f/fullnovellive.py",
-  "lang": "en"
- },
- {
   "url": "https://novelnextz.com/",
   "file": "sources/en/n/novelnextz.py",
   "lang": "en"
@@ -1367,21 +947,6 @@
  {
   "url": "https://sleepytranslations.com/",
   "file": "sources/en/s/sleepytrans.py",
-  "lang": "en"
- },
- {
-  "url": "https://myboxnovel.com/",
-  "file": "sources/en/m/myboxnovel.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.wuxiaworld.co/",
-  "file": "sources/en/w/wuxiaworldco.py",
-  "lang": "en"
- },
- {
-  "url": "https://m.wuxiaworld.co/",
-  "file": "sources/en/w/wuxiaworldco.py",
   "lang": "en"
  },
  {
@@ -1400,27 +965,12 @@
   "lang": "fr"
  },
  {
-  "url": "http://wnmtl.org/",
-  "file": "sources/en/w/wnmtl.py",
-  "lang": "en"
- },
- {
-  "url": "http://www.wnmtl.org/",
-  "file": "sources/en/w/wnmtl.py",
-  "lang": "en"
- },
- {
   "url": "https://www.worldnovel.online/",
   "file": "sources/id/worldnovelonline.py",
   "lang": "id"
  },
  {
   "url": "http://lightnovels.live/",
-  "file": "sources/en/l/lightnovelme.py",
-  "lang": "en"
- },
- {
-  "url": "http://lightnovels.me/",
   "file": "sources/en/l/lightnovelme.py",
   "lang": "en"
  },
@@ -1445,21 +995,6 @@
   "lang": "zh"
  },
  {
-  "url": "https://mangarockteam.com/",
-  "file": "sources/en/m/mangarockteam.py",
-  "lang": "en"
- },
- {
-  "url": "https://writerupdates.com/",
-  "file": "sources/en/w/writerupdates.py",
-  "lang": "en"
- },
- {
-  "url": "https://freefullnovel.com/",
-  "file": "sources/en/f/freefullnovel.py",
-  "lang": "en"
- },
- {
   "url": "https://www.wuxiaspot.com/",
   "file": "sources/en/w/wuxiaspot.py",
   "lang": "en"
@@ -1470,18 +1005,8 @@
   "lang": "en"
  },
  {
-  "url": "https://toc.qidianunderground.org/",
-  "file": "sources/en/q/qidianunderground.py",
-  "lang": "en"
- },
- {
   "url": "https://tocqidianunderground.blogspot.com/",
   "file": "sources/en/q/qidianunderground.py",
-  "lang": "en"
- },
- {
-  "url": "https://aquamanga.com/",
-  "file": "sources/en/a/aquamanga.py",
   "lang": "en"
  },
  {
@@ -1495,24 +1020,9 @@
   "lang": "en"
  },
  {
-  "url": "https://aquamanga.org/",
-  "file": "sources/en/a/aquamanga.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.ceunovel.com/",
-  "file": "sources/pt/ceunovel.py",
-  "lang": "pt"
- },
- {
   "url": "https://noveldeglace.com/",
   "file": "sources/fr/noveldeglace.py",
   "lang": "fr"
- },
- {
-  "url": "https://anythingnovel.com/",
-  "file": "sources/en/a/anythingnovel.py",
-  "lang": "en"
  },
  {
   "url": "https://www.readlightnovel.cc/",
@@ -1522,16 +1032,6 @@
  {
   "url": "https://m.readlightnovel.cc/",
   "file": "sources/en/r/readlightnovelcc.py",
-  "lang": "en"
- },
- {
-  "url": "https://1stkissnovel.org/",
-  "file": "sources/en/1/1stkissnovel.py",
-  "lang": "en"
- },
- {
-  "url": "https://1stkissnovel.love/",
-  "file": "sources/en/1/1stkissnovel.py",
   "lang": "en"
  },
  {
@@ -1545,22 +1045,7 @@
   "lang": "en"
  },
  {
-  "url": "https://www.ornovel.com/",
-  "file": "sources/en/o/ornovel.py",
-  "lang": "en"
- },
- {
-  "url": "https://mangastic.net/",
-  "file": "sources/en/m/mangastic.py",
-  "lang": "en"
- },
- {
   "url": "https://wordexcerpt.com/",
-  "file": "sources/en/w/wordexcerpt.py",
-  "lang": "en"
- },
- {
-  "url": "https://wordexcerpt.org/",
   "file": "sources/en/w/wordexcerpt.py",
   "lang": "en"
  },
@@ -1585,16 +1070,6 @@
   "lang": "en"
  },
  {
-  "url": "https://www.centinni.com/",
-  "file": "sources/en/c/centinni.py",
-  "lang": "en"
- },
- {
-  "url": "https://boxnovel.com/",
-  "file": "sources/en/b/boxnovel.py",
-  "lang": "en"
- },
- {
   "url": "https://exiledrebelsscanlations.com/",
   "file": "sources/en/e/exiledrebels.py",
   "lang": "en"
@@ -1603,11 +1078,6 @@
   "url": "https://www.foxteller.com/",
   "file": "sources/en/f/foxteller.py",
   "lang": "en"
- },
- {
-  "url": "https://bestmanga.club/",
-  "file": "sources/ru/bestmanga.py",
-  "lang": "ru"
  },
  {
   "url": "https://www.novelcool.com/",
@@ -1640,28 +1110,13 @@
   "lang": "en"
  },
  {
-  "url": "https://www.newsnovel.net/",
-  "file": "sources/en/n/newsnovel.py",
-  "lang": "en"
- },
- {
   "url": "https://faqwiki.us/",
-  "file": "sources/en/f/faqwiki.py",
-  "lang": "en"
- },
- {
-  "url": "https://faqwiki.xyz/",
   "file": "sources/en/f/faqwiki.py",
   "lang": "en"
  },
  {
   "url": "https://www.faqwiki.us/",
   "file": "sources/en/f/faqwiki.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.blackbox-tl.com/",
-  "file": "sources/en/b/blackboxtl.py",
   "lang": "en"
  },
  {
@@ -1680,44 +1135,14 @@
   "lang": "en"
  },
  {
-  "url": "https://amnesiactl.com/",
-  "file": "sources/en/a/amnesiactl.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.wuxiav.com/",
-  "file": "sources/en/w/wuxiav.py",
-  "lang": "en"
- },
- {
-  "url": "https://light-novel.online/",
-  "file": "sources/en/l/lightnovelonline.py",
-  "lang": "en"
- },
- {
-  "url": "https://viewnovel.net/",
-  "file": "sources/en/v/viewnovel.py",
-  "lang": "en"
- },
- {
   "url": "https://www.novelupdates.cc/",
   "file": "sources/en/n/novelupdatescc.py",
-  "lang": "en"
- },
- {
-  "url": "https://read.asianovel.com/",
-  "file": "sources/en/a/asianovel.py",
   "lang": "en"
  },
  {
   "url": "https://grensia.blogspot.com/",
   "file": "sources/id/grensia_blogspot.py",
   "lang": "id"
- },
- {
-  "url": "https://www.box-novel.com/",
-  "file": "sources/en/b/boxnovelcom.py",
-  "lang": "en"
  },
  {
   "url": "https://www.fanmtl.com/",
@@ -1730,19 +1155,9 @@
   "lang": "zh"
  },
  {
-  "url": "https://www.p2wt.com/",
-  "file": "sources/zh/shw5.py",
-  "lang": "zh"
- },
- {
   "url": "https://www.bq99.cc/",
   "file": "sources/zh/shw5.py",
   "lang": "zh"
- },
- {
-  "url": "https://novelfullplus.com/",
-  "file": "sources/en/n/novelfullplus.py",
-  "lang": "en"
  },
  {
   "url": "https://www.wuxiasky.net/",
@@ -1752,11 +1167,6 @@
  {
   "url": "https://www.asianovel.net/",
   "file": "sources/en/a/asianovel_net.py",
-  "lang": "en"
- },
- {
-  "url": "https://tipnovel.com/",
-  "file": "sources/en/t/tipnovel.py",
   "lang": "en"
  },
  {
@@ -1770,11 +1180,6 @@
   "lang": "en"
  },
  {
-  "url": "https://lunarletters.com/",
-  "file": "sources/en/l/lunarletters.py",
-  "lang": "en"
- },
- {
   "url": "https://readnovelfull.com/",
   "file": "sources/en/r/readnovelfull.py",
   "lang": "en"
@@ -1785,23 +1190,8 @@
   "lang": "en"
  },
  {
-  "url": "https://isekaiscan.com/",
-  "file": "sources/en/i/isekaiscan.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.novelhunters.com/",
-  "file": "sources/en/n/novelhunters.py",
-  "lang": "en"
- },
- {
   "url": "https://vipnovel.com/",
   "file": "sources/en/v/vipnovel.py",
-  "lang": "en"
- },
- {
-  "url": "https://instadoses.com/",
-  "file": "sources/en/i/instadoses.py",
   "lang": "en"
  },
  {
@@ -1810,18 +1200,8 @@
   "lang": "en"
  },
  {
-  "url": "https://indomtl.com/",
-  "file": "sources/id/indomtl.py",
-  "lang": "id"
- },
- {
   "url": "https://novelight.net/",
   "file": "sources/en/n/novelight.py",
-  "lang": "en"
- },
- {
-  "url": "https://kiss-novel.com/",
-  "file": "sources/en/k/kissnovel.py",
   "lang": "en"
  },
  {
@@ -1830,28 +1210,8 @@
   "lang": "en"
  },
  {
-  "url": "https://webnovelindonesia.com/",
-  "file": "sources/id/webnovelindonesia.py",
-  "lang": "id"
- },
- {
-  "url": "https://www.novelspread.com/",
-  "file": "sources/en/n/novelspread.py",
-  "lang": "en"
- },
- {
   "url": "https://ancientheartloss.wordpress.com/",
   "file": "sources/en/a/ancientheartloss.py",
-  "lang": "en"
- },
- {
-  "url": "https://ancientheartloss.com/",
-  "file": "sources/en/a/ancientheartloss.py",
-  "lang": "en"
- },
- {
-  "url": "https://novelnext.dramanovels.io/",
-  "file": "sources/en/n/novelnext.py",
   "lang": "en"
  },
  {
@@ -1860,24 +1220,9 @@
   "lang": "en"
  },
  {
-  "url": "https://pery.info/",
-  "file": "sources/en/p/peryinfo.py",
-  "lang": "en"
- },
- {
-  "url": "https://zinmanga.com/",
-  "file": "sources/en/z/zinmanga.py",
-  "lang": "en"
- },
- {
   "url": "https://ranobe-novels.ru/",
   "file": "sources/ru/ranobenovel.py",
   "lang": "ru"
- },
- {
-  "url": "https://allnovelxo.com/",
-  "file": "sources/en/a/allnovel.py",
-  "lang": "en"
  },
  {
   "url": "https://www.allnovel.org/",
@@ -1887,11 +1232,6 @@
  {
   "url": "https://allnovel.org/",
   "file": "sources/en/a/allnovel.py",
-  "lang": "en"
- },
- {
-  "url": "https://toon69.com/",
-  "file": "sources/en/m/mangarosie.py",
   "lang": "en"
  },
  {
@@ -1910,18 +1250,8 @@
   "lang": "en"
  },
  {
-  "url": "https://sj.uukanshu.net/",
-  "file": "sources/zh/uukanshu_sj.py",
-  "lang": "zh"
- },
- {
   "url": "https://dmtranslationscn.com/",
   "file": "sources/en/d/dmtrans.py",
-  "lang": "en"
- },
- {
-  "url": "https://novelraw.blogspot.com/",
-  "file": "sources/en/n/novelraw.py",
   "lang": "en"
  },
  {
@@ -1935,11 +1265,6 @@
   "lang": "en"
  },
  {
-  "url": "https://novelonlinefull.com/",
-  "file": "sources/en/n/novelonlinefull.py",
-  "lang": "en"
- },
- {
   "url": "https://www.wattpad.com/",
   "file": "sources/multi/wattpad.py",
   "lang": "multi"
@@ -1950,19 +1275,9 @@
   "lang": "multi"
  },
  {
-  "url": "https://69shu.me/",
-  "file": "sources/zh/69shuba.cx.py",
-  "lang": "zh"
- },
- {
   "url": "https://69shuba.cx/",
   "file": "sources/zh/69shuba.cx.py",
   "lang": "zh"
- },
- {
-  "url": "https://webnovelonline.net/",
-  "file": "sources/en/w/webnovelonlinenet.py",
-  "lang": "en"
  },
  {
   "url": "https://pandanovel.co/",
@@ -1970,23 +1285,8 @@
   "lang": "en"
  },
  {
-  "url": "https://www.koreanmtl.online/",
-  "file": "sources/en/k/koreanmtl.py",
-  "lang": "en"
- },
- {
   "url": "https://skydemonorder.com/",
   "file": "sources/en/s/skydemonorder.py",
-  "lang": "en"
- },
- {
-  "url": "https://myreadingmanga.fit/",
-  "file": "sources/en/b/beautymanga.py",
-  "lang": "en"
- },
- {
-  "url": "https://beautymanga.com/",
-  "file": "sources/en/b/beautymanga.py",
   "lang": "en"
  },
  {
@@ -2013,16 +1313,6 @@
   "url": "https://ixdzs8.tw/",
   "file": "sources/zh/ixdzs.py",
   "lang": "zh"
- },
- {
-  "url": "https://noveltranslate.com/",
-  "file": "sources/en/n/noveltranslate.py",
-  "lang": "en"
- },
- {
-  "url": "https://www.shinsori.com/",
-  "file": "sources/en/s/shinsori.py",
-  "lang": "en"
  },
  {
   "url": "https://www.novel543.com/",
@@ -2090,11 +1380,6 @@
   "lang": "es"
  },
  {
-  "url": "https://readnovelz.net/",
-  "file": "sources/en/r/readnovelz.py",
-  "lang": "en"
- },
- {
   "url": "https://nyx-translation.com/",
   "file": "sources/en/n/nyxtranslation.py",
   "lang": "en"
@@ -2102,11 +1387,6 @@
  {
   "url": "https://nyxtranslation.home.blog/",
   "file": "sources/en/n/nyxtranslation.py",
-  "lang": "en"
- },
- {
-  "url": "https://readlitenovel.com/",
-  "file": "sources/en/l/lightnovelreader.py",
   "lang": "en"
  },
  {
@@ -2140,33 +1420,13 @@
   "lang": "en"
  },
  {
-  "url": "https://www.wuxiap.com/",
-  "file": "sources/en/r/readwn.py",
-  "lang": "en"
- },
- {
-  "url": "https://novel35.com/",
-  "file": "sources/en/n/novel35.py",
-  "lang": "en"
- },
- {
   "url": "https://noveltoon.mobi/",
   "file": "sources/id/noveltoon.py",
   "lang": "id"
  },
  {
-  "url": "https://travistranslations.com/",
-  "file": "sources/en/t/travistranslations.py",
-  "lang": "en"
- },
- {
   "url": "https://novelrare.com/",
   "file": "sources/en/n/novelrare.py",
-  "lang": "en"
- },
- {
-  "url": "https://luminarynovels.com/",
-  "file": "sources/en/l/luminarynovels.py",
   "lang": "en"
  },
  {
@@ -2195,27 +1455,7 @@
   "lang": "ja"
  },
  {
-  "url": "https://www.27k.net/",
-  "file": "sources/zh/27k.py",
-  "lang": "zh"
- },
- {
-  "url": "https://so.27k.net/",
-  "file": "sources/zh/27k.py",
-  "lang": "zh"
- },
- {
   "url": "https://tw.27k.net/",
-  "file": "sources/zh/27k.py",
-  "lang": "zh"
- },
- {
-  "url": "https://www.lreads.com/",
-  "file": "sources/zh/27k.py",
-  "lang": "zh"
- },
- {
-  "url": "https://m.27k.net/",
   "file": "sources/zh/27k.py",
   "lang": "zh"
  },
@@ -2225,28 +1465,13 @@
   "lang": "en"
  },
  {
-  "url": "https://www.novelall.com/",
-  "file": "sources/en/n/novelall.py",
-  "lang": "en"
- },
- {
   "url": "https://www.flying-lines.com/",
   "file": "sources/en/f/flyinglines.py",
   "lang": "en"
  },
  {
-  "url": "https://www.wuxiau.com/",
-  "file": "sources/en/w/wuxiau.py",
-  "lang": "en"
- },
- {
   "url": "https://www.wuxiapub.com/",
   "file": "sources/en/w/wuxiapub.py",
-  "lang": "en"
- },
- {
-  "url": "https://skynovel.org/",
-  "file": "sources/en/s/skynovel.py",
   "lang": "en"
  },
  {
@@ -2278,16 +1503,6 @@
   "url": "https://novelmic.com/",
   "file": "sources/en/n/novelmic.py",
   "lang": "en"
- },
- {
-  "url": "https://www.wuxiax.com/",
-  "file": "sources/en/w/wuxiax.py",
-  "lang": "en"
- },
- {
-  "url": "https://novelasligera.com/",
-  "file": "sources/es/novelasligera_com.py",
-  "lang": "es"
  },
  {
   "url": "https://mangaweebs.in/",
@@ -2335,11 +1550,6 @@
   "lang": "en"
  },
  {
-  "url": "http://www.hanyunovels.site/",
-  "file": "sources/en/h/hanyunovels.py",
-  "lang": "en"
- },
- {
   "url": "https://www.tapread.com/",
   "file": "sources/en/t/tapread.py",
   "lang": "en"
@@ -2357,11 +1567,6 @@
  {
   "url": "https://www.wuxiabox.com/",
   "file": "sources/en/w/wuxiabox.py",
-  "lang": "en"
- },
- {
-  "url": "https://lightnovel.tv/",
-  "file": "sources/en/l/lightnoveltv.py",
   "lang": "en"
  },
  {
@@ -2400,18 +1605,8 @@
   "lang": "en"
  },
  {
-  "url": "https://www.novelv.com/",
-  "file": "sources/en/n/novelv.py",
-  "lang": "en"
- },
- {
   "url": "https://justatranslatortranslations.com/",
   "file": "sources/en/j/justatrans.py",
-  "lang": "en"
- },
- {
-  "url": "https://wuxiaworld.site/",
-  "file": "sources/en/w/wuxiaworldsite.py",
   "lang": "en"
  },
  {
@@ -2438,56 +1633,6 @@
   "url": "https://meionovels.com/",
   "file": "sources/id/meionovel.py",
   "lang": "id"
- },
- {
-  "url": "https://novelsite.net/",
-  "file": "sources/en/n/novelsite.py",
-  "lang": "en"
- },
- {
-  "url": "https://harimanga.com/",
-  "file": "sources/en/h/harimanga.py",
-  "lang": "en"
- },
- {
-  "url": "https://zinnovel.com/",
-  "file": "sources/en/z/zinnovel.py",
-  "lang": "en"
- },
- {
-  "url": "https://reaperscans.com/",
-  "file": "sources/en/r/reaperscans.py",
-  "lang": "en"
- },
- {
-  "url": "https://hotnovelfull.com/",
-  "file": "sources/en/h/hotnovelfull.py",
-  "lang": "en"
- },
- {
-  "url": "https://boxnovel.online/",
-  "file": "sources/en/b/boxnovelonline.py",
-  "lang": "en"
- },
- {
-  "url": "https://omgnovels.com/",
-  "file": "sources/en/o/omgnovels.py",
-  "lang": "en"
- },
- {
-  "url": "https://mixednovel.net/",
-  "file": "sources/en/m/mixednovel.py",
-  "lang": "en"
- },
- {
-  "url": "https://earlynovel.net/",
-  "file": "sources/en/m/mixednovel.py",
-  "lang": "en"
- },
- {
-  "url": "https://lightnovelshub.com/",
-  "file": "sources/en/l/lightnovelshub.py",
-  "lang": "en"
  },
  {
   "url": "https://ln.hako.vn/",

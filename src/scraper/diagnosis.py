@@ -122,6 +122,9 @@ class Action(Enum):
     REFUSE = "refuse"
     """No bypass exists. Stop."""
 
+    FOLLOW = "follow"
+    """The page is a redirect expressed in JavaScript. Fetch what it points at."""
+
 
 @dataclass(frozen=True)
 class Diagnosis:
@@ -132,6 +135,8 @@ class Diagnosis:
     detail: str = ""
     retry_after: Optional[float] = None
     """Seconds the server asked for, when it said so. Never guessed."""
+    location: str = ""
+    """Where ``FOLLOW`` should go. Possibly relative; resolve against the request."""
 
     @property
     def ok(self) -> bool:
@@ -152,6 +157,49 @@ def _has(body: str, markers: Tuple[str, ...]) -> str:
         if marker in body:
             return marker
     return ""
+
+
+_JS_REDIRECT = re.compile(
+    r"""window\.location(?:\.replace|\.assign|\.href\s*=|\s*=)\s*\(?\s*['"]([^'"\s]+)['"]""",
+    re.IGNORECASE,
+)
+_DOC_END = re.compile(r"</html\s*>", re.IGNORECASE)
+_MARKUP = re.compile(r"<(script|style|noscript)\b.*?</\1>|<[^>]+>", re.DOTALL | re.IGNORECASE)
+
+_STUB_BYTES = 4_000
+_STUB_TEXT = 400
+
+
+def js_redirect(body: str) -> str:
+    """Where a JavaScript-only redirect page points, or ``""``.
+
+    A family of bot checks answers the first request with a few hundred bytes whose
+    entire content is ``window.location.replace('…?token=…')``. It arrives as ``200``
+    with no challenge marker and no Cloudflare header, so everything else here reads
+    it as a normal page — and a caller then parses an empty document and records a
+    successful scrape. On the source corpus this was 19% of hosts, which made it a
+    larger hole than any layer this module knew about.
+
+    The gate is that the document must be *entirely* this and nothing else, because
+    ``window.location`` appears in plenty of real pages. Three conditions together:
+    the closing tag is present, so the whole document has been seen and its length is
+    known rather than guessed from a truncated prefix; the document is tiny; and it
+    renders no text. A real page fails at least one.
+
+    Worth doing without a browser precisely because the destination is *emitted* in
+    the HTML. Running the script would produce the same URL that is already sitting
+    there in plain text, so this is a layer that looks like it needs a JavaScript
+    runtime and does not.
+    """
+    if not _DOC_END.search(body) or len(body) >= _STUB_BYTES:
+        return ""
+    found = _JS_REDIRECT.search(body)
+    if not found:
+        return ""
+    text = " ".join(_MARKUP.sub(" ", body).split())
+    if len(text) >= _STUB_TEXT:
+        return ""
+    return found.group(1)
 
 
 def _cf_code(body: str) -> Optional[int]:
@@ -234,6 +282,16 @@ def diagnose(
                 Action.SOLVE,
                 Layer.TURNSTILE if turnstile else Layer.MANAGED_CHALLENGE,
                 "challenge served with a success status",
+            )
+        # Checked against the unlowered body: the destination is a URL, and lowering
+        # it would corrupt the signed token these pages carry in the query string.
+        hop = js_redirect(body or "")
+        if hop:
+            return Diagnosis(
+                Action.FOLLOW,
+                Layer.BROWSER_JS,
+                "the page is a JavaScript-only redirect",
+                location=hop,
             )
         return Diagnosis(Action.ACCEPT)
 

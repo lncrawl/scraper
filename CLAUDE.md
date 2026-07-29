@@ -85,6 +85,12 @@ Each of these is a place where a plausible change is wrong.
    and persists to the origin's profile, where it outlives the typo that caused it.
 10. **`diagnosis` and `planner` stay pure** — primitives in, dataclasses out, no I/O, no
     clock beyond `time` in the modules that must have one.
+11. **Where fidelity and measurement disagree, measurement wins — and the comment says
+    so.** Two behaviours here are deliberately *not* what a browser does: a first
+    request carries a synthesised `Referer`, and the default profile is Firefox rather
+    than the commonest browser. Both were argued the other way from the model and both
+    lost to `livetest/compare.py`. Do not "correct" them back toward fidelity without
+    re-running that comparison; the numbers are in the CHANGELOG.
 
 ### Things removed on purpose
 
@@ -140,9 +146,9 @@ host in lightnovel-crawler's source index as the corpus. It is not part of `poe 
 See [livetest/README.md](livetest/README.md).
 
 **Run it after changing anything that talks to a real server** — the transport, the
-diagnosis markers, a tier, the exit pool. Eleven of the fifteen defects found before
-1.0 were invisible to a stubbed transport, and two of them made whole features
-silently useless while every unit test passed. The pattern to expect: an offline test
+diagnosis markers, a tier, the exit pool. Almost everything fixed before 1.0 was found
+here and was invisible to a stubbed transport; two of them made whole features silently
+useless while every unit test passed. The pattern to expect: an offline test
 that mocks the thing under test will confirm the code does what it says, not that
 what it says is true of the real server.
 

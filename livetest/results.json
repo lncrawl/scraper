@@ -9,18 +9,23 @@
    "L5"
   ],
   "proves": "Layers 2-5 are one barrier: the only difference between these two requests is the network signature, and it decides the outcome.",
-  "target": "https://chrysanthemumgarden.com/",
+  "target": "looked up from the last probe",
   "verdict": "pass",
-  "seconds": 10.06,
+  "seconds": 7.9,
   "steps": [
    {
-    "what": "https://chrysanthemumgarden.com/ \u2014 plain refused, impersonated served",
-    "value": "plain=403 impersonated=200 (108919 bytes)",
-    "ok": true
+    "what": "hosts presenting the condition today",
+    "value": "https://novelfull.com/, https://www.novelhall.com/",
+    "ok": null
    },
    {
     "what": "https://novelfull.com/ \u2014 plain refused, impersonated served",
-    "value": "plain=403 impersonated=200 (52247 bytes)",
+    "value": "plain=403 impersonated=200 (53091 bytes)",
+    "ok": true
+   },
+   {
+    "what": "https://www.novelhall.com/ \u2014 plain refused, impersonated served",
+    "value": "plain=403 impersonated=200 (39027 bytes)",
     "ok": true
    },
    {
@@ -76,7 +81,7 @@
   "proves": "The baseline tier handles a real protected site end to end, including the soup, JSON and file helpers.",
   "target": "https://novelfull.net/",
   "verdict": "pass",
-  "seconds": 2.65,
+  "seconds": 1.25,
   "steps": [
    {
     "what": "a page came back with a title",
@@ -100,12 +105,12 @@
    },
    {
     "what": "get_file wrote the body",
-    "value": "101582 bytes",
+    "value": "102135 bytes",
     "ok": true
    },
    {
     "what": "explain()",
-    "value": "novelfull.net binding layer : nothing has blocked yet tier : direct pacing : 1.2s mean interval requests : 12 ok / 0 failed clearance : none ladder : direct(10) exits : direct",
+    "value": "novelfull.net binding layer : nothing has blocked yet tier : direct pacing : 1.2s mean interval requests : 22 ok / 0 failed clearance : none ladder : direct(10) exits : direct",
     "ok": null
    }
   ],
@@ -120,16 +125,21 @@
   "proves": "A deep page arriving with no referrer and no prior history is a navigation pattern no person produces; both mechanisms are observable in the requests actually sent.",
   "target": "https://httpbingo.org",
   "verdict": "pass",
-  "seconds": 1.61,
+  "seconds": 1.92,
   "steps": [
    {
-    "what": "a first request carries no referrer",
-    "value": "Accept, Accept-Encoding, Accept-Language, Host, Priority, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site, Sec-Fetch-User, User-Agent, Via, X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto, X-Forwarded-Ssl, X-Request-Start",
+    "what": "a first request's headers",
+    "value": "Accept, Accept-Encoding, Accept-Language, Host, Priority, Referer, Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site, Sec-Fetch-User, Te, User-Agent, Via, X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto, X-Forwarded-Ssl, X-Request-Start",
     "ok": null
    },
    {
-    "what": "the first navigation declares no origin",
-    "value": "",
+    "what": "the first navigation cites the origin's front page",
+    "value": "https://httpbingo.org/",
+    "ok": true
+   },
+   {
+    "what": "and sec-fetch-site agrees with it",
+    "value": "same-origin",
     "ok": true
    },
    {
@@ -158,24 +168,29 @@
    "L10"
   ],
   "proves": "The status code says 'forbidden' and the correct remedy is a browser, not a new address. A conventional client rotates its proxy here and gets nowhere.",
-  "target": "https://www.webnovel.com/",
+  "target": "https://centralnovel.com/",
   "verdict": "pass",
-  "seconds": 2.07,
+  "seconds": 3.65,
   "steps": [
    {
-    "what": "https://www.novelhall.com/ -> L9 Managed JavaScript challenge",
+    "what": "https://centralnovel.com/ -> L9 Managed JavaScript challenge",
     "value": "HTTP 403 diagnosed solve (L9 Managed JavaScript challenge): challenge served with 403",
     "ok": true
    },
    {
-    "what": "https://www.novelhall.com/ asks for a solve, not a rotation",
+    "what": "https://centralnovel.com/ asks for a solve, not a rotation",
     "value": "",
     "ok": true
    },
    {
-    "what": "no host is presenting L10 Turnstile right now",
-    "value": "skipped",
-    "ok": null
+    "what": "https://ranobes.top/ -> L10 Turnstile",
+    "value": "HTTP 200 diagnosed solve (L10 Turnstile): challenge served with a success status",
+    "ok": true
+   },
+   {
+    "what": "https://ranobes.top/ asks for a solve, not a rotation",
+    "value": "",
+    "ok": true
    }
   ],
   "error": ""
@@ -187,9 +202,9 @@
    "L9"
   ],
   "proves": "The failure is actionable: it names the layer and the capability that would reach it, instead of exhausting retries on a 403.",
-  "target": "https://www.webnovel.com/",
+  "target": "https://centralnovel.com/",
   "verdict": "pass",
-  "seconds": 1.14,
+  "seconds": 0.41,
   "steps": [
    {
     "what": "stopped at the challenge layer",
@@ -211,9 +226,9 @@
    "L12"
   ],
   "proves": "Nothing distinguishes the scoring tiers from outside, so the diagnosis names the strictest emit-only one and asks for a stronger tier \u2014 not a new address.",
-  "target": "https://reaperscans.com/",
+  "target": "https://novelmania.com.br/",
   "verdict": "pass",
-  "seconds": 1.16,
+  "seconds": 0.88,
   "steps": [
    {
     "what": "diagnosed as scoring rather than reputation",
@@ -235,27 +250,11 @@
    "L19"
   ],
   "proves": "The layer reads a secret. Retrying is an infinite loop against a wall, so a single request is spent and the message names the only legitimate route.",
-  "target": "https://dummynovels.com/",
-  "verdict": "pass",
-  "seconds": 1.16,
-  "steps": [
-   {
-    "what": "raised as impassable",
-    "value": "L19 Identity-provider gate",
-    "ok": true
-   },
-   {
-    "what": "the message names the legitimate route",
-    "value": "L19 Identity-provider gate for https://dummynovels.com/: authentication required (HTTP 401); the content is behind an identity provider; retrieve it with a properly obtained account",
-    "ok": true
-   },
-   {
-    "what": "exactly one request was spent",
-    "value": "1 request(s)",
-    "ok": true
-   }
-  ],
-  "error": ""
+  "target": "",
+  "verdict": "inconclusive",
+  "seconds": 0.0,
+  "steps": [],
+  "error": "no host in the last probe is behind an identity-provider gate"
  },
  {
   "id": "S09",
@@ -269,7 +268,7 @@
   "proves": "The classifier is exercised against responses a real server produced, not fixtures.",
   "target": "https://httpbingo.org",
   "verdict": "pass",
-  "seconds": 5.41,
+  "seconds": 5.13,
   "steps": [
    {
     "what": "HTTP 429: a throttle is a pacing problem",
@@ -308,7 +307,7 @@
   "proves": "The rule that matters most: a 429 says the address works and is being asked for too much, so the remedy is arithmetic \u2014 not a new exit, which would reset the history the layer measures.",
   "target": "https://httpbingo.org",
   "verdict": "pass",
-  "seconds": 3.47,
+  "seconds": 2.89,
   "steps": [
    {
     "what": "gave up at the behavioural layer, not at reputation",
@@ -342,21 +341,21 @@
   "proves": "The pool is wired end to end: the session key becomes the SOCKS username, the credential authenticates, and the egress IP is a Tor exit.",
   "target": "https://check.torproject.org/api/ip",
   "verdict": "pass",
-  "seconds": 2.8,
+  "seconds": 2.32,
   "steps": [
    {
     "what": "this machine's own address",
-    "value": "37.27.22.110 (IsTor=False)",
+    "value": "91.73.67.32 (IsTor=False)",
     "ok": null
    },
    {
     "what": "lease",
-    "value": "127.0.0.1:9250#s-231c609c23c3 via socks5h://s-231c609c23c3:tp_l52hUtFMTGgNX-e2OBSVXw@127.0.0.1:9250",
+    "value": "127.0.0.1:9250#s-0196914d41e6 via socks5h://s-0196914d41e6:tp_Ceif_S1QCscuzPEjVzy7TA@127.0.0.1:9250",
     "ok": null
    },
    {
     "what": "egress is a Tor exit",
-    "value": "{'IsTor': True, 'IP': '192.42.116.45'}",
+    "value": "{'IsTor': True, 'IP': '192.42.116.67'}",
     "ok": true
    },
    {
@@ -366,7 +365,7 @@
    },
    {
     "what": "pool instances",
-    "value": "[{'id': 0, 'exit_ip': '45.84.107.55', 'country': 'SE', 'score': 0, 'state': 'degraded', 'kinds': {'blocked': 3, 'captcha': 1}}, {'id': 1, 'exit_ip': '109.70.100.12', 'country': 'AT', 'score': 0, 'state': 'degraded', 'kinds': {'captcha': 2}}, {'id': 2, 'exit_ip': '192.42.116.100', 'country': 'NL', 'score': 0, 'state': 'degraded', 'kinds': {'captcha': 1}}, {'id': 3, 'exit_ip': '185.220.101.20', 'co\u2026",
+    "value": "[{'id': 0, 'exit_ip': '107.189.8.181', 'country': 'LU', 'score': 0, 'state': 'degraded', 'kinds': {'captcha': 1}}, {'id': 1, 'exit_ip': '193.200.229.243', 'country': 'NO', 'score': 0, 'state': 'degraded', 'kinds': {'blocked': 1}}, {'id': 2, 'exit_ip': '192.42.116.67', 'country': 'NL', 'score': 0, 'state': 'healthy', 'kinds': {}}, {'id': 3, 'exit_ip': '185.220.101.106', 'country': 'DE', 'score': 0\u2026",
     "ok": null
    }
   ],
@@ -382,16 +381,16 @@
   "proves": "Stickiness is what makes a clearance reusable and lets per-zone history accrue. A rotating address would invalidate both.",
   "target": "https://check.torproject.org/api/ip",
   "verdict": "pass",
-  "seconds": 4.27,
+  "seconds": 3.94,
   "steps": [
    {
     "what": "all four requests left from one exit",
-    "value": "185.220.100.242, 185.220.100.242, 185.220.100.242, 185.220.100.242",
+    "value": "185.220.101.106, 185.220.101.106, 185.220.101.106, 185.220.101.106",
     "ok": true
    },
    {
     "what": "exit IP",
-    "value": "185.220.100.242",
+    "value": "185.220.101.106",
     "ok": null
    }
   ],
@@ -406,7 +405,7 @@
   "proves": "Rotation is a reassignment inside the pool: the endpoint URL is unchanged, but the address behind it \u2014 and therefore the identity \u2014 is not.",
   "target": "https://check.torproject.org/api/ip",
   "verdict": "pass",
-  "seconds": 3.42,
+  "seconds": 3.35,
   "steps": [
    {
     "what": "the endpoint URL is unchanged",
@@ -415,7 +414,7 @@
    },
    {
     "what": "the exit identifier changed",
-    "value": "127.0.0.1:9250#s-724f1c0b101d -> 127.0.0.1:9250#s-8c2b4098d938",
+    "value": "127.0.0.1:9250#s-b6ae985e4304 -> 127.0.0.1:9250#s-c2a35a324a49",
     "ok": true
    },
    {
@@ -425,7 +424,7 @@
    },
    {
     "what": "exit IP before/after",
-    "value": "109.70.100.12 -> 109.70.100.12",
+    "value": "192.42.116.67 -> 192.42.116.67",
     "ok": null
    },
    {
@@ -446,7 +445,7 @@
   "proves": "This is the only signal that catches a soft block \u2014 a proxy relaying bytes cannot see a 403 or a captcha inside an HTTPS tunnel \u2014 and the pool weighs a report by its kind.",
   "target": "http://127.0.0.1:8080",
   "verdict": "pass",
-  "seconds": 3.06,
+  "seconds": 2.61,
   "steps": [
    {
     "what": "L9 Managed JavaScript challenge -> 'captcha'",
@@ -469,13 +468,8 @@
     "ok": true
    },
    {
-    "what": "the pool's health score moved for exactly one instance",
-    "value": "[(4, 0, 6, {'captcha': 1})]",
-    "ok": true
-   },
-   {
-    "what": "it was weighed as a captcha",
-    "value": "{'captcha': 1}",
+    "what": "exactly one instance was told it hit a captcha",
+    "value": "before={0: 1, 1: 0, 2: 0, 3: 1, 4: 0} after={0: 1, 1: 0, 2: 1, 3: 1, 4: 0}",
     "ok": true
    }
   ],
@@ -529,7 +523,7 @@
   "proves": "The possess-side veto holds even when a rotation is cheaply available: discarding the address would reset the accumulated history the layer reads.",
   "target": "https://httpbingo.org",
   "verdict": "pass",
-  "seconds": 3.24,
+  "seconds": 3.26,
   "steps": [
    {
     "what": "gave up at the behavioural layer",
@@ -543,7 +537,7 @@
    },
    {
     "what": "the Tor session was kept even though rotating was available",
-    "value": "127.0.0.1:9250#s-999480e3c0c1",
+    "value": "127.0.0.1:9250#s-21975d8a9de8",
     "ok": true
    },
    {
@@ -561,9 +555,9 @@
    "L0"
   ],
   "proves": "The cheapest way past a protected site is not to touch it. The response must carry the real URL, or relative links redirect the whole crawl into the snapshot.",
-  "target": "https://www.webnovel.com/",
+  "target": "https://centralnovel.com/",
   "verdict": "pass",
-  "seconds": 45.57,
+  "seconds": 43.27,
   "steps": [
    {
     "what": "the archive has captures",
@@ -572,27 +566,27 @@
    },
    {
     "what": "newest captures",
-    "value": "20260714072704, 20260722162035, 20260725072943",
+    "value": "20260206124734, 20260524171405, 20260702085650",
     "ok": null
    },
    {
     "what": "a snapshot came back",
-    "value": "136501 bytes",
+    "value": "210533 bytes",
     "ok": true
    },
    {
     "what": "the response carries the ORIGINAL url, not the archive's",
-    "value": "https://www.webnovel.com/",
+    "value": "https://centralnovel.com/",
     "ok": true
    },
    {
     "what": "the capture timestamp is reported",
-    "value": "20260725072943",
+    "value": "20260702085650",
     "ok": true
    },
    {
     "what": "this is a host the live stack refuses",
-    "value": "https://www.webnovel.com/ serves a challenge to the direct tier (see S05)",
+    "value": "https://centralnovel.com/ serves a challenge to the direct tier (see S05)",
     "ok": null
    }
   ],
@@ -607,46 +601,76 @@
   "proves": "The only layer that returns no error. Following a decoy link poisons the store and flags the session, and nothing in the response says so.",
   "target": "https://novelfull.net/",
   "verdict": "pass",
-  "seconds": 8.5,
+  "seconds": 16.97,
   "steps": [
+   {
+    "what": "pages read",
+    "value": "https://tigertranslations.org/, https://chrysanthemumgarden.com/, https://novelfull.com/, https://novelfull.net/, https://dummynovels.com/, https://lightnovelfr.com/, https://freewebnovel.com/, https://ckandawrites.online/, https://www.mangaread.org/, https://mostnovel.com/",
+    "ok": null
+   },
+   {
+    "what": "https://tigertranslations.org/",
+    "value": "35 followable, 0 rejected",
+    "ok": null
+   },
+   {
+    "what": "https://chrysanthemumgarden.com/",
+    "value": "90 followable, 0 rejected",
+    "ok": null
+   },
+   {
+    "what": "https://novelfull.com/",
+    "value": "112 followable, 0 rejected",
+    "ok": null
+   },
    {
     "what": "https://novelfull.net/",
     "value": "139 followable, 0 rejected",
     "ok": null
    },
    {
-    "what": "https://chrysanthemumgarden.com/",
-    "value": "85 followable, 0 rejected",
+    "what": "https://dummynovels.com/",
+    "value": "35 followable, 0 rejected",
+    "ok": null
+   },
+   {
+    "what": "https://lightnovelfr.com/",
+    "value": "116 followable, 0 rejected",
     "ok": null
    },
    {
     "what": "https://freewebnovel.com/",
-    "value": "119 followable, 1 rejected",
+    "value": "118 followable, 1 rejected",
     "ok": null
    },
    {
-    "what": "https://toonily.com/",
-    "value": "91 followable, 2 rejected",
+    "what": "https://ckandawrites.online/",
+    "value": "181 followable, 0 rejected",
     "ok": null
    },
    {
     "what": "https://www.mangaread.org/",
-    "value": "204 followable, 1 rejected",
+    "value": "198 followable, 1 rejected",
+    "ok": null
+   },
+   {
+    "what": "https://mostnovel.com/",
+    "value": "63 followable, 6 rejected",
     "ok": null
    },
    {
     "what": "real links survive across every page",
-    "value": "{'kept': 638, 'rejected': 4}",
+    "value": "{'kept': 1087, 'rejected': 8}",
     "ok": true
    },
    {
     "what": "genuine decoy markers were found and dropped",
-    "value": "{'inside an element hidden by inline style': 1, 'rel=nofollow': 3}",
+    "value": "{'inside an element hidden by inline style': 1, 'rel=nofollow': 7}",
     "ok": true
    },
    {
     "what": "rejection reasons seen on real pages",
-    "value": "{'inside an element hidden by inline style': 1, 'rel=nofollow': 3}",
+    "value": "{'inside an element hidden by inline style': 1, 'rel=nofollow': 7}",
     "ok": null
    },
    {
@@ -708,9 +732,9 @@
    "L8"
   ],
   "proves": "A process that forgets cannot accumulate, and the behavioural layer reads exactly what accumulates. The binding layer is the most valuable thing to keep.",
-  "target": "https://www.webnovel.com/",
+  "target": "https://centralnovel.com/",
   "verdict": "pass",
-  "seconds": 0.81,
+  "seconds": 0.42,
   "steps": [
    {
     "what": "first run concluded",
@@ -754,7 +778,7 @@
   "proves": "Separate state would present as two visitors who contradict each other, arriving in bursts, one of them always cold.",
   "target": "https://httpbingo.org",
   "verdict": "pass",
-  "seconds": 1.44,
+  "seconds": 1.52,
   "steps": [
    {
     "what": "the second scraper sees the first's history",
@@ -788,16 +812,16 @@
   "proves": "The one layer with no bypass. Deployed fail-open today, so a valid signature is a positive identification that skips the challenge machinery entirely.",
   "target": "https://httpbingo.org",
   "verdict": "pass",
-  "seconds": 0.75,
+  "seconds": 0.74,
   "steps": [
    {
     "what": "the server received Signature-Input",
-    "value": "sig1=(\"signature-agent\" \"@authority\");created=1785329511;expires=1785329811;keyid=\"qtbJKmcKO21vliYTryabqJvErFMtn0DYn9vPXT66Hdg\";alg=\"ed25519\";tag=\"web-bot-auth\"",
+    "value": "sig1=(\"signature-agent\" \"@authority\");created=1785351281;expires=1785351581;keyid=\"yHjaAJTRFyisOAo6K4khacH2-oB3bMa7oFUM7_i5Zio\";alg=\"ed25519\";tag=\"web-bot-auth\"",
     "ok": true
    },
    {
     "what": "the server received Signature",
-    "value": "sig1=:9UqQxPWhXflJWSFqbbCxlnUgrY0+gBYBu+3pjtPAKdBYvibR1J49xGW8xXwhFyrmX15pbJ7YGW",
+    "value": "sig1=:OOAHJJ2IjeU5x6O/IoYwUygWwCFs99sLGNiye49Sax+HOalZ/faEpkREm5rQe/ovL8+CrFL+4m",
     "ok": true
    },
    {
@@ -827,7 +851,7 @@
    },
    {
     "what": "directory to publish",
-    "value": "/.well-known/http-message-signatures-directory -> kid qtbJKmcKO21vliYTryabqJvErFMtn0DYn9vPXT66Hdg",
+    "value": "/.well-known/http-message-signatures-directory -> kid yHjaAJTRFyisOAo6K4khacH2-oB3bMa7oFUM7_i5Zio",
     "ok": null
    }
   ],
@@ -841,9 +865,9 @@
    "L14"
   ],
   "proves": "The planner walks up only as far as required, and the archive rescues a host the live stack refuses.",
-  "target": "https://www.webnovel.com/",
+  "target": "https://centralnovel.com/",
   "verdict": "pass",
-  "seconds": 31.5,
+  "seconds": 30.47,
   "steps": [
    {
     "what": "configured ladder",
@@ -852,7 +876,7 @@
    },
    {
     "what": "the challenged host was retrieved",
-    "value": "HTTP 200, 136501 bytes",
+    "value": "HTTP 200, 210533 bytes",
     "ok": true
    },
    {
@@ -862,7 +886,7 @@
    },
    {
     "what": "explain()",
-    "value": "webnovel.com binding layer : nothing has blocked yet tier : archive pacing : 1.2s mean interval requests : 1 ok / 0 failed clearance : none ladder : archive(0) direct(10) exits : direct",
+    "value": "centralnovel.com binding layer : nothing has blocked yet tier : archive pacing : 1.2s mean interval requests : 1 ok / 0 failed clearance : none ladder : archive(0) direct(10) exits : direct",
     "ok": null
    }
   ],
@@ -877,7 +901,7 @@
   "proves": "The site's answer about a path says nothing about the client. Attributing it to a layer would retire a healthy address over a typo in a URL.",
   "target": "https://novelfull.net/",
   "verdict": "pass",
-  "seconds": 1.04,
+  "seconds": 1.57,
   "steps": [
    {
     "what": "a 4xx came back as a value",
@@ -907,56 +931,56 @@
   "proves": "The population-level result: what 501 real hosts do today, and what the transport profile is worth measured across all of them rather than anecdotally.",
   "target": "501 hosts from lncrawl's source index",
   "verdict": "pass",
-  "seconds": 0.01,
+  "seconds": 0.0,
   "steps": [
    {
     "what": "hosts probed",
-    "value": "501",
+    "value": "330",
     "ok": null
    },
    {
     "what": "reachable",
-    "value": "370",
+    "value": "291",
     "ok": null
    },
    {
     "what": "Cloudflare-fronted",
-    "value": "176",
+    "value": "157",
     "ok": null
    },
    {
     "what": "layers seen by a plain client",
-    "value": "{'L1 IP reputation': 1, 'L12 Super Bot Fight Mode': 16, 'L15 Operator edge code': 7, 'L19 Identity-provider gate': 1, 'L8 Per-zone behavioural model': 23, 'L9 Managed JavaScript challenge': 82}",
+    "value": "{'L12 Super Bot Fight Mode': 20, 'L15 Operator edge code': 5, 'L6 Browser and JavaScript fingerprint': 10, 'L8 Per-zone behavioural model': 23, 'L9 Managed JavaScript challenge': 44}",
     "ok": null
    },
    {
     "what": "layers seen by the impersonated client",
-    "value": "{'L1 IP reputation': 1, 'L12 Super Bot Fight Mode': 7, 'L15 Operator edge code': 2, 'L19 Identity-provider gate': 1, 'L8 Per-zone behavioural model': 25, 'L9 Managed JavaScript challenge': 47}",
+    "value": "{'L10 Turnstile': 1, 'L12 Super Bot Fight Mode': 7, 'L6 Browser and JavaScript fingerprint': 10, 'L8 Per-zone behavioural model': 22, 'L9 Managed JavaScript challenge': 28}",
     "ok": null
    },
    {
     "what": "impersonation converts refusals into content on real hosts",
-    "value": "55 hosts",
+    "value": "35 hosts",
     "ok": true
    },
    {
     "what": "and reduces the number of hosts that challenge at all",
-    "value": "82 -> 47 challenged hosts",
+    "value": "44 -> 29 challenged hosts",
     "ok": true
    },
    {
     "what": "at least four distinct layers were exercised by real traffic",
-    "value": "L1 IP reputation, L12 Super Bot Fight Mode, L15 Operator edge code, L19 Identity-provider gate, L8 Per-zone behavioural model, L9 Managed JavaScript challenge",
+    "value": "L10 Turnstile, L12 Super Bot Fight Mode, L6 Browser and JavaScript fingerprint, L8 Per-zone behavioural model, L9 Managed JavaScript challenge",
     "ok": true
    },
    {
-    "what": "reputation blocks (L1) observed: 1 of 501",
-    "value": "https://www.readwn.com/",
+    "what": "reputation blocks (L1) observed: 0 of 330",
+    "value": "none",
     "ok": null
    },
    {
     "what": "the reputation layer is rare here, so a browser buys more than a proxy would",
-    "value": "1 hosts",
+    "value": "0 hosts",
     "ok": true
    }
   ],
@@ -1009,46 +1033,16 @@
   ],
   "proves": "The naturally-occurring case: this host bans the machine's whole ASN, so no client change of any kind can help. With no alternative address the stop is immediate rather than after spending the rotation budget on the same address.",
   "target": "https://www.readwn.com/",
-  "verdict": "pass",
-  "seconds": 2.21,
+  "verdict": "inconclusive",
+  "seconds": 2.23,
   "steps": [
    {
-    "what": "diagnosed as the reputation layer",
-    "value": "rotate (L1 IP reputation): Cloudflare error 1005",
-    "ok": true
-   },
-   {
-    "what": "the remedy is a different address",
-    "value": "",
-    "ok": true
-   },
-   {
-    "what": "the whole ASN is banned, so no client change helps",
-    "value": "Cloudflare error 1005",
+    "what": "observed",
+    "value": "accept",
     "ok": null
-   },
-   {
-    "what": "the pool reports nothing to rotate to",
-    "value": "",
-    "ok": true
-   },
-   {
-    "what": "stopped at the reputation layer",
-    "value": "L1 IP reputation",
-    "ok": true
-   },
-   {
-    "what": "without spending the rotation budget on the same address",
-    "value": "Cloudflare error 1005 and there is no other address configured \u2014 rotating would land on the one that was just refused. Add a residential or mobile exit [stop: Cloudflare error 1005 and there is no other address configured \u2014 rotating would land on the one that was just refused. Add a residential or mobile exit]",
-    "ok": true
-   },
-   {
-    "what": "a pool endpoint does report alternatives",
-    "value": "",
-    "ok": true
    }
   ],
-  "error": ""
+  "error": "the host is not banning this network right now: accept"
  },
  {
   "id": "S29",
@@ -1059,7 +1053,7 @@
   "proves": "A failure on our side of the proxy must not become a detection story. The SOCKS5 handshake has no status code, so this arrives as a bare transport error \u2014 and attributing it to layer 1 caused a rotation, a false 'blocked' report against a healthy exit, and a persisted verdict that the site refuses our address.",
   "target": "tor-pool with a deliberately wrong token",
   "verdict": "pass",
-  "seconds": 0.01,
+  "seconds": 0.02,
   "steps": [
    {
     "what": "nothing is attributed to a layer",
@@ -1083,7 +1077,7 @@
    },
    {
     "what": "no pool instance was reported as failing",
-    "value": "{0: 0, 1: 4, 2: 0, 3: 0, 4: 6} -> {0: 0, 1: 4, 2: 0, 3: 0, 4: 6}",
+    "value": "{0: 0, 1: 0, 2: 0, 3: 0, 4: 0} -> {0: 0, 1: 0, 2: 0, 3: 0, 4: 0}",
     "ok": true
    }
   ],

@@ -219,6 +219,13 @@ class _PoolHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(payload)
 
+    def do_DELETE(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
+        type(self).calls.append((f"DELETE {self.path}", {}))
+        type(self).auth.append(self.headers.get("authorization") or "")
+        self.send_response(204)
+        self.send_header("content-length", "0")
+        self.end_headers()
+
     def log_message(self, format: str, *args) -> None:  # noqa: A002 - matches the base signature
         """Silence the default stderr logging."""
 
@@ -240,6 +247,46 @@ def pool_api():
 
 def tor_pool(api_url: str, **kwargs) -> ExitPool:
     return ExitPool([TorPoolSpec(api_url=api_url, token=TOKEN, **kwargs)])
+
+
+class TestReleasingASession:
+    """Found live: nothing ever told the pool a session was finished.
+
+    Each lease mints a fresh key, and an unreleased session holds its slot until the
+    pool's SESSION_TTL — so a process building several scrapers in a row walked the
+    pool out of capacity. The symptom is the misleading part: the next lease cannot
+    connect, a transport failure through a proxy is evidence about the exit, and the
+    model then reports a reputation block on a destination that never saw the request.
+    """
+
+    def test_releasing_tells_the_pool(self, pool_api):
+        api_url, handler = pool_api
+        pool = tor_pool(api_url)
+        lease = pool.lease("example.com")
+        pool.release("example.com")
+        assert (f"DELETE /api/sessions/{lease.session_key}", {}) in handler.calls
+
+    def test_release_all_covers_every_origin_held(self, pool_api):
+        api_url, handler = pool_api
+        pool = tor_pool(api_url)
+        keys = [pool.lease(f"site{n}.test").session_key for n in range(3)]
+        pool.release_all()
+        dropped = {path for path, _ in handler.calls if path.startswith("DELETE")}
+        assert dropped == {f"DELETE /api/sessions/{key}" for key in keys}
+
+    def test_a_pool_that_is_down_does_not_break_closing(self, pool_api):
+        # Best-effort, like reporting a failure: releasing runs from close(), and an
+        # unreachable pool must not turn a finished scrape into an exception.
+        pool = ExitPool([TorPoolSpec(api_url="http://127.0.0.1:1", token=TOKEN)])
+        pool.lease("example.com")
+        pool.release_all()
+
+    def test_a_plain_proxy_has_nothing_to_release(self, pool_api):
+        api_url, handler = pool_api
+        pool = ExitPool([ExitSpec(url="http://user:pw@proxy.test:8000", kind=ExitKind.DATACENTER)])
+        pool.lease("example.com")
+        pool.release_all()
+        assert not [path for path, _ in handler.calls if path.startswith("DELETE")]
 
 
 class TestTorPool:

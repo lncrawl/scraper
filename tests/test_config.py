@@ -34,11 +34,34 @@ def test_the_defaults_are_a_working_configuration():
     config = ScraperConfig()
     # Impersonation is the baseline rather than an opt-in, because an ordinary client
     # fails the whole transport group in the first round trip.
-    assert config.impersonate == "chrome"
+    assert config.profile() == "firefox"
     # Remembering is on, because the layer it exists for cannot be satisfied by a
     # process that forgets everything on exit.
     assert config.remember
     assert config.guard_topic
+
+
+class TestWhichProfileIsUsed:
+    """Firefox by default, chrome when a browser will earn the clearance.
+
+    The default was chrome and is measured: over a random 150-host sample, firefox
+    took four hosts chrome could not and lost none.
+    """
+
+    def test_firefox_by_default(self):
+        assert ScraperConfig().profile() == "firefox"
+
+    def test_chrome_when_a_solver_is_configured(self):
+        # The bundled solver drives Chrome, so it earns a clearance under a Chrome
+        # User-Agent. Replaying that over a Firefox handshake contradicts the
+        # User-Agent/TLS pair the clearance is bound to.
+        solver = CallableSolver(lambda *a, **k: SolveResult(cookies={}, user_agent="x"))
+        assert ScraperConfig(browser=solver).profile() == "chrome"
+
+    def test_an_explicit_choice_is_never_second_guessed(self):
+        solver = CallableSolver(lambda *a, **k: SolveResult(cookies={}, user_agent="x"))
+        assert ScraperConfig(impersonate="safari").profile() == "safari"
+        assert ScraperConfig(impersonate="safari", browser=solver).profile() == "safari"
 
 
 def test_only_configured_capabilities_are_offered():

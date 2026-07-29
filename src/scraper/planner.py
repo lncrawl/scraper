@@ -79,6 +79,7 @@ class Move(Enum):
     ACCUMULATE = "accumulate"
     ROTATE = "rotate"
     ESCALATE = "escalate"
+    FOLLOW = "follow"
     STOP = "stop"
 
 
@@ -205,6 +206,18 @@ class Planner:
             return Decision(Move.PROCEED)
 
         layer = diagnosis.layer
+        if diagnosis.action is Action.FOLLOW:
+            # Ahead of the attempt ceiling and of every layer rule, because this is
+            # not a detection event to be answered — the destination is already in
+            # hand and the site is simply expressing a redirect in JavaScript. Giving
+            # it a layer would put an escalation to a browser in front of a hop the
+            # current tier can make for free.
+            return Decision(
+                Move.FOLLOW,
+                tier=context.tier,
+                layer=layer,
+                reason=diagnosis.detail,
+            )
         if diagnosis.action is Action.REFUSE:
             return Decision(Move.STOP, layer=layer, reason=diagnosis.detail or "no bypass exists")
         if layer is not None and is_impassable(layer):

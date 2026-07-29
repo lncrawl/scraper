@@ -22,6 +22,7 @@ import requests  # noqa: E402
 import urllib3  # noqa: E402
 
 from scraper.diagnosis import diagnose  # noqa: E402
+from scraper.pacing import Trail  # noqa: E402
 from scraper.transport import ImpersonateTransport  # noqa: E402
 
 urllib3.disable_warnings()
@@ -48,13 +49,19 @@ def classify(headers: Dict[str, str]) -> str:
 
 def one(client: Any, url: str, *, plain: bool) -> Dict[str, Any]:
     started = time.monotonic()
+    # The same first-contact headers a `Scraper` sends. Without them this probe
+    # measures a bare transport, and its layer labels drift pessimistic against what
+    # the library actually does — which is worse than useless, because scenarios pick
+    # their targets from here. Three scenarios chose hosts as "challenged" that the
+    # real pipeline retrieves, and failed for it.
+    nav = Trail().headers(url)
     try:
         if plain:
             response = client.request(
-                "GET", url, timeout=TIMEOUT, allow_redirects=True, verify=False
+                "GET", url, timeout=TIMEOUT, allow_redirects=True, verify=False, headers=nav
             )
         else:
-            response = client.send("GET", url, timeout=TIMEOUT, verify=False)
+            response = client.send("GET", url, timeout=TIMEOUT, verify=False, headers=nav)
         body = (response.content or b"")[:PEEK].decode(response.encoding or "utf-8", "ignore")
         headers = dict(response.headers)
         verdict = diagnose(

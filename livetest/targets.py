@@ -24,6 +24,25 @@ HERE = pathlib.Path(__file__).parent
 DEFAULT_INDEX = HERE.parents[1] / "lncrawl" / "sources" / "_index.json"
 
 
+def host_of(url: str) -> str:
+    return str(url).split("//")[-1].split("/")[0].lower()
+
+
+def rejected_hosts(index: pathlib.Path) -> Dict[str, str]:
+    """Hosts lncrawl has disabled, as host -> reason.
+
+    `sources/_rejected.json` is lncrawl's own record of sites that are gone — expired
+    domains, dead projects, sites that stopped carrying novels. They must not be in
+    the corpus: a host that cannot answer is not evidence about a client, and it
+    drags every arm's rate toward whatever share of the list is dead.
+    """
+    path = index.parent / "_rejected.json"
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text())
+    return {host_of(url): str(reason) for url, reason in data.items()}
+
+
 def main() -> None:
     index = pathlib.Path(os.environ.get("LNCRAWL_SOURCES") or DEFAULT_INDEX)
     if not index.exists():
@@ -36,17 +55,22 @@ def main() -> None:
 
     data = json.loads(index.read_text())
     crawlers = data.get("crawlers") or {}
+    rejected = rejected_hosts(index)
 
     # One entry per host. A crawler often lists several URLs for the same site, and
     # probing the same host repeatedly would both skew the counts and be rude.
     seen: set = set()
+    skipped = 0
     out: List[Dict[str, Any]] = []
     for crawler in crawlers.values():
         for url in crawler.get("base_urls") or []:
-            host = str(url).split("//")[-1].split("/")[0]
+            host = host_of(url)
             if host in seen:
                 continue
             seen.add(host)
+            if host in rejected:
+                skipped += 1
+                continue
             out.append(
                 {
                     "url": str(url),
@@ -57,6 +81,7 @@ def main() -> None:
 
     (HERE / "targets.json").write_text(json.dumps(out, indent=1))
     print(f"{len(out)} unique hosts from {len(crawlers)} crawlers -> livetest/targets.json")
+    print(f"{skipped} skipped as rejected by lncrawl ({len(rejected)} on its list)")
 
 
 if __name__ == "__main__":

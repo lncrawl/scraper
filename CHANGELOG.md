@@ -4,7 +4,7 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - Unreleased
+## [1.0.0] - 2026-07-29
 
 A complete rewrite. There are no compatibility shims: almost every import changes.
 [docs/migration.md](docs/migration.md) is the mapping, and
@@ -53,6 +53,56 @@ Every behaviour below follows from those two statements.
   failure is ours rather than the site's. Code that dereferences `exc.layer` or
   `exc.layer_info` must handle that; a type checker will point at every such place.
 - New extras: `browser` (nodriver) and `botauth` (cryptography). `impersonate` is gone.
+- **`ScraperConfig.impersonate` defaults to `""`, which resolves to `firefox`** — or to
+  `chrome` when a browser solver is configured, because the bundled solver drives
+  Chrome and a clearance is bound to a User-Agent *and* a TLS fingerprint together.
+  Read it through the new `ScraperConfig.profile()`; the field is no longer the answer
+  on its own.
+
+### Measured against 0.2.6
+
+The rewrite was A/B'd against 0.2.6 on 150 hosts from lightnovel-crawler's source
+index, three arms per host, `curl_cffi` pinned to the same version in both, one
+classifier for every arm, arm order shuffled per host. `livetest/compare.py` runs it.
+
+The first run said the rewrite had made per-request retrieval slightly *worse*: 0.2.6
+took 56 of 150 hosts with impersonation off, 55 with it on, and 1.0 took 51 — losing
+five hosts head to head and winning one. Everything in this section is what closed
+that gap, and each item is here because it was measured, not reasoned about:
+
+- **A first request now carries a `Referer` and matching `Sec-Fetch-Site`.** No
+  browser does this — a typed address has no referrer, which is exactly why the
+  rewrite sent none. Over 85 hosts that refuse an impersonated client it recovered
+  three and cost zero, turning a 403-with-a-challenge into a full page. The coherent
+  header *set* matters more than the header: a synthesised referrer alongside
+  `Sec-Fetch-Site: none` is a contradiction, and one host only yielded once both
+  agreed.
+- **A JavaScript-only redirect is followed instead of being mistaken for content.**
+  A family of bot checks answers with a few hundred bytes of
+  `window.location.replace('…?token=…')` — a `200`, no challenge marker, no Cloudflare
+  header. Both releases handed that back as a successful retrieval, so a scraper
+  reported success and collected an empty document. It was 19% of the corpus. No
+  browser is needed because the destination is *emitted* in the HTML; running the
+  script would produce the URL already sitting there in plain text. New
+  `Action.FOLLOW`, `Diagnosis.location` and `diagnosis.js_redirect()`.
+- **The default impersonation profile is Firefox.** Over a random 150-host sample:
+  firefox 85, safari 84, edge 82, chrome 81 — and against chrome, firefox won four
+  hosts and lost none. Chrome being the most common browser is a reason to expect it
+  to be unremarkable, not evidence that it is the least remarkable.
+- **Pool sessions are released when a scraper closes.** `ExitPool.release()` existed,
+  was never called, and only dropped the local lease. Every lease minted a fresh key
+  that the pool then held until `SESSION_TTL`, so a process building several scrapers
+  in a row walked the pool out of capacity — and the symptom was the misleading part:
+  the next lease could not connect, a transport failure through a proxy is evidence
+  about the exit, and the model reported a reputation block on a destination that
+  never saw the request. Needs tor-pool 0.2.1, which puts
+  `DELETE /api/sessions/{key}` on the `proxy` scope.
+
+After those, on the same corpus with the archive tier **off** — so nothing is borrowed
+that 0.2.6 cannot do — 1.0 takes 82 of 150 against 0.2.6's best of 76, and 30.8% of the
+hard hosts against 25.6%. Head to head it wins nine and loses none (sign test
+p = 0.004). Hosts serving an unrecognised stub fell from 28 to 6. With the archive tier
+on, total reach was 73% against 39%.
 
 ### Added
 
@@ -121,9 +171,10 @@ Every behaviour below follows from those two statements.
 
 ### Fixed before release, found by live traffic
 
-Eleven of the fifteen defects fixed before release were found this way. These are not
-regressions from 0.2.x — they are defects in the new code that a
-stubbed transport cannot see. Each has a regression test.
+Most of what was fixed before release was found this way, and none of it was visible to
+a stubbed transport. These are not regressions from 0.2.x — they are defects in the new
+code, and two of them made a whole feature silently useless while every unit test
+passed. Each has a regression test whose docstring says it was found live.
 
 - **Cloudflare's injected JavaScript-Detections script was read as a challenge.**
   The script is served from `/cdn-cgi/challenge-platform/scripts/jsd/…` on ordinary

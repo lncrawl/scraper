@@ -225,11 +225,32 @@ class Trail:
                 self._last[host] = url
 
     def referer(self, url: str) -> str:
-        """The page a navigation to *url* plausibly came from, or ``""``."""
+        """The page a navigation to *url* plausibly came from.
+
+        Falls back to the origin's own front page when nothing is recorded yet, which
+        is a deliberate departure from what a browser does. A browser opening a typed
+        address sends no referrer at all, and this library sent none for exactly that
+        reason — but the reason turned out to be worth less than the header.
+
+        Measured across 85 hosts that refuse an impersonated client: supplying this
+        recovered three and cost none, and the three are 403-with-a-challenge before
+        the header and a full page after it. The whole `Referer`-less position was
+        defended on emulation fidelity, and fidelity lost. Whatever these origins are
+        checking, a first-contact referrer satisfies it.
+
+        The value is the origin's front page. For a deep page that is the page a
+        visitor would have come through; for the front page itself it is the address
+        again, which is what a reload sends — a real shape, and the one the three
+        recovered hosts were measured with, since all three are front pages.
+        """
         host = extract_host(url)
         with self._lock:
             previous = self._last.get(host, "")
-        return "" if previous == url else previous
+        if previous and previous != url:
+            return previous
+        # No host, nothing to synthesise from: `extract_base` would produce
+        # `http:///`, and sending that is worse than sending nothing.
+        return extract_base(url) if host else ""
 
     def headers(self, url: str, *, navigation: bool = True) -> Dict[str, str]:
         """Referrer and fetch-metadata headers for a request to *url*.

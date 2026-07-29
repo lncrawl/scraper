@@ -1,0 +1,4877 @@
+{
+ "profiles": [
+  "chrome",
+  "firefox",
+  "safari",
+  "edge"
+ ],
+ "seed": 20260729,
+ "hosts": [
+  {
+   "url": "https://wtr-lab.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 49614,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 49614,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 49614,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 49614,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://author.today/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 219277,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 220947,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 219277,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 219277,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://arnovel.me/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 48401,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 472,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 472,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 472,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.novelpassion.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 12314,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 12314,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 12314,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 12314,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.69shu.pro/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 2880,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 2880,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 2880,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 2880,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://kissmanga.in/",
+   "profiles": {
+    "chrome": {
+     "status": 403,
+     "bytes": 5808,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "firefox": {
+     "status": 403,
+     "bytes": 5594,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5830,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 5616,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://novelmania.com.br/",
+   "profiles": {
+    "chrome": {
+     "status": 403,
+     "bytes": 5847,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5847,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 5847,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    },
+    "firefox": {
+     "status": 403,
+     "bytes": 5847,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://novelhi.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 49139,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 49139,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 49139,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 49139,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://wordrain69.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 159637,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 159637,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 159637,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 159637,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://steambunlightnovel.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 167215,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 167260,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 167213,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 167223,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://wuxiaworld.name/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 17056,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 17019,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 17056,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 17076,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://novelgo.id/",
+   "profiles": {
+    "chrome": {
+     "status": 403,
+     "bytes": 5806,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "firefox": {
+     "status": 403,
+     "bytes": 5571,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 5614,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5827,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.freelightnovel.com/",
+   "profiles": {
+    "edge": {
+     "status": 522,
+     "bytes": 7281,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "firefox": {
+     "status": 522,
+     "bytes": 7281,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "safari": {
+     "status": 522,
+     "bytes": 7281,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "chrome": {
+     "status": 522,
+     "bytes": 7281,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://nyxtranslation.home.blog/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 184799,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 184672,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 184672,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 184672,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://allnovelfull.net/",
+   "profiles": {
+    "chrome": {
+     "status": 403,
+     "bytes": 5805,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 5613,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5805,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "firefox": {
+     "status": 403,
+     "bytes": 5570,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://hui3r.wordpress.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 167583,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 167210,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 167210,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 167210,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://readlightnovel.me/",
+   "profiles": {
+    "edge": {
+     "status": 522,
+     "bytes": 7255,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "firefox": {
+     "status": 522,
+     "bytes": 7255,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "chrome": {
+     "status": 522,
+     "bytes": 7255,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "safari": {
+     "status": 522,
+     "bytes": 7255,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://novelrare.com/",
+   "profiles": {
+    "chrome": {
+     "status": 526,
+     "bytes": 7247,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "firefox": {
+     "status": 526,
+     "bytes": 7247,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "edge": {
+     "status": 526,
+     "bytes": 7247,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "safari": {
+     "status": 526,
+     "bytes": 7247,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://tigertranslations.org/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 261478,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 261478,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 261478,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 261478,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://lnreader.org/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 2886,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 2886,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 2886,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 2886,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.69shuba.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 34206,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 34206,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 34206,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 34206,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://mltnovels.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 256251,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 475,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 475,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 475,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://ixdzs8.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 58752,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 58752,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 58752,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 58752,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://engnovel.com/",
+   "profiles": {
+    "firefox": {
+     "verdict": "error",
+     "content": false,
+     "error": "CertificateVerifyError"
+    },
+    "safari": {
+     "verdict": "error",
+     "content": false,
+     "error": "CertificateVerifyError"
+    },
+    "chrome": {
+     "verdict": "error",
+     "content": false,
+     "error": "CertificateVerifyError"
+    },
+    "edge": {
+     "verdict": "error",
+     "content": false,
+     "error": "CertificateVerifyError"
+    }
+   }
+  },
+  {
+   "url": "https://aquareader.org/",
+   "profiles": {
+    "chrome": {
+     "status": 403,
+     "bytes": 5810,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "firefox": {
+     "status": 403,
+     "bytes": 5596,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 5618,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5853,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://mysticalmerries.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 2925,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 2925,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 2925,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 2925,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://tw.27k.net/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 295612,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 295612,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 295612,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 295612,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://pianmanga.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 2892,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 2892,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 2892,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 2892,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://88tangeatdrinkread.wordpress.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 196438,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 196616,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 196616,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 196616,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://woopread.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 530579,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 530579,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 530579,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 530579,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://mangaweebs.in/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 16743,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 16686,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 16723,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 16723,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.novelmt.com/",
+   "profiles": {
+    "edge": {
+     "verdict": "error",
+     "content": false,
+     "error": "DNSError"
+    },
+    "firefox": {
+     "verdict": "error",
+     "content": false,
+     "error": "DNSError"
+    },
+    "safari": {
+     "verdict": "error",
+     "content": false,
+     "error": "DNSError"
+    },
+    "chrome": {
+     "verdict": "error",
+     "content": false,
+     "error": "DNSError"
+    }
+   }
+  },
+  {
+   "url": "https://www.wuxiaz.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 476,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 476,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 476,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 476,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://novelarrow.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 677170,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 677170,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 677186,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 677764,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://ncode.syosetu.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 300098,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 300098,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 300098,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 300098,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "http://www.mtlnovels.com/",
+   "profiles": {
+    "firefox": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "safari": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "chrome": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "edge": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.mtlreader.com/",
+   "profiles": {
+    "edge": {
+     "verdict": "error",
+     "content": false,
+     "error": "SSLError"
+    },
+    "firefox": {
+     "verdict": "error",
+     "content": false,
+     "error": "SSLError"
+    },
+    "chrome": {
+     "verdict": "error",
+     "content": false,
+     "error": "SSLError"
+    },
+    "safari": {
+     "verdict": "error",
+     "content": false,
+     "error": "SSLError"
+    }
+   }
+  },
+  {
+   "url": "https://foxaholic.com/",
+   "profiles": {
+    "firefox": {
+     "status": 403,
+     "bytes": 5595,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5831,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 5617,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 5809,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.pandamanga.xyz/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 2895,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 2895,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 2895,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 2895,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://readlightnovel.today/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 2931,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 2931,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 2931,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 2931,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://novelonlinefree.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 2925,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 2925,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 2925,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 2925,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://tl.rulate.ru/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 2656161,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 2653422,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 2651334,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 2674684,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://bednovel.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 133915,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 133915,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 133915,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 134355,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://meionovels.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 123836,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 123836,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 123836,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 123836,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://indowebnovel.id/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 58730,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 58525,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 58488,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 58249,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.topmanhua.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 4567,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 4567,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 4567,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 4567,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://novelzec.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 671433,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 671433,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 671433,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 671433,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://justatranslatortranslations.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 116325,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 116430,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 116430,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 116430,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://mangabuddy.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 20656,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 20656,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 20656,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 20656,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://novel27.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 473,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 473,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 473,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 473,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://18.foxaholic.com/",
+   "profiles": {
+    "safari": {
+     "status": 403,
+     "bytes": 5641,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5855,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "firefox": {
+     "status": 403,
+     "bytes": 5598,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 5812,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://domentranslations.wordpress.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 238769,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 238841,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 238841,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 238841,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://readwebnovels.net/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 479,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 479,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 479,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 479,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.lightnovelreader.me/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 2937,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 2937,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 2937,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 2937,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.readlightnovel.today/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 2943,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 2943,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 2943,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 2943,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://daotranslate.com/",
+   "profiles": {
+    "firefox": {
+     "status": 403,
+     "bytes": 5598,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5834,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 5620,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 5791,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://mydramanovel.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 653176,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 653176,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 653176,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 653176,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://f-w-o.com/",
+   "profiles": {
+    "firefox": {
+     "status": 403,
+     "bytes": 5685,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 5728,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5941,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 5899,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.fictionpress.com/",
+   "profiles": {
+    "edge": {
+     "status": 403,
+     "bytes": 5973,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 19117,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 5931,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 19117,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://darktranslation.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 102026,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 102026,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 102024,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 102024,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://noveldeglace.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 248713,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 248713,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 248713,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 248713,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.webtoons.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 244683,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 244685,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 244679,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 244679,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "http://zhi-end.blogspot.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 114322,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 114322,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 114322,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 114322,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://novelfull.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 52129,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 52129,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 52129,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 52129,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://miraslation.net/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 69603,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 69603,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 69603,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 69603,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.novelmultiverse.com/",
+   "profiles": {
+    "safari": {
+     "verdict": "error",
+     "content": false,
+     "error": "DNSError"
+    },
+    "edge": {
+     "verdict": "error",
+     "content": false,
+     "error": "DNSError"
+    },
+    "firefox": {
+     "verdict": "error",
+     "content": false,
+     "error": "DNSError"
+    },
+    "chrome": {
+     "verdict": "error",
+     "content": false,
+     "error": "DNSError"
+    }
+   }
+  },
+  {
+   "url": "https://novelmao.com/",
+   "profiles": {
+    "chrome": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "edge": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "firefox": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "safari": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://wordexcerpt.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 4357,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 4357,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 4357,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 4357,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://novelfull.net/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 102352,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 102352,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 102352,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 102352,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.fanfiction.net/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 21936,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5971,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 5921,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 21936,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://novelbin.net/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 474,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 474,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 474,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 474,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.tapread.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 273534,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 264396,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 275129,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 271330,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://novelasligeras.net/",
+   "profiles": {
+    "safari": {
+     "status": 403,
+     "bytes": 313699,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 313913,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 313870,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "firefox": {
+     "status": 403,
+     "bytes": 313656,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.novelhall.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 39329,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 39329,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 39329,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 39329,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "http://id.mtlnovels.com/",
+   "profiles": {
+    "firefox": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "edge": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "safari": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "chrome": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.foxaholic.com/",
+   "profiles": {
+    "safari": {
+     "status": 403,
+     "bytes": 5642,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 5813,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5856,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "firefox": {
+     "status": 403,
+     "bytes": 5599,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://booknet.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 140528,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 140636,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 140618,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 140432,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://kolnovel.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 246891,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 247158,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 246734,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 246585,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://re-library.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 277100,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 277100,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 277100,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 277100,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://allnovel.org/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 56163,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 56163,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 56163,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 56163,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://docln.net/",
+   "profiles": {
+    "firefox": {
+     "status": 403,
+     "bytes": 5677,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 5912,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5933,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 5720,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://novelgate.net/",
+   "profiles": {
+    "firefox": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "chrome": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "safari": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "edge": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://readmtl.com/",
+   "profiles": {
+    "chrome": {
+     "status": 522,
+     "bytes": 7219,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "safari": {
+     "status": 522,
+     "bytes": 7219,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "firefox": {
+     "status": 522,
+     "bytes": 7219,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "edge": {
+     "status": 522,
+     "bytes": 7219,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://renovels.org/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 963425,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 963546,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 962929,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 963179,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://centralnovel.com/",
+   "profiles": {
+    "firefox": {
+     "status": 403,
+     "bytes": 5705,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 5919,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5961,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 5748,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://wujizun.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 196714,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 196748,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 196714,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 196714,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://wbnovel.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 147469,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 147469,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 147469,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 147469,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://novelsemperor.com/",
+   "profiles": {
+    "chrome": {
+     "verdict": "error",
+     "content": false,
+     "error": "SSLError"
+    },
+    "edge": {
+     "verdict": "error",
+     "content": false,
+     "error": "SSLError"
+    },
+    "safari": {
+     "verdict": "error",
+     "content": false,
+     "error": "SSLError"
+    },
+    "firefox": {
+     "verdict": "error",
+     "content": false,
+     "error": "SSLError"
+    }
+   }
+  },
+  {
+   "url": "https://lightnovelstranslations.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 153408,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 153408,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 153408,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 153408,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://battwo.com/",
+   "profiles": {
+    "firefox": {
+     "verdict": "error",
+     "content": false,
+     "error": "Timeout"
+    },
+    "safari": {
+     "verdict": "error",
+     "content": false,
+     "error": "Timeout"
+    },
+    "edge": {
+     "verdict": "error",
+     "content": false,
+     "error": "Timeout"
+    },
+    "chrome": {
+     "verdict": "error",
+     "content": false,
+     "error": "Timeout"
+    }
+   }
+  },
+  {
+   "url": "https://www.webnovelpub.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 481,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 481,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 481,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 481,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.fanmtl.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 63592,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 63592,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 63592,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 63592,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://dto.to/",
+   "profiles": {
+    "chrome": {
+     "verdict": "error",
+     "content": false,
+     "error": "Timeout"
+    },
+    "firefox": {
+     "verdict": "error",
+     "content": false,
+     "error": "Timeout"
+    },
+    "safari": {
+     "verdict": "error",
+     "content": false,
+     "error": "Timeout"
+    },
+    "edge": {
+     "verdict": "error",
+     "content": false,
+     "error": "Timeout"
+    }
+   }
+  },
+  {
+   "url": "https://aquareader.net/",
+   "profiles": {
+    "firefox": {
+     "status": 403,
+     "bytes": 5596,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 5810,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 5618,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5832,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://secondlifetranslations.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 225002,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 225002,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 225002,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 225002,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.wuxiaspot.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 65646,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 65646,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 65646,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 65646,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://my.w.tt/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 36243,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 36243,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 36243,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 36243,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://ln.hako.vn/",
+   "profiles": {
+    "firefox": {
+     "status": 403,
+     "bytes": 5678,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 5721,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 5913,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5934,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.webfic.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 112840,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 112840,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 112840,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 112840,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://tw.m.ixdzs.com/",
+   "profiles": {
+    "firefox": {
+     "verdict": "error",
+     "content": false,
+     "error": "CertificateVerifyError"
+    },
+    "edge": {
+     "verdict": "error",
+     "content": false,
+     "error": "CertificateVerifyError"
+    },
+    "chrome": {
+     "verdict": "error",
+     "content": false,
+     "error": "CertificateVerifyError"
+    },
+    "safari": {
+     "verdict": "error",
+     "content": false,
+     "error": "CertificateVerifyError"
+    }
+   }
+  },
+  {
+   "url": "https://www.ltnovel.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 16926,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 16963,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 16983,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 16963,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://es.mtlnovels.com/",
+   "profiles": {
+    "edge": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "chrome": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "safari": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "firefox": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://ranobes.top/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 16075,
+     "layer": 10,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 16075,
+     "layer": 10,
+     "verdict": "solve",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 16075,
+     "layer": 10,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 16075,
+     "layer": 10,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.69shu.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 34206,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 34206,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 34206,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 34206,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://bonnovel.com/",
+   "profiles": {
+    "chrome": {
+     "status": 403,
+     "bytes": 8463,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    },
+    "firefox": {
+     "status": 403,
+     "bytes": 8463,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 8464,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 8464,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://mangatoon.mobi/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 53656,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 53656,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 53657,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 53657,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://noveltoon.mobi/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 144698,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 145561,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 146238,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 145305,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://shalvationtranslations.wordpress.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 130491,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 130519,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 130519,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 130519,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.readwn.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 66689,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 66689,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 66689,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 66689,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://librarynovel.com/",
+   "profiles": {
+    "edge": {
+     "status": 403,
+     "bytes": 907,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 907,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    },
+    "firefox": {
+     "status": 403,
+     "bytes": 505,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 505,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.wattpad.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 119087,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 119087,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 119087,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 119087,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.mangaweebs.in/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 16747,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 16727,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 16727,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 16690,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://trxs.cc/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 32508,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 32508,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 32508,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 32508,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://nyx-translation.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 184672,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 184672,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 184672,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 184672,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://rpgnovels.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 113932,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 113932,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 113932,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 113932,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://novelnextz.com/",
+   "profiles": {
+    "firefox": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "chrome": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "edge": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "safari": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://automtl.wordpress.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 118850,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 118856,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 118856,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 118856,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://lightnovelfr.com/",
+   "profiles": {
+    "edge": {
+     "status": 403,
+     "bytes": 6192,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 109952,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 109952,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 6192,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://freewebnovel.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 102962,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 102964,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 102964,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 102966,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://wuxiaworld.online/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 361,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 361,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 361,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 361,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://novelww.com/",
+   "profiles": {
+    "chrome": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "firefox": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "edge": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "safari": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.readlightnovel.cc/",
+   "profiles": {
+    "firefox": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "chrome": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "edge": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "safari": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.novel543.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 46662,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 46662,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 46662,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 46662,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://meionovel.id/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 123836,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 123836,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 123836,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 123836,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://mto.to/",
+   "profiles": {
+    "firefox": {
+     "status": 404,
+     "bytes": 19,
+     "layer": null,
+     "verdict": "accept",
+     "content": false
+    },
+    "safari": {
+     "status": 404,
+     "bytes": 19,
+     "layer": null,
+     "verdict": "accept",
+     "content": false
+    },
+    "edge": {
+     "status": 404,
+     "bytes": 19,
+     "layer": null,
+     "verdict": "accept",
+     "content": false
+    },
+    "chrome": {
+     "status": 404,
+     "bytes": 19,
+     "layer": null,
+     "verdict": "accept",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://whatsawhizzerwebnovels.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 118096,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 118096,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 118096,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 118096,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://novelbin.me/",
+   "profiles": {
+    "safari": {
+     "verdict": "error",
+     "content": false,
+     "error": "DNSError"
+    },
+    "chrome": {
+     "verdict": "error",
+     "content": false,
+     "error": "DNSError"
+    },
+    "firefox": {
+     "verdict": "error",
+     "content": false,
+     "error": "DNSError"
+    },
+    "edge": {
+     "verdict": "error",
+     "content": false,
+     "error": "DNSError"
+    }
+   }
+  },
+  {
+   "url": "https://truyenfull.vn/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 116998,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 116998,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 116998,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 116998,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://faqwiki.us/",
+   "profiles": {
+    "firefox": {
+     "verdict": "error",
+     "content": false,
+     "error": "Timeout"
+    },
+    "edge": {
+     "verdict": "error",
+     "content": false,
+     "error": "Timeout"
+    },
+    "chrome": {
+     "status": 520,
+     "bytes": 7317,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    },
+    "safari": {
+     "status": 525,
+     "bytes": 7023,
+     "layer": null,
+     "verdict": "retry",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://noblemtl.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 24094,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 24094,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 24094,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 24094,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.sonicmtl.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 233671,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 233671,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 233671,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 233671,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://novel-bin.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 119114,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 119114,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 119114,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 119114,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://mostnovel.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 390596,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 390596,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 390596,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 390596,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://vipnovel.com/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 123326,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 123326,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 123326,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 123326,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://inadequatetranslations.wordpress.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 115599,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 115598,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 115598,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 115598,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://novels.pl/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 4445,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 4494,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 4477,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 4478,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.isotls.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 63026,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 63007,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 63036,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 63002,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://zetrotranslation.com/",
+   "profiles": {
+    "firefox": {
+     "status": 200,
+     "bytes": 261714,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 263414,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 263155,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 260864,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.f-w-o.com/",
+   "profiles": {
+    "safari": {
+     "status": 403,
+     "bytes": 5753,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "firefox": {
+     "status": 403,
+     "bytes": 5710,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "chrome": {
+     "status": 403,
+     "bytes": 5924,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 5966,
+     "layer": 9,
+     "verdict": "solve",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "http://readlightnovel.online/",
+   "profiles": {
+    "chrome": {
+     "status": 403,
+     "bytes": 4913,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    },
+    "edge": {
+     "status": 403,
+     "bytes": 4913,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    },
+    "safari": {
+     "status": 403,
+     "bytes": 4913,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    },
+    "firefox": {
+     "status": 403,
+     "bytes": 4913,
+     "layer": 12,
+     "verdict": "escalate",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.wuxiapub.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 3193,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 478,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 478,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 478,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.fuyuneko.org/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 72254,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 72254,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 72254,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 72254,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.novelupdates.cc/",
+   "profiles": {
+    "chrome": {
+     "status": 200,
+     "bytes": 481,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 481,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 481,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 481,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.webnovelover.com/",
+   "profiles": {
+    "safari": {
+     "verdict": "error",
+     "content": false,
+     "error": "CertificateVerifyError"
+    },
+    "edge": {
+     "verdict": "error",
+     "content": false,
+     "error": "CertificateVerifyError"
+    },
+    "chrome": {
+     "verdict": "error",
+     "content": false,
+     "error": "CertificateVerifyError"
+    },
+    "firefox": {
+     "verdict": "error",
+     "content": false,
+     "error": "CertificateVerifyError"
+    }
+   }
+  },
+  {
+   "url": "https://www.miraslation.net/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 69603,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 69603,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 69603,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 69603,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://www.ddxss.cc/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 2871,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 2871,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 2871,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 2871,
+     "layer": null,
+     "verdict": "stub",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://grensia.blogspot.com/",
+   "profiles": {
+    "edge": {
+     "status": 200,
+     "bytes": 154365,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 154365,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 154365,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "safari": {
+     "status": 200,
+     "bytes": 154365,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://m.readlightnovel.cc/",
+   "profiles": {
+    "firefox": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "safari": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "chrome": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "edge": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    }
+   }
+  },
+  {
+   "url": "https://www.kitenovel.com/",
+   "profiles": {
+    "safari": {
+     "status": 200,
+     "bytes": 23844,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "chrome": {
+     "status": 200,
+     "bytes": 23844,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "firefox": {
+     "status": 200,
+     "bytes": 23844,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    },
+    "edge": {
+     "status": 200,
+     "bytes": 23844,
+     "layer": null,
+     "verdict": "content",
+     "content": true
+    }
+   }
+  },
+  {
+   "url": "https://libread.org/",
+   "profiles": {
+    "firefox": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "safari": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "edge": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    },
+    "chrome": {
+     "status": 429,
+     "bytes": 17,
+     "layer": 8,
+     "verdict": "backoff",
+     "content": false
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,1581 @@
+[
+ {
+  "url": "https://www.novelhall.com/",
+  "without": {
+   "status": 200,
+   "bytes": 39089,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 39089,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://dummynovels.com/",
+  "without": {
+   "status": 200,
+   "bytes": 186801,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 186801,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://bestoflightnovels.com/",
+  "without": {
+   "status": 200,
+   "bytes": 483,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 483,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://lightnovelfr.com/",
+  "without": {
+   "status": 403,
+   "bytes": 6192,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 200,
+   "bytes": 109952,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": true,
+  "lost": false
+ },
+ {
+  "url": "https://mangatx.com/",
+  "without": {
+   "status": 200,
+   "bytes": 20626,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 473,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.webnovel.com/",
+  "without": {
+   "status": 200,
+   "bytes": 137608,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 137608,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://m.webnovel.com/",
+  "without": {
+   "status": 200,
+   "bytes": 137608,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 137608,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://arangscans.com/",
+  "without": {
+   "error": "DNSError"
+  },
+  "with": {
+   "status": 200,
+   "bytes": 476,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": true,
+  "lost": false
+ },
+ {
+  "url": "https://centralnovel.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5919,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5940,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://pandanovel.org/",
+  "without": {
+   "status": 200,
+   "bytes": 476,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 476,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "http://boxnovel.org/",
+  "without": {
+   "status": 200,
+   "bytes": 473,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 473,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.fanfiction.net/",
+  "without": {
+   "status": 200,
+   "bytes": 21936,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 21936,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://renovels.org/",
+  "without": {
+   "status": 200,
+   "bytes": 963177,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 963466,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.chereads.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5940,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5961,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://latestnovel.net/",
+  "without": {
+   "status": 200,
+   "bytes": 16764,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 477,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "http://zhi-end.blogspot.co.id/",
+  "without": {
+   "status": 200,
+   "bytes": 114322,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 114322,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://ranobes.net/",
+  "without": {
+   "status": 200,
+   "bytes": 39609,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 200,
+   "bytes": 42065,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://ranobes.top/",
+  "without": {
+   "status": 200,
+   "bytes": 16075,
+   "action": "solve",
+   "layer": 10,
+   "content": false
+  },
+  "with": {
+   "status": 200,
+   "bytes": 16075,
+   "action": "solve",
+   "layer": 10,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.novelupdates.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5816,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5859,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://tunovelaligera.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5814,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5857,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://re-library.com/",
+  "without": {
+   "status": 200,
+   "bytes": 276729,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 276729,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.novelpub.com/",
+  "without": {
+   "status": 200,
+   "bytes": 478,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 478,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://novelgo.id/",
+  "without": {
+   "status": 403,
+   "bytes": 5806,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5827,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://dragontea.ink/",
+  "without": {
+   "status": 403,
+   "bytes": 5924,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5945,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.webnovelpub.com/",
+  "without": {
+   "status": 200,
+   "bytes": 481,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 481,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://king-manga.com/",
+  "without": {
+   "status": 200,
+   "bytes": 476,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 476,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://home.novel-gate.com/",
+  "without": {
+   "status": 200,
+   "bytes": 481,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 481,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://novelgate.net/",
+  "without": {
+   "status": 200,
+   "bytes": 475,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 475,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://global.foxaholic.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5816,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5859,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://foxaholic.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5809,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5830,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.foxaholic.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5813,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5834,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://18.foxaholic.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5812,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5855,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://novelsonline.net/",
+  "without": {
+   "status": 503,
+   "bytes": 685,
+   "action": "retry",
+   "layer": null,
+   "content": false
+  },
+  "with": {
+   "status": 503,
+   "bytes": 685,
+   "action": "retry",
+   "layer": null,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://arcanetranslations.com/",
+  "without": {
+   "status": 403,
+   "bytes": 6020,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 6063,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://f-w-o.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5920,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5941,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.f-w-o.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5924,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5945,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "http://fr.mtlnovels.com/",
+  "without": {
+   "status": 200,
+   "bytes": 477,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 477,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://es.mtlnovels.com/",
+  "without": {
+   "status": 200,
+   "bytes": 478,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 478,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "http://id.mtlnovels.com/",
+  "without": {
+   "status": 200,
+   "bytes": 477,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 477,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://novelfire.net/",
+  "without": {
+   "status": 200,
+   "bytes": 40587,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 40587,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://mangatoto.net/",
+  "without": {
+   "status": 200,
+   "bytes": 70409,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 70409,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://wto.to/",
+  "without": {
+   "error": "Timeout"
+  },
+  "with": {
+   "error": "Timeout"
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.scribblehub.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5815,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5836,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://novelww.com/",
+  "without": {
+   "status": 200,
+   "bytes": 18129,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 473,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://kissmanga.in/",
+  "without": {
+   "status": 403,
+   "bytes": 5808,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5829,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://bonnovel.com/",
+  "without": {
+   "status": 403,
+   "bytes": 8464,
+   "action": "escalate",
+   "layer": 12,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 8465,
+   "action": "escalate",
+   "layer": 12,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://syosetu.org/",
+  "without": {
+   "status": 403,
+   "bytes": 5999,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 6020,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://leafstudio.site/",
+  "without": {
+   "status": 403,
+   "bytes": 6192,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 200,
+   "bytes": 297495,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": true,
+  "lost": false
+ },
+ {
+  "url": "https://www.xnunu.com/",
+  "without": {
+   "status": 403,
+   "bytes": 2309,
+   "action": "escalate",
+   "layer": 15,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 2309,
+   "action": "escalate",
+   "layer": 15,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://daotranslate.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5812,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5833,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://libread.org/",
+  "without": {
+   "status": 200,
+   "bytes": 473,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 473,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.banxia.cc/",
+  "without": {
+   "status": 200,
+   "bytes": 36241,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 36241,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.xbanxia.com/",
+  "without": {
+   "status": 200,
+   "bytes": 36241,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 36241,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://librarynovel.com/",
+  "without": {
+   "status": 403,
+   "bytes": 907,
+   "action": "escalate",
+   "layer": 12,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 907,
+   "action": "escalate",
+   "layer": 12,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://tocqidianunderground.blogspot.com/",
+  "without": {
+   "status": 200,
+   "bytes": 34828,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 34828,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://aquareader.org/",
+  "without": {
+   "status": 403,
+   "bytes": 5810,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5831,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://aquareader.net/",
+  "without": {
+   "status": 403,
+   "bytes": 5810,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5831,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://m.readlightnovel.cc/",
+  "without": {
+   "status": 200,
+   "bytes": 481,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 481,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://supernovel.net/",
+  "without": {
+   "status": 200,
+   "bytes": 476,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 476,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://allnovelfull.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5805,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5826,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://allnovelfull.net/",
+  "without": {
+   "status": 403,
+   "bytes": 5784,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5826,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://novgo.net/",
+  "without": {
+   "status": 403,
+   "bytes": 5805,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5826,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.foxteller.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5920,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5963,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.blackbox-tl.com/",
+  "without": {
+   "status": 403,
+   "bytes": 6192,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 200,
+   "bytes": 60240,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": true,
+  "lost": false
+ },
+ {
+  "url": "https://novelbin.net/",
+  "without": {
+   "status": 200,
+   "bytes": 474,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 474,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://novelnext.com/",
+  "without": {
+   "status": 403,
+   "bytes": 6005,
+   "action": "escalate",
+   "layer": 12,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 6005,
+   "action": "escalate",
+   "layer": 12,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://mangarosie.love/",
+  "without": {
+   "error": "CertificateVerifyError"
+  },
+  "with": {
+   "error": "CertificateVerifyError"
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://novelhard.com/",
+  "without": {
+   "status": 200,
+   "bytes": 475,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 475,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://pandanovel.co/",
+  "without": {
+   "status": 200,
+   "bytes": 21077,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 21077,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://skydemonorder.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5920,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5963,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://jpmtl.com/",
+  "without": {
+   "error": "CertificateVerifyError"
+  },
+  "with": {
+   "error": "CertificateVerifyError"
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://katreadingcafe.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5921,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5942,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://novelasligeras.net/",
+  "without": {
+   "status": 403,
+   "bytes": 313870,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 313913,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "http://readlightnovel.online/",
+  "without": {
+   "status": 403,
+   "bytes": 4913,
+   "action": "escalate",
+   "layer": 12,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 4913,
+   "action": "escalate",
+   "layer": 12,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.readwn.com/",
+  "without": {
+   "status": 200,
+   "bytes": 66689,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 66689,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://novelrare.com/",
+  "without": {
+   "status": 526,
+   "bytes": 7247,
+   "action": "retry",
+   "layer": null,
+   "content": false
+  },
+  "with": {
+   "status": 526,
+   "bytes": 7247,
+   "action": "retry",
+   "layer": null,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://novelarrow.com/",
+  "without": {
+   "status": 200,
+   "bytes": 679650,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 679650,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://www.fictionpress.com/",
+  "without": {
+   "status": 403,
+   "bytes": 5931,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5952,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://readwebnovels.net/",
+  "without": {
+   "status": 200,
+   "bytes": 479,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 479,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://whitemoonlightnovels.com/",
+  "without": {
+   "status": 200,
+   "bytes": 486,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 486,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://manhuaplus.online/",
+  "without": {
+   "error": "CertificateVerifyError"
+  },
+  "with": {
+   "error": "CertificateVerifyError"
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://novel27.com/",
+  "without": {
+   "status": 200,
+   "bytes": 473,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "with": {
+   "status": 200,
+   "bytes": 473,
+   "action": "accept",
+   "layer": null,
+   "content": true
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://reaperscans.com/",
+  "without": {
+   "status": 502,
+   "bytes": 6410,
+   "action": "retry",
+   "layer": null,
+   "content": false
+  },
+  "with": {
+   "status": 502,
+   "bytes": 6410,
+   "action": "retry",
+   "layer": null,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://ln.hako.vn/",
+  "without": {
+   "status": 403,
+   "bytes": 5913,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5934,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ },
+ {
+  "url": "https://docln.net/",
+  "without": {
+   "status": 403,
+   "bytes": 5912,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "with": {
+   "status": 403,
+   "bytes": 5933,
+   "action": "solve",
+   "layer": 9,
+   "content": false
+  },
+  "rescued": false,
+  "lost": false
+ }
+]

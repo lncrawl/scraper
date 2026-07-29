@@ -22,7 +22,7 @@ import requests
 
 from scraper import ExitKind, ExitSpec, Scraper, ScraperConfig, SharedState
 from scraper.browser import BrowserSolver, SolveResult
-from scraper.exceptions import Aborted, Exhausted, Impassable, Poisoned
+from scraper.exceptions import Aborted, Blocked, Exhausted, Impassable, Poisoned
 from scraper.exits import TorPoolSpec
 from scraper.layers import Layer
 
@@ -68,6 +68,60 @@ def scraper_for(transport: FakeTransport, **overrides: Any) -> Scraper:
     }
     settings.update(overrides)
     return Scraper(origin="https://example.com", config=ScraperConfig(**settings))
+
+
+class TestAJavaScriptRedirect:
+    """A 200 whose whole body is `window.location.replace(...)`.
+
+    Followed rather than escalated, because the destination is emitted in the HTML —
+    running the script would produce the URL already sitting there in plain text.
+    """
+
+    STUB = (
+        "<html><head><title>Loading...</title></head><body><script>"
+        "window.location.replace('https://example.com/real?js=TOKEN');"
+        "</script></body></html>"
+    )
+
+    def _hop_once(self) -> FakeTransport:
+        def handler(method: str, url: str, kwargs: Any) -> Any:
+            if "js=TOKEN" in url:
+                return make_response(body=PAGE, url=url)
+            return make_response(body=self.STUB, url=url)
+
+        return FakeTransport(handler=handler)
+
+    def test_the_destination_is_fetched_and_returned(self):
+        transport = self._hop_once()
+        with scraper_for(transport) as scraper:
+            response = scraper.get(URL)
+        assert "Chapter One" in response.text
+        assert transport.urls == [URL, "https://example.com/real?js=TOKEN"]
+
+    def test_what_is_learned_is_filed_under_the_url_that_was_asked_for(self, tmp_path: Path):
+        """Otherwise every run starts cold on a site it already solved.
+
+        The hop moves the request target, not the caller's address. Keying memory on
+        the destination instead left `knows(url)` empty, so the working tier was never
+        recalled and the redirect was re-walked from scratch every time. An HTTP
+        redirect already behaves this way.
+        """
+        transport = self._hop_once()
+        # A real data_dir, but the test's own: `remember=True` with the default path
+        # writes into the developer's cache directory.
+        with scraper_for(transport, remember=True, data_dir=tmp_path) as scraper:
+            scraper.get(URL)
+            assert scraper.knows(URL).tier == "direct"
+
+    def test_a_redirect_loop_stops_instead_of_spinning(self):
+        # A hop is deliberately not charged as an attempt, so without its own cap two
+        # pages pointing at each other would never terminate.
+        forever = FakeTransport(handler=lambda m, u, k: make_response(body=self.STUB, url=u))
+        with scraper_for(forever) as scraper:
+            with pytest.raises(Blocked) as caught:
+                scraper.get(URL)
+        assert "redirect" in str(caught.value).lower()
+        assert len(forever.urls) <= 5
 
 
 class TestTheEasyPath:

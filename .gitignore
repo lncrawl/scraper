@@ -219,3 +219,9 @@ __marimo__/
 
 # Live verification harness: recorded output is committed, working state is not.
 livetest/state/
+
+# Ed25519 signing keys. examples/07 and docs/web-bot-auth.md both write one to the
+# working directory on the first run, and a committed private key is a committed
+# private key however it got there.
+*.key
+botauth.key

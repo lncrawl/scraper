@@ -26,6 +26,7 @@ import time
 from io import BytesIO
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
+from urllib.parse import urljoin
 
 import requests
 
@@ -58,6 +59,14 @@ logger = logging.getLogger(__name__)
 
 _TEXTUAL = ("html", "text/", "json", "xml", "javascript")
 _PEEK_BYTES = 64 * 1024
+
+_MAX_JS_HOPS = 3
+"""Cap on JavaScript-expressed redirects per retrieval.
+
+Three is enough for the token-then-page shape these bot checks use, and a cap has to
+exist: two pages pointing at each other would otherwise loop without ever spending an
+attempt, since a hop is deliberately not charged as one.
+"""
 
 
 class Scraper:
@@ -92,7 +101,7 @@ class Scraper:
         self.last_url = self.origin
 
         self.transport: Transport = self.config.transport or ImpersonateTransport(
-            self.config.impersonate,
+            self.config.profile(),
             prefer_http3=self.config.prefer_http3,
             verify=self.config.verify_tls,
         )
@@ -176,6 +185,8 @@ class Scraper:
             exit_reach=self.exits.reach(),
         )
         attempt = Attempt(tier=start.name)
+        target = url
+        hops = 0
 
         while True:
             tier = self._tier(attempt.tier)
@@ -183,7 +194,7 @@ class Scraper:
             identity = self._identity(key, lease)
             call = self._call(
                 method,
-                url,
+                target,
                 identity=identity,
                 lease=lease,
                 profile=profile,
@@ -217,6 +228,34 @@ class Scraper:
                 return self._accept(
                     url, key, profile, response, tier=attempt.tier, navigation=navigation
                 )
+
+            if decision.move is Move.FOLLOW:
+                # A JavaScript-expressed redirect. Followed here rather than by the
+                # transport because the destination comes out of the body, and the
+                # transport is not given HTML to read.
+                hops += 1
+                if hops > _MAX_JS_HOPS:
+                    raise self._stop(
+                        url,
+                        Decision(
+                            Move.STOP,
+                            layer=decision.layer,
+                            reason=f"{_MAX_JS_HOPS} JavaScript redirects without a page",
+                        ),
+                        attempt,
+                    )
+                # Only the request target moves. `url` and `key` stay on what the
+                # caller asked for, so what is learned is filed under the address they
+                # will ask for again — an HTTP redirect behaves the same way. Filing
+                # it under the destination instead left `knows(url)` empty and every
+                # later run starting cold on a site already solved.
+                target = urljoin(
+                    response.url if response is not None else target, diagnosis.location
+                )
+                # Not counted as an attempt: the site answered, and this is the same
+                # retrieval continuing. Charging it would spend the escalation budget
+                # on a site's own redirect chain.
+                continue
 
             if diagnosis.layer is not None and diagnosis.action is not Action.RETRY:
                 self.memory.record_failure(url, diagnosis.layer)
@@ -402,7 +441,7 @@ class Scraper:
         with self._lock:
             held = self._identities.get(key)
             if held is None or held.exit_id != lease.exit_id:
-                held = Identity(impersonate=self.config.impersonate, exit_id=lease.exit_id)
+                held = Identity(impersonate=self.config.profile(), exit_id=lease.exit_id)
                 self._identities[key] = held
             return held
 
@@ -677,7 +716,9 @@ class Scraper:
                 logger.debug("tier %s did not close cleanly", tier.name, exc_info=True)
         if self._owns_state:
             # Shared state outlives any one scraper. Flushing another scraper's
-            # memory here would be harmless, but closing it is not.
+            # memory here would be harmless, but closing it is not — and neither is
+            # handing back addresses that another scraper is still using.
+            self.exits.release_all()
             self.state.close()
         else:
             self.memory.flush()

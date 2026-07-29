@@ -82,6 +82,58 @@ class TestChallengeWithASuccessStatus:
         assert diagnose(status=200, body=interstitial).action is Action.SOLVE
 
 
+class TestAJavaScriptOnlyRedirect:
+    """Found by comparing 1.0 against 0.2.6 on the source corpus.
+
+    19% of hosts answer a first request with a few hundred bytes of
+    `window.location.replace('…?token=…')` — a 200, no challenge marker, no
+    Cloudflare header. Both releases handed that to the caller as a successful
+    retrieval, so a scraper reported success and collected an empty document. It is
+    followable without a browser because the destination is emitted in plain text.
+    """
+
+    STUB = (
+        "<html><head><title>Loading...</title></head><body>"
+        "<script type='text/javascript'>window.location.replace("
+        "'https://site.test/?ch=1&js=eyJhbGciOiJIUzI1NiJ9&sid=51db4bb8');"
+        "</script></body></html>"
+    )
+
+    def test_the_stub_is_a_follow_not_content(self):
+        result = diagnose(status=200, body=self.STUB, url="https://site.test/")
+        assert result.action is Action.FOLLOW
+        assert not result.ok
+        assert result.location == ("https://site.test/?ch=1&js=eyJhbGciOiJIUzI1NiJ9&sid=51db4bb8")
+
+    def test_the_token_keeps_its_case(self):
+        # The destination carries a signed token. Reading it off the lowercased peek
+        # every other marker uses would hand back a URL the server rejects.
+        assert "eyJhbGciOiJIUzI1NiJ9" in diagnose(status=200, body=self.STUB).location
+
+    def test_a_real_page_that_mentions_window_location_is_still_content(self):
+        # The discriminator is that the stub is the *whole* document. Plenty of real
+        # pages assign window.location somewhere in their scripts.
+        page = (
+            "<html><head><title>Chapter 12</title></head><body><h1>Chapter 12</h1>"
+            + "<p>Real prose that a reader would read.</p>" * 40
+            + "<script>if (x) window.location = '/next';</script></body></html>"
+        )
+        assert diagnose(status=200, body=page).ok
+
+    def test_a_truncated_large_page_is_not_mistaken_for_a_stub(self):
+        # `diagnose` may be handed a prefix. Without requiring the closing tag, the
+        # first 4 KB of a big page with an early redirect script would look like a
+        # stub, and the caller would be sent chasing a URL instead of given a page.
+        prefix = "<html><head><script>window.location.replace('/x')</script>"
+        assert diagnose(status=200, body=prefix).ok
+
+    def test_a_stub_wearing_a_challenge_marker_is_still_a_challenge(self):
+        # Order matters: a challenge needs a browser, and treating it as a free hop
+        # would loop on the interstitial instead of escalating.
+        both = self.STUB.replace("Loading...", "Just a moment")
+        assert diagnose(status=200, body=both).action is Action.SOLVE
+
+
 class TestThrottling:
     """A 429 is not a bad exit, and conflating the two costs working addresses."""
 

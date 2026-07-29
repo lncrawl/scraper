@@ -54,9 +54,11 @@ class ScraperConfig:
     """Everything a :class:`~scraper.Scraper` needs.
 
     Args:
-        impersonate: curl-impersonate target. Keep the family alias: a pinned
-            profile ages into a signal of its own, and the library warns when it
-            detects one older than the installed build offers.
+        impersonate: curl-impersonate target, or ``""`` to choose one. Keep the
+            family alias: a pinned profile ages into a signal of its own, and the
+            library warns when it detects one older than the installed build offers.
+            See :meth:`profile` for what ``""`` resolves to and why it depends on
+            whether a browser solver is configured.
         prefer_http3: Offer HTTP/3 where the origin advertises it. Current browsers
             prefer it, so a client that never does is a mild mismatch — mild enough
             that it is off by default, since HTTP/3 through some proxies is worse
@@ -92,7 +94,7 @@ class ScraperConfig:
     """
 
     # -- transport -------------------------------------------------------------------
-    impersonate: str = "chrome"
+    impersonate: str = ""
     prefer_http3: bool = False
     verify_tls: bool = True
     transport: Optional[Transport] = None
@@ -161,6 +163,29 @@ class ScraperConfig:
         if root is None or self.browser is None:
             return None
         return root / "profiles"
+
+    def profile(self) -> str:
+        """The impersonation target to use, resolving ``""``.
+
+        Firefox by default, which is a measured choice rather than a taste. Over a
+        random 150-host sample of the source corpus, one request each: firefox 85,
+        safari 84, edge 82, chrome 81 — and against chrome, firefox won four hosts and
+        lost none. Chrome being the most common real browser is a reason to expect it
+        to be unremarkable, not evidence that it is the least remarkable.
+
+        Chrome when a browser solver is configured, and that override is the whole
+        reason this is a method. A clearance is bound to a User-Agent *and* a TLS
+        fingerprint together. The bundled solver drives Chrome, so it earns a
+        clearance under a Chrome User-Agent — and replaying that over a Firefox
+        handshake presents a contradiction the binding exists to catch. Four hosts is
+        not worth breaking the tier that answers challenges.
+
+        Set ``impersonate`` explicitly to override either way; nothing here second
+        guesses a caller who named a profile.
+        """
+        if self.impersonate:
+            return self.impersonate
+        return "chrome" if self.browser is not None else "firefox"
 
     def capabilities_enabled(self) -> Tuple[bool, bool, bool]:
         """``(archive, browser, managed)`` — which optional tiers are available."""

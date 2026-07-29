@@ -299,9 +299,38 @@ class ExitPool:
         )
 
     def release(self, origin: str) -> None:
-        """Forget the pinned address for *origin* without blaming it."""
+        """Give up the address held for *origin* without blaming it."""
         with self._lock:
-            self._leases.pop(origin, None)
+            lease = self._leases.pop(origin, None)
+        if lease is not None:
+            self._drop(lease)
+
+    def release_all(self) -> None:
+        """Give up every held address. Called when a scraper closes.
+
+        A pooled session that is never released holds its slot until the pool's
+        `SESSION_TTL`, and each lease mints a fresh key — so a process that builds
+        several scrapers in a row walks the pool out of capacity. What that looks like
+        downstream is the part worth avoiding: the next lease cannot connect, a
+        transport failure through a proxy is evidence about the exit, and the model
+        reports a reputation block on a destination that never saw the request.
+        """
+        with self._lock:
+            leases = list(self._leases.values())
+            self._leases.clear()
+        for lease in leases:
+            self._drop(lease)
+
+    def _drop(self, lease: ExitLease) -> None:
+        """Tell a pool we are finished with a session. Best-effort, like `report`."""
+        spec = lease.spec
+        if not isinstance(spec, TorPoolSpec):
+            return
+        self._pool_request(
+            spec,
+            f"/api/sessions/{urllib.parse.quote(lease.session_key, safe='')}",
+            method="DELETE",
+        )
 
     # -- internals ----------------------------------------------------------------
 
@@ -360,7 +389,12 @@ class ExitPool:
         return True
 
     def _pool_request(
-        self, spec: TorPoolSpec, path: str, payload: Optional[dict] = None
+        self,
+        spec: TorPoolSpec,
+        path: str,
+        payload: Optional[dict] = None,
+        *,
+        method: str = "POST",
     ) -> Optional[dict]:
         url = spec.api_url.rstrip("/") + path
         data = json.dumps(payload).encode() if payload is not None else b""
@@ -368,7 +402,7 @@ class ExitPool:
         if spec.token:
             headers["authorization"] = f"Bearer {spec.token}"
         request = urllib.request.Request(  # noqa: S310 - operator-configured URL
-            url, data=data, method="POST", headers=headers
+            url, data=data, method=method, headers=headers
         )
         try:
             with urllib.request.urlopen(request, timeout=POOL_API_TIMEOUT) as resp:  # noqa: S310

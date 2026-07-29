@@ -129,13 +129,29 @@ class TestWaiting:
 
 
 class TestTheNavigationChain:
-    def test_the_first_visit_to_an_origin_has_no_referrer(self):
+    def test_the_first_visit_to_an_origin_cites_the_front_page(self):
+        """Measured, and deliberately *not* what a browser does.
+
+        A browser opening a typed address sends no referrer, and this sent none for
+        that reason. Across 85 hosts that refuse an impersonated client, supplying a
+        first-contact referrer recovered three and cost none — 403-with-a-challenge
+        before, a full page after. Fidelity lost to the header.
+        """
         trail = Trail()
         headers = trail.headers("https://example.com/page")
-        assert "referer" not in headers
-        assert headers["sec-fetch-site"] == "none"
+        assert headers["referer"] == "https://example.com/"
+        # Must agree with the referrer. A synthesised referrer alongside
+        # `sec-fetch-site: none` is a contradiction no navigation produces, and it
+        # would be a worse signal than sending neither.
+        assert headers["sec-fetch-site"] == "same-origin"
 
-    def test_something_with_no_host_is_not_recorded_as_a_page_in_view(self):
+    def test_the_front_page_itself_cites_itself_which_is_a_reload(self):
+        # The shape all three recovered hosts were measured with, since all three are
+        # front pages. A reload sends exactly this.
+        trail = Trail()
+        assert trail.referer("https://example.com/") == "https://example.com/"
+
+    def test_something_with_no_host_gets_no_referrer_rather_than_a_broken_one(self):
         # The chain is keyed by host. A hostless value would key an empty bucket that
         # every other hostless URL then cites as its referrer.
         trail = Trail()
@@ -149,15 +165,21 @@ class TestTheNavigationChain:
         assert headers["referer"] == "https://example.com/list"
         assert headers["sec-fetch-site"] == "same-origin"
 
-    def test_a_page_never_cites_itself(self):
+    def test_a_deep_page_reloaded_falls_back_to_the_front_page(self):
+        # Never `Referer: <this exact deep page>` off its own record — that says the
+        # visitor came from where they already are.
         trail = Trail()
         trail.record("https://example.com/page")
-        assert trail.referer("https://example.com/page") == ""
+        assert trail.referer("https://example.com/page") == "https://example.com/"
 
-    def test_leaving_the_site_is_marked_cross_site(self):
+    def test_arriving_on_a_new_origin_starts_that_origin_s_own_chain(self):
+        # Not cross-site: the chain is per origin, so a first request to a new host
+        # looks like a first request to that host rather than a hop from the last one.
         trail = Trail()
         trail.record("https://example.com/page")
-        assert trail.headers("https://other.test/x")["sec-fetch-site"] == "none"
+        headers = trail.headers("https://other.test/x")
+        assert headers["referer"] == "https://other.test/"
+        assert headers["sec-fetch-site"] == "same-origin"
 
     def test_a_sub_resource_is_not_a_navigation(self):
         # A referrer chain threaded through every image is not one a browser
@@ -176,9 +198,10 @@ class TestTheNavigationChain:
         assert headers["upgrade-insecure-requests"] == "1"
 
     def test_the_chain_is_per_origin(self):
+        # One origin's page is never cited as the referrer for another's.
         trail = Trail()
         trail.record("https://a.test/one")
-        assert trail.referer("https://b.test/two") == ""
+        assert trail.referer("https://b.test/two") == "https://b.test/"
 
 
 class TestWarmUp:
