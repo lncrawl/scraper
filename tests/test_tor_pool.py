@@ -121,13 +121,55 @@ def test_rotate_does_not_deadlock(pool_api):
     assert done.wait(timeout=5), "rotate() deadlocked"
 
 
-def test_report_failure_posts_the_reason(pool_api):
+def test_report_failure_posts_the_reason_and_its_kind(pool_api):
     api_url, handler = pool_api
     manager = make_manager(api_url, session="abc")
 
     manager.report_failure("http_403")
 
-    assert handler.calls == [("/api/sessions/abc/failure", {"reason": "http_403"})]
+    assert handler.calls == [
+        ("/api/sessions/abc/failure", {"reason": "http_403", "kind": "blocked"})
+    ]
+
+
+@pytest.mark.parametrize(
+    ("reason", "kind"),
+    [
+        # Everything the engine reports on its own must carry a kind: without one
+        # the pool weighs a captcha exactly like an unexplained failure.
+        ("transport", "transport"),
+        ("http_403", "blocked"),
+        ("challenge", "captcha"),
+        ("rate_limited", "rate_limited"),
+        # The pool's own vocabulary, passed straight through by a caller.
+        ("captcha", "captcha"),
+        ("blocked", "blocked"),
+        ("other", "other"),
+        # Case and padding are the caller's, not a different reason.
+        ("  Challenge ", "captcha"),
+    ],
+)
+def test_known_reasons_carry_their_kind(pool_api, reason: str, kind: str):
+    api_url, handler = pool_api
+    manager = make_manager(api_url, session="abc")
+
+    manager.report_failure(reason)
+
+    assert handler.calls[0][1]["kind"] == kind, f"{reason!r} should be typed as {kind!r}"
+    # The reason goes over untouched: it is the pool's audit-log text.
+    assert handler.calls[0][1]["reason"] == reason
+
+
+def test_an_unknown_reason_is_still_reported(pool_api):
+    # No kind rather than a guessed one — the pool counts it as "other", which is
+    # what an unclassifiable failure is. Refusing to send it would throw away the
+    # only signal that sees inside an HTTPS tunnel.
+    api_url, handler = pool_api
+    manager = make_manager(api_url, session="abc")
+
+    manager.report_failure("the page looked wrong")
+
+    assert handler.calls == [("/api/sessions/abc/failure", {"reason": "the page looked wrong"})]
 
 
 def test_report_failure_can_be_disabled(pool_api):
@@ -252,7 +294,11 @@ def scrape_status(fast_config, api_url: str, status: int, body: str = "") -> lis
         # The session raises on any error status, which is not what is under test.
         with pytest.raises(requests.HTTPError):
             scraper.get(url)
-    return [body.get("reason") for path, body in _PoolHandler.calls if path.endswith("/failure")]
+    return [
+        str(body.get("reason", ""))
+        for path, body in _PoolHandler.calls
+        if path.endswith("/failure")
+    ]
 
 
 def test_a_throttle_is_reported_as_a_rate_limit(pool_api, fast_config):

@@ -62,11 +62,15 @@ def main() -> None:
     # Report a block so the pool can score that exit. After enough failures it
     # quarantines the instance and moves every session off it — the balancer
     # cannot see a 403 inside an HTTPS tunnel, so this is the only way it finds
-    # out. The engine reports 403s, challenges and transport errors for you;
-    # call it directly when your own code detects a soft block.
+    # out. The engine reports 403s, challenges, rate limits and transport errors
+    # for you; call it directly when your own code detects a soft block.
+    #
+    # What you report decides how much it counts: the pool weighs a captcha as
+    # evidence the exit IP is burnt, and a 429 as evidence it is working and
+    # merely busy. Reporting a throttle as a block spends a healthy exit.
     print("\n--- report a block ---")
     s.proxy_manager.report_failure("http_403")
-    print("  reported; the pool now counts that exit as failing")
+    print("  reported as 'blocked'; the pool now counts that exit as failing")
 
     print("\n--- a second session gets its own exit ---")
     other = default_config()

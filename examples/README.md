@@ -22,6 +22,7 @@ python examples/01_basic_html.py
 | [10_tor_proxy.py](10_tor_proxy.py)                         | Tor integration and identity refresh                                       |
 | [11_error_handling.py](11_error_handling.py)               | HTTP, Cloudflare, and abort error handling                                 |
 | [12_concurrency_and_abort.py](12_concurrency_and_abort.py) | Threaded fetches and cooperative `abort()`                                 |
+| [13_tor_pool.py](13_tor_pool.py)                           | tor-pool: sticky exits, instant rotation, reporting a block                |
 
 ## Notes
 

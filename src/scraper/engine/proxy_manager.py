@@ -18,6 +18,27 @@ logger = logging.getLogger(__name__)
 # so they get a short timeout and are never allowed to raise.
 POOL_API_TIMEOUT = 5.0
 
+# What each failure reason means to tor-pool, which weighs a report by its kind:
+# a captcha says the exit IP is burnt and retires it in a couple of reports,
+# while a 429 says the exit works and is merely busy and barely counts.
+#
+# Sent explicitly rather than left to the pool to read out of the free text. Its
+# aliases exist for callers written before kinds did, so relying on them means a
+# vocabulary drift on either side silently downgrades every report to an
+# unremarkable "other" — the same soft failure mode as sending no credential.
+# A reason not listed here is still reported; the pool counts it as "other".
+FAILURE_KINDS = {
+    # What the engine reports on its own.
+    "transport": "transport",
+    "http_403": "blocked",
+    "challenge": "captcha",
+    "rate_limited": "rate_limited",
+    # The pool's own vocabulary, for callers that pass it straight through.
+    "blocked": "blocked",
+    "captcha": "captcha",
+    "other": "other",
+}
+
 
 class ProxyManager:
     """Round-robin proxy selector for SOCKS/HTTP proxies.
@@ -135,6 +156,10 @@ class ProxyManager:
         without this a burnt exit keeps taking traffic until it happens to fail
         at the transport level. Best-effort — a pool that is down must never
         break the scrape.
+
+        ``reason`` is free text the pool keeps for its audit log. A reason it
+        recognises also carries a ``kind``, which is what the pool weighs the
+        report by — see :data:`FAILURE_KINDS`.
         """
         if not self._available:
             return
@@ -143,11 +168,16 @@ class ProxyManager:
         if not isinstance(current, TorPoolProxyUrl) or not current.report_failures:
             return
 
+        payload = {"reason": reason}
+        kind = FAILURE_KINDS.get(reason.strip().lower())
+        if kind:
+            payload["kind"] = kind
+
         key = self._session_key(current)
         self._pool_request(
             current,
             f"/api/sessions/{urllib.parse.quote(key, safe='')}/failure",
-            {"reason": reason},
+            payload,
         )
 
     def _rotate_pool_session(self, entry: TorPoolProxyUrl) -> bool:
@@ -190,6 +220,13 @@ class ProxyManager:
                     path,
                     exc.code,
                 )
+            elif exc.code == 404:
+                # Routine, not a problem: acting on a report the pool takes the
+                # instance out of rotation and unpins its sessions, so the next
+                # report about that session has nothing to attach to. The next
+                # request re-pins to a healthy instance. Logged quietly because a
+                # burnt exit otherwise produces a warning per report.
+                logger.debug("tor-pool has no session for %s: %s", path, exc)
             else:
                 logger.warning("tor-pool request to %s failed: %s", path, exc)
             return None

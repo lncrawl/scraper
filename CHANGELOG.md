@@ -4,7 +4,7 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.6] - 2026-07-29
 
 ### Added
 
@@ -26,18 +26,31 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   and it is what lets the pool quarantine a burnt exit. Sent automatically by the
   engine; call it directly when your own code detects a block.
 
-  The reason is what the pool weighs the report by, so a 429 that no challenge
-  handler claimed is sent as `rate_limited` rather than as a generic failure. A
-  throttle says the exit works and is being asked for too much: reported as a
-  block it would retire a working exit, and the next one is throttled just the
-  same.
-- `examples/11_tor_pool.py`.
+  The pool weighs a report by what it says went wrong, so each one carries a
+  *kind* as well as free text. A 429 that no challenge handler claimed is sent as
+  `rate_limited` rather than as a generic failure: a throttle says the exit works
+  and is being asked for too much, and reported as a block it would retire a
+  working exit while the next one is throttled just the same.
+- `scraper.engine.proxy_manager.FAILURE_KINDS`, the mapping from a failure reason
+  to the kind sent alongside it. Reasons the engine raises itself are all
+  covered, as is the pool's own
+  vocabulary for callers passing it straight through; anything else is still
+  reported and the pool counts it as unclassified. Sent explicitly rather than
+  left to the pool to read out of the free text — its aliases exist for callers
+  written before kinds did, so leaning on them means a vocabulary drift on either
+  side quietly downgrades every report to unremarkable.
+- `examples/13_tor_pool.py`.
 
 ### Fixed
 
 - Rotating a proxy now drops pooled connections. A live keep-alive stays bound
   to its original exit, so without this the exit IP appeared not to change until
   the socket happened to be evicted.
+- A pool that no longer knows a session is no longer a warning. Acting on a
+  report, the pool takes the instance out of rotation and unpins its sessions, so
+  the next report about that session answers `404` — routine, and the next
+  request re-pins to a healthy instance, but it logged a warning per report for
+  exactly the exit that was failing most.
 
 ## [0.2.5] - 2026-07-23
 
@@ -139,6 +152,8 @@ Initial public release of `lncrawl-scraper`, extracted from
   rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[0.2.6]: https://github.com/lncrawl/scraper/compare/v0.2.5...v0.2.6
+[0.2.5]: https://github.com/lncrawl/scraper/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/lncrawl/scraper/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/lncrawl/scraper/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/lncrawl/scraper/compare/v0.2.1...v0.2.2
