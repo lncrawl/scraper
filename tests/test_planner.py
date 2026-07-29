@@ -323,3 +323,83 @@ class TestCapabilities:
 
     def test_covers_treats_no_layer_as_covered(self):
         assert Capability(name="x", cost=1).covers(None)
+
+    def test_the_capability_list_is_ordered_by_cost_and_is_a_copy(self):
+        planner = full_planner()
+        assert [cap.cost for cap in planner.capabilities] == sorted(
+            cap.cost for cap in planner.capabilities
+        )
+        planner.capabilities.clear()
+        assert planner.capabilities, "the planner handed out its own list"
+
+    def test_the_cheapest_capability_is_the_first_rung(self):
+        assert full_planner().cheapest().name == "direct"
+
+    def test_a_capability_can_be_looked_up_by_name(self):
+        planner = full_planner()
+        found = planner.get("clearance")
+        assert found is not None and found.name == "clearance"
+        assert planner.get("nonexistent") is None
+
+    def test_a_planner_needs_at_least_one_capability(self):
+        with pytest.raises(ValueError, match="at least one capability"):
+            Planner([])
+
+
+class TestReasoningAboutWhatIsLeft:
+    def test_a_tier_the_planner_does_not_know_falls_back_to_the_cheapest(self):
+        # A tier name arriving from persisted state that this build no longer offers
+        # must not crash the planner; starting cheap is the correct degradation.
+        decision = full_planner().react(
+            Diagnosis(Action.ESCALATE, Layer.BROWSER_JS, "challenged"),
+            Context(tier="a-tier-from-an-older-config"),
+        )
+        assert decision.move is Move.ESCALATE
+        assert decision.tier == "clearance"
+
+    def test_a_layer_the_current_tier_never_claimed_is_not_re_attributed(self):
+        """Promotion is evidence that the *configured* tier keeps being rejected.
+
+        The scoring tiers cannot be told apart from outside, so repeated failure under
+        a tier that covers the layer is the only signal available. Repeated failure
+        under one that never covered it says nothing — the answer is to escalate, not
+        to rewrite the diagnosis.
+        """
+        decision = full_planner().react(
+            Diagnosis(Action.ESCALATE, Layer.BROWSER_JS, "challenged"),
+            Context(tier="direct", consecutive_failures=9),
+        )
+        assert decision.move is Move.ESCALATE
+        assert decision.tier == "clearance"
+        assert decision.layer is Layer.BROWSER_JS
+
+    def test_the_strongest_tier_failing_with_nothing_to_attribute_says_so(self):
+        # No layer means no advice to give about a layer, and inventing one would
+        # send the caller to configure something that is not the problem.
+        decision = full_planner().react(
+            Diagnosis(Action.ESCALATE, None, ""),
+            Context(tier="managed"),
+        )
+        assert decision.move is Move.STOP
+        assert "managed failed" in decision.reason
+        assert "no stronger tier" in decision.reason
+
+    def test_a_layer_beyond_every_tier_names_what_would_move_it(self):
+        decision = direct_only().react(
+            Diagnosis(Action.ESCALATE, Layer.BROWSER_JS, "challenged"),
+            Context(tier="direct"),
+        )
+        assert decision.move is Move.STOP
+        assert "browser solver" in decision.reason
+
+    def test_a_tier_that_owns_the_layer_and_still_failed_points_at_its_own_output(self):
+        # The generic hint would tell the caller to configure the very thing they
+        # already have, which sends them to check their config instead of the solver's
+        # output, where the actual reason is.
+        decision = full_planner().react(
+            Diagnosis(Action.ESCALATE, Layer.TURNSTILE, "the solver timed out"),
+            Context(tier="managed"),
+        )
+        assert decision.move is Move.STOP
+        assert "handled by managed" in decision.reason
+        assert "the solver timed out" in decision.reason

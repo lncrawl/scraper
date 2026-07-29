@@ -3,8 +3,16 @@
 from __future__ import annotations
 
 import time
+from typing import Any, Dict
 
-from scraper.identity import OVERRIDABLE, Clearance, Identity, browser_family, client_hints
+from scraper.identity import (
+    OVERRIDABLE,
+    Clearance,
+    Identity,
+    browser_family,
+    client_hints,
+    merge_headers,
+)
 
 
 class TestTheBinding:
@@ -116,12 +124,44 @@ class TestClientHints:
         assert client_hints("") == {}
 
 
+class TestMergingHeaders:
+    """`merge_headers` is where invariant 5 is enforced: the transport owns the set."""
+
+    def test_the_identity_may_only_replace_headers_a_profile_already_sends(self):
+        # Adding one the profile never had appends a header in a position no browser
+        # puts it, and header order is read. The allow-list is the enforcement.
+        merged = merge_headers({"user-agent": "UA", "x-requested-with": "XMLHttpRequest"}, None)
+        assert merged == {"user-agent": "UA"}
+
+    def test_a_callers_request_specific_headers_are_not_filtered(self):
+        # `Accept` for a JSON endpoint and `Referer` for a navigation chain are the
+        # caller's business; only the identity's own contribution is constrained.
+        merged = merge_headers({}, {"Referer": "https://example.com/", "Accept": "text/json"})
+        assert merged == {"referer": "https://example.com/", "accept": "text/json"}
+
+    def test_the_caller_wins_over_the_identity(self):
+        merged = merge_headers({"accept-language": "en-GB"}, {"Accept-Language": "de-DE"})
+        assert merged == {"accept-language": "de-DE"}
+
+    def test_a_none_value_removes_a_header_rather_than_sending_the_word_none(self):
+        caller: Dict[str, Any] = {"User-Agent": None}
+        assert merge_headers({"user-agent": "UA"}, caller) == {}
+
+    def test_no_caller_headers_at_all_is_the_common_case(self):
+        assert merge_headers({}, None) == {}
+
+
 def test_families_are_read_off_the_target():
     assert browser_family("chrome136") == "chrome"
     assert browser_family("firefox135") == "firefox"
     assert browser_family("safari18_4") == "safari"
     assert browser_family("edge101") == "edge"
     assert browser_family("") == "chrome"
+
+
+def test_an_identity_reports_its_own_family():
+    assert Identity(impersonate="firefox135").family == "firefox"
+    assert Identity().family == "chrome"
 
 
 def test_describe_is_readable():

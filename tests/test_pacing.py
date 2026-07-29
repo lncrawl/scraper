@@ -103,14 +103,29 @@ class TestWaiting:
         pacer.mark("example.com")
         assert pacer.next_delay("example.com") == 0.0
 
-    def test_an_abort_interrupts_a_long_wait(self):
-        # The tail of the distribution runs to tens of seconds, and a cancelled job
-        # must not wait one out.
-        pacer = Pacer(PacingPolicy(interval=30.0, floor=30.0, pause_chance=0.0))
+    def test_an_abort_before_the_wait_starts_stops_the_request(self):
+        # Checked before the delay is computed, not only inside the loop: a
+        # zero-length wait would otherwise let an already-aborted request go out.
+        pacer = Pacer(PacingPolicy(interval=0.0, floor=0.0, pause_chance=0.0))
         signal = threading.Event()
         signal.set()
         with pytest.raises(Aborted):
             pacer.wait("example.com", signal)
+
+    def test_an_abort_interrupts_a_long_wait(self):
+        # The tail of the distribution runs to tens of seconds, and a cancelled job
+        # must not wait one out. The wait is sliced so the signal is seen part way
+        # through rather than after the whole gap has elapsed.
+        pacer = Pacer(PacingPolicy(interval=30.0, floor=30.0, pause_chance=0.0))
+        pacer.mark("example.com")
+        signal = threading.Event()
+        threading.Timer(0.01, signal.set).start()
+        with pytest.raises(Aborted):
+            pacer.wait("example.com", signal)
+
+    def test_a_wait_with_no_signal_at_all_is_allowed(self):
+        pacer = Pacer(PacingPolicy(interval=0.0, floor=0.0, pause_chance=0.0))
+        assert pacer.wait("example.com") == 0.0
 
 
 class TestTheNavigationChain:
@@ -119,6 +134,13 @@ class TestTheNavigationChain:
         headers = trail.headers("https://example.com/page")
         assert "referer" not in headers
         assert headers["sec-fetch-site"] == "none"
+
+    def test_something_with_no_host_is_not_recorded_as_a_page_in_view(self):
+        # The chain is keyed by host. A hostless value would key an empty bucket that
+        # every other hostless URL then cites as its referrer.
+        trail = Trail()
+        trail.record("/just/a/path")
+        assert trail.referer("/another/path") == ""
 
     def test_the_next_page_cites_the_previous_one(self):
         trail = Trail()

@@ -4,15 +4,18 @@ from __future__ import annotations
 
 import datetime as dt
 import json
-from typing import Any, Dict
+import time
+from typing import Any, Dict, List, Optional
 
 import pytest
 import requests
 
+from scraper.browser import CallableSolver, SolveResult
 from scraper.exceptions import TierUnavailable
-from scraper.identity import Identity
-from scraper.tiers import ArchiveTier, Call, DirectTier, ManagedTier, http_provider
+from scraper.identity import Clearance, Identity
+from scraper.tiers import ArchiveTier, Call, DirectTier, ManagedTier, Tier, http_provider
 from scraper.tiers.archive import SOURCE_HEADER
+from scraper.tiers.clearance import ClearanceTier
 
 from .conftest import FakeTransport, make_response
 
@@ -156,6 +159,40 @@ class TestArchiveTier:
         )
         with pytest.raises(TierUnavailable):
             ArchiveTier(transport, max_age=86400).send(call_for())
+
+    def test_latest_reports_the_capture_send_would_have_used(self):
+        # The lookahead a caller uses to decide whether the archive is worth trying at
+        # all, so it has to apply the same age limit `send` does.
+        when = stamp(1)
+        index = self._index([[stamp(400), URL], [when, URL]])
+        transport = FakeTransport(
+            handler=lambda method, url, kwargs: make_response(body=index, url=url)
+        )
+        assert ArchiveTier(transport).latest(URL) == (when, URL)
+
+    def test_latest_is_empty_when_nothing_is_acceptable(self):
+        index = self._index([[stamp(400), URL]])
+        transport = FakeTransport(
+            handler=lambda method, url, kwargs: make_response(body=index, url=url)
+        )
+        assert ArchiveTier(transport, max_age=86400).latest(URL) is None
+
+    def test_an_index_answering_with_the_wrong_shape_did_not_answer(self):
+        # The CDX API replies with an object rather than an array of rows when it is
+        # unhappy. That is the index declining, not the URL being unarchived, and
+        # conflating the two stops the caller ever trying the archive again.
+        transport = FakeTransport([make_response(body=json.dumps({"error": "blocked"}))])
+        with pytest.raises(TierUnavailable, match="did not answer"):
+            ArchiveTier(transport).send(call_for())
+
+    def test_a_truncated_index_row_is_skipped_rather_than_unpacked(self):
+        transport = FakeTransport(
+            handler=lambda method, url, kwargs: make_response(
+                body=json.dumps([["timestamp", "original"], [stamp(1)], "junk"]), url=url
+            )
+        )
+        with pytest.raises(TierUnavailable, match="no capture on record"):
+            ArchiveTier(transport).send(call_for())
 
     def test_no_capture_escalates_rather_than_blaming_the_site(self):
         # An archive gap says nothing about the site's defences, so recording it as a
@@ -326,3 +363,230 @@ class TestHttpProvider:
         )
         provider("GET", URL)
         assert transport.calls[0][2]["params"]["render_js"] == "true"
+
+    def test_without_a_transport_it_falls_back_to_plain_requests(self, monkeypatch):
+        # A managed provider terminates TLS itself, so it is the one place where the
+        # impersonation transport buys nothing and an ordinary client is correct.
+        seen: Dict[str, Any] = {}
+
+        def fake_get(endpoint: str, **kwargs: Any) -> requests.Response:
+            seen.update({"endpoint": endpoint, **kwargs})
+            return make_response(body="plain")
+
+        monkeypatch.setattr(requests, "get", fake_get)
+        provider = http_provider("https://api.provider.test/v1")
+        assert "plain" in provider("GET", URL).text
+        assert seen["endpoint"] == "https://api.provider.test/v1"
+        assert seen["params"]["url"] == URL
+        assert seen["timeout"] == 90.0
+
+
+class TestTheTierContract:
+    def test_the_base_tier_is_abstract_in_practice(self):
+        with pytest.raises(NotImplementedError):
+            Tier().send(call_for())
+
+    def test_closing_a_tier_that_holds_nothing_is_fine(self):
+        Tier().close()
+
+    def test_the_default_stream_buffers_through_send(self):
+        """Every tier supports downloads whether or not its client can stream.
+
+        A tier that cannot stream is still correct here, just memory-hungry on a large
+        file — which is a better failure than `get_file` refusing to work on a rung.
+        """
+
+        class Buffering(Tier):
+            def send(self, call: Call) -> requests.Response:
+                return make_response(body="payload")
+
+        with Buffering().stream(call_for()) as (response, chunks):
+            assert response.status_code == 200
+            assert b"".join(chunks) == b"payload"
+
+    def test_a_none_header_removes_the_identitys_contribution(self):
+        # The escape hatch for a caller who needs a header the identity would
+        # otherwise supply to be absent entirely, rather than sent as "None".
+        identity = Identity(exit_id="e1").pin("Mozilla/5.0 Chrome/140.0.0.0")
+        headers: Dict[str, Any] = {"User-Agent": None}
+        call = call_for(identity=identity, headers=headers)
+        assert "user-agent" not in call.merged_headers()
+
+    def test_a_call_without_proxies_is_not_through_a_proxy(self):
+        assert not call_for().through_proxy
+        assert call_for(proxies={"https": "http://p.test:1"}).through_proxy
+
+    def test_no_clearance_means_no_cookies(self):
+        assert call_for().cookie_header() == {}
+
+
+def stub_solver(
+    cookies: Dict[str, str],
+    *,
+    user_agent: str = "Mozilla/5.0 Chrome/141.0.0.0",
+    seen: Optional[List[Dict[str, Any]]] = None,
+) -> CallableSolver:
+    """A solver that returns *cookies* without launching anything."""
+
+    def solve(url: str, *, proxy=None, profile_dir=None, timeout=60.0) -> SolveResult:
+        if seen is not None:
+            seen.append({"url": url, "proxy": proxy, "profile_dir": profile_dir})
+        return SolveResult(cookies=cookies, user_agent=user_agent)
+
+    return CallableSolver(solve, name="stub")
+
+
+def clearance_tier(solver: CallableSolver, transport: FakeTransport, **kwargs: Any):
+    return ClearanceTier(solver, DirectTier(transport), **kwargs)
+
+
+class TestClearanceTier:
+    def test_a_solver_that_earns_nothing_is_unavailable_not_blocked(self):
+        """Invariant 9: only a real detection event may be attributed to a layer.
+
+        A solver that finished without a clearance cookie says nothing about the site.
+        Reporting it as `Blocked` would rotate an innocent address, report it to the
+        pool as burnt, and persist the attribution to the origin's profile.
+        """
+        tier = clearance_tier(stub_solver({"sid": "x"}), FakeTransport([make_response()]))
+        with pytest.raises(TierUnavailable, match="without a clearance cookie"):
+            tier.send(call_for())
+
+    def test_the_request_goes_out_under_the_identity_the_browser_earned(self):
+        # The browser is the source of truth once it has solved. Sending the cookie
+        # under the pre-solve identity is the exact mismatch this tier exists to stop.
+        transport = FakeTransport([make_response()])
+        tier = clearance_tier(stub_solver({"cf_clearance": "abc"}), transport)
+        call = call_for()
+
+        tier.send(call)
+
+        assert call.identity.user_agent == "Mozilla/5.0 Chrome/141.0.0.0"
+        assert call.clearance is not None
+        assert call.clearance.usable_by(call.identity)
+        assert transport.headers_of(0)["user-agent"] == "Mozilla/5.0 Chrome/141.0.0.0"
+
+    def test_the_browser_solves_on_the_address_the_requests_will_use(self):
+        # Solving on one exit and fetching from another produces a clearance that is
+        # dead on arrival, which reads as "the solver does not work" and leads to
+        # re-solving forever.
+        seen: List[Dict[str, Any]] = []
+        tier = clearance_tier(
+            stub_solver({"cf_clearance": "abc"}, seen=seen), FakeTransport([make_response()])
+        )
+
+        tier.send(call_for(proxies={"https": "http://user:pw@exit.test:8000"}))
+
+        assert seen[0]["proxy"] == "http://user:pw@exit.test:8000"
+
+    def test_a_second_call_to_the_same_origin_does_not_re_launch_a_browser(self):
+        # A solve is the most expensive thing this library does; another thread having
+        # already paid for this origin is worth the branch.
+        seen: List[Dict[str, Any]] = []
+        tier = clearance_tier(
+            stub_solver({"cf_clearance": "abc"}, seen=seen), FakeTransport([make_response()])
+        )
+
+        tier.send(call_for())
+        tier.send(call_for("https://example.com/novel/chapter-2"))
+
+        assert len(seen) == 1
+
+    def test_a_clearance_earned_under_another_identity_is_re_solved(self):
+        seen: List[Dict[str, Any]] = []
+        tier = clearance_tier(
+            stub_solver({"cf_clearance": "abc"}, seen=seen), FakeTransport([make_response()])
+        )
+        stale = Clearance(
+            origin="https://example.com",
+            cookies={"cf_clearance": "old"},
+            identity_token=Identity(exit_id="a-retired-exit").token(),
+        )
+
+        call = call_for(clearance=stale)
+        tier.send(call)
+
+        assert len(seen) == 1
+        assert call.clearance is not None and call.clearance.cookies == {"cf_clearance": "abc"}
+
+    def test_a_usable_clearance_is_left_alone(self):
+        seen: List[Dict[str, Any]] = []
+        tier = clearance_tier(
+            stub_solver({"cf_clearance": "abc"}, seen=seen), FakeTransport([make_response()])
+        )
+        identity = Identity(exit_id="e1")
+        fresh = Clearance(
+            origin="https://example.com",
+            cookies={"cf_clearance": "held"},
+            identity_token=identity.token(),
+            expires_at=time.time() + 600,
+        )
+
+        tier.send(call_for(identity=identity, clearance=fresh))
+
+        assert seen == [], "a browser launched for a clearance already in hand"
+
+    def test_streaming_goes_through_the_same_solve(self):
+        # `get_file` on a challenged site takes this path, and a stream that skipped
+        # the solve would download the interstitial.
+        seen: List[Dict[str, Any]] = []
+        tier = clearance_tier(
+            stub_solver({"cf_clearance": "abc"}, seen=seen),
+            FakeTransport([make_response(body="the file")]),
+        )
+
+        with tier.stream(call_for()) as (response, chunks):
+            assert b"".join(chunks) == b"the file"
+        assert len(seen) == 1
+
+    def test_a_new_clearance_is_handed_to_the_store(self):
+        # Repeating the solve every run is the difference between one browser launch
+        # and one per session.
+        stored: Dict[str, Clearance] = {}
+        tier = clearance_tier(
+            stub_solver({"cf_clearance": "abc"}),
+            FakeTransport([make_response()]),
+            store=lambda origin, clearance: stored.__setitem__(origin, clearance),
+        )
+
+        tier.send(call_for())
+
+        assert stored["https://example.com/"].cookies == {"cf_clearance": "abc"}
+
+    def test_the_profile_directory_follows_the_address(self, tmp_path):
+        seen: List[Dict[str, Any]] = []
+        tier = clearance_tier(
+            stub_solver({"cf_clearance": "abc"}, seen=seen),
+            FakeTransport([make_response()]),
+            profile_root=tmp_path,
+        )
+
+        tier.send(call_for(identity=Identity(exit_id="pool#s-aaa")))
+
+        assert seen[0]["profile_dir"] is not None
+        assert seen[0]["profile_dir"].parent == tmp_path
+
+    def test_a_held_clearance_that_has_since_expired_is_re_earned(self):
+        # The per-origin cache is there to stop a second thread paying for a solve that
+        # already happened, not to serve a cookie the site will now reject.
+        seen: List[Dict[str, Any]] = []
+
+        def solve(url: str, *, proxy=None, profile_dir=None, timeout=60.0) -> SolveResult:
+            seen.append({"url": url})
+            return SolveResult(cookies={"cf_clearance": "abc"}, user_agent="UA", expires_at=1.0)
+
+        tier = clearance_tier(CallableSolver(solve, name="stub"), FakeTransport([make_response()]))
+
+        tier.send(call_for())
+        tier.send(call_for())
+
+        assert len(seen) == 2
+
+    def test_closing_the_tier_closes_the_solver(self):
+        closed: List[bool] = []
+        solver = stub_solver({"cf_clearance": "abc"})
+        solver.close = lambda: closed.append(True)  # type: ignore[method-assign]
+
+        clearance_tier(solver, FakeTransport()).close()
+
+        assert closed == [True]

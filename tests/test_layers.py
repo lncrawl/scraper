@@ -13,9 +13,11 @@ from scraper.layers import (
     Stance,
     Trait,
     expand,
+    info,
     is_forgeable,
     is_impassable,
     marginal_gain,
+    stance,
     trait,
     weakest,
 )
@@ -25,9 +27,9 @@ def test_every_layer_is_described():
     # The table is what the rest of the package reads to decide what to do, so a
     # layer missing from it is a KeyError at the worst possible moment.
     assert set(LAYERS) == set(Layer)
-    for layer, info in LAYERS.items():
-        assert info.layer is layer
-        assert info.title and info.summary
+    for layer, described in LAYERS.items():
+        assert described.layer is layer
+        assert described.title and described.summary
 
 
 def test_layers_are_numbered_in_request_order():
@@ -114,3 +116,20 @@ class TestTheBound:
 
 def test_layers_render_readably():
     assert str(Layer.BEHAVIOURAL).startswith("L8 ")
+
+
+def test_a_layer_carries_its_own_description():
+    # The table is the package's documentation of the model, and it is read at
+    # runtime — an exception's message is built from it.
+    found = info(Layer.BEHAVIOURAL)
+    assert found is LAYERS[Layer.BEHAVIOURAL]
+    assert found.trait is Trait.POSSESS
+    assert found.title and found.summary
+
+
+def test_a_layer_reports_what_this_library_does_about_it():
+    # The stance is what the planner is ultimately reading: rotating away from a
+    # possessed-property layer discards the very history it measures.
+    assert stance(Layer.IP_REPUTATION) is Stance.LEASE
+    assert stance(Layer.BEHAVIOURAL) is Stance.ACCUMULATE
+    assert stance(Layer.ACCESS) is Stance.REFUSE

@@ -136,6 +136,14 @@ class TestEndpointsAndDecoys:
             memory.touch()
         assert Memory(path).profile("https://example.com/").is_decoy("https://example.com/maze/1")
 
+    def test_hitting_the_same_decoy_twice_does_not_fill_the_list_with_it(self):
+        # The list is capped, so duplicates would evict genuinely distinct decoys —
+        # and a maze serves the same URL back repeatedly.
+        profile = Memory().profile("https://example.com/")
+        for _ in range(5):
+            profile.note_decoy("https://example.com/maze/1")
+        assert profile.decoys == ["https://example.com/maze/1"]
+
 
 class TestTheFile:
     def test_it_is_written_owner_only(self, tmp_path: Path):
@@ -178,6 +186,31 @@ class TestTheFile:
             "utf-8",
         )
         assert Memory(path).profile("https://example.com/").successes == 4
+
+    def test_a_profiles_block_of_the_wrong_shape_is_a_cold_start(self, tmp_path: Path):
+        path = tmp_path / "origins.json"
+        path.write_text(json.dumps({"schema": SCHEMA, "profiles": ["example.com"]}), "utf-8")
+        assert Memory(path).profile("https://example.com/").successes == 0
+
+    def test_one_corrupt_profile_does_not_discard_the_rest_of_the_file(self, tmp_path: Path):
+        # The store is the only way the possess side accrues anything. Throwing the
+        # whole file away over one bad entry restarts every origin's history.
+        path = tmp_path / "origins.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "schema": SCHEMA,
+                    "profiles": {
+                        "broken.test": "not a profile at all",
+                        "example.com": {"origin": "example.com", "successes": 7},
+                    },
+                }
+            ),
+            "utf-8",
+        )
+        memory = Memory(path)
+        assert memory.profile("https://example.com/").successes == 7
+        assert memory.profile("https://broken.test/").successes == 0
 
     def test_a_write_that_cannot_land_warns_rather_than_failing_the_scrape(self, tmp_path: Path):
         # Losing the store costs a cold start, not correctness, so a read-only or

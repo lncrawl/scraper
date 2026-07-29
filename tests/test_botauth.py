@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import json
 import os
+import sys
 from pathlib import Path
 
 import pytest
@@ -20,7 +21,7 @@ from scraper.botauth import (
     directory_document,
     signature_base,
 )
-from scraper.exceptions import ConfigError
+from scraper.exceptions import ConfigError, MissingDependency
 
 pytest.importorskip("cryptography")
 
@@ -168,12 +169,51 @@ class TestTheDirectory:
         assert document["keys"][0]["kid"] == key.key_id
         assert "nbf" in document["keys"][0]
 
+    def test_a_key_with_no_stated_lifetime_never_expires(self):
+        # The directory is served, not distributed, so a key stays valid until it is
+        # withdrawn. An `exp` nobody asked for would silently stop verifications.
+        assert "exp" not in BotAuthKey.generate().directory()["keys"][0]
+
+    def test_a_rotation_window_can_be_published(self):
+        document = BotAuthKey.generate().directory(valid_for=3600)
+        key = document["keys"][0]
+        assert key["exp"] - key["nbf"] == 3600
+
     def test_the_path_is_the_one_verifiers_fetch(self):
         assert DIRECTORY_PATH == "/.well-known/http-message-signatures-directory"
+
+    def test_a_configured_key_is_published_through_the_config(self, key: BotAuthKey):
+        assert directory_document(BotAuthConfig(key=key))["keys"][0]["kid"] == key.key_id
 
     def test_a_config_without_a_key_cannot_publish_one(self):
         with pytest.raises(ConfigError):
             directory_document(BotAuthConfig())
+
+    def test_without_cryptography_the_missing_extra_is_named(self, monkeypatch):
+        # Signing is the one tier that costs nothing, so a caller who reached for it
+        # and got an ImportError about `hazmat` needs to be told which extra to add.
+        monkeypatch.setitem(sys.modules, "cryptography.hazmat.primitives.asymmetric", None)
+        with pytest.raises(MissingDependency, match="botauth"):
+            BotAuthKey.generate()
+
+
+class TestCoveredComponents:
+    def test_a_component_this_library_cannot_produce_is_refused(self):
+        """A signature over a component the verifier reconstructs differently fails.
+
+        Silently omitting one would produce a base that signs cleanly here and
+        verifies against nothing there, which surfaces as an unexplained 401 from a
+        site that was supposed to be welcoming us.
+        """
+        signed = BotAuthKey.generate().sign("https://example.com/x")
+        tampered = SignedRequest(
+            signature_input=signed.signature_input.replace(
+                '("@authority")', '("@authority" "@method")'
+            ),
+            signature=signed.signature,
+        )
+        with pytest.raises(ConfigError, match="@method"):
+            BotAuthKey.generate().verify("https://example.com/x", tampered)
 
 
 class TestConfig:

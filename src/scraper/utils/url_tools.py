@@ -17,7 +17,10 @@ def extract_base(url: str) -> str:
 def extract_host(url: str) -> str:
     parsed = _format_and_parse(url)
     host = parsed.hostname
-    port = str(parsed.port or "")
+    try:
+        port = str(parsed.port or "")
+    except ValueError:
+        port = ""
     if not host:
         return ""
 

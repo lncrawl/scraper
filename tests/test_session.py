@@ -12,6 +12,7 @@ merely described in docstrings. The ones worth reading first:
 from __future__ import annotations
 
 import threading
+import time
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -611,3 +612,317 @@ class TestSigning:
         with scraper_for(transport) as scraper:
             scraper.get(URL)
         assert "signature" not in transport.headers_of(0)
+
+
+class TestDownloading:
+    def test_an_error_page_is_not_written_to_the_callers_file(self, tmp_path: Path):
+        # A challenge interstitial is a body, not a status. Writing it where the
+        # caller asked for a chapter leaves a file that looks like a successful
+        # download and is not one.
+        target = tmp_path / "cover.jpg"
+        transport = FakeTransport([make_response(403, BLOCK_BODY, url=URL)])
+        with scraper_for(transport, archive=False) as scraper:
+            with pytest.raises(Exhausted):
+                scraper.get_file(URL, target)
+        assert not target.exists()
+
+    def test_an_abort_mid_stream_stops_the_download(self, tmp_path: Path):
+        target = tmp_path / "big.bin"
+        transport = FakeTransport([make_response(body="x" * 1000, url=URL)])
+        with scraper_for(transport) as scraper:
+            scraper.abort()
+            with pytest.raises(Aborted):
+                scraper.get_file(URL, target)
+        assert not target.exists()
+
+    def test_an_image_is_fetched_through_the_same_loop(self):
+        # So a cover behind a challenge is handled exactly like a chapter behind one.
+        pytest.importorskip("PIL")
+        import base64
+
+        gif = base64.b64decode("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")
+        response = make_response(url=URL, headers={"content-type": "image/gif"})
+        response._content = gif  # noqa: SLF001
+        transport = FakeTransport([response])
+        with scraper_for(transport) as scraper:
+            assert scraper.get_image(URL).size == (1, 1)
+        assert transport.headers_of(0)["accept"].startswith("image/")
+
+    def test_a_caller_header_survives_the_image_accept_header(self):
+        pytest.importorskip("PIL")
+        import base64
+
+        gif = base64.b64decode("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")
+        response = make_response(url=URL, headers={"content-type": "image/gif"})
+        response._content = gif  # noqa: SLF001
+        with scraper_for(FakeTransport([response])) as scraper:
+            transport = scraper.transport
+            scraper.get_image(URL, headers={"Referer": "https://example.com/novel/"})
+        assert transport.headers_of(0)["referer"] == "https://example.com/novel/"  # type: ignore[attr-defined]
+
+
+class TestTheTopicGuardInTheLoop:
+    ON_TOPIC = (
+        "<html><body>chapter translation novel protagonist cultivation sect "
+        "elder disciple sword qi realm</body></html>"
+    )
+    OFF_TOPIC = (
+        "<html><body>quarterly amortisation schedules reconciled against "
+        "depreciating municipal bond covenants actuarial tables</body></html>"
+    )
+
+    def serve_then_stray(self, on_topic_count: int = 6):
+        pages = [self.ON_TOPIC] * on_topic_count + [self.OFF_TOPIC]
+        index = {"n": 0}
+
+        def serve(method: str, url: str, kwargs: Dict[str, Any]) -> requests.Response:
+            body = pages[min(index["n"], len(pages) - 1)]
+            index["n"] += 1
+            return make_response(body=body, url=url)
+
+        return serve
+
+    def test_a_warning_policy_returns_the_page_and_says_so(self, caplog):
+        # The default for a caller who wants to make the judgement themselves. Raising
+        # is right for a pipeline that writes what it fetches; warning is right for
+        # one that inspects first.
+        transport = FakeTransport(handler=self.serve_then_stray())
+        with scraper_for(transport, guard_topic=True, on_decoy="warn") as scraper:
+            for number in range(6):
+                scraper.get(f"{URL}?p={number}")
+            with caplog.at_level("WARNING", logger="scraper.session"):
+                response = scraper.get("https://example.com/maze/1")
+        assert response.status_code == 200
+        assert "decoy" in caplog.text
+
+    def test_a_decoy_is_recorded_even_when_it_is_not_raised(self):
+        transport = FakeTransport(handler=self.serve_then_stray())
+        with scraper_for(transport, guard_topic=True, on_decoy="warn") as scraper:
+            for number in range(6):
+                scraper.get(f"{URL}?p={number}")
+            scraper.get("https://example.com/maze/1")
+            assert scraper.knows(URL).is_decoy("https://example.com/maze/1")
+
+    def test_a_binary_body_is_not_measured_for_vocabulary(self):
+        # An image has no prose, and scoring one would drive the overlap to zero and
+        # accuse every cover on the site.
+        image = make_response(body="\x00\x01binary", url=URL, headers={"content-type": "image/png"})
+        transport = FakeTransport(handler=self.serve_then_stray())
+        with scraper_for(transport, guard_topic=True, on_decoy="raise") as scraper:
+            for number in range(6):
+                scraper.get(f"{URL}?p={number}")
+            scraper.transport.replies = [image]  # type: ignore[attr-defined]
+            scraper.transport.handler = None  # type: ignore[attr-defined]
+            assert scraper.get(f"{URL}/cover.png").status_code == 200
+
+    def test_an_empty_body_is_not_measured_either(self):
+        empty = make_response(body="", url=URL)
+        transport = FakeTransport(handler=self.serve_then_stray())
+        with scraper_for(transport, guard_topic=True, on_decoy="raise") as scraper:
+            for number in range(6):
+                scraper.get(f"{URL}?p={number}")
+            scraper.transport.replies = [empty]  # type: ignore[attr-defined]
+            scraper.transport.handler = None  # type: ignore[attr-defined]
+            assert scraper.get(f"{URL}?p=empty").status_code == 200
+
+    def test_a_parser_that_is_not_installed_falls_back_to_raw_words(self):
+        # `parser` is a caller setting, and one naming a parser that is not installed
+        # would otherwise take down every fetch rather than just the markup cleanup.
+        from scraper.session import _visible_text
+
+        assert "hello" in _visible_text("<p>hello</p>", "a-parser-nobody-installed")
+
+    def test_script_content_is_not_part_of_the_vocabulary(self):
+        """Site JavaScript is identical on every page, including the decoys.
+
+        Measuring it makes every page look on-topic, which turns the guard off
+        without anyone changing a setting.
+        """
+        from scraper.session import _visible_text
+
+        text = _visible_text("<script>var telemetry=1</script><p>chapter one</p>", "lxml")
+        assert "telemetry" not in text
+        assert "chapter one" in text
+
+    def test_the_guard_reports_what_it_has_learned(self):
+        transport = FakeTransport(handler=self.serve_then_stray())
+        with scraper_for(transport, guard_topic=True) as scraper:
+            for number in range(3):
+                scraper.get(f"{URL}?p={number}")
+            assert "topic guard" in scraper.explain(URL)
+
+
+class TestWiringFaults:
+    def test_a_tier_the_scraper_never_built_is_a_wiring_bug_not_a_block(self):
+        # The planner only names capabilities built from the same config, so this can
+        # only be a programming error — and it must not read as a site refusing us.
+        with scraper_for(FakeTransport()) as scraper:
+            with pytest.raises(KeyError, match="no tier named"):
+                scraper._tier("clearance")  # noqa: SLF001
+
+    def test_a_tier_that_will_not_close_does_not_break_the_context_manager(self):
+        transport = FakeTransport([make_response(body=PAGE, url=URL)])
+        scraper = scraper_for(transport)
+
+        def explode() -> None:
+            raise RuntimeError("this tier is stuck")
+
+        with scraper:
+            scraper.get(URL)
+            for tier in scraper._tiers.values():  # noqa: SLF001
+                tier.close = explode  # type: ignore[method-assign]
+
+    def test_a_managed_provider_is_wired_when_one_is_configured(self):
+        def provider(method: str, url: str, **options: Any) -> requests.Response:
+            return make_response(body=PAGE, url=url)
+
+        with scraper_for(FakeTransport(), managed=provider) as scraper:
+            assert scraper._tier("managed") is not None  # noqa: SLF001
+
+    def test_links_with_nothing_to_resolve_against_still_come_back(self):
+        # No origin, no previous page and no explicit base: there is no profile to ask
+        # about recorded decoys, and the answer is the links, not an empty frontier.
+        config = ScraperConfig(transport=FakeTransport(), remember=False, guard_topic=False)
+        with Scraper(origin="", config=config) as scraper:
+            found = scraper.links('<a href="https://example.com/next">next</a>')
+        assert [link.url for link in found] == ["https://example.com/next"]
+
+    def test_a_body_that_cannot_be_read_is_not_a_failed_fetch(self):
+        """A consumed or broken stream costs the topic check, not the response.
+
+        The guard is a heuristic backstop; a body it could not read is a reason to
+        skip it, not to fail a request that already succeeded.
+        """
+        from scraper.session import Scraper as _Scraper
+
+        class Unreadable(requests.Response):
+            @property
+            def content(self) -> bytes:  # type: ignore[override]
+                raise RuntimeError("the stream was already consumed")
+
+        assert _Scraper._peek(Unreadable()) == ""  # noqa: SLF001
+
+    def test_a_wait_the_server_asked_for_is_actually_waited_out(self):
+        # A 503 with a retry-after is the origin naming when it will be back, and it
+        # is not a detection event — retrying immediately spends an attempt on a
+        # certainty and looks like exactly the impatience the behavioural layer reads.
+        calls = {"n": 0}
+
+        def serve(method: str, url: str, kwargs: Dict[str, Any]) -> requests.Response:
+            calls["n"] += 1
+            if calls["n"] == 1:
+                return make_response(503, "maintenance", url=url, headers={"retry-after": "0.05"})
+            return make_response(body=PAGE, url=url)
+
+        started = time.monotonic()
+        with scraper_for(FakeTransport(handler=serve)) as scraper:
+            assert scraper.get(URL).status_code == 200
+        assert calls["n"] == 2
+        assert time.monotonic() - started >= 0.05
+
+    def test_an_abort_while_queued_behind_another_request_is_honoured(self):
+        # Concurrency is capped per address, so a request can be waiting on a slot
+        # rather than on the network. Cancellation has to be seen there too, or a
+        # cancelled job sits until whoever holds the slot is done.
+        transport = FakeTransport([make_response(body=PAGE, url=URL)])
+        raised: List[BaseException] = []
+        with scraper_for(transport, max_sessions_per_exit=1) as scraper:
+            gate = scraper.exits.slot(scraper.exits.lease(scraper.memory.key(URL)))
+            assert gate.acquire(timeout=1)
+
+            def fetch() -> None:
+                try:
+                    scraper.get(URL)
+                except BaseException as exc:  # noqa: BLE001 - reported on the main thread
+                    raised.append(exc)
+
+            worker = threading.Thread(target=fetch, daemon=True)
+            worker.start()
+            time.sleep(0.1)
+            scraper.abort()
+            worker.join(timeout=5)
+            gate.release()
+
+        assert raised and isinstance(raised[0], Aborted)
+        assert transport.calls == [], "the request must never have gone out"
+
+    def test_a_clearance_earned_by_a_previous_identity_is_never_sent(self):
+        """Kept out of the call rather than sent and rejected.
+
+        A clearance under the wrong identity produces a challenge, and a challenge
+        there reads as the solver having failed rather than as the address having
+        changed underneath it — which starts a re-solve loop on a fresh exit each
+        time.
+        """
+        transport = FakeTransport([make_response(body=PAGE, url=URL)])
+        with scraper_for(transport) as scraper:
+            scraper.knows(URL).clearance = {
+                "origin": "https://example.com/",
+                "cookies": {"cf_clearance": "earned-by-someone-else"},
+                "identity_token": "a-token-from-a-retired-exit",
+                "expires_at": time.time() + 600,
+            }
+            scraper.get(URL)
+        assert "cookies" not in transport.calls[0][2]
+
+    def test_a_decoy_can_be_recorded_without_warning_or_raising(self, caplog):
+        on_topic = (
+            "<html><body>chapter translation novel protagonist cultivation sect "
+            "elder disciple sword qi realm</body></html>"
+        )
+        off_topic = (
+            "<html><body>quarterly amortisation schedules reconciled against "
+            "depreciating municipal bond covenants actuarial tables</body></html>"
+        )
+        pages = [on_topic] * 6 + [off_topic]
+        index = {"n": 0}
+
+        def serve(method: str, url: str, kwargs: Dict[str, Any]) -> requests.Response:
+            body = pages[min(index["n"], len(pages) - 1)]
+            index["n"] += 1
+            return make_response(body=body, url=url)
+
+        with scraper_for(
+            FakeTransport(handler=serve), guard_topic=True, on_decoy="ignore"
+        ) as scraper:
+            for number in range(6):
+                scraper.get(f"{URL}?p={number}")
+            with caplog.at_level("WARNING", logger="scraper.session"):
+                scraper.get("https://example.com/maze/1")
+            # Still written to the profile: the next run's frontier needs to know,
+            # even for a caller who does not want to hear about it now.
+            assert scraper.knows(URL).is_decoy("https://example.com/maze/1")
+        assert caplog.text == ""
+
+
+class TestWarmUpTolerance:
+    def test_a_homepage_that_will_not_load_does_not_stop_the_deep_page(self):
+        """A soft signal must not become a hard stop.
+
+        The homepage failing is worth knowing about, but the page the caller actually
+        asked for may still work, and refusing to try guarantees it does not.
+        """
+        from scraper import PacingPolicy
+
+        deep = {"n": 0}
+
+        def serve(method: str, url: str, kwargs: Dict[str, Any]) -> requests.Response:
+            if url == "https://example.com/":
+                return make_response(403, BLOCK_BODY, url=url)
+            deep["n"] += 1
+            if deep["n"] == 1:
+                # The first refusal is what makes the planner warm up at all.
+                return make_response(429, "slow", url=url, headers={"retry-after": "0"})
+            return make_response(body=PAGE, url=url)
+
+        transport = FakeTransport(handler=serve)
+        config = ScraperConfig(
+            transport=transport,
+            pacing=PacingPolicy(interval=0.0, floor=0.0, warmup=True, warmup_ttl=0.0),
+            remember=False,
+            guard_topic=False,
+            raise_for_status=False,
+        )
+        with Scraper(origin="https://example.com", config=config) as scraper:
+            assert scraper.get(URL).status_code == 200
+        assert "https://example.com/" in transport.urls, "the warm-up has to have been tried"

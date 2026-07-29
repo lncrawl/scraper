@@ -3,12 +3,31 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Dict, Optional
 
 import pytest
 import requests
 
 from scraper import ScraperConfig, default_data_dir
+from scraper import config as config_module
 from scraper.browser import CallableSolver, SolveResult
+
+
+class WindowsOs:
+    """Just enough of `os` for `default_data_dir` to take the Windows branch."""
+
+    name = "nt"
+
+    def __init__(self, environ: Dict[str, str]) -> None:
+        self.environ = _Environ(environ)
+
+
+class _Environ:
+    def __init__(self, values: Dict[str, str]) -> None:
+        self._values = values
+
+    def get(self, key: str, default: Optional[str] = None) -> Optional[str]:
+        return self._values.get(key, default)
 
 
 def test_the_defaults_are_a_working_configuration():
@@ -66,6 +85,17 @@ class TestDerivedPaths:
         found = default_data_dir()
         assert found.is_absolute()
         assert found.name == "lncrawl-scraper"
+
+    def test_windows_gets_its_own_platform_location(self, monkeypatch):
+        # `~/.cache` is not a place on Windows, and state that lands somewhere the
+        # platform sweeps is state that cannot accumulate. Substituted at the module
+        # rather than by patching `os.name`, which would also re-point `pathlib`.
+        monkeypatch.setattr(config_module, "os", WindowsOs({"LOCALAPPDATA": "C:/x/AppData/Local"}))
+        assert default_data_dir() == Path("C:/x/AppData/Local/lncrawl-scraper")
+
+    def test_windows_without_the_variable_still_lands_somewhere_plausible(self, monkeypatch):
+        monkeypatch.setattr(config_module, "os", WindowsOs({}))
+        assert "AppData" in str(default_data_dir())
 
 
 def test_a_nonsense_decoy_policy_is_rejected_at_construction():

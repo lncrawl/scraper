@@ -148,6 +148,18 @@ def test_root_none_for_detached_tag():
     assert PageSoup(detached).root is None
 
 
+def test_root_none_for_a_tree_never_attached_to_a_document():
+    # A subtree assembled by hand has parents but no BeautifulSoup at the top, so
+    # there is no document to hand back — and `body` has to degrade with it rather
+    # than reaching for `find` on a bare tag.
+    document = BeautifulSoup("", "html.parser")
+    outer = document.new_tag("div")
+    inner = document.new_tag("span")
+    outer.append(inner)
+    assert PageSoup(inner).root is None
+    assert not PageSoup(inner).body
+
+
 # --- mutation -------------------------------------------------------------
 
 

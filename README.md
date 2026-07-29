@@ -1,13 +1,25 @@
-# LNCrawl Scraper
+<div align="center">
 
-[![PyPI](https://img.shields.io/pypi/v/lncrawl-scraper.svg)](https://pypi.org/project/lncrawl-scraper/)
-[![codecov](https://codecov.io/gh/lncrawl/scraper/branch/main/graph/badge.svg)](https://codecov.io/gh/lncrawl/scraper)
+# lncrawl-scraper
+
+**A scraper that works out _which detection layer_ is blocking it —<br>
+and escalates only as far as that layer requires.**
+
+[![PyPI](https://img.shields.io/pypi/v/lncrawl-scraper.svg?logo=pypi&logoColor=white)](https://pypi.org/project/lncrawl-scraper/)
+[![Python](https://img.shields.io/pypi/pyversions/lncrawl-scraper?logo=python&logoColor=white)](https://pypi.org/project/lncrawl-scraper/)
 [![CI](https://github.com/lncrawl/scraper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lncrawl/scraper/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/lncrawl/scraper/branch/main/graph/badge.svg)](https://codecov.io/gh/lncrawl/scraper)
 [![CodeQL](https://github.com/lncrawl/scraper/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/lncrawl/scraper/actions/workflows/github-code-scanning/codeql)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lncrawl-scraper)
+[![License](https://img.shields.io/pypi/l/lncrawl-scraper.svg)](https://github.com/lncrawl/scraper/blob/main/LICENSE)
 
-A scraper that works out **which detection layer is blocking it** and escalates only as far as
-that layer requires — instead of running a fixed remedy per status code.
+[**The model**](https://github.com/lncrawl/scraper/blob/main/docs/model.md) ·
+[**Documentation**](https://github.com/lncrawl/scraper/tree/main/docs) ·
+[**Examples**](https://github.com/lncrawl/scraper/tree/main/examples) ·
+[**Changelog**](https://github.com/lncrawl/scraper/blob/main/CHANGELOG.md)
+
+</div>
+
+---
 
 ```python
 from scraper import Scraper
@@ -17,70 +29,85 @@ with Scraper(origin="https://example.com") as scraper:
     print(soup.select_one("h1").text)
 ```
 
-That already reproduces a real browser's TLS and HTTP/2 fingerprint, holds one address per
-origin, paces itself like a person reading, and refuses to follow decoy links.
+Those four lines already reproduce a real browser's TLS and HTTP/2 fingerprint, hold one
+address per origin, pace themselves like a person reading, and refuse to follow decoy links.
 
 ## The idea
 
-A modern mitigation engine runs many largely independent detectors and folds them into one trust
-score. Admission behaves as a near-conjunction, so:
+A modern mitigation engine runs many largely independent detectors and folds them into one
+trust score. Admission behaves as a near-conjunction, so:
 
-**The weakest layer bounds the outcome.** `P(evade) ≲ min(p₁ … pₙ)`. If a strategy fails on
-address reputation, perfecting its TLS profile gains *nothing* — not a little, zero — until
-reputation stops being the minimum. So this library diagnoses which layer is binding before it
-changes anything.
+```text
+    P(evade)  ≲  min( p₁ , p₂ , p₃ , … , pₙ )
+                       ▲
+                       └─ the binding layer. Every other layer is
+                          wasted effort until this one stops being
+                          the minimum.
+```
 
-**What a detector reads decides whether it can be satisfied.** Some read an artifact the client
-**emits** — a TLS `ClientHello`, an HTTP/2 frame order, a header order — which a faithful
-imitator can reproduce. Others read a property the client must **possess** — accumulated
-per-zone history, a private signing key — which it cannot.
+**The weakest layer bounds the outcome.** If a strategy fails on address reputation,
+perfecting its TLS profile gains *nothing* — not a little, zero. So this library diagnoses
+which layer is binding before it changes anything.
+
+**What a detector reads decides whether it can be satisfied.**
+
+| | The detector reads | Reproducible? | What actually moves it |
+| --- | --- | --- | --- |
+| **Emitted** | an artifact the client *sends* — a TLS `ClientHello`, an HTTP/2 frame order, a header order | yes | imitate it faithfully |
+| **Possessed** | a property the client must *hold* — accumulated per-zone history, a private signing key | no | accrue it, rent it, or hold the key |
 
 That second distinction produces the behaviour that most sets this library apart: **when the
 binding layer reads a possessed property, it does not rotate.** Rotating discards the very
-history the detector is measuring, so it holds the address still and slows down. And two layers
-raise instead of retrying, because they read a secret you either hold or do not.
+history the detector is measuring, so it holds the address still and slows down. And two
+layers raise instead of retrying, because they read a secret you either hold or do not.
 
-Full treatment: [docs/model.md](docs/model.md).
+Full treatment: [docs/model.md](https://github.com/lncrawl/scraper/blob/main/docs/model.md).
 
 ## What it does
 
-- **Diagnoses instead of reacting.** `scraper.diagnose` maps a response to one of nineteen
-  layers. A `200` carrying a challenge is a failure; a `429` is a pacing problem, not a bad
-  address; a `403` with error 1010 is about the automation channel and rotating the exit changes
-  nothing.
-- **Escalates on evidence.** Four tiers — archive, impersonated HTTP, browser solve, managed
-  provider — ordered by real cost. The cheapest one whose reach covers the binding layer is
-  chosen, so a site needing only a header profile never pays for a browser launch.
-- **Treats identity as indivisible.** A clearance is bound to the address, User-Agent and TLS
-  fingerprint that earned it, so `Clearance.usable_by()` refuses to replay it under any other —
-  which makes the classic rotating-proxy failure structurally impossible.
-- **Solves once and reuses.** A browser runs for the challenge, its exact User-Agent is adopted,
-  and everything after is a cheap request on the same identity until the cookie expires.
-- **Accumulates rather than fakes.** Gamma-distributed pacing, homepage warm-up, real referrer
-  chains, one address per origin, capped concurrency — and it all persists between runs, because
-  a process that forgets cannot accumulate.
-- **Avoids the trap with no error response.** `safe_links` enumerates only anchors a person could
-  click; `TopicGuard` notices content that stopped being about the site.
-- **Signs requests, if you want to be welcome.** RFC 9421 / Ed25519 Web Bot Auth. A valid
-  signature skips the challenge machinery entirely, making it the cheapest tier there is.
-- **Tells you why.** `scraper.explain(url)` names the binding layer, the working tier, the
-  learned pacing and the ladder available. Exceptions carry `.layer`, not just a status code.
-- **`PageSoup`** — null-safe BeautifulSoup wrapper; selectors never return `None`.
+| | |
+| --- | --- |
+| **Diagnoses instead of reacting** | `scraper.diagnose` maps a response to one of nineteen layers. A `200` carrying a challenge is a failure; a `429` is a pacing problem, not a bad address; a `403` with error 1010 is about the automation channel, and rotating the exit changes nothing. |
+| **Escalates on evidence** | Four tiers, ordered by real cost. The cheapest one whose reach covers the binding layer is chosen, so a site needing only a header profile never pays for a browser launch. |
+| **Treats identity as indivisible** | A clearance is bound to the address, User-Agent and TLS fingerprint that earned it, and `Clearance.usable_by()` refuses to replay it under any other — which makes the classic rotating-proxy failure structurally impossible. |
+| **Solves once and reuses** | A browser runs for the challenge, its exact User-Agent is adopted, and everything after is a cheap request on the same identity until the cookie expires. |
+| **Accumulates rather than fakes** | Gamma-distributed pacing, homepage warm-up, real referrer chains, one address per origin, capped concurrency — and it all persists between runs, because a process that forgets cannot accumulate. |
+| **Avoids the trap with no error response** | `safe_links` enumerates only anchors a person could click; `TopicGuard` notices content that stopped being about the site. |
+| **Signs requests, to be welcome** | RFC 9421 / Ed25519 Web Bot Auth. A valid signature skips the challenge machinery entirely, making it the cheapest tier there is. |
+| **Tells you why** | `scraper.explain(url)` names the binding layer, the working tier, the learned pacing and the ladder available. Exceptions carry `.layer`, not just a status code. |
+| **`PageSoup`** | Null-safe BeautifulSoup wrapper; selectors never return `None`. |
+
+## The ladder
+
+```text
+  cost   tier         reaches
+  ────   ──────────   ───────────────────────────────────────────────────
+     0   archive      everything — when a capture exists
+    10   direct       TLS, HTTP/2 frames, header order, post-quantum keyshare
+   100   clearance    + the JavaScript, Turnstile and automation-channel layers
+  1000   managed      + the per-zone composite, at someone else's price
+```
+
+The planner picks the cheapest rung that covers the binding layer, and stops with an
+explanation when no configured rung does. Writing your own rung:
+[docs/tiers.md](https://github.com/lncrawl/scraper/blob/main/docs/tiers.md).
 
 ## Installation
 
 ```bash
 pip install lncrawl-scraper
-
-pip install "lncrawl-scraper[browser]"   # challenge solving (nodriver)
-pip install "lncrawl-scraper[botauth]"   # signed requests (cryptography)
-pip install "lncrawl-scraper[image]"     # get_image() (Pillow)
-pip install "lncrawl-scraper[all]"
 ```
 
-Impersonation is **not** an extra. Layers 2–5 are one barrier and an ordinary Python client fails
-all four in the first round trip, so a build without it would not be a degraded scraper but one
-that cannot reach a protected page.
+| Extra | Pulls in | Needed for |
+| --- | --- | --- |
+| `lncrawl-scraper[browser]` | nodriver | solving a challenge with a real browser |
+| `lncrawl-scraper[botauth]` | cryptography | signed requests (Web Bot Auth) |
+| `lncrawl-scraper[image]` | Pillow | `get_image()` |
+| `lncrawl-scraper[all]` | all three | |
+
+Impersonation is **not** an extra. Layers 2–5 are one barrier and an ordinary Python client
+fails all four in the first round trip, so a build without it would not be a degraded scraper
+but one that cannot reach a protected page.
 
 ## Adding reach
 
@@ -104,7 +131,7 @@ with Scraper(origin="https://site.test", config=config) as scraper:
     print(scraper.explain("https://site.test/deep/page"))
 ```
 
-```
+```text
 site.test
   binding layer : L9 Managed JavaScript challenge — reads a hybrid property, solve
   tier          : clearance
@@ -117,8 +144,8 @@ site.test
 
 ## When it stops
 
-Failures name the layer and what would move it, because "403 after 3 retries" is the message that
-sends people to rewrite the part that was already working.
+Failures name the layer and what would move it, because "403 after 3 retries" is the message
+that sends people to rewrite the part that was already working.
 
 ```python
 from scraper import Layer
@@ -141,24 +168,24 @@ except Exhausted as exc:
 
 | Page | |
 | --- | --- |
-| [docs/model.md](docs/model.md) | The bound, and emit vs. possess. **Start here.** |
-| [docs/layers.md](docs/layers.md) | The nineteen layers and what moves each. |
-| [docs/tiers.md](docs/tiers.md) | The escalation ladder; writing a tier. |
-| [docs/configuration.md](docs/configuration.md) | Every `ScraperConfig` field. |
-| [docs/behaviour.md](docs/behaviour.md) | Pacing, warm-up, persistence, shared state. |
-| [docs/decoy-content.md](docs/decoy-content.md) | The layer that returns no error. |
-| [docs/web-bot-auth.md](docs/web-bot-auth.md) | Signed requests and the key directory. |
-| [docs/diagnostics.md](docs/diagnostics.md) | `explain()`, exceptions, common conclusions. |
-| [docs/migration.md](docs/migration.md) | Porting from 0.2.x. |
-| [examples/](examples/) | Ten runnable programs, ordered to explain the design. |
+| [model.md](https://github.com/lncrawl/scraper/blob/main/docs/model.md) | The bound, and emit vs. possess. **Start here.** |
+| [layers.md](https://github.com/lncrawl/scraper/blob/main/docs/layers.md) | The nineteen layers and what moves each. |
+| [tiers.md](https://github.com/lncrawl/scraper/blob/main/docs/tiers.md) | The escalation ladder; writing a tier. |
+| [configuration.md](https://github.com/lncrawl/scraper/blob/main/docs/configuration.md) | Every `ScraperConfig` field. |
+| [behaviour.md](https://github.com/lncrawl/scraper/blob/main/docs/behaviour.md) | Pacing, warm-up, persistence, shared state. |
+| [decoy-content.md](https://github.com/lncrawl/scraper/blob/main/docs/decoy-content.md) | The layer that returns no error. |
+| [web-bot-auth.md](https://github.com/lncrawl/scraper/blob/main/docs/web-bot-auth.md) | Signed requests and the key directory. |
+| [diagnostics.md](https://github.com/lncrawl/scraper/blob/main/docs/diagnostics.md) | `explain()`, exceptions, common conclusions. |
+| [migration.md](https://github.com/lncrawl/scraper/blob/main/docs/migration.md) | Porting from 0.2.x. |
+| [examples/](https://github.com/lncrawl/scraper/tree/main/examples) | Ten runnable programs, ordered to explain the design. |
 
 ## Scope
 
 This library is for retrieving **publicly accessible** content. It does not attempt
 authentication bypass, credential abuse, or circumvention of access controls protecting
 non-public data — layer 19 raises rather than trying, and layer 18 raises where a signature is
-mandated. Where a site publishes an API or an archive holds what you need, both are cheaper than
-anything else here and are supported first-class for that reason.
+mandated. Where a site publishes an API or an archive holds what you need, both are cheaper
+than anything else here and are supported first-class for that reason.
 
 ## Development
 
@@ -172,6 +199,25 @@ uv run poe cov          # with coverage
 Tests are offline: the pipeline talks to a two-method `Transport`, so `tests/conftest.py`'s
 `FakeTransport` covers every tier without a network. The modules that encode judgement —
 `diagnosis`, `planner`, `layers` — are pure functions over primitives and are tested as such.
+
+<details>
+<summary><strong>Verifying against real deployments</strong></summary>
+
+`livetest/` runs the same paths against real Cloudflare deployments, using every host in
+[lightnovel-crawler](https://github.com/lncrawl/lightnovel-crawler)'s source index as the
+corpus. It is not part of `poe test` — it needs the network, and some scenarios need a local
+tor-pool and a real browser.
+
+```bash
+uv run poe live-all
+```
+
+Eleven of the fifteen defects found before 1.0 were invisible to a stubbed transport, and two
+of them made whole features silently useless while every unit test passed. Anything the
+harness finds gets a unit test whose docstring says it was found live, so those docstrings are
+the record of which assumptions turned out to be wrong.
+
+</details>
 
 ## Credits
 

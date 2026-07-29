@@ -49,6 +49,28 @@ def test_extract_host_idna_fallback_on_invalid_label():
     assert long_label in host
 
 
+def test_extract_host_survives_a_colon_that_is_not_a_port():
+    """A share button is enough to take out a page's whole link frontier.
+
+    `urlparse(...).port` raises rather than returning None when the netloc's ":" is
+    followed by something that is not a number, and `safe_links` calls this on every
+    resolved href. One `whatsapp:send?text=…` anchor used to abort extraction for the
+    entire page.
+    """
+    assert extract_host("whatsapp:send?text=hi") == "whatsapp"
+    assert extract_host("data:text/html,x") == "data"
+    # A real host with an unparseable port keeps the host; only the port is dropped.
+    assert extract_host("https://example.com:notaport/x") == "example.com"
+
+
+def test_an_unusual_scheme_does_not_cost_the_pages_real_links():
+    from scraper.links import safe_links
+
+    html = '<a href="/chapters/1">Ch 1</a><a href="whatsapp:send?text=hi">Share</a>'
+    found = safe_links(html, "https://example.com/novel/")
+    assert [link.url for link in found] == ["https://example.com/chapters/1"]
+
+
 def test_validate_url():
     assert validate_url("https://example.com")
     assert not validate_url("ftp://example.com")

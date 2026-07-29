@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any, Iterator, List
+
 from scraper.links import (
     Link,
     TopicGuard,
@@ -10,6 +12,49 @@ from scraper.links import (
     safe_links,
     tokens,
 )
+
+
+def alpha_word(index: int) -> str:
+    """A distinct all-letters word for *index*. The tokeniser ignores digits."""
+    return "term" + "".join("abcdefghij"[int(digit)] for digit in str(index))
+
+
+class ForeignNode:
+    """An anchor from a parser that is not BeautifulSoup.
+
+    Answers `href` and raises on everything else, which is the shape of the failure
+    the guards in `links` exist for: a node the caller supplied that does not have
+    BeautifulSoup's surface.
+    """
+
+    parent = None
+
+    def __init__(self, href: str = "") -> None:
+        self._href = href
+
+    def get(self, name: str) -> Any:
+        if name == "href":
+            return self._href
+        raise TypeError("unsupported attribute lookup")
+
+    def has_attr(self, name: str) -> bool:
+        raise TypeError("unsupported attribute lookup")
+
+    def get_text(self, strip: bool = False) -> str:
+        raise TypeError("unsupported text extraction")
+
+    @property
+    def children(self) -> Iterator[Any]:
+        raise TypeError("unsupported traversal")
+
+
+class ForeignTree:
+    def __init__(self, nodes: List[ForeignNode]) -> None:
+        self._nodes = nodes
+
+    def find_all(self, name: str) -> List[ForeignNode]:
+        return self._nodes
+
 
 PAGE = """
 <html><body>
@@ -147,6 +192,29 @@ class TestOnlyWhatAPersonCouldClick:
     def test_a_page_with_no_anchors_is_not_an_error(self):
         assert safe_links("<html><body><p>nothing</p></body></html>", BASE) == []
 
+    def test_something_that_is_not_a_document_yields_nothing(self):
+        # `safe_links` takes whatever the caller has to hand, and a caller who passes
+        # the wrong thing gets an empty frontier rather than an AttributeError from
+        # three frames down.
+        assert safe_links(object(), BASE) == []
+        assert safe_links(["https://example.com/a"], BASE) == []
+
+    def test_the_ancestor_walk_stops_before_the_document_root(self):
+        # A decoy container sits next to its links; walking to the root for every
+        # anchor on a large page is wasted work.
+        deep = "<div>" * 8 + '<a href="/chapters/9">Chapter 9</a>' + "</div>" * 8
+        assert [link.url for link in safe_links(deep, BASE)] == ["https://example.com/chapters/9"]
+
+    def test_a_node_that_is_not_beautifulsoup_costs_one_link_not_the_page(self):
+        """Every attribute read on a node is guarded, and this is why.
+
+        A foreign node — an lxml element, a custom parser's tag — raises on the reads
+        BeautifulSoup answers. One that does must be rejected as unreadable, not
+        propagate out of link extraction and abort the crawl frontier.
+        """
+        found = safe_links(ForeignTree([ForeignNode("/maze/a")]), BASE, include_rejected=True)
+        assert [link.rejected for link in found] == ["nothing rendered"]
+
 
 def test_a_link_knows_whether_it_is_followable():
     assert Link(url="https://x/").followable
@@ -189,11 +257,32 @@ class TestTopicGuard:
         guard.learn("chapter novel")
         assert guard.suspect("") is None
 
+    def test_a_page_with_no_content_words_teaches_nothing(self):
+        # Otherwise a run of empty or boilerplate-only pages walks the guard up to
+        # `min_samples` on a vocabulary it never actually learned, and the first real
+        # page reads as off-topic.
+        guard = TopicGuard(min_samples=1)
+        guard.learn("")
+        guard.learn("the and of to")
+        assert guard.samples == 0
+        assert not guard.ready
+
     def test_the_vocabulary_is_bounded(self):
+        # Words are alphabetic on purpose: the tokeniser drops digits, so a corpus of
+        # `word0001`-style terms collapses to one entry and never reaches the cap.
         guard = TopicGuard(vocabulary_size=20, min_samples=1)
         for index in range(200):
-            guard.learn(f"word{index:04d} filler filler")
+            guard.learn(f"{alpha_word(index)} filler filler")
         assert len(guard.snapshot()["counts"]) <= 20
+
+    def test_capping_keeps_the_words_the_site_actually_uses(self):
+        # A few decoy pages must not be able to dilute a learned vocabulary; the cap
+        # drops the long tail, which is where their vocabulary is.
+        guard = TopicGuard(vocabulary_size=3, min_samples=1)
+        for index in range(40):
+            guard.learn(f"{alpha_word(index)} chapter cultivation sect")
+        kept = guard.snapshot()["counts"]
+        assert set(kept) == {"chapter", "cultivation", "sect"}
 
     def test_the_vocabulary_survives_the_process(self):
         guard = TopicGuard(min_samples=2)
@@ -205,6 +294,12 @@ class TestTopicGuard:
 
     def test_restoring_from_nothing_is_a_fresh_guard(self):
         assert TopicGuard.restore(None).samples == 0
+
+    def test_a_corrupt_vocabulary_degrades_to_a_cold_guard(self):
+        # The state comes off disk and a file written by another version may hold
+        # anything. An unusable vocabulary means relearning, not raising on startup.
+        restored = TopicGuard.restore({"samples": 9, "counts": "not a mapping"})
+        assert restored.snapshot()["counts"] == {}
 
 
 def test_tokens_drop_stopwords_and_short_words():

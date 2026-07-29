@@ -122,6 +122,40 @@ class TestLeases:
         assert pool.slot(lease) is pool.slot(lease)
 
 
+class TestRetiring:
+    def test_when_every_exit_is_retired_the_oldest_comes_back(self):
+        # Falling back to a direct connection would silently drop the whole
+        # reputation strategy the caller configured these addresses for.
+        pool = ExitPool(
+            [ExitSpec(url="http://a.test:1"), ExitSpec(url="http://b.test:1")],
+            retire_for=600.0,
+        )
+        pool.lease("example.com")
+        pool.rotate("example.com", Layer.IP_REPUTATION)
+
+        recycled = pool.rotate("example.com", Layer.IP_REPUTATION)
+
+        assert recycled.spec.url == "http://a.test:1", "the longest-rested exit is next"
+
+    def test_rotating_an_origin_that_was_never_leased_just_leases_one(self):
+        # Nothing to report and nothing to retire: an origin with no history has no
+        # address to blame, and blaming one anyway would retire it on no evidence.
+        pool = ExitPool([ExitSpec(url="http://a.test:1"), ExitSpec(url="http://b.test:1")])
+        assert pool.rotate("example.com", Layer.IP_REPUTATION).spec.url == "http://a.test:1"
+
+    def test_a_retirement_expires(self):
+        # A block is evidence about a moment, not a life sentence: exits recover, and
+        # a pool that never un-retires anything shrinks to nothing over a long run.
+        pool = ExitPool(
+            [ExitSpec(url="http://a.test:1"), ExitSpec(url="http://b.test:1")],
+            retire_for=0.0,
+        )
+        pool.lease("example.com")
+        pool.rotate("example.com", Layer.IP_REPUTATION)
+
+        assert pool.rotate("example.com", Layer.IP_REPUTATION).spec.url == "http://a.test:1"
+
+
 class TestFailureKinds:
     @pytest.mark.parametrize(
         ("layer", "expected"),
@@ -276,6 +310,31 @@ class TestTorPool:
         lease = pool.lease("example.com")
         pool.report(lease, Layer.IP_REPUTATION)  # must not raise
         assert pool.rotate("example.com", Layer.IP_REPUTATION) is not None
+
+    def test_a_rejected_credential_is_logged_at_error_not_swallowed(self, pool_api, caplog):
+        """Found live: without a valid token the pool stops hearing about soft blocks.
+
+        Nothing fails — the proxy still forwards traffic — so burnt exits keep taking
+        requests and neither side looks broken. The log line is the only symptom, so
+        it has to be loud and it has to name the fix.
+        """
+        api_url, handler = pool_api
+        handler.status = 403
+        pool = tor_pool(api_url)
+        with caplog.at_level("ERROR", logger="scraper.exits"):
+            pool.report(pool.lease("example.com"), Layer.IP_REPUTATION)
+        assert "token" in caplog.text
+        assert "not working" in caplog.text
+
+    def test_an_unknown_session_is_routine_rather_than_alarming(self, pool_api, caplog):
+        # Acting on a report the pool unpins the session, so the next report has
+        # nothing to attach to and the next request re-pins to a healthy instance.
+        api_url, handler = pool_api
+        handler.status = 404
+        pool = tor_pool(api_url)
+        with caplog.at_level("WARNING", logger="scraper.exits"):
+            pool.report(pool.lease("example.com"), Layer.IP_REPUTATION)
+        assert caplog.text == ""
 
     def test_an_error_response_leaves_the_pool_usable(self, pool_api):
         api_url, handler = pool_api
