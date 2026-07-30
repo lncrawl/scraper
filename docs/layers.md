@@ -63,8 +63,14 @@ them the good ones.
 
 Declare the kind honestly in `ExitSpec`. Claiming `MOBILE` for a datacenter range does not
 change what the reputation database thinks; it only stops this library from telling you
-that layer 1 is the reason nothing works. `ExitKind.reach` is what the planner consults
-before recommending a rotation, and a pool of published ranges reaches nothing.
+that layer 1 is the reason nothing works. An `ExitSpec` with a kind other than `DIRECT`
+and no `url` is refused outright, because every packet would still leave from the local
+address while the pool reported reach it does not have.
+
+`ExitKind.reach` is what the planner consults before recommending a rotation **as a cure
+for layer 1**, and a pool of published ranges reaches nothing there. It is not consulted
+for anything else: whether rotating can produce a different address at all is
+`ExitPool.rotatable`, and a dead exit is worth replacing whatever its kind reaches.
 
 ## Layer 8: the hard one
 

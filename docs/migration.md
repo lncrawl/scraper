@@ -35,7 +35,7 @@ made the common path the broken one.
 | `StealthConfig` | gone; see `PacingPolicy` |
 | `BrowserConfig` | gone; the impersonation profile supplies the User-Agent |
 | `ProxyConfig`, `ProxyUrl` | `ExitSpec` in `ScraperConfig.exits` |
-| `TorProxyUrl` | `ExitSpec(kind=ExitKind.TOR)`; no control-port rotation |
+| `TorProxyUrl` | `ExitSpec(url="socks5h://127.0.0.1:9050", kind=ExitKind.TOR)`; no control-port rotation |
 | `TorPoolProxyUrl` | `TorPoolSpec` |
 | `SharedLimiter` | `SharedState` — shares more, see below |
 | `AbortedException` | `Aborted` |

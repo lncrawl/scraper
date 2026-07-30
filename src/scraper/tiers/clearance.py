@@ -36,6 +36,14 @@ from .direct import DirectTier
 
 logger = logging.getLogger(__name__)
 
+MAX_HELD = 64
+"""Origins to keep a solved clearance in memory for.
+
+Every solve added an entry keyed by origin and nothing ever removed one, so a
+long-running process accumulated one per site it had ever cleared, each holding cookies
+long past their expiry. The cap is a backstop; expiry does the real work.
+"""
+
 
 class ClearanceTier(Tier):
     """Obtains a clearance with a browser, then serves through :class:`DirectTier`.
@@ -140,6 +148,7 @@ class ClearanceTier(Tier):
                 )
             clearance = result.as_clearance(origin, identity)
             pinned = identity.pin(result.user_agent)
+            self._prune_locked()
             self._held[origin] = (clearance, pinned)
 
         if self._store is not None:
@@ -152,3 +161,10 @@ class ClearanceTier(Tier):
             pinned.describe(),
         )
         return clearance, pinned
+
+    def _prune_locked(self) -> None:
+        """Forget expired clearances, then the oldest, until under the cap."""
+        for origin in [key for key, (held, _) in self._held.items() if held.expired]:
+            del self._held[origin]
+        while len(self._held) >= MAX_HELD:
+            self._held.pop(next(iter(self._held)))

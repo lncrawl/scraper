@@ -95,6 +95,8 @@ class ExitSpec:
     def __post_init__(self) -> None:
         if self.url and "://" not in self.url:
             raise ValueError(f"proxy URL needs a scheme: {self.url!r}")
+        if not self.url and self.kind is not ExitKind.DIRECT:
+            raise ValueError(f"an exit of kind {self.kind.value} needs a proxy URL")
 
     @property
     def name(self) -> str:
@@ -238,6 +240,8 @@ class ExitPool:
 
     def reach(self) -> FrozenSet[Layer]:
         """Layers the currently available addresses can pass."""
+        if not self.configured:
+            return frozenset()
         return expand(self.best_kind.reach)
 
     def lease(self, origin: str) -> ExitLease:
@@ -323,6 +327,7 @@ class ExitPool:
 
     def _drop(self, lease: ExitLease) -> None:
         """Tell a pool we are finished with a session. Best-effort, like `report`."""
+        self._forget_slot(lease)
         spec = lease.spec
         if not isinstance(spec, TorPoolSpec):
             return
@@ -332,11 +337,28 @@ class ExitPool:
             method="DELETE",
         )
 
+    def _forget_slot(self, lease: ExitLease) -> None:
+        """Drop the concurrency gate of an address that cannot come back.
+
+        Only for a proxied lease: its exit id carries a fresh session key, so once the
+        lease is gone the id is never asked for again and every rotation would
+        otherwise leave a semaphore behind for the life of the process. A ``direct#``
+        id *is* asked for again — the same origin leases it next time — so keeping it
+        is what stops the gate resetting to full capacity under an active caller.
+        """
+        if not lease.spec.url:
+            return
+        with self._lock:
+            self._slots.pop(lease.exit_id, None)
+
     # -- internals ----------------------------------------------------------------
 
     def _replace(self, origin: str, avoid: Optional[ExitSpec]) -> ExitLease:
         with self._lock:
-            self._leases.pop(origin, None)
+            outgoing = self._leases.pop(origin, None)
+        if outgoing is not None:
+            self._forget_slot(outgoing)
+        with self._lock:
             self._restore_locked()
             lease = self._new_lease_locked(origin, avoid=avoid)
             self._leases[origin] = lease
@@ -345,11 +367,7 @@ class ExitPool:
     def _new_lease_locked(self, origin: str, avoid: Optional[ExitSpec] = None) -> ExitLease:
         spec = self._pick_locked(avoid)
         key = f"s-{uuid.uuid4().hex[:12]}"
-        # The exit identifier has to change whenever the address might have, and
-        # for a pooled endpoint the URL alone never changes. Folding the session
-        # key in is what makes a rotation visible to everything downstream that
-        # is bound to the address.
-        exit_id = f"{spec.name}#{key}" if spec.url else "direct"
+        exit_id = f"{spec.name}#{key}" if spec.url else f"direct#{origin}"
         return ExitLease(spec=spec, session_key=key, exit_id=exit_id)
 
     def _pick_locked(self, avoid: Optional[ExitSpec]) -> ExitSpec:
@@ -410,9 +428,6 @@ class ExitPool:
             return json.loads(raw) if raw else {}
         except urllib.error.HTTPError as exc:
             if exc.code in (401, 403):
-                # Called out because it degrades silently otherwise: without a
-                # valid token the pool stops hearing about soft blocks, burnt
-                # exits keep taking traffic, and neither side looks broken.
                 logger.error(
                     "tor-pool rejected the credential for %s (%s). Set TorPoolSpec.token to a "
                     "proxy-scoped token; rotation and failure reporting are not working.",
@@ -420,9 +435,6 @@ class ExitPool:
                     exc.code,
                 )
             elif exc.code == 404:
-                # Routine: acting on a report the pool unpins the session, so the
-                # next report has nothing to attach to and the next request
-                # re-pins to a healthy instance.
                 logger.debug("tor-pool has no session for %s", path)
             else:
                 logger.warning("tor-pool request to %s failed: %s", path, exc)

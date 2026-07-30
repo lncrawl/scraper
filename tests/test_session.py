@@ -334,7 +334,9 @@ class TestRotationIsEarned:
         with scraper_for(transport, exits=exits, max_attempts=3, max_rotations=1) as scraper:
             with pytest.raises(Exhausted) as caught:
                 scraper.get(URL)
-        assert caught.value.layer is Layer.IP_REPUTATION
+        # The address is spent, but nothing is attributed: the site never answered.
+        assert caught.value.layer is None
+        assert "exit unusable" in str(caught.value)
 
     def test_a_transport_failure_with_no_proxy_just_retries(self):
         attempts = {"n": 0}
@@ -1093,3 +1095,37 @@ class TestWhatAFailedResponseTeaches:
         memory.record_failure(URL, None)
         assert memory.profile(URL).binding is Layer.MANAGED_CHALLENGE
         assert memory.profile(URL).failures == 2
+
+
+class TestRotationIsReachable:
+    """A dead exit is not a reputation block, and a pool of them can still move.
+
+    `ExitKind.TOR.reach` is empty and honestly so — Tor exit lists are published — but
+    the planner asked that question before every rotation, so with a tor-pool
+    configured `Move.ROTATE` was never emitted and `ExitPool.rotate`/`report` were
+    unreachable from `fetch`.
+    """
+
+    def test_a_pool_of_tor_exits_rotates_off_a_dead_one(self):
+        def explode(method: str, url: str, kwargs: Dict[str, Any]) -> requests.Response:
+            raise requests.ConnectionError("connection reset")
+
+        transport = FakeTransport(handler=explode)
+        exits = [TorPoolSpec(url="socks5h://pool.test:9250", api_url="http://pool.test:1")]
+        with scraper_for(transport, exits=exits, max_attempts=3, max_rotations=2) as scraper:
+            before = scraper.exits.lease("example.com").exit_id
+            with pytest.raises(Exhausted):
+                scraper.get(URL)
+            assert scraper.exits.lease("example.com").exit_id != before, (
+                "the pool never moved, so rotate() was never reached"
+            )
+
+    def test_a_reputation_block_still_refuses_to_rotate_among_published_ranges(self):
+        # The half of the old check that was right, kept: every Tor address is in a
+        # published range, so replacing one with another cannot clear layer 1.
+        transport = FakeTransport([make_response(403, "banned", url=URL, headers={"cf-ray": "x"})])
+        exits = [TorPoolSpec(url="socks5h://pool.test:9250", api_url="http://pool.test:1")]
+        with scraper_for(transport, exits=exits, max_attempts=2, max_rotations=2) as scraper:
+            with pytest.raises(Blocked) as caught:
+                scraper.get(URL)
+        assert "reputation" in str(caught.value) or caught.value.layer is not None

@@ -56,9 +56,10 @@ mismatch of never offering it.
 | `retire_exit_for` | Seconds a blamed address stays out of the pool. |
 
 `ExitKind` is not decoration — `ExitKind.reach` is what the planner consults before
-recommending a rotation. Claiming `MOBILE` for a datacenter range does not change what the
-reputation database thinks; it only stops this library from telling you that layer 1 is why
-nothing works.
+recommending a rotation as a cure for layer 1. Claiming `MOBILE` for a datacenter range
+does not change what the reputation database thinks; it only stops this library from
+telling you that layer 1 is why nothing works. A kind other than `DIRECT` with no `url`
+raises, since the address would be the local one either way.
 
 See [layers.md](layers.md#layer-1-addresses).
 

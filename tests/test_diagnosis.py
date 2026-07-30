@@ -277,7 +277,12 @@ class TestTransportFailures:
     def test_through_a_proxy_the_exit_is_the_suspect(self):
         result = diagnose_transport(OSError("connection reset"), through_proxy=True)
         assert result.action is Action.ROTATE
-        assert result.layer is Layer.IP_REPUTATION
+        # Blamed on the exit, but attributed to no layer: the site never answered, so
+        # there is nothing to conclude about it. Naming layer 1 here wrote a permanent
+        # verdict onto the origin's profile that the destination refuses us, and it also
+        # made rotation unreachable for any pool of Tor exits — `ExitKind.TOR.reach` is
+        # empty, so the planner's reputation check stopped the move every time.
+        assert result.layer is None
 
     def test_without_a_proxy_there_is_nothing_to_blame(self):
         # Swapping anything client-side over a direct connection failure is
@@ -334,7 +339,7 @@ class TestTransportFailures:
             error = OSError("Can't complete SOCKS5 connection to example.com:443")
             result = diagnose_transport(error, through_proxy=True)
             assert result.action is Action.ROTATE
-            assert result.layer is Layer.IP_REPUTATION
+            assert result.layer is None
 
 
 def test_only_the_head_of_a_large_body_is_examined():

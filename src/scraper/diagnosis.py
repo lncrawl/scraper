@@ -397,5 +397,6 @@ def diagnose_transport(error: BaseException, *, through_proxy: bool) -> Diagnosi
         fault = _proxy_fault(error)
         if fault:
             return Diagnosis(Action.REFUSE, None, fault)
-        return Diagnosis(Action.ROTATE, Layer.IP_REPUTATION, f"exit unusable ({name})")
+        # No layer: the site never answered, so there is nothing to attribute to it.
+        return Diagnosis(Action.ROTATE, None, f"exit unusable ({name})")
     return Diagnosis(Action.RETRY, None, f"transport failure ({name})")

@@ -6,7 +6,61 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **A concurrency gate is keyed per address *and* origin.** With no proxy configured every
+  origin shared the literal exit id `direct`, so `max_sessions_per_exit` — clamped to the
+  low single digits — gated the **whole process** rather than one address. A consumer
+  crawling several sites at once was serialised across all of them, which is what forced
+  building one `SharedState` per domain. The id is now `direct#<origin>`.
+
+  Identity tokens and stored clearances key on the exit id too, so this narrows what they
+  match — the safe direction, since a clearance issued for one site was never usable on
+  another. It does mean **every clearance already in `origins.json` stops matching once, on
+  upgrade**. Self-healing: the next solve replaces it. A first run after upgrading will
+  look colder than it is.
+
+- **A transport failure through a proxy no longer claims layer 1.** `diagnose_transport`
+  attributed `IP_REPUTATION` to any connection error through an exit. The address is still
+  blamed and still rotated, but with no layer, because the site never answered — there is
+  nothing to conclude about it. Attributing reputation wrote a permanent verdict onto the
+  origin's profile that the *destination* refuses us, from evidence that only says one
+  address failed to carry a request. `Exhausted.layer` is `None` for this case now, and
+  the pool is told `transport` rather than a reputation kind.
+
 ### Fixed
+
+- **Rotation is reachable with a pool of published ranges.** The planner asked
+  `IP_REPUTATION in exit_reach` before *every* rotation. `ExitKind.TOR.reach` is empty and
+  honestly so — Tor exit lists are published — so with a `TorPoolSpec` configured
+  `Move.ROTATE` was never emitted and `ExitPool.rotate` and `ExitPool.report` were
+  unreachable from `fetch` entirely: a dead pool instance could never be replaced. The
+  check now applies only when the site actually attributed reputation, which is the
+  question it answers. Whether rotating can produce a different address at all is
+  `ExitPool.rotatable`, and a `TorPoolSpec` counts as several addresses where a single
+  plain proxy does not.
+
+  `ExitKind.TOR.reach` is deliberately unchanged. Widening it would make the planner
+  recommend rotation as a cure for reputation blocks it cannot cure.
+
+- **An unconfigured pool reports no reach.** `best_kind` falls back to `DIRECT`, whose
+  reach includes layer 1 — correct when there is a burnt proxy to move off, meaningless
+  with `exits=[]`. Reported anyway, it told the planner a remedy was available that it had
+  no way to perform. `ExitKind.DIRECT.reach` itself is unchanged: moving off a datacenter
+  proxy onto direct genuinely can clear layer 1.
+
+- **An exit that names a kind must name an address.** `ExitSpec(kind=ExitKind.MOBILE)`
+  with no `url` was accepted, reported mobile reach, and printed `exits: mobile` in
+  `explain()` while every packet left from the local address. It raises `ValueError` now.
+  `ExitSpec(kind=ExitKind.DIRECT)` is still valid — that is what a fallback-to-direct
+  entry looks like.
+
+- **Retired addresses no longer leak their gates and clearances.** `ExitPool._slots` held
+  a semaphore per exit id and every rotation minted a new id, so a long-running process
+  accumulated one per rotation forever; the gate of a proxied lease is now dropped with the
+  lease, whose session key means the id can never be asked for again. `ClearanceTier._held`
+  was keyed by origin and never evicted, holding cookies long past their expiry; expired
+  entries are dropped on each solve, with a cap as a backstop.
 
 - **Success is recorded only for a response that succeeded.** Any status without a
   matching diagnosis is reported as `ACCEPT` — correctly, since nothing about it says a

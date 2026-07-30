@@ -313,11 +313,7 @@ class Planner:
                     "the address kind is the constraint, not the individual address"
                 ),
             )
-        if Layer.IP_REPUTATION not in context.exit_reach:
-            # The check that stops a pointless loop. Every address on offer is in a
-            # published range, so the replacement is blocklisted for the same reason
-            # as the one being replaced. Naming that is more useful than proving it
-            # one exit at a time.
+        if diagnosis.layer is Layer.IP_REPUTATION and Layer.IP_REPUTATION not in context.exit_reach:
             return Decision(
                 Move.STOP,
                 layer=Layer.IP_REPUTATION,
@@ -459,9 +455,6 @@ def default_capabilities(
             Capability(
                 name="archive",
                 cost=0,
-                # A snapshot never meets the live stack, so it reaches everything —
-                # at the price of being stale and incomplete, which is why it is not
-                # simply always first.
                 reach=everything,
             )
         )

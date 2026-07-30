@@ -76,7 +76,40 @@ class TestLeases:
         pool = ExitPool([])
         assert not pool.configured
         assert pool.lease("example.com").proxies is None
-        assert pool.lease("example.com").exit_id == "direct"
+        assert pool.lease("example.com").exit_id == "direct#example.com"
+
+    def test_an_unconfigured_pool_reports_no_reach(self):
+        # `best_kind` falls back to DIRECT, whose reach covers layer 1 — true when
+        # there is a proxy to move off, meaningless when there is nothing configured.
+        # Reported anyway it told the planner a remedy existed that it could not run.
+        assert ExitPool([]).reach() == frozenset()
+
+    def test_direct_gates_are_per_origin(self):
+        # One shared "direct" id gated the whole process at max_sessions_per_exit
+        # whenever no proxy was configured, which is what forced consumers to build
+        # one pool per domain.
+        pool = ExitPool([])
+        assert pool.slot(pool.lease("a.test")) is not pool.slot(pool.lease("b.test"))
+
+    def test_a_kind_without_a_proxy_url_is_refused(self):
+        # Every packet would leave from the local address while the pool reported
+        # residential reach and explain() printed the kind.
+        with pytest.raises(ValueError, match="needs a proxy URL"):
+            ExitSpec(kind=ExitKind.RESIDENTIAL)
+        # DIRECT with no URL is the honest one, and what a fallback entry looks like.
+        assert ExitSpec(kind=ExitKind.DIRECT, label="direct").name == "direct"
+
+    def test_a_rotated_address_does_not_leave_its_gate_behind(self):
+        pool = ExitPool(
+            [
+                ExitSpec(url="http://a.test:1", kind=ExitKind.RESIDENTIAL, label="a"),
+                ExitSpec(url="http://b.test:1", kind=ExitKind.RESIDENTIAL, label="b"),
+            ]
+        )
+        pool.slot(pool.lease("example.com"))
+        for _ in range(5):
+            pool.slot(pool.rotate("example.com", Layer.IP_REPUTATION))
+        assert len(pool._slots) == 1, "each rotation minted a gate and kept it forever"
 
     def test_both_schemes_route_through_one_entry(self):
         # Otherwise http and https requests to one origin leave from different
