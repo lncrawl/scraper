@@ -86,6 +86,41 @@ profile reused across a run accumulates the history that makes the session look 
 control-channel layer and leaves the behavioural one entirely to `scraper.pacing`. That
 division is why they are separate modules.
 
+### `render_soup()` — a browser, but not a tier
+
+A solver has a second use, and it is not escalation:
+
+```python
+soup = scraper.render_soup(url, wait_for="#chapter-list")
+```
+
+Some pages answer 200 with a shell that JavaScript fills in. **Nothing is blocking**, no
+layer is binding, and a clearance changes nothing — plain HTTP carrying the cookie returns the
+same empty shell. So this is not a rung on the ladder: no diagnosis leads here, because there
+is no detection event to diagnose. The caller knows this about the site; the model cannot
+infer it.
+
+It goes through the same lease, identity, gate and clock as a fetch, so a render is paced like
+any other request and leaves from the address the origin is already held on. What it does
+*not* do is touch the tier or the success counters: a page the browser rendered is no evidence
+that the HTTP ladder works, and recording it as one would zero the consecutive failures that
+promote a diagnosis.
+
+No solver, or a solver that only solves, raises `TierUnavailable` — never `Blocked`, which
+would be a claim about defences that are not there.
+
+**Give it a `wait_for`.** Without one the only stand-in for "the page has run" is a fixed
+settle interval, which is both slower than necessary and unreliable. With one the wait ends on
+evidence, and a selector that never appears raises `RenderError` rather than handing back the
+shell — returning it is the silent failure this exists to prevent, since the caller parses it,
+finds nothing, and reports an empty page rather than a problem.
+
+Choosing the selector is the part that takes care: it must name an element that **cannot exist
+before the data does**. Measured on one live single-page application: the cards hydrate as
+empty skeletons and fill in afterwards, so `a.line-clamp-2` matched at 1.8s with 457
+characters of a page that settles at 9538. Where a site has no such element, no selector is
+the honest answer and the settle interval is what you have.
+
 ## `archive` — free, but stale
 
 An archived snapshot is served from a host with no mitigation stack in front of it, usually

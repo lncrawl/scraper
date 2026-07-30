@@ -26,25 +26,40 @@ when every HTTP request goes through the proxy — which unbinds the identity by
 leaking past it, silently.
 
 The solver a site needs is not always the one bundled here, so
-:class:`BrowserSolver` is a two-method protocol and anything satisfying it plugs
-in: a patched Chromium driver, a Firefox build that drives over a non-CDP
-protocol, or a paid solving service.
+:class:`BrowserSolver` is a small protocol and anything satisfying it plugs in: a
+patched Chromium driver, a Firefox build that drives over a non-CDP protocol, or a
+paid solving service.
+
+A browser has a second use, and it is not escalation. When a page's HTML is a shell
+that JavaScript fills in, nothing is blocking and no layer is binding — a clearance
+does not help, because plain HTTP with the cookie returns the same empty shell. That
+is what :meth:`BrowserSolver.render` is for, and why it is not a tier.
 """
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 import shutil
 import threading
 import time
 from pathlib import Path
-from typing import Callable, Dict, List, NamedTuple, Optional
+from typing import Any, Callable, Dict, List, NamedTuple, Optional, Type, TypeVar
 
-from .exceptions import MissingDependency, ScraperError
+from .exceptions import MissingDependency, ScraperError, TierUnavailable
 from .identity import Clearance, Identity
 
 logger = logging.getLogger(__name__)
+
+_T = TypeVar("_T")
+
+_RENDER_POLL = 0.25
+"""How often to ask whether a rendering page is done.
+
+Short because the whole point of a ``wait_for`` selector is that the wait ends on
+evidence: a page that hydrates in 200ms should cost 200ms, not a settle interval
+chosen for pages with no selector at all."""
 
 CLEARANCE_FALLBACK_TTL = 900.0
 """Assumed clearance lifetime when the cookie carries no expiry.
@@ -119,8 +134,12 @@ class SolveError(ScraperError):
     """A browser ran but did not come back with a clearance."""
 
 
+class RenderError(ScraperError):
+    """A browser ran but the page never produced what was asked for."""
+
+
 class BrowserSolver:
-    """Drives a real browser through a challenge.
+    """Drives a real browser through a challenge, and renders a page on request.
 
     Implementations must honour *proxy* exactly. Solving on a different address
     than the one the requests will use produces a clearance that is dead on
@@ -139,6 +158,29 @@ class BrowserSolver:
     ) -> SolveResult:
         raise NotImplementedError
 
+    def render(
+        self,
+        url: str,
+        *,
+        wait_for: Optional[str] = None,
+        proxy: Optional[str] = None,
+        profile_dir: Optional[Path] = None,
+        timeout: float = 60.0,
+    ) -> str:
+        """Return *url*'s HTML after the page has run.
+
+        Args:
+            wait_for: A CSS selector the content is behind. Polled for until it
+                exists, and :class:`RenderError` if it never does — returning the
+                shell instead would hand the caller a page that parses to nothing
+                and reports no error, which is the failure this exists to prevent.
+
+        Optional, unlike :meth:`solve`: a solving service can answer a challenge
+        without being able to render anything, and it says so here rather than
+        pretending with an empty page.
+        """
+        raise TierUnavailable(self.name, "this solver cannot render a page", url)
+
     def close(self) -> None:
         """Release anything long-lived. Called when the scraper closes."""
 
@@ -149,10 +191,22 @@ class CallableSolver(BrowserSolver):
     The escape hatch for anything not bundled: a Firefox-based anti-detect build,
     a patched Playwright, a paid solving API. The callable receives the same
     arguments as :meth:`BrowserSolver.solve` and returns a :class:`SolveResult`.
+
+    Args:
+        renderer: Optional, and separate because the two capabilities are
+            independent — a solving API answers challenges and renders nothing,
+            while a headless browser may do the reverse.
     """
 
-    def __init__(self, func: Callable[..., SolveResult], *, name: str = "callable") -> None:
+    def __init__(
+        self,
+        func: Callable[..., SolveResult],
+        *,
+        name: str = "callable",
+        renderer: Optional[Callable[..., str]] = None,
+    ) -> None:
         self._func = func
+        self._renderer = renderer
         self.name = name
 
     def solve(
@@ -164,6 +218,23 @@ class CallableSolver(BrowserSolver):
         timeout: float = 60.0,
     ) -> SolveResult:
         return self._func(url, proxy=proxy, profile_dir=profile_dir, timeout=timeout)
+
+    def render(
+        self,
+        url: str,
+        *,
+        wait_for: Optional[str] = None,
+        proxy: Optional[str] = None,
+        profile_dir: Optional[Path] = None,
+        timeout: float = 60.0,
+    ) -> str:
+        if self._renderer is None:
+            return super().render(
+                url, wait_for=wait_for, proxy=proxy, profile_dir=profile_dir, timeout=timeout
+            )
+        return self._renderer(
+            url, wait_for=wait_for, proxy=proxy, profile_dir=profile_dir, timeout=timeout
+        )
 
 
 class NoDriverSolver(BrowserSolver):
@@ -207,27 +278,21 @@ class NoDriverSolver(BrowserSolver):
         # profile directory corrupt it, and the profile is what carries the
         # accumulated history forward.
         with self._lock:
-            return _run_async(self._solve(url, proxy, profile_dir, timeout))
+            return _run_async(self._solve(url, proxy, profile_dir, timeout), SolveResult)
 
-    async def _solve(
+    def render(
         self,
         url: str,
-        proxy: Optional[str],
-        profile_dir: Optional[Path],
-        timeout: float,
-    ) -> SolveResult:
-        try:
-            import nodriver  # pyright: ignore[reportMissingImports] - absent outside 3.10-3.13
-        except (ImportError, SyntaxError, TypeError) as exc:
-            # Neither failure is an ImportError. Before 3.10 nodriver's module body
-            # evaluates `str | Path`, a TypeError; from 3.14 its generated
-            # cdp/network.py fails to tokenize on a stray non-UTF-8 byte, a
-            # SyntaxError. Uncaught, both surface from inside a dependency with
-            # nothing naming the supported range.
-            raise MissingDependency(
-                "browser", "solving a challenge with nodriver (needs Python 3.10 to 3.13)"
-            ) from exc
+        *,
+        wait_for: Optional[str] = None,
+        proxy: Optional[str] = None,
+        profile_dir: Optional[Path] = None,
+        timeout: float = 60.0,
+    ) -> str:
+        with self._lock:
+            return _run_async(self._render(url, wait_for, proxy, profile_dir, timeout), str)
 
+    def _flags(self, proxy: Optional[str]) -> List[str]:
         flags = [
             # A STUN request reaches the network directly and reports the host's
             # real address, which unbinds the identity without any request failing.
@@ -237,10 +302,63 @@ class NoDriverSolver(BrowserSolver):
         if proxy:
             flags.append(f"--proxy-server={proxy}")
         flags.extend(self._extra)
+        return flags
 
+    async def _render(
+        self,
+        url: str,
+        wait_for: Optional[str],
+        proxy: Optional[str],
+        profile_dir: Optional[Path],
+        timeout: float,
+    ) -> str:
+        nodriver = _import_nodriver()
         browser = await nodriver.start(
             headless=self._headless,
-            browser_args=flags,
+            browser_args=self._flags(proxy),
+            user_data_dir=str(profile_dir) if profile_dir else None,
+        )
+        try:
+            page = await browser.get(url)
+            if wait_for is None:
+                # Nothing to poll for, so the only thing standing in for "the page
+                # has run" is time. With a selector the wait is evidence-based and
+                # this delay is dead time.
+                await page.sleep(self._settle)
+
+            deadline = time.monotonic() + timeout
+            content = ""
+            while True:
+                content = str(await page.get_content() or "")
+                if not _STILL_CHALLENGED.search(content):
+                    if wait_for is None:
+                        return content
+                    found = await page.evaluate(f"!!document.querySelector({json.dumps(wait_for)})")
+                    if found:
+                        return content
+                if time.monotonic() >= deadline:
+                    break
+                await page.sleep(_RENDER_POLL)
+        finally:
+            try:
+                browser.stop()
+            except Exception:  # noqa: BLE001 - a browser that will not close must not mask the result
+                logger.debug("nodriver did not shut down cleanly", exc_info=True)
+
+        missing = f"{wait_for} never appeared" if wait_for else "it was still a challenge"
+        raise RenderError(f"{url} did not render after {timeout:.0f}s: {missing}")
+
+    async def _solve(
+        self,
+        url: str,
+        proxy: Optional[str],
+        profile_dir: Optional[Path],
+        timeout: float,
+    ) -> SolveResult:
+        nodriver = _import_nodriver()
+        browser = await nodriver.start(
+            headless=self._headless,
+            browser_args=self._flags(proxy),
             user_data_dir=str(profile_dir) if profile_dir else None,
         )
         try:
@@ -268,6 +386,21 @@ class NoDriverSolver(BrowserSolver):
         return result
 
 
+def _import_nodriver() -> Any:
+    try:
+        import nodriver  # pyright: ignore[reportMissingImports] - absent outside 3.10-3.13
+    except (ImportError, SyntaxError, TypeError) as exc:
+        # Neither failure is an ImportError. Before 3.10 nodriver's module body
+        # evaluates `str | Path`, a TypeError; from 3.14 its generated
+        # cdp/network.py fails to tokenize on a stray non-UTF-8 byte, a
+        # SyntaxError. Uncaught, both surface from inside a dependency with
+        # nothing naming the supported range.
+        raise MissingDependency(
+            "browser", "driving a browser with nodriver (needs Python 3.10 to 3.13)"
+        ) from exc
+    return nodriver
+
+
 async def _harvest_cookies(browser: object) -> "tuple[Dict[str, str], float]":
     """Collect cookies and the earliest expiry among the clearance ones."""
     jar = getattr(browser, "cookies", None)
@@ -287,7 +420,7 @@ async def _harvest_cookies(browser: object) -> "tuple[Dict[str, str], float]":
     return cookies, soonest
 
 
-def _run_async(coro: object) -> SolveResult:
+def _run_async(coro: object, expect: Type[_T]) -> _T:
     """Run *coro* to completion from synchronous code.
 
     Always on a private thread with a private loop. A caller may already be inside
@@ -315,8 +448,8 @@ def _run_async(coro: object) -> SolveResult:
     if isinstance(error, BaseException):
         raise error
     value = box.get("value")
-    if not isinstance(value, SolveResult):
-        raise SolveError("the solver returned no result")
+    if not isinstance(value, expect):
+        raise SolveError("the browser returned no result")
     return value
 
 

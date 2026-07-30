@@ -23,14 +23,15 @@ import base64
 import logging
 import threading
 import time
+from contextlib import contextmanager
 from io import BytesIO
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Tuple
+from typing import Any, Dict, Iterator, List, Mapping, Optional, Tuple
 from urllib.parse import urljoin
 
 import requests
 
-from .browser import BrowserSolver
+from .browser import BrowserSolver, profile_dir_for
 from .config import ScraperConfig
 from .diagnosis import Action, Diagnosis, diagnose, diagnose_transport
 from .exceptions import (
@@ -306,23 +307,11 @@ class Scraper:
         abort: AbortSignal,
     ) -> Tuple[requests.Response, Diagnosis]:
         """Send once, under the address's concurrency gate and the origin's clock."""
-        gate = self.exits.slot(self.exits.lease(key))
-        while not gate.acquire(timeout=0.25):
-            self._check_signal(abort)
-        try:
-            # Paced inside the gate on purpose: waiting outside it lets several
-            # threads finish their waits together and then arrive as a burst, which
-            # is the arrival pattern the pacing exists to avoid.
-            self.pacer.wait(key, abort)
+        with self._paced(key, abort):
             if stream_to is not None:
                 response = self._download(tier, call, stream_to, abort)
             else:
                 response = tier.send(call)
-        finally:
-            try:
-                gate.release()
-            except ValueError:  # pragma: no cover - a release without an acquire
-                pass
 
         return response, diagnose(
             status=response.status_code,
@@ -331,6 +320,26 @@ class Scraper:
             url=call.url,
             user_agent=self._sent_user_agent(response, call),
         )
+
+    @contextmanager
+    def _paced(self, key: str, abort: AbortSignal) -> Iterator[None]:
+        """Hold the address's concurrency gate and the origin's clock for one request.
+
+        Paced inside the gate on purpose: waiting outside it lets several threads
+        finish their waits together and then arrive as a burst, which is the arrival
+        pattern the pacing exists to avoid.
+        """
+        gate = self.exits.slot(self.exits.lease(key))
+        while not gate.acquire(timeout=0.25):
+            self._check_signal(abort)
+        try:
+            self.pacer.wait(key, abort)
+            yield
+        finally:
+            try:
+                gate.release()
+            except ValueError:  # pragma: no cover - a release without an acquire
+                pass
 
     def _download(
         self, tier: Tier, call: Call, target: Path, abort: AbortSignal
@@ -485,8 +494,17 @@ class Scraper:
         content_type = response.headers.get("content-type", "").lower()
         if content_type and not any(token in content_type for token in _TEXTUAL):
             return
-        text = self._peek(response)
-        if not text:
+        self._inspect_text(url, key, profile, self._peek(response))
+
+    def _inspect_text(
+        self,
+        url: str,
+        key: str,
+        profile: OriginProfile,
+        text: str,
+    ) -> None:
+        """The decoy check itself, on text from wherever it came from."""
+        if not self.config.guard_topic or not text:
             return
 
         guard = self._guard(key)
@@ -691,6 +709,75 @@ class Scraper:
     ) -> PageSoup:
         response = self.post(url, data=data, **kwargs)
         return self.make_soup(response, encoding)
+
+    def render(
+        self,
+        url: str,
+        *,
+        wait_for: Optional[str] = None,
+        timeout: Optional[float] = None,
+        signal: Optional[AbortSignal] = None,
+    ) -> str:
+        """Run *url* in the browser and return the HTML it produced.
+
+        For the case where nothing is blocking and the HTML is simply not the
+        content: a shell that JavaScript fills in. That is not a detection layer, so
+        it is not a tier and no diagnosis leads here — a clearance does not help,
+        because plain HTTP carrying the cookie returns the same empty shell. The
+        caller knows this about the site; the model cannot infer it.
+
+        Args:
+            wait_for: A CSS selector the content is behind. Strongly preferred over
+                a fixed delay: without it the only stand-in for "the page has run"
+                is time, and the page that needs the longest is the one whose
+                selector you know.
+
+        Raises:
+            TierUnavailable: No solver is configured, or the configured one cannot
+                render. Never :class:`~scraper.Blocked` — nothing was blocking.
+            RenderError: The browser ran and the page never produced *wait_for*.
+        """
+        solver = self.config.browser
+        if solver is None:
+            raise TierUnavailable(
+                "render",
+                "no browser solver is configured; set ScraperConfig.browser",
+                url,
+            )
+
+        abort = combine(self.signal, signal)
+        self._check_signal(abort)
+        key = self.memory.key(url)
+        profile = self.memory.profile(url)
+        self.pacer.learn(key, profile.interval)
+        if profile.is_decoy(url):
+            raise Poisoned(url, "this URL was recorded as decoy content on an earlier run")
+
+        lease = self.exits.lease(key)
+        identity = self._identity(key, lease)
+        proxies = lease.proxies or {}
+        with self._paced(key, abort):
+            html = solver.render(
+                url,
+                wait_for=wait_for,
+                proxy=proxies.get("https") or proxies.get("http"),
+                profile_dir=profile_dir_for(self.config.profile_root, identity.exit_id),
+                timeout=timeout if timeout is not None else self.config.solve_timeout,
+            )
+
+        # Nothing is written to `tier` or the success counters. A page the browser
+        # rendered is not evidence that the HTTP ladder works, and recording it as one
+        # would zero the consecutive failures that promote a diagnosis.
+        profile.last_seen = time.time()
+        self.memory.touch()
+        self.trail.record(url)
+        self.last_url = url
+        self._inspect_text(url, key, profile, html)
+        return html
+
+    def render_soup(self, url: str, **kwargs: Any) -> PageSoup:
+        """Render *url* and parse the result. See :meth:`render`."""
+        return self.make_soup(self.render(url, **kwargs))
 
     def get_file(self, url: str, output_file: Any, **kwargs: Any) -> Path:
         """Download *url* to *output_file*, written atomically."""

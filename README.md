@@ -100,6 +100,14 @@ The planner picks the cheapest rung that covers the binding layer, and stops wit
 explanation when no configured rung does. Writing your own rung:
 [tiers](https://lncrawl.github.io/scraper/tiers/).
 
+A browser is also useful when nothing is blocking at all — a page whose HTML is a shell that
+JavaScript fills in. That is deliberately not a rung, because no layer is binding and a
+clearance would change nothing:
+
+```python
+soup = scraper.render_soup(url, wait_for="#chapter-list")
+```
+
 ## Installation
 
 ```bash

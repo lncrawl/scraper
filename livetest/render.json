@@ -1,0 +1,69 @@
+[
+ {
+  "id": "S30",
+  "title": "A browser renders a page whose HTML is not its content",
+  "layers": [],
+  "proves": "the one capability HTTP fidelity cannot substitute for, and the one failure that is silent: a shell parses to nothing and raises nothing.",
+  "target": "https://www.wuxiaworld.com/",
+  "verdict": "pass",
+  "seconds": 35.35,
+  "steps": [
+   {
+    "what": "HTTP visible text from https://www.wuxiaworld.com/",
+    "value": "10 chars",
+    "ok": null
+   },
+   {
+    "what": "target chosen",
+    "value": "https://www.wuxiaworld.com/ (content selector a.line-clamp-2)",
+    "ok": null
+   },
+   {
+    "what": "rendered visible text",
+    "value": "9538 chars",
+    "ok": null
+   },
+   {
+    "what": "the browser produced at least 5x the transport's text",
+    "value": "10 -> 9538 chars",
+    "ok": true
+   },
+   {
+    "what": "the rendered page parses into a usable document",
+    "value": "137",
+    "ok": true
+   },
+   {
+    "what": "a satisfied selector ends the wait early, on evidence",
+    "value": "1.8s against a 6s settle, 457 chars",
+    "ok": true
+   },
+   {
+    "what": "text present when the selector appeared",
+    "value": "9538 settled -> 457 with a.line-clamp-2",
+    "ok": null
+   },
+   {
+    "what": "a render is not recorded as a tier that worked",
+    "value": "tier='' successes=0",
+    "ok": true
+   },
+   {
+    "what": "the render joined the referrer chain",
+    "value": "https://www.wuxiaworld.com/",
+    "ok": true
+   },
+   {
+    "what": "a selector that never appears is an error, not an empty page",
+    "value": "RenderError",
+    "ok": true
+   },
+   {
+    "what": "explain()",
+    "value": "wuxiaworld.com\n  binding layer : nothing has blocked yet\n  tier          : direct (unproven)\n  pacing        : 1.5s mean interval\n  requests      : 0 ok / 0 failed\n  clearance     : none\n  ladder        : direct(10) clearance(100)\n  exits         : direct",
+    "ok": null
+   }
+  ],
+  "error": ""
+ }
+]

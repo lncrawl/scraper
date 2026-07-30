@@ -50,7 +50,13 @@ See :mod:`scraper.layers` for the model, and ``docs/`` for the guides.
 from importlib.metadata import PackageNotFoundError, version
 
 from .botauth import BotAuthConfig, BotAuthKey
-from .browser import BrowserSolver, CallableSolver, NoDriverSolver, SolveResult
+from .browser import (
+    BrowserSolver,
+    CallableSolver,
+    NoDriverSolver,
+    RenderError,
+    SolveResult,
+)
 from .config import ScraperConfig, default_data_dir
 from .diagnosis import Action, Diagnosis, diagnose
 from .exceptions import (
@@ -137,6 +143,7 @@ __all__ = [
     "Impassable",
     "MissingDependency",
     "Poisoned",
+    "RenderError",
     "ScraperError",
     "TierUnavailable",
     "default_data_dir",

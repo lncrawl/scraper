@@ -37,6 +37,7 @@ All of these derive from `scraper.ScraperError`.
 | `Poisoned` | Content looks like decoy material. | See [decoy-content.md](decoy-content.md). |
 | `TierUnavailable` | A tier cannot serve this call at all. | Internal; escalates without blaming a layer. |
 | `Aborted` | `abort()` was called, or a per-request `signal` was set. | Expected on cancellation. |
+| `RenderError` | `render_soup()` ran and the page never produced `wait_for`. | Check the selector exists once the data has arrived. |
 | `ConfigError` / `MissingDependency` | Setup problem. | The message says which extra or field. |
 
 ```python

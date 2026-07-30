@@ -24,18 +24,22 @@ from scraper.browser import (
     BrowserSolver,
     CallableSolver,
     NoDriverSolver,
+    RenderError,
     SolveError,
     SolveResult,
     _harvest_cookies,
     _run_async,
     profile_dir_for,
 )
-from scraper.exceptions import MissingDependency
+from scraper.exceptions import MissingDependency, TierUnavailable
 from scraper.identity import Identity
 
 from .conftest import CHALLENGE_BODY, SERVED_WITH_JSD
 
 CLEARED_PAGE = "<!doctype html><html><body><h1>Chapter 12</h1></body></html>"
+SHELL = (
+    '<!doctype html><html><body><div id="app"></div><script src="/app.js"></script></body></html>'
+)
 
 
 class FakeCookie:
@@ -56,9 +60,16 @@ class FakeJar:
 class FakePage:
     """Serves *contents* one per poll, repeating the last one forever."""
 
-    def __init__(self, contents: List[str], user_agent: str = "Mozilla/5.0 Chrome/141.0.0.0"):
+    def __init__(
+        self,
+        contents: List[str],
+        user_agent: str = "Mozilla/5.0 Chrome/141.0.0.0",
+        found: Optional[List[bool]] = None,
+    ):
         self._contents = list(contents)
         self._user_agent = user_agent
+        self._found = list(found or [])
+        self.expressions: List[str] = []
         self.settles = 0
 
     async def sleep(self, seconds: float) -> None:
@@ -67,8 +78,13 @@ class FakePage:
     async def get_content(self) -> str:
         return self._contents.pop(0) if len(self._contents) > 1 else self._contents[0]
 
-    async def evaluate(self, expression: str) -> str:
-        return self._user_agent
+    async def evaluate(self, expression: str) -> Any:
+        self.expressions.append(expression)
+        if "querySelector" not in expression:
+            return self._user_agent
+        if not self._found:
+            return False
+        return self._found.pop(0) if len(self._found) > 1 else self._found[0]
 
 
 class FakeBrowser:
@@ -218,7 +234,7 @@ class TestRunningTheSolverSynchronously:
         async def work() -> SolveResult:
             return SolveResult(cookies={"cf_clearance": "x"}, user_agent="ua")
 
-        assert _run_async(work()).cleared
+        assert _run_async(work(), SolveResult).cleared
 
     def test_it_works_from_inside_a_running_event_loop(self):
         # A scraper driven from an async server is a normal deployment. `asyncio.run`
@@ -228,7 +244,7 @@ class TestRunningTheSolverSynchronously:
             return SolveResult(cookies={"cf_clearance": "x"}, user_agent="ua")
 
         async def main() -> SolveResult:
-            return _run_async(work())
+            return _run_async(work(), SolveResult)
 
         assert asyncio.run(main()).cleared
 
@@ -239,14 +255,14 @@ class TestRunningTheSolverSynchronously:
             raise RuntimeError("browser would not start")
 
         with pytest.raises(RuntimeError, match="would not start"):
-            _run_async(work())
+            _run_async(work(), SolveResult)
 
     def test_a_coroutine_that_returns_nothing_is_a_solve_error(self):
         async def work() -> None:
             return None
 
         with pytest.raises(SolveError, match="no result"):
-            _run_async(work())
+            _run_async(work(), SolveResult)
 
 
 class TestReadingTheInterstitial:
@@ -546,3 +562,94 @@ class TestProfilesDoNotAccumulate:
             made.mkdir()
             self._aged(made, 99999)
         assert prune_profiles(tmp_path) == 0
+
+
+class TestRenderingAPage:
+    """The second use of a browser: the HTML is not the content.
+
+    Nothing is blocking here, so none of the solve machinery applies — no clearance,
+    no diagnosis, no layer. What has to be right is when the wait ends, because the
+    failure mode of ending it early is a page that parses to nothing and reports no
+    error at all.
+    """
+
+    def test_the_html_comes_back_once_the_page_has_run(self, monkeypatch: pytest.MonkeyPatch):
+        page = FakePage([CLEARED_PAGE])
+        install_nodriver(monkeypatch, FakeBrowser(page))
+        assert "Chapter 12" in NoDriverSolver().render("https://example.com/x")
+
+    def test_a_selector_ends_the_wait_as_soon_as_it_exists(self, monkeypatch: pytest.MonkeyPatch):
+        # The whole value of wait_for: a page that hydrates quickly costs what it
+        # takes, not a settle interval chosen for pages that gave no selector.
+        page = FakePage([SHELL, CLEARED_PAGE], found=[False, True])
+        install_nodriver(monkeypatch, FakeBrowser(page))
+        html = NoDriverSolver(settle=30.0).render("https://example.com/x", wait_for="#chapters")
+        assert "Chapter 12" in html
+        assert page.settles == 1, "one poll, not a settle"
+
+    def test_a_selector_that_never_appears_is_an_error_not_a_shell(
+        self, monkeypatch: pytest.MonkeyPatch
+    ):
+        # Handing the shell back is the failure this exists to prevent: the caller
+        # parses it, finds nothing, and reports an empty page rather than a problem.
+        page = FakePage([SHELL], found=[False])
+        browser = FakeBrowser(page)
+        install_nodriver(monkeypatch, browser)
+        with pytest.raises(RenderError, match="#chapters"):
+            NoDriverSolver().render("https://example.com/x", wait_for="#chapters", timeout=0.0)
+        assert browser.stopped, "the browser closes even on the failure path"
+
+    def test_a_challenge_still_on_screen_is_not_a_rendered_page(
+        self, monkeypatch: pytest.MonkeyPatch
+    ):
+        page = FakePage([CHALLENGE_BODY])
+        install_nodriver(monkeypatch, FakeBrowser(page))
+        with pytest.raises(RenderError, match="still a challenge"):
+            NoDriverSolver().render("https://example.com/x", timeout=0.0)
+
+    def test_a_selector_is_quoted_into_the_expression(self, monkeypatch: pytest.MonkeyPatch):
+        # Selectors carry quotes and brackets. Interpolated raw, one of them ends the
+        # JavaScript string and the poll never matches anything again.
+        page = FakePage([SHELL, CLEARED_PAGE], found=[False, True])
+        install_nodriver(monkeypatch, FakeBrowser(page))
+        NoDriverSolver().render("https://example.com/x", wait_for='div[data-id="1"]')
+        selector_polls = [e for e in page.expressions if "querySelector" in e]
+        assert selector_polls
+        assert '\\"' in selector_polls[0]
+
+    def test_the_address_and_the_profile_reach_the_launch(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ):
+        # A render on a different address than the origin is held on would present a
+        # second visitor to a site already being paced as one.
+        page = FakePage([CLEARED_PAGE])
+        captured = install_nodriver(monkeypatch, FakeBrowser(page))
+        NoDriverSolver().render(
+            "https://example.com/x", proxy="http://p.test:1", profile_dir=tmp_path
+        )
+        assert "--proxy-server=http://p.test:1" in captured["browser_args"]
+        assert "--disable-webrtc" in captured["browser_args"]
+        assert captured["user_data_dir"] == str(tmp_path)
+
+    def test_a_solver_that_cannot_render_says_so_rather_than_returning_nothing(self):
+        def solve(url: str, *, proxy=None, profile_dir=None, timeout=60.0) -> SolveResult:
+            return SolveResult(cookies={"cf_clearance": "x"}, user_agent="ua")
+
+        with pytest.raises(TierUnavailable, match="cannot render"):
+            CallableSolver(solve).render("https://example.com/x")
+
+    def test_a_renderer_is_supplied_separately_from_a_solver(self):
+        # The two capabilities are independent: a solving API answers challenges and
+        # renders nothing, and a headless browser may do the reverse.
+        def solve(url: str, *, proxy=None, profile_dir=None, timeout=60.0) -> SolveResult:
+            raise AssertionError("a render must not solve")
+
+        def render(url: str, *, wait_for=None, proxy=None, profile_dir=None, timeout=60.0) -> str:
+            return f"<html><body>{wait_for}</body></html>"
+
+        solver = CallableSolver(solve, renderer=render)
+        assert "#list" in solver.render("https://example.com/x", wait_for="#list")
+
+    def test_the_base_solver_cannot_render_either(self):
+        with pytest.raises(TierUnavailable):
+            BrowserSolver().render("https://example.com/x")

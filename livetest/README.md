@@ -41,12 +41,13 @@ The browser tier runs separately, under its own interpreter — see below.
 | `tor_probe.py` | The same classification through the local tor-pool, on one sticky session. |
 | `scenarios.py` | The scenarios. Each declares the layers it exercises and what a pass proves. |
 | `clearance.py` | The browser tier. Separate because it needs a different Python and a real Chrome. |
+| `render.py` | `render_soup()` against a real single-page application. Same requirements as `clearance.py`. |
 | `report.py` | Renders `report.html` from whatever JSON exists. No network. |
 | `compare.py` | A/B against a previous release. Spawns `arm_v1.py` / `arm_v026.py` under each version's own interpreter, grades both with one classifier. |
 | `compare_analyze.py` | Reads `compare.json` and answers whether the new version is better, head to head. No network. |
 | `profile_sweep.py` | Which impersonation profile wins, across the corpus. How the default came to be Firefox. |
 | `referer_probe.py` | Sizes one header's effect: same transport, same profile, `Referer` the only difference. |
-| `probe.json`, `tor_probe.json`, `results.json`, `clearance.json` | Recorded output. Committed as a baseline — a diff after a change is the fastest way to see what moved. |
+| `probe.json`, `tor_probe.json`, `results.json`, `clearance.json`, `render.json` | Recorded output. Committed as a baseline — a diff after a change is the fastest way to see what moved. |
 | `state/` | Scraper data dir for the runs (learned memory, browser profiles, downloads). Gitignored; safe to delete. |
 
 ## Requirements
@@ -86,12 +87,14 @@ open pool accepts the wrong token and the scenario would report the inverse of w
 measures. It reports `inconclusive` with that reason instead; run it with
 `AUTH_DISABLED=false`.
 
-**A browser and a Python that can load nodriver**, for `clearance.py` only:
+**A browser and a Python that can load nodriver**, for `clearance.py` and `render.py`
+only:
 
 ```bash
 uv venv --python 3.12 /tmp/scr312
 uv pip install --python /tmp/scr312/bin/python -e . nodriver cryptography
 /tmp/scr312/bin/python livetest/clearance.py
+/tmp/scr312/bin/python livetest/render.py
 ```
 
 Python **3.10–3.13**. nodriver raises `TypeError` on 3.9 (it evaluates a PEP 604 union

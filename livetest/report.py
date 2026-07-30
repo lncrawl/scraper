@@ -1,6 +1,7 @@
 """Build livetest/report.html from whatever the harness has recorded.
 
-Reads probe.json, tor_probe.json, results.json and clearance.json — each optional —
+Reads probe.json, tor_probe.json, results.json, clearance.json and render.json —
+each optional —
 and renders a single self-contained page. No network, no dependencies.
 
     uv run python livetest/report.py
@@ -132,6 +133,7 @@ AREAS = [
     ("Behaviour — layer 8", ["S04", "S10", "S16", "S20", "S21"]),
     ("Addresses and tor-pool — layer 1", ["S11", "S12", "S13", "S14", "S15", "S26", "S28"]),
     ("The ladder", ["S17", "S23", "S27"]),
+    ("Rendering — when the HTML is not the content", ["S30"]),
     ("Identity and content safety", ["S18", "S19", "S22"]),
 ]
 
@@ -411,8 +413,10 @@ def main() -> None:
     probe = load("probe.json") or []
     tor = load("tor_probe.json")
     results = list(load("results.json") or [])
-    clearance = load("clearance.json") or []
-    results = results + [r for r in clearance if r["id"] not in {x["id"] for x in results}]
+    for extra in ("clearance.json", "render.json"):
+        found = load(extra) or []
+        known = {row["id"] for row in results}
+        results = results + [row for row in found if row["id"] not in known]
     results.sort(key=lambda r: r["id"])
 
     stamp = dt.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z")

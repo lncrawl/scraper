@@ -22,7 +22,15 @@ import requests
 
 from scraper import ExitKind, ExitSpec, Scraper, ScraperConfig, SharedState
 from scraper.browser import BrowserSolver, SolveResult
-from scraper.exceptions import Aborted, Blocked, Exhausted, Impassable, Poisoned, ScraperError
+from scraper.exceptions import (
+    Aborted,
+    Blocked,
+    Exhausted,
+    Impassable,
+    Poisoned,
+    ScraperError,
+    TierUnavailable,
+)
 from scraper.exits import TorPoolSpec
 from scraper.layers import Layer
 
@@ -54,6 +62,31 @@ class RecordingSolver(BrowserSolver):
             cookies={"cf_clearance": f"cleared-{len(self.calls)}", "__cf_bm": "bm"},
             user_agent=self.user_agent,
         )
+
+
+class RenderingSolver(BrowserSolver):
+    """A solver that renders and refuses to solve, so the two paths cannot be confused."""
+
+    name = "rendering"
+
+    def __init__(self, html: str = "") -> None:
+        self.html = html or "<html><body><h1>Chapter One</h1></body></html>"
+        self.calls: List[Dict[str, Any]] = []
+
+    def solve(self, url: str, **kwargs: Any) -> SolveResult:
+        raise AssertionError("a render must not go through the solve path")
+
+    def render(
+        self,
+        url: str,
+        *,
+        wait_for: Optional[str] = None,
+        proxy: Optional[str] = None,
+        profile_dir: Optional[Path] = None,
+        timeout: float = 60.0,
+    ) -> str:
+        self.calls.append({"url": url, "wait_for": wait_for, "proxy": proxy, "timeout": timeout})
+        return self.html
 
 
 def scraper_for(transport: FakeTransport, **overrides: Any) -> Scraper:
@@ -1249,3 +1282,99 @@ class TestAnOptionalExtraNamesItself:
         with scraper_for(FakeTransport()) as scraper:
             with pytest.raises(MissingDependency, match=r"lncrawl-scraper\[image\]"):
                 scraper.get_image("https://example.com/cover.jpg")
+
+
+class TestRenderingWhatHttpCannotReach:
+    """The HTML is a shell and JavaScript fills it in.
+
+    No layer is binding — a clearance changes nothing, because plain HTTP carrying the
+    cookie returns the same empty shell. So this is deliberately not a tier, nothing
+    escalates into it, and the caller asks for it because it knows the site.
+    """
+
+    def test_no_solver_is_unavailable_rather_than_blocked(self):
+        # Blocked would be a claim about the site's defences. Nothing is defending.
+        with scraper_for(FakeTransport()) as scraper:
+            with pytest.raises(TierUnavailable, match="no browser solver"):
+                scraper.render_soup(URL)
+
+    def test_a_rendered_page_is_parsed_like_any_other(self):
+        with scraper_for(FakeTransport(), browser=RenderingSolver()) as scraper:
+            soup = scraper.render_soup(URL, wait_for="h1")
+            assert soup.select_one("h1").text == "Chapter One"
+
+    def test_the_selector_and_the_held_address_reach_the_solver(self):
+        # A render from a different address than the origin is held on presents a second
+        # visitor to a site already being paced as one.
+        solver = RenderingSolver()
+        exits = [ExitSpec(url="http://res.test:1", kind=ExitKind.RESIDENTIAL)]
+        with scraper_for(FakeTransport(), browser=solver, exits=exits) as scraper:
+            scraper.render(URL, wait_for="#chapters", timeout=12.0)
+        assert solver.calls == [
+            {
+                "url": URL,
+                "wait_for": "#chapters",
+                "proxy": "http://res.test:1",
+                "timeout": 12.0,
+            }
+        ]
+
+    def test_a_render_is_not_recorded_as_a_tier_that_works(self):
+        # A page the browser rendered is no evidence that the HTTP ladder works, and
+        # recording it as a success would zero the failures that promote a diagnosis.
+        with scraper_for(FakeTransport(), browser=RenderingSolver()) as scraper:
+            scraper.memory.record_failure(URL, Layer.BEHAVIOURAL)
+            scraper.render(URL)
+            profile = scraper.knows(URL)
+        assert profile.tier == ""
+        assert profile.successes == 0
+        assert profile.consecutive_failures == 1
+
+    def test_a_render_still_joins_the_referrer_chain(self):
+        with scraper_for(FakeTransport(), browser=RenderingSolver()) as scraper:
+            scraper.render(URL)
+            assert scraper.last_url == URL
+            assert scraper.trail.referer("https://example.com/novel/other") == URL
+
+    def test_a_render_waits_its_turn_like_a_request(self):
+        # Same lease, same gate, same clock: a browser that ignored the pacing would
+        # arrive as a burst against an origin the HTTP path is carefully spacing.
+        from scraper import PacingPolicy
+
+        slow = PacingPolicy(interval=30.0, floor=30.0, warmup=False, pause_chance=0.0)
+        with scraper_for(FakeTransport(), browser=RenderingSolver(), pacing=slow) as scraper:
+            scraper.render(URL)
+            cancelled = threading.Event()
+            cancelled.set()
+            started = time.monotonic()
+            with pytest.raises(Aborted):
+                scraper.render(URL, signal=cancelled)
+            assert time.monotonic() - started < 1.0
+
+    def test_a_url_recorded_as_a_decoy_is_not_rendered_either(self):
+        with scraper_for(FakeTransport(), browser=RenderingSolver()) as scraper:
+            scraper.knows(URL).note_decoy(URL)
+            with pytest.raises(Poisoned):
+                scraper.render(URL)
+
+    def test_rendered_content_goes_through_the_decoy_guard(self):
+        # The check has to happen on the way out, and a rendered page is the same
+        # material as a fetched one — a maze that only appears after hydration is
+        # exactly what a render would otherwise smuggle past the guard.
+        on_topic = (
+            "<html><body>chapter translation novel protagonist cultivation sect "
+            "elder disciple sword qi realm</body></html>"
+        )
+        off_topic = (
+            "<html><body>quarterly amortisation schedules reconciled against "
+            "depreciating municipal bond covenants actuarial tables</body></html>"
+        )
+        solver = RenderingSolver(on_topic)
+        with scraper_for(
+            FakeTransport(), browser=solver, guard_topic=True, on_decoy="raise"
+        ) as scraper:
+            for number in range(6):
+                scraper.render(f"{URL}?p={number}")
+            solver.html = off_topic
+            with pytest.raises(Poisoned):
+                scraper.render("https://example.com/maze/1")
