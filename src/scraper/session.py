@@ -68,6 +68,16 @@ exist: two pages pointing at each other would otherwise loop without ever spendi
 attempt, since a hop is deliberately not charged as one.
 """
 
+_RECORDS_ITS_OWN_FAILURE = (Move.BACKOFF, Move.ACCUMULATE)
+"""Moves whose handler in ``_apply`` records the failure itself, with the widened
+interval. Counting them again in the loop made ``promote_after=3`` trip on the second
+throttle."""
+
+_HOSTILE_STATUSES = frozenset({402, 405, 410, 423})
+"""Non-2xx codes that are the site refusing this visitor rather than answering about a
+path. Counted against the origin, but with no layer: none of them says which layer, and
+naming one would retire a healthy exit over a code that may be a URL mistake."""
+
 
 class Scraper:
     """Retrieves pages, escalating only as far as the site actually requires.
@@ -257,7 +267,11 @@ class Scraper:
                 # on a site's own redirect chain.
                 continue
 
-            if diagnosis.layer is not None and diagnosis.action is not Action.RETRY:
+            if (
+                diagnosis.layer is not None
+                and diagnosis.action is not Action.RETRY
+                and decision.move not in _RECORDS_ITS_OWN_FAILURE
+            ):
                 self.memory.record_failure(url, diagnosis.layer)
 
             if decision.move is Move.STOP:
@@ -413,7 +427,16 @@ class Scraper:
         # The tier that actually worked, not the one remembered from last time.
         # Recording the stale value is how a run that escalated to a browser starts
         # from scratch on every subsequent run.
-        self.memory.record_success(url, tier=tier, interval=self.pacer.interval_for(key))
+        #
+        # Guarded on the status because an unattributed 4xx also arrives as ACCEPT: a
+        # site answering 439 to everything used to set the tier, add a success and zero
+        # the consecutive failures, teaching memory that whatever it just tried works.
+        # A 3xx counts as reached — it is a real answer through this tier — so the bar
+        # is "the site responded", not "the response was 200".
+        if response.status_code < 400:
+            self.memory.record_success(url, tier=tier, interval=self.pacer.interval_for(key))
+        elif response.status_code in _HOSTILE_STATUSES:
+            self.memory.record_failure(url, None)
         if navigation:
             self.trail.record(response.url or url)
             self.last_url = response.url or url

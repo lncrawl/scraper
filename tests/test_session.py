@@ -1022,3 +1022,74 @@ class TestWarmUpTolerance:
         with Scraper(origin="https://example.com", config=config) as scraper:
             assert scraper.get(URL).status_code == 200
         assert "https://example.com/" in transport.urls, "the warm-up has to have been tried"
+
+
+class TestWhatAFailedResponseTeaches:
+    """The ledger has to mean something, and it only does if a refusal is not filed
+    as a success. Every case below used to write the opposite of what happened.
+    """
+
+    def test_an_unmatched_client_error_is_not_a_success(self):
+        # A site answering 439 to everything: no diagnosis matches, so the planner
+        # proceeds and the response is handed back for `raise_for_status`. What must
+        # not happen is memory concluding that the tier it just used works.
+        transport = FakeTransport([make_response(439, "nope", url=URL)])
+        with scraper_for(transport) as scraper:
+            assert scraper.get(URL).status_code == 439
+            profile = scraper.knows(URL)
+            assert profile.successes == 0
+            assert profile.tier == ""
+
+    def test_a_hostile_status_counts_against_the_origin_without_naming_a_layer(self):
+        transport = FakeTransport([make_response(402, "pay up", url=URL)])
+        with scraper_for(transport) as scraper:
+            assert scraper.get(URL).status_code == 402
+            profile = scraper.knows(URL)
+            assert profile.failures == 1
+            assert profile.successes == 0
+            # No layer: 402 does not say which one, and naming one would retire a
+            # healthy exit.
+            assert profile.binding is None
+
+    def test_a_missing_page_is_neither_a_success_nor_a_failure(self):
+        # A 404 is the site's answer about a path. It says nothing about this
+        # visitor, so it must not move the ledger in either direction.
+        transport = FakeTransport([make_response(404, "gone", url=URL)])
+        with scraper_for(transport) as scraper:
+            assert scraper.get(URL).status_code == 404
+            profile = scraper.knows(URL)
+            assert profile.successes == 0
+            assert profile.failures == 0
+
+    def test_a_redirect_still_counts_as_reached(self):
+        transport = FakeTransport(
+            [make_response(301, "", url=URL, headers={"location": "/elsewhere"})]
+        )
+        with scraper_for(transport) as scraper:
+            assert scraper.get(URL).status_code == 301
+            assert scraper.knows(URL).successes == 1
+            assert scraper.knows(URL).tier == "direct"
+
+    def test_a_throttle_is_counted_once(self):
+        # `_apply` records the throttle with the widened interval; the loop used to
+        # record it again, so `promote_after=3` tripped on the second 429 and
+        # escalated to a tier the caller never configured.
+        transport = FakeTransport(
+            [
+                make_response(429, "slow", url=URL, headers={"retry-after": "0"}),
+                make_response(body=PAGE, url=URL),
+            ]
+        )
+        with scraper_for(transport) as scraper:
+            assert scraper.get(URL).status_code == 200
+            assert scraper.knows(URL).failures == 1
+
+    def test_a_failure_with_nothing_to_attribute_keeps_the_known_layer(self):
+        from scraper.memory import Memory
+
+        memory = Memory()
+        memory.record_failure(URL, Layer.MANAGED_CHALLENGE)
+        assert memory.profile(URL).binding is Layer.MANAGED_CHALLENGE
+        memory.record_failure(URL, None)
+        assert memory.profile(URL).binding is Layer.MANAGED_CHALLENGE
+        assert memory.profile(URL).failures == 2

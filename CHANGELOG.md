@@ -4,6 +4,34 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **Success is recorded only for a response that succeeded.** Any status without a
+  matching diagnosis is reported as `ACCEPT` — correctly, since nothing about it says a
+  layer is blocking — but the accept path then wrote a success unconditionally. A site
+  answering 439 to everything set `profile.tier`, incremented `successes` and zeroed
+  `consecutive_failures`, teaching the store that whatever tier had just been tried
+  works. The bar is now that the site responded: a 2xx or a 3xx records the tier, and a
+  4xx or 5xx records nothing.
+
+  `402`, `405`, `410` and `423` are counted against the origin as failures, because those
+  are a site refusing this visitor rather than answering about a path. They are recorded
+  with **no layer** — none of them identifies one, and naming one would retire a healthy
+  exit over what may be a URL mistake. A `404` still moves the ledger in neither
+  direction and still surfaces as a plain `HTTPError`.
+
+- **A throttle is counted once.** The handler for `BACKOFF` and `ACCUMULATE` records the
+  failure itself, with the widened interval, and the retrieval loop recorded it a second
+  time. With the default `promote_after=3` that meant a third failure — and an escalation
+  to a tier the caller may not have configured — on the **second** 429.
+
+- **A failure with nothing to attribute no longer erases the binding layer.**
+  `record_failure(url, None)` assigned `None` over whatever an earlier, attributed
+  failure had learned, so a transport error or an unmatched status discarded the single
+  most valuable thing the store holds and sent the next run back to guessing.
+
 ## [1.0.1] - 2026-07-30
 
 ### Fixed

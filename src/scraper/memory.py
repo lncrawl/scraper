@@ -196,7 +196,8 @@ class Memory:
     def record_failure(self, url: str, layer: Optional[Layer], *, interval: float = 0.0) -> None:
         with self._lock:
             profile = self.profile(url)
-            profile.binding = layer
+            if layer is not None:
+                profile.binding = layer
             profile.failures += 1
             profile.consecutive_failures += 1
             profile.last_seen = time.time()
