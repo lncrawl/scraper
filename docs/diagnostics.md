@@ -85,6 +85,51 @@ wrong:
 - **A `404` is not a layer.** It is the site's answer about a path, and attributing it to one
   would retire a healthy address over a typo in a URL.
 
+## What is in front of the site
+
+```python
+from scraper import edge
+
+edge(response.headers, response.text)     # "DataDome", "Cloudflare", "nginx", ""
+```
+
+The layer numbers are organised around Cloudflare's mechanisms, but the classifier is
+not Cloudflare-only. Twelve other products announce themselves in a header, a cookie
+name or a block page, and each is mapped to what a refusal from it actually means:
+
+| Product | Recognised by | A refusal reads as |
+| --- | --- | --- |
+| DataDome | `x-datadome`, `datadome` cookie, `geo.captcha-delivery.com` | L14, and its captcha is L9 |
+| Kasada | `x-kpsdk-ct`, `x-kpsdk-cd` | L14 |
+| PerimeterX / HUMAN | `_px*` cookies, `px-captcha`, "Press & Hold" | L14, and its captcha is L9 |
+| Akamai Bot Manager | `_abck`, `ak_bmsc`, `bm_sz`, `AkamaiGHost` | L14 |
+| Imperva / Incapsula | `x-iinfo`, `visid_incap_*`, `_Incapsula_Resource` | L14, and its interstitial is L9 |
+| DDoS-Guard | `server: ddos-guard`, `__ddg*` cookies | L12, and its interstitial is L9 |
+| Sucuri | `x-sucuri-id`, `server: Sucuri` | L12 |
+| AWS WAF | `x-amzn-waf-action`, `aws-waf-token` | L12 |
+| F5 BIG-IP | `TS01…`/`BIGipServer` cookies, "The requested URL was rejected" | L12 |
+| CloudFront | `x-amz-cf-id` | L15 — an edge rule, not a bot check |
+| Fastly | `x-fastly-request-id`, `Fastly error:` | L15 — as above |
+| hCaptcha / reCAPTCHA | the widget script, **on a refusal only** | L9 |
+
+Two distinctions in that table carry the design.
+
+**L14 against L12.** A product whose verdict is a per-session model over the whole
+request is layer 14, whose stance is *delegate*. That is not defeatism: where a browser
+would help, the vendor's own challenge markers route there first, and the planner
+promotes to 14 on recurrence. A WAF acting on coarser rules is layer 12, stance
+*satisfy*, so the ladder still tries the tier that supplies a better profile.
+
+**A CDN is named without being blamed.** A CloudFront or Fastly header is on every
+response those services serve, successful ones included, so its presence says who
+answered and nothing about why. A refusal there is an operator's own rule — a signed
+URL, a geo restriction — which is layer 15, not a detection layer.
+
+The captcha row is last for a reason: a bare hCaptcha or reCAPTCHA widget is only read
+as a challenge **on a non-2xx status**. Login and comment forms carry one, and treating
+that as an interstitial launches a browser on content that already arrived. It is the
+same trap as Turnstile, and the same answer.
+
 ## Taking inventory
 
 `explain()` answers for one origin. A long-running process needs the other question — what has

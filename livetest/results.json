@@ -1062,5 +1062,70 @@
    }
   ],
   "error": "tor-pool at http://127.0.0.1:8080 runs with AUTH_DISABLED, so any credential is accepted - restart it with AUTH_DISABLED=false to run this"
+ },
+ {
+  "id": "S31",
+  "title": "A non-Cloudflare edge is named, and naming it does not break the page",
+  "layers": [
+   "L12",
+   "L14"
+  ],
+  "proves": "The classifier knows the rest of the mitigation market, and identification alone never turns a host that serves content into a refusal.",
+  "target": "",
+  "verdict": "pass",
+  "seconds": 7.76,
+  "steps": [
+   {
+    "what": "https://renovels.org/ answered 200",
+    "value": "DDoS-Guard",
+    "ok": null
+   },
+   {
+    "what": "https://renovels.org/ is still served, not refused",
+    "value": "HTTP 200",
+    "ok": true
+   },
+   {
+    "what": "https://ranobes.net/ did not serve",
+    "value": "Exhausted: L9 Managed JavaScript challenge for https://ranobes.net/: L9 Managed JavaScript challenge is beyond every configured tier (direct is the strongest). Configure a browser solver. [stop: L9 Managed JavaScript challenge is beyond every configured tier (direct is the strongest). Configure a browser solver.]",
+    "ok": null
+   },
+   {
+    "what": "https://tl.rulate.ru/ answered 200",
+    "value": "DDoS-Guard",
+    "ok": null
+   },
+   {
+    "what": "https://tl.rulate.ru/ is still served, not refused",
+    "value": "HTTP 200",
+    "ok": true
+   },
+   {
+    "what": "https://ranobelib.me/ answered 200",
+    "value": "DDoS-Guard",
+    "ok": null
+   },
+   {
+    "what": "https://ranobelib.me/ is still served, not refused",
+    "value": "HTTP 200",
+    "ok": true
+   },
+   {
+    "what": "https://ifreedom.su/ answered 200",
+    "value": "DDoS-Guard",
+    "ok": null
+   },
+   {
+    "what": "https://ifreedom.su/ is still served, not refused",
+    "value": "HTTP 200",
+    "ok": true
+   },
+   {
+    "what": "the edge was named for at least one host",
+    "value": "4/5",
+    "ok": true
+   }
+  ],
+  "error": ""
  }
 ]

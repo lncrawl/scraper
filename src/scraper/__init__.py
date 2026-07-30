@@ -58,7 +58,7 @@ from .browser import (
     SolveResult,
 )
 from .config import ScraperConfig, default_data_dir
-from .diagnosis import Action, Diagnosis, diagnose
+from .diagnosis import Action, Diagnosis, diagnose, edge
 from .exceptions import (
     Aborted,
     Blocked,
@@ -103,6 +103,7 @@ __all__ = [
     "Action",
     "Diagnosis",
     "diagnose",
+    "edge",
     "Capability",
     "Decision",
     "Move",

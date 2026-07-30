@@ -21,7 +21,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 import requests  # noqa: E402
 import urllib3  # noqa: E402
 
-from scraper.diagnosis import diagnose  # noqa: E402
+from scraper.diagnosis import diagnose, edge  # noqa: E402
 from scraper.pacing import Trail  # noqa: E402
 from scraper.transport import ImpersonateTransport  # noqa: E402
 
@@ -33,18 +33,15 @@ WORKERS = 24
 PEEK = 48 * 1024
 
 
-def classify(headers: Dict[str, str]) -> str:
-    lowered = {k.lower(): (v or "").lower() for k, v in headers.items()}
-    server = lowered.get("server", "")
-    if "cloudflare" in server or lowered.get("cf-ray"):
-        return "cloudflare"
-    if "sucuri" in server or lowered.get("x-sucuri-id"):
-        return "sucuri"
-    if lowered.get("x-amz-cf-id") or "cloudfront" in server:
-        return "cloudfront"
-    if "ddos-guard" in server or lowered.get("__ddg1"):
-        return "ddos-guard"
-    return server.split("/")[0] or "unknown"
+def classify(headers: Dict[str, str], body: str = "") -> str:
+    """What is in front of this host, as the library itself reads it.
+
+    This used to be the probe's own small copy of four signatures, which is how a
+    harness ends up measuring its own opinion instead of the library's. `edge()` knows
+    the whole vendor set, so the tally in the report is now the same classification the
+    pipeline acts on.
+    """
+    return edge(headers, body) or "unknown"
 
 
 def one(client: Any, url: str, *, plain: bool) -> Dict[str, Any]:
@@ -76,7 +73,7 @@ def one(client: Any, url: str, *, plain: bool) -> Dict[str, Any]:
         return {
             "ok": True,
             "status": response.status_code,
-            "edge": classify(headers),
+            "edge": classify(headers, body),
             "action": verdict.action.value,
             "layer": int(verdict.layer) if verdict.layer else None,
             "layer_name": str(verdict.layer) if verdict.layer else None,

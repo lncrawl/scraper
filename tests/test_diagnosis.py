@@ -8,7 +8,7 @@ from email.utils import formatdate
 
 import pytest
 
-from scraper.diagnosis import Action, diagnose, diagnose_transport
+from scraper.diagnosis import Action, diagnose, diagnose_transport, edge
 from scraper.layers import Layer, Trait
 
 from .conftest import BLOCK_BODY, CHALLENGE_BODY, TURNSTILE_BODY
@@ -437,3 +437,163 @@ class TestCloudflaresOwnCodes:
         result = diagnose(status=403, body="<p>Error 1015</p>")
         assert result.action is Action.BACKOFF
         assert result.layer is Layer.BEHAVIOURAL
+
+
+class TestVendorsBesidesCloudflare:
+    """The rest of the mitigation market, and what each refusal is really about.
+
+    Before this, anything that was not Cloudflare reached "forbidden by the origin" at
+    layer 15 — stance *avoid*, no remedy, terminal — and a vendor's captcha page served
+    with a 200 was read as content, which is the silent half.
+
+    One test per family, because a signature with no test rots the moment a vendor
+    renames a cookie, and there is nothing in a passing suite to say it happened.
+    """
+
+    def test_datadome_is_a_per_session_model_not_a_header_problem(self):
+        result = diagnose(status=403, headers={"x-datadome": "protected"}, body="denied")
+        assert result.action is Action.ESCALATE
+        assert result.layer is Layer.BOT_MANAGEMENT
+        assert "DataDome" in result.detail
+
+    def test_a_datadome_captcha_behind_a_200_is_not_content(self):
+        # The expensive one to miss: it arrives with a success status, so a caller
+        # parses the captcha page and records a scrape of nothing.
+        body = '<html><iframe src="https://geo.captcha-delivery.com/captcha/?initialCid=x">'
+        result = diagnose(status=200, headers={"set-cookie": "datadome=abc; Path=/"}, body=body)
+        assert result.action is Action.SOLVE
+        assert result.layer is Layer.MANAGED_CHALLENGE
+        assert "DataDome" in result.detail
+
+    def test_kasada_is_named_from_its_own_headers(self):
+        result = diagnose(status=403, headers={"x-kpsdk-ct": "abc123"}, body="")
+        assert result.layer is Layer.BOT_MANAGEMENT
+        assert "Kasada" in result.detail
+
+    def test_perimeterx_press_and_hold_is_a_challenge(self):
+        body = "<html><body><div id='px-captcha'></div>Press &amp; Hold to confirm</body></html>"
+        result = diagnose(status=403, headers={"set-cookie": "_pxhd=x"}, body=body)
+        assert result.action is Action.SOLVE
+        assert "PerimeterX" in result.detail
+
+    def test_akamai_is_recognised_from_its_sensor_cookies(self):
+        result = diagnose(
+            status=403,
+            headers={"set-cookie": "_abck=xyz~-1~||-1||; ak_bmsc=q"},
+            body="Access Denied",
+        )
+        assert result.layer is Layer.BOT_MANAGEMENT
+        assert "Akamai" in result.detail
+
+    def test_akamai_refuses_with_400_as_often_as_403(self):
+        # Read as the site's answer about a path, a failed sensor check is a silent
+        # give-up on a page that is there.
+        result = diagnose(status=400, headers={"server": "AkamaiGHost"}, body="Invalid URL")
+        assert result.action is Action.ESCALATE
+        assert result.layer is Layer.BOT_MANAGEMENT
+
+    def test_imperva_is_recognised_from_its_own_header(self):
+        result = diagnose(
+            status=403,
+            headers={"x-iinfo": "9-12345-0 NNNN CT(0 0 0)", "x-cdn": "Incapsula"},
+            body="Pardon Our Interruption",
+        )
+        assert result.layer is Layer.BOT_MANAGEMENT
+        assert "Imperva" in result.detail
+
+    def test_ddos_guard_is_a_coarser_edge_so_a_better_profile_may_serve(self):
+        # Six hosts in the source corpus sit behind this one. Layer 12's stance is
+        # satisfy, so the ladder still tries the tier that supplies a better profile
+        # rather than giving up on a managed provider nobody configured.
+        result = diagnose(status=403, headers={"server": "ddos-guard"}, body="")
+        assert result.action is Action.ESCALATE
+        assert result.layer is Layer.SUPER_BOT_FIGHT
+        assert "DDoS-Guard" in result.detail
+
+    def test_a_ddos_guard_interstitial_needs_a_browser(self):
+        body = '<html><script src="/.well-known/ddos-guard/id/x"></script></html>'
+        result = diagnose(status=200, headers={"server": "ddos-guard"}, body=body)
+        assert result.action is Action.SOLVE
+        assert result.layer is Layer.MANAGED_CHALLENGE
+
+    def test_sucuri_is_named(self):
+        result = diagnose(
+            status=403,
+            headers={"x-sucuri-id": "12345"},
+            body="Sucuri Website Firewall - Access Denied",
+        )
+        assert result.layer is Layer.SUPER_BOT_FIGHT
+        assert "Sucuri" in result.detail
+
+    def test_aws_waf_is_named_from_its_action_header(self):
+        result = diagnose(status=403, headers={"x-amzn-waf-action": "captcha"}, body="")
+        assert result.layer is Layer.SUPER_BOT_FIGHT
+        assert "AWS WAF" in result.detail
+
+    def test_f5_has_one_unmistakable_block_page(self):
+        result = diagnose(
+            status=403,
+            body="<html><body>The requested URL was rejected. Please consult with your "
+            "administrator.</body></html>",
+        )
+        assert result.layer is Layer.SUPER_BOT_FIGHT
+        assert "F5" in result.detail
+
+    def test_a_cdn_is_named_without_being_blamed(self):
+        # CloudFront's header is on every response it serves, successful ones included.
+        # Reading it as a detection layer would attribute an operator's own rule — a
+        # signed URL, a geo restriction — to a bot check.
+        clean = diagnose(status=200, headers={"x-amz-cf-id": "abc"}, body="<h1>Chapter</h1>")
+        assert clean.ok
+        refused = diagnose(status=403, headers={"x-amz-cf-id": "abc"}, body="denied")
+        assert refused.layer is Layer.WORKERS, "an edge rule is operator code, not a bot layer"
+        assert "CloudFront" in refused.detail
+
+    def test_fastly_is_the_same_kind_of_identification(self):
+        result = diagnose(status=403, headers={"server": "fastly"}, body="Fastly error: x")
+        assert result.layer is Layer.WORKERS
+        assert "Fastly" in result.detail
+
+    def test_a_captcha_widget_on_a_working_page_is_just_a_form(self):
+        # The trap that mirrors Turnstile: login and comment forms carry a reCAPTCHA,
+        # and treating one as an interstitial launches a browser on content that has
+        # already arrived.
+        body = (
+            "<html><body><h1>Chapter 12</h1><p>Prose.</p>"
+            '<script src="https://www.google.com/recaptcha/api.js"></script>'
+            "</body></html>"
+        )
+        assert diagnose(status=200, body=body).ok
+
+    def test_the_same_widget_on_a_refusal_is_a_challenge(self):
+        body = '<html><body><script src="https://hcaptcha.com/1/api.js"></script></body></html>'
+        result = diagnose(status=403, body=body)
+        assert result.action is Action.SOLVE
+
+    def test_a_404_behind_a_bot_manager_is_still_a_404(self):
+        result = diagnose(status=404, headers={"x-datadome": "protected"}, body="Not found")
+        assert result.action is Action.ACCEPT
+        assert result.layer is None
+
+    def test_a_cloudflare_error_code_still_wins_over_a_vendor_guess(self):
+        result = diagnose(
+            status=403,
+            headers={"cf-ray": "abc", "set-cookie": "_pxhd=x"},
+            body="<p>Error 1005</p>",
+        )
+        assert result.layer is Layer.IP_REPUTATION
+
+
+class TestNamingTheEdge:
+    def test_a_product_is_named_when_it_announces_itself(self):
+        assert edge({"x-datadome": "protected"}) == "DataDome"
+        assert edge({"server": "ddos-guard"}) == "DDoS-Guard"
+
+    def test_cloudflare_is_named_from_its_ray_id(self):
+        assert edge({"cf-ray": "abc123"}) == "Cloudflare"
+
+    def test_an_ordinary_origin_reports_its_server(self):
+        assert edge({"server": "nginx/1.24.0"}) == "nginx"
+
+    def test_nothing_at_all_is_an_empty_string(self):
+        assert edge({}) == ""

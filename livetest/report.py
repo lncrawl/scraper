@@ -129,7 +129,7 @@ def layer_chart(probe: List[Dict[str, Any]]) -> str:
 
 AREAS = [
     ("Transport — layers 2–5", ["S01", "S02", "S03"]),
-    ("Diagnosis", ["S05", "S06", "S07", "S08", "S09", "S24", "S25"]),
+    ("Diagnosis", ["S05", "S06", "S07", "S08", "S09", "S24", "S25", "S31"]),
     ("Behaviour — layer 8", ["S04", "S10", "S16", "S20", "S21"]),
     ("Addresses and tor-pool — layer 1", ["S11", "S12", "S13", "S14", "S15", "S26", "S28"]),
     ("The ladder", ["S17", "S23", "S27"]),

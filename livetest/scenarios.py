@@ -1434,6 +1434,74 @@ def s24(result: Result) -> None:
 # -- runner ---------------------------------------------------------------------------
 
 
+@scenario(
+    "S31",
+    "A non-Cloudflare edge is named, and naming it does not break the page",
+    ["L12", "L14"],
+    "The classifier knows the rest of the mitigation market, and identification alone "
+    "never turns a host that serves content into a refusal.",
+)
+def s31(result: Result) -> None:
+    from scraper import edge
+
+    path = HERE / "probe.json"
+    if not path.exists():
+        result.verdict = "inconclusive"
+        result.error = "no probe file; run uv run poe live-probe first"
+        return
+
+    rows = json.loads(path.read_text())
+    # Only hosts behind an actual mitigation product, not an origin server that happens
+    # to name itself. The corpus holds ten of these against Cloudflare's 164, which is
+    # the honest scope of the vendor work rather than a reason to skip it.
+    products = {
+        "ddos-guard",
+        "sucuri",
+        "cloudfront",
+        "fastly",
+        "datadome",
+        "kasada",
+        "perimeterx",
+        "akamai bot manager",
+        "imperva",
+        "aws waf",
+        "f5 big-ip",
+    }
+    targets = [
+        row["url"]
+        for row in rows
+        if (row.get("impersonate") or {}).get("ok")
+        and str((row.get("impersonate") or {}).get("edge", "")).lower() in products
+    ][:5]
+    if not targets:
+        result.verdict = "inconclusive"
+        result.error = "the last probe found no third-party mitigation edge to check"
+        return
+
+    named = 0
+    with Scraper(config=live_config(remember=False)) as scraper:
+        for url in targets:
+            try:
+                response = scraper.get(url)
+            except Exception as exc:  # noqa: BLE001 - a live refusal is the data
+                result.note(f"{url} did not serve", f"{type(exc).__name__}: {exc}")
+                continue
+            who = edge(dict(response.headers), response.text[:8000])
+            result.note(f"{url} answered {response.status_code}", who or "unnamed")
+            if who:
+                named += 1
+            # The regression this scenario exists to catch. A signature that fires on a
+            # header every response carries — a CDN's request id — would turn every one
+            # of these into a refusal, and the tally would still look like progress.
+            result.check(
+                f"{url} is still served, not refused",
+                response.status_code == 200,
+                f"HTTP {response.status_code}",
+            )
+
+    result.check("the edge was named for at least one host", named > 0, f"{named}/{len(targets)}")
+
+
 def main() -> None:
     only = set(sys.argv[1:])
     WORKDIR.mkdir(parents=True, exist_ok=True)
