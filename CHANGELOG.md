@@ -4,6 +4,161 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-07-30
+
+### Added
+
+- **`render_soup()` — a browser, but not a tier.** Some pages answer 200 with a shell
+  that JavaScript fills in. Nothing is blocking there, no layer is binding, and a
+  clearance changes nothing, because plain HTTP carrying the cookie returns the same
+  empty shell. So this is not a rung on the ladder and no diagnosis leads to it; the
+  caller knows this about the site and the model cannot infer it.
+
+  `BrowserSolver.render(url, wait_for=…)` and `Scraper.render(url, …)` /
+  `render_soup(url, …)`. A render goes through the same lease, identity, concurrency gate
+  and clock as a fetch, so it leaves from the address the origin is held on and takes its
+  turn on the origin's pacing. It records the referrer chain and passes the rendered text
+  through the decoy guard — a maze that only appears after hydration would otherwise walk
+  straight past it — but writes **nothing** to the tier or the success counters, since a
+  page the browser rendered is no evidence that the HTTP ladder works.
+
+  `render` is optional on the solver protocol and defaults to `TierUnavailable`, because
+  the two capabilities are independent: a solving service answers challenges and renders
+  nothing. `CallableSolver` takes a `renderer` separately for the same reason. A missing
+  `wait_for` selector raises `RenderError` rather than handing back the shell — returning
+  it is the silent failure this exists to prevent, since the caller parses it, finds
+  nothing, and reports an empty page rather than a problem.
+
+  **Choosing the selector is the part that takes care.** It has to name an element that
+  cannot exist before the data does. Measured against one live single-page application:
+  the cards hydrate as empty skeletons and fill in afterwards, so a novel-card selector
+  matched at 1.8s with 457 characters of a page that settles at 9538. Where a site has no
+  such element, no selector is the honest answer and the solver's settle interval is what
+  you have.
+
+- **`unchanged(url)` — conditional requests, opt-in only.** Every parsed response's
+  `ETag` and `Last-Modified` are recorded per endpoint; sending them is only ever this
+  call. A `304` has no body and this library keeps no response cache to replay one from,
+  so revalidating underneath `get_soup()` would return an empty page — every selector
+  finding nothing, nothing raising — which is worse than the download it saved. The
+  saving available is skipping the *work*, so the question belongs before the work
+  starts.
+
+  `False` means do the work: nothing recorded yet, or the site answered with a body.
+  Nothing recorded costs no request. The store is bounded at 64 endpoints per origin,
+  least recently recorded first, and skips non-textual responses — one page can be twenty
+  images, and they would evict the pages that are what anyone revalidates.
+
+- **A per-request abort signal.** `fetch(..., signal=…)`, and every helper above it
+  passes one through. Anything with `is_set()` counts. It is combined with the scraper's
+  own signal rather than substituted for it, so `abort()` still stops everything, and it
+  reaches the pre-send check, the pacing wait and the download loop — respectively so a
+  cancelled request never leaves, so a job does not sit out an interval whose tail is
+  tens of seconds, and so a large file does not have to finish first. Until now the only
+  lever was the shared attribute, so cancelling one job cancelled every job on the
+  origin, which pushes a consumer into a scraper per thread and costs it the per-origin
+  state that sharing exists to accumulate.
+
+- **Twelve mitigation products besides Cloudflare are recognised**, from their own
+  headers, cookie names or block pages. A verdict from a per-session model over the whole
+  request is layer 14, whose stance is *delegate*: DataDome, Kasada, PerimeterX, Akamai
+  and Imperva. A WAF acting on coarser rules is layer 12, stance *satisfy*, so the ladder
+  still tries the tier that supplies a better profile: DDoS-Guard, Sucuri, AWS WAF, F5.
+
+  A CDN is named without being blamed. CloudFront and Fastly headers are on every
+  response those services serve, so their presence says who answered and nothing about
+  why; a refusal there is an operator's own rule, which is layer 15. The half that failed
+  silently was the challenge markers — a DataDome captcha iframe, a PerimeterX
+  press-and-hold, a DDoS-Guard interstitial and an Imperva resource page all arrive with
+  a 200, so a caller parsed one and recorded a successful scrape of nothing. A bare
+  hCaptcha or reCAPTCHA widget is deliberately not one of these on a 2xx: login and
+  comment forms carry it.
+
+  `scraper.edge(headers, body)` names the product publicly, and `livetest/probe.py` now
+  calls it instead of keeping its own copy of four signatures.
+
+- **`ScraperConfig.tiers` — rungs of your own.** `Tier` declares `cost` and `reach`
+  alongside `name` and exposes `capability()`. Two documents already promised this and
+  neither was true: the instruction was to edit a private method of an installed library.
+  Reach is enforced rather than trusted — naming one of layers 2–5 names all four, and
+  naming layer 18 or 19 raises `ConfigError`, since those read a secret and a rung
+  claiming one would be offered for something no rung can do.
+
+- **`SharedState.create(config, memory=…)`.** A consumer that wants state per site and
+  persistence for the process could not have both: each store holds every origin it knows
+  and `flush()` writes the whole file, so two stores on one path do not merge and the
+  later write wins.
+
+- **`Memory` and `ExitPool` enumerate what they hold** — `count`, `origins()`,
+  `profiles()`, `export()`, `forget()`, `clear()`, and one `ExitStatus` row per configured
+  address with what it is leased to and when a retired one returns. Both views are
+  narrowed for a status page rather than a debugger: `profiles()` returns copies so a
+  caller cannot edit what the loop is reading, `export()` reduces a clearance to its
+  expiry and the User-Agent it belongs to, and `ExitStatus` names an exit by label or host
+  because a proxy URL carries its password.
+
+### Changed
+
+- **The origin memory is bounded**, by age first and size second: an origin unseen for
+  `FORGET_AFTER` (30 days) is dropped, and beyond `MAX_ORIGINS` (512) the least recently
+  seen go. Age first because the two answer different questions — what is stored is a
+  conclusion about a site's *current* configuration, so a stale one is worth less than
+  the cold start that replaces it, and a small cap must not keep a month-old binding
+  layer alive just because the store was quiet. Eviction never drops the origin being
+  asked for: `profile()` hands back a live object the retrieval loop mutates, so evicting
+  the entry its own insertion created would discard everything that retrieval learns.
+
+- **Layer 11 is reachable.** A 403 behind the edge always read as the scoring layer,
+  whatever the client had sent. It is now named when the User-Agent is not a browser's,
+  which names the remedy: a faithful transport profile, not a browser launch. An *absent*
+  User-Agent is left as scoring — silence is the caller not saying, and reading it as
+  "not a browser" would relabel every diagnosis made from a recorded page.
+
+- **The matrix tests as well as builds.** CI built on 3.9 through 3.14 and tested on
+  none, so a version-specific break reached a release as long as the package still built.
+  The two ends are where one lands: the browser extra is marked for 3.10 to 3.13, so 3.9
+  and 3.14 resolve without nodriver.
+
+### Fixed
+
+- **Nine Cloudflare codes said nothing about the visitor and were read as a block.**
+  1000–1004, 1013, 1016, 1018 and 1023 are a prohibited or unresolvable DNS target,
+  direct access by IP, a Host/SNI disagreement, or a host that is not configured. They
+  fell through to "forbidden by the origin" at layer 15, whose stance is *avoid* — so the
+  ladder exhausted itself over a misconfigured zone, retired a healthy exit on the way,
+  and wrote a detection verdict to that origin's profile that outlived the
+  misconfiguration. They now refuse with no layer.
+
+- **Layer 15 has an observed signal for the first time.** 1101 and 1102 are the
+  operator's own edge code throwing or exhausting its limits; every other route to that
+  layer is by elimination. A crash is not a refusal, so they retry — no browser and no
+  address changes what a thrown script returns. 1200 retries with no layer, and 1011
+  refuses, since hotlink protection reads a `Referer` this library already sends. An
+  unmapped code now reaches the message rather than being discarded: "Cloudflare error
+  1024" is actionable, "forbidden by the origin" is not.
+
+- **The solver kept its own copy of the challenge markers**, and that copy never gained
+  the Turnstile ones — so a browser watching a Turnstile page concluded on its first poll
+  that it had cleared, harvested no clearance cookie, and the tier reported itself
+  unavailable on the one layer it exists for. `diagnosis` owns both questions now, and
+  deliberately as two functions, because their costs run opposite ways: `is_challenge()`
+  decides whether to *start* a solve, where a false positive wastes a browser on a page
+  that already arrived, and `is_still_challenged()` decides whether one has *finished*,
+  where a false positive abandons it.
+
+- **Header values were compared case-sensitively.** `_lower_headers` folded names but not
+  values, so `Server: AkamaiGHost` and `X-CDN: Incapsula` — both written mixed-case in
+  the wild — could never match. The pre-existing Cloudflare check worked only because
+  Cloudflare happens to send its `Server` value lowercase.
+
+- **A vendor refusing with a status other than 403** read as the site's answer about a
+  path, which is a silent give-up on a page that is there. Akamai answers a failed sensor
+  check with 400 and a WAF rule commonly answers 405, so a named vendor is consulted on
+  400, 405, 406 and 409. A 404 is not: a 404 behind a bot manager is still a 404.
+
+- **The README claimed nineteen layers are diagnosable.** Thirteen are, verified by
+  exercising every branch; `docs/layers.md` now says which six are not and why.
+
 ## [1.1.0] - 2026-07-30
 
 ### Added
@@ -531,6 +686,7 @@ Initial public release of `lncrawl-scraper`, extracted from
   rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[1.2.0]: https://github.com/lncrawl/scraper/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/lncrawl/scraper/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/lncrawl/scraper/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/lncrawl/scraper/compare/v0.2.6...v1.0.0

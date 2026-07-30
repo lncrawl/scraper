@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>lncrawl-scraper 1.0 — live verification report</title>
+<title>lncrawl-scraper 1.1.0 — live verification report</title>
 <style>
 *,*::before,*::after{box-sizing:border-box}
 :root{
@@ -117,15 +117,15 @@ footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--rule);
   color:var(--muted);font-size:.82rem}
 </style></head><body><div class="wrap">
 
-<p class="sub">lncrawl-scraper 1.0.0 · 2026-07-30 13:03 +04</p>
+<p class="sub">lncrawl-scraper 1.1.0 · 2026-07-30 16:45 +04</p>
 <h1>Live verification against real Cloudflare-protected sites</h1>
 <p class="lede">Every code path in the scraper, exercised against production Cloudflare
 deployments rather than fixtures — the transport group, the diagnosis classifier, the
 escalation ladder, a real browser solve, the archive tier, and a live tor-pool.
-26 of 29 scenarios pass. A stubbed transport can confirm that the code
+28 of 31 scenarios pass. A stubbed transport can confirm that the code
 does what it says; only this can confirm that what it says is true of a real server.</p>
 
-<div class="tiles"><div class="tile"><div class="tile-v">26/29</div><div class="tile-l">scenarios passed</div></div><div class="tile"><div class="tile-v">97</div><div class="tile-l">assertions verified live</div><div class="tile-s">0 failed</div></div><div class="tile"><div class="tile-v">315</div><div class="tile-l">hosts probed</div><div class="tile-s">164 behind Cloudflare</div></div></div>
+<div class="tiles"><div class="tile"><div class="tile-v">28/31</div><div class="tile-l">scenarios passed</div></div><div class="tile"><div class="tile-v">108</div><div class="tile-l">assertions verified live</div><div class="tile-s">0 failed</div></div><div class="tile"><div class="tile-v">315</div><div class="tile-l">hosts probed</div><div class="tile-s">163 behind Cloudflare</div></div></div>
 
 <h2>The corpus</h2>
 <p>Every base URL in lncrawl's source index was probed twice — once with a
@@ -134,14 +134,14 @@ response classified by the library's own diagnosis. That pairing is the measurem
 only difference between the two requests is the network signature.</p>
 <div class="tiles small">
   <div class="tile"><div class="tile-v">315</div><div class="tile-l">hosts probed</div></div>
-  <div class="tile"><div class="tile-v">164</div><div class="tile-l">behind Cloudflare</div></div>
+  <div class="tile"><div class="tile-v">163</div><div class="tile-l">behind Cloudflare</div></div>
   <div class="tile"><div class="tile-v">35</div><div class="tile-l">refused a plain client,
     served the impersonated one</div></div>
 </div>
 <div class="two">
 <div><h4>What fronts these hosts</h4>
 <div class="scroll"><table><thead><tr><th>Edge</th><th class="n">Hosts</th></tr></thead>
-<tbody><tr><td>cloudflare</td><td class='n'>157</td></tr><tr><td>nginx</td><td class='n'>45</td></tr><tr><td>cowboy</td><td class='n'>32</td></tr><tr><td>unreachable</td><td class='n'>20</td></tr><tr><td>apache</td><td class='n'>15</td></tr><tr><td>unknown</td><td class='n'>7</td></tr><tr><td>ddos-guard</td><td class='n'>6</td></tr><tr><td>tengine</td><td class='n'>5</td></tr><tr><td>litespeed</td><td class='n'>4</td></tr><tr><td>caddy</td><td class='n'>4</td></tr></tbody></table></div></div>
+<tbody><tr><td>Cloudflare</td><td class='n'>159</td></tr><tr><td>nginx</td><td class='n'>46</td></tr><tr><td>cowboy</td><td class='n'>30</td></tr><tr><td>unreachable</td><td class='n'>20</td></tr><tr><td>apache</td><td class='n'>15</td></tr><tr><td>DDoS-Guard</td><td class='n'>6</td></tr><tr><td>unknown</td><td class='n'>6</td></tr><tr><td>tengine</td><td class='n'>5</td></tr><tr><td>litespeed</td><td class='n'>4</td></tr><tr><td>caddy</td><td class='n'>4</td></tr></tbody></table></div></div>
 <div><h4>Through a Tor exit</h4>
 <p>Of 45 Cloudflare hosts reached through the local tor-pool:
 <strong>33 served outright</strong>, 8 challenged,
@@ -179,51 +179,37 @@ buys more here than a residential proxy would.</p></div>
   <div class="blabel">L8 Per-zone behavioural model</div>
   <div class="btrack">
     <div class="bpair">
-      <div class="bar b-plain" style="width:53.7%"
-           data-tip="plain client — 22 hosts"></div>
-      <span class="bval">22</span>
+      <div class="bar b-plain" style="width:46.3%"
+           data-tip="plain client — 19 hosts"></div>
+      <span class="bval">19</span>
     </div>
     <div class="bpair">
-      <div class="bar b-imp" style="width:58.5%"
-           data-tip="impersonated — 24 hosts"></div>
-      <span class="bval">24</span>
-    </div>
-  </div>
-</div><div class="brow">
-  <div class="blabel">L12 Super Bot Fight Mode</div>
-  <div class="btrack">
-    <div class="bpair">
-      <div class="bar b-plain" style="width:43.9%"
-           data-tip="plain client — 18 hosts"></div>
+      <div class="bar b-imp" style="width:43.9%"
+           data-tip="impersonated — 18 hosts"></div>
       <span class="bval">18</span>
-    </div>
-    <div class="bpair">
-      <div class="bar b-imp" style="width:17.1%"
-           data-tip="impersonated — 7 hosts"></div>
-      <span class="bval">7</span>
     </div>
   </div>
 </div><div class="brow">
   <div class="blabel">L6 Browser and JavaScript fingerprint</div>
   <div class="btrack">
     <div class="bpair">
-      <div class="bar b-plain" style="width:17.1%"
-           data-tip="plain client — 7 hosts"></div>
-      <span class="bval">7</span>
+      <div class="bar b-plain" style="width:26.8%"
+           data-tip="plain client — 11 hosts"></div>
+      <span class="bval">11</span>
     </div>
     <div class="bpair">
-      <div class="bar b-imp" style="width:24.4%"
-           data-tip="impersonated — 10 hosts"></div>
-      <span class="bval">10</span>
+      <div class="bar b-imp" style="width:34.1%"
+           data-tip="impersonated — 14 hosts"></div>
+      <span class="bval">14</span>
     </div>
   </div>
 </div><div class="brow">
-  <div class="blabel">L15 Operator edge code</div>
+  <div class="blabel">L11 Bot Fight Mode</div>
   <div class="btrack">
     <div class="bpair">
-      <div class="bar b-plain" style="width:12.2%"
-           data-tip="plain client — 5 hosts"></div>
-      <span class="bval">5</span>
+      <div class="bar b-plain" style="width:41.5%"
+           data-tip="plain client — 17 hosts"></div>
+      <span class="bval">17</span>
     </div>
     <div class="bpair">
       <div class="bar b-imp" style="width:0.0%"
@@ -232,12 +218,26 @@ buys more here than a residential proxy would.</p></div>
     </div>
   </div>
 </div><div class="brow">
-  <div class="blabel">L19 Identity-provider gate</div>
+  <div class="blabel">L12 Super Bot Fight Mode</div>
   <div class="btrack">
     <div class="bpair">
-      <div class="bar b-plain" style="width:4.9%"
-           data-tip="plain client — 2 hosts"></div>
-      <span class="bval">2</span>
+      <div class="bar b-plain" style="width:2.4%"
+           data-tip="plain client — 1 host"></div>
+      <span class="bval">1</span>
+    </div>
+    <div class="bpair">
+      <div class="bar b-imp" style="width:14.6%"
+           data-tip="impersonated — 6 hosts"></div>
+      <span class="bval">6</span>
+    </div>
+  </div>
+</div><div class="brow">
+  <div class="blabel">L15 Operator edge code</div>
+  <div class="btrack">
+    <div class="bpair">
+      <div class="bar b-plain" style="width:9.8%"
+           data-tip="plain client — 4 hosts"></div>
+      <span class="bval">4</span>
     </div>
     <div class="bpair">
       <div class="bar b-imp" style="width:0.0%"
@@ -259,6 +259,20 @@ buys more here than a residential proxy would.</p></div>
       <span class="bval">1</span>
     </div>
   </div>
+</div><div class="brow">
+  <div class="blabel">L19 Identity-provider gate</div>
+  <div class="btrack">
+    <div class="bpair">
+      <div class="bar b-plain" style="width:2.4%"
+           data-tip="plain client — 1 host"></div>
+      <span class="bval">1</span>
+    </div>
+    <div class="bpair">
+      <div class="bar b-imp" style="width:0.0%"
+           data-tip="impersonated — 0 hosts"></div>
+      <span class="bval">0</span>
+    </div>
+  </div>
 </div></div>
 </figure>
 <p class="note-b">Reading the chart: the impersonated client meets the managed challenge on
@@ -277,13 +291,13 @@ assertions and the values observed.</p>
     <span class="sid">S01</span>
     <span class="stitle">A plain client is refused where an impersonated one is served</span>
     <span class="layers"><span class="lchip">L2</span><span class="lchip">L3</span><span class="lchip">L4</span><span class="lchip">L5</span></span>
-    <span class="secs">9.31s</span>
+    <span class="secs">8.31s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> Layers 2-5 are one barrier: the only difference between these two requests is the network signature, and it decides the outcome.</p>
     <div class="target">against <code>looked up from the last probe</code></div>
     
-    <ul class="steps"><li class="s-note"><span class="g">·</span><span class="sw2">hosts presenting the condition today</span><span class="sv">https://novelfull.com/, https://www.novelhall.com/</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">https://novelfull.com/ — plain refused, impersonated served</span><span class="sv">plain=403 impersonated=200 (52305 bytes)</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">https://www.novelhall.com/ — plain refused, impersonated served</span><span class="sv">plain=403 impersonated=200 (39076 bytes)</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the profile sends a browser User-Agent we never wrote</span><span class="sv">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">no Python client string is present</span><span class="sv">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36</span></li><li class="s-note"><span class="g">·</span><span class="sw2">header set the profile emitted</span><span class="sv">Accept, Accept-Encoding, Accept-Language, Host, Priority, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site, Sec-Fetch-User, User-Agent, Via, X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto, X-Forwarded-Ssl, X-Request-Start</span></li></ul>
+    <ul class="steps"><li class="s-note"><span class="g">·</span><span class="sw2">hosts presenting the condition today</span><span class="sv">https://novelfull.com/, https://novelfull.net/</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">https://novelfull.com/ — plain refused, impersonated served</span><span class="sv">plain=403 impersonated=200 (52587 bytes)</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">https://novelfull.net/ — plain refused, impersonated served</span><span class="sv">plain=403 impersonated=200 (103290 bytes)</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the profile sends a browser User-Agent we never wrote</span><span class="sv">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">no Python client string is present</span><span class="sv">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36</span></li><li class="s-note"><span class="g">·</span><span class="sw2">header set the profile emitted</span><span class="sv">Accept, Accept-Encoding, Accept-Language, Host, Priority, Sec-Ch-Ua, Sec-Ch-Ua-Mobile, Sec-Ch-Ua-Platform, Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site, Sec-Fetch-User, User-Agent, Via, X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto, X-Forwarded-Ssl, X-Request-Start</span></li></ul>
   </div>
 </details><details class="scn v-pass" >
   <summary>
@@ -305,13 +319,13 @@ assertions and the values observed.</p>
     <span class="sid">S03</span>
     <span class="stitle">A Cloudflare-fronted page is retrieved and parsed</span>
     <span class="layers"><span class="lchip">L2-L5</span><span class="lchip">L11</span><span class="lchip">L12</span></span>
-    <span class="secs">1.75s</span>
+    <span class="secs">3.28s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The baseline tier handles a real protected site end to end, including the soup, JSON and file helpers.</p>
     <div class="target">against <code>https://novelfull.net/</code></div>
     
-    <ul class="steps"><li class="s-ok"><span class="g">✓</span><span class="sw2">a page came back with a title</span><span class="sv">Read free English translated Light Novel - NovelFull</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the tier used was the cheapest one</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">nothing was recorded as binding</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">links were extracted</span><span class="sv">138 followable</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">get_file wrote the body</span><span class="sv">102276 bytes</span></li><li class="s-note"><span class="g">·</span><span class="sw2">explain()</span><span class="sv">novelfull.net binding layer : nothing has blocked yet tier : direct pacing : 1.2s mean interval requests : 39 ok / 0 failed clearance : none ladder : direct(10) exits : direct</span></li></ul>
+    <ul class="steps"><li class="s-ok"><span class="g">✓</span><span class="sw2">a page came back with a title</span><span class="sv">Read free English translated Light Novel - NovelFull</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the tier used was the cheapest one</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">nothing was recorded as binding</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">links were extracted</span><span class="sv">139 followable</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">get_file wrote the body</span><span class="sv">103290 bytes</span></li><li class="s-note"><span class="g">·</span><span class="sw2">explain()</span><span class="sv">novelfull.net binding layer : nothing has blocked yet tier : direct pacing : 1.2s mean interval requests : 41 ok / 0 failed clearance : none ladder : direct(10) exits : direct</span></li></ul>
   </div>
 </details><h3 class="area">Diagnosis</h3><details class="scn v-pass" >
   <summary>
@@ -319,7 +333,7 @@ assertions and the values observed.</p>
     <span class="sid">S05</span>
     <span class="stitle">A challenge served with a 403 is diagnosed as a challenge</span>
     <span class="layers"><span class="lchip">L9</span><span class="lchip">L10</span></span>
-    <span class="secs">3.78s</span>
+    <span class="secs">5.31s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The status code says &#x27;forbidden&#x27; and the correct remedy is a browser, not a new address. A conventional client rotates its proxy here and gets nowhere.</p>
@@ -333,7 +347,7 @@ assertions and the values observed.</p>
     <span class="sid">S06</span>
     <span class="stitle">A challenge with no solver configured stops and names what is missing</span>
     <span class="layers"><span class="lchip">L9</span></span>
-    <span class="secs">0.46s</span>
+    <span class="secs">1.5s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The failure is actionable: it names the layer and the capability that would reach it, instead of exhausting retries on a 403.</p>
@@ -347,7 +361,7 @@ assertions and the values observed.</p>
     <span class="sid">S07</span>
     <span class="stitle">A host scored as automated escalates rather than rotating</span>
     <span class="layers"><span class="lchip">L12</span></span>
-    <span class="secs">0.48s</span>
+    <span class="secs">0.66s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> Nothing distinguishes the scoring tiers from outside, so the diagnosis names the strictest emit-only one and asks for a stronger tier — not a new address.</p>
@@ -375,7 +389,7 @@ assertions and the values observed.</p>
     <span class="sid">S09</span>
     <span class="stitle">Synthetic statuses are each diagnosed correctly, live</span>
     <span class="layers"><span class="lchip">L1</span><span class="lchip">L7</span><span class="lchip">L8</span><span class="lchip">L19</span></span>
-    <span class="secs">4.87s</span>
+    <span class="secs">5.96s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The classifier is exercised against responses a real server produced, not fixtures.</p>
@@ -389,7 +403,7 @@ assertions and the values observed.</p>
     <span class="sid">S24</span>
     <span class="stitle">A 404 is returned rather than blamed on a layer</span>
     <span class="layers"><span class="lchip">-</span></span>
-    <span class="secs">0.68s</span>
+    <span class="secs">1.23s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The site&#x27;s answer about a path says nothing about the client. Attributing it to a layer would retire a healthy address over a typo in a URL.</p>
@@ -409,7 +423,21 @@ assertions and the values observed.</p>
     <p class="proves"><strong>What a pass proves.</strong> The population-level result: what 501 real hosts do today, and what the transport profile is worth measured across all of them rather than anecdotally.</p>
     <div class="target">against <code>501 hosts from lncrawl&#x27;s source index</code></div>
     
-    <ul class="steps"><li class="s-note"><span class="g">·</span><span class="sw2">hosts probed</span><span class="sv">315</span></li><li class="s-note"><span class="g">·</span><span class="sw2">reachable</span><span class="sv">293</span></li><li class="s-note"><span class="g">·</span><span class="sw2">Cloudflare-fronted</span><span class="sv">161</span></li><li class="s-note"><span class="g">·</span><span class="sw2">layers seen by a plain client</span><span class="sv">{&#x27;L12 Super Bot Fight Mode&#x27;: 18, &#x27;L15 Operator edge code&#x27;: 5, &#x27;L6 Browser and JavaScript fingerprint&#x27;: 7, &#x27;L8 Per-zone behavioural model&#x27;: 19, &#x27;L9 Managed JavaScript challenge&#x27;: 44}</span></li><li class="s-note"><span class="g">·</span><span class="sw2">layers seen by the impersonated client</span><span class="sv">{&#x27;L10 Turnstile&#x27;: 1, &#x27;L12 Super Bot Fight Mode&#x27;: 7, &#x27;L6 Browser and JavaScript fingerprint&#x27;: 10, &#x27;L8 Per-zone behavioural model&#x27;: 15, &#x27;L9 Managed JavaScript challenge&#x27;: 28}</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">impersonation converts refusals into content on real hosts</span><span class="sv">36 hosts</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">and reduces the number of hosts that challenge at all</span><span class="sv">44 -&gt; 29 challenged hosts</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">at least four distinct layers were exercised by real traffic</span><span class="sv">L10 Turnstile, L12 Super Bot Fight Mode, L6 Browser and JavaScript fingerprint, L8 Per-zone behavioural model, L9 Managed JavaScript challenge</span></li><li class="s-note"><span class="g">·</span><span class="sw2">reputation blocks (L1) observed: 0 of 315</span><span class="sv">none</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the reputation layer is rare here, so a browser buys more than a proxy would</span><span class="sv">0 hosts</span></li></ul>
+    <ul class="steps"><li class="s-note"><span class="g">·</span><span class="sw2">hosts probed</span><span class="sv">315</span></li><li class="s-note"><span class="g">·</span><span class="sw2">reachable</span><span class="sv">295</span></li><li class="s-note"><span class="g">·</span><span class="sw2">Cloudflare-fronted</span><span class="sv">159</span></li><li class="s-note"><span class="g">·</span><span class="sw2">layers seen by a plain client</span><span class="sv">{&#x27;L11 Bot Fight Mode&#x27;: 17, &#x27;L12 Super Bot Fight Mode&#x27;: 1, &#x27;L15 Operator edge code&#x27;: 4, &#x27;L19 Identity-provider gate&#x27;: 1, &#x27;L6 Browser and JavaScript fingerprint&#x27;: 11, &#x27;L8 Per-zone behavioural model&#x27;: 19, &#x27;L9 Managed JavaScript challenge&#x27;: 41}</span></li><li class="s-note"><span class="g">·</span><span class="sw2">layers seen by the impersonated client</span><span class="sv">{&#x27;L10 Turnstile&#x27;: 1, &#x27;L12 Super Bot Fight Mode&#x27;: 6, &#x27;L6 Browser and JavaScript fingerprint&#x27;: 14, &#x27;L8 Per-zone behavioural model&#x27;: 18, &#x27;L9 Managed JavaScript challenge&#x27;: 24}</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">impersonation converts refusals into content on real hosts</span><span class="sv">37 hosts</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">and reduces the number of hosts that challenge at all</span><span class="sv">41 -&gt; 25 challenged hosts</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">at least four distinct layers were exercised by real traffic</span><span class="sv">L10 Turnstile, L12 Super Bot Fight Mode, L6 Browser and JavaScript fingerprint, L8 Per-zone behavioural model, L9 Managed JavaScript challenge</span></li><li class="s-note"><span class="g">·</span><span class="sw2">reputation blocks (L1) observed: 0 of 315</span><span class="sv">none</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the reputation layer is rare here, so a browser buys more than a proxy would</span><span class="sv">0 hosts</span></li></ul>
+  </div>
+</details><details class="scn v-pass" >
+  <summary>
+    <span class="pill p-pass">pass</span>
+    <span class="sid">S31</span>
+    <span class="stitle">A non-Cloudflare edge is named, and naming it does not break the page</span>
+    <span class="layers"><span class="lchip">L12</span><span class="lchip">L14</span></span>
+    <span class="secs">8.64s</span>
+  </summary>
+  <div class="body">
+    <p class="proves"><strong>What a pass proves.</strong> The classifier knows the rest of the mitigation market, and identification alone never turns a host that serves content into a refusal.</p>
+    
+    
+    <ul class="steps"><li class="s-note"><span class="g">·</span><span class="sw2">https://renovels.org/ answered 200</span><span class="sv">DDoS-Guard</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">https://renovels.org/ is still served, not refused</span><span class="sv">HTTP 200</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://ranobes.net/ did not serve</span><span class="sv">Exhausted: L9 Managed JavaScript challenge for https://ranobes.net/: L9 Managed JavaScript challenge is beyond every configured tier (direct is the strongest). Configure a browser solver. [stop: L9 Managed JavaScript challenge is beyond every configured tier (direct is the strongest). Configure a browser solver.]</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://webnovelonline.com/ answered 200</span><span class="sv">Fastly</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">https://webnovelonline.com/ is still served, not refused</span><span class="sv">HTTP 200</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://tl.rulate.ru/ answered 200</span><span class="sv">DDoS-Guard</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">https://tl.rulate.ru/ is still served, not refused</span><span class="sv">HTTP 200</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://ranobelib.me/ answered 200</span><span class="sv">DDoS-Guard</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">https://ranobelib.me/ is still served, not refused</span><span class="sv">HTTP 200</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the edge was named for at least one host</span><span class="sv">4/5</span></li></ul>
   </div>
 </details><h3 class="area">Behaviour — layer 8</h3><details class="scn v-pass" >
   <summary>
@@ -417,7 +445,7 @@ assertions and the values observed.</p>
     <span class="sid">S04</span>
     <span class="stitle">Warm-up and the referrer chain are visible on the wire</span>
     <span class="layers"><span class="lchip">L8</span></span>
-    <span class="secs">2.36s</span>
+    <span class="secs">2.46s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> A deep page arriving with no referrer and no prior history is a navigation pattern no person produces; both mechanisms are observable in the requests actually sent.</p>
@@ -431,7 +459,7 @@ assertions and the values observed.</p>
     <span class="sid">S10</span>
     <span class="stitle">A throttle widens the interval and keeps the address</span>
     <span class="layers"><span class="lchip">L8</span></span>
-    <span class="secs">2.88s</span>
+    <span class="secs">3.42s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The rule that matters most: a 429 says the address works and is being asked for too much, so the remedy is arithmetic — not a new exit, which would reset the history the layer measures.</p>
@@ -445,13 +473,13 @@ assertions and the values observed.</p>
     <span class="sid">S16</span>
     <span class="stitle">A throttle through Tor still does not rotate</span>
     <span class="layers"><span class="lchip">L8</span></span>
-    <span class="secs">3.48s</span>
+    <span class="secs">6.58s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The possess-side veto holds even when a rotation is cheaply available: discarding the address would reset the accumulated history the layer reads.</p>
     <div class="target">against <code>https://httpbingo.org</code></div>
     
-    <ul class="steps"><li class="s-ok"><span class="g">✓</span><span class="sw2">gave up at the behavioural layer</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">no rotation appears in the trail</span><span class="sv">gave up after 2 attempts; rate limited [backoff -&gt; direct after 1.0s: rate limited | stop: gave up after 2 attempts; rate limited]</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the Tor session was kept even though rotating was available</span><span class="sv">127.0.0.1:9250#s-b875d2a5f797</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the interval widened instead</span><span class="sv">1.0</span></li></ul>
+    <ul class="steps"><li class="s-ok"><span class="g">✓</span><span class="sw2">gave up at the behavioural layer</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">no rotation appears in the trail</span><span class="sv">gave up after 2 attempts; rate limited [backoff -&gt; direct after 1.0s: rate limited | stop: gave up after 2 attempts; rate limited]</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the Tor session was kept even though rotating was available</span><span class="sv">127.0.0.1:9250#s-37eba7bdba7b</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the interval widened instead</span><span class="sv">1.0</span></li></ul>
   </div>
 </details><details class="scn v-pass" >
   <summary>
@@ -459,7 +487,7 @@ assertions and the values observed.</p>
     <span class="sid">S20</span>
     <span class="stitle">What was learned survives the process</span>
     <span class="layers"><span class="lchip">L8</span></span>
-    <span class="secs">0.5s</span>
+    <span class="secs">0.96s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> A process that forgets cannot accumulate, and the behavioural layer reads exactly what accumulates. The binding layer is the most valuable thing to keep.</p>
@@ -473,7 +501,7 @@ assertions and the values observed.</p>
     <span class="sid">S21</span>
     <span class="stitle">Two scrapers on one host share one identity</span>
     <span class="layers"><span class="lchip">L8</span></span>
-    <span class="secs">2.71s</span>
+    <span class="secs">2.74s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> Separate state would present as two visitors who contradict each other, arriving in bursts, one of them always cold.</p>
@@ -487,13 +515,13 @@ assertions and the values observed.</p>
     <span class="sid">S11</span>
     <span class="stitle">Traffic leaves through a tor-pool exit</span>
     <span class="layers"><span class="lchip">L1</span></span>
-    <span class="secs">2.9s</span>
+    <span class="secs">4.5s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The pool is wired end to end: the session key becomes the SOCKS username, the credential travels as its password, and the egress IP is a Tor exit.</p>
     <div class="target">against <code>https://check.torproject.org/api/ip</code></div>
     
-    <ul class="steps"><li class="s-note"><span class="g">·</span><span class="sw2">this machine&#x27;s own address</span><span class="sv">91.73.67.32 (IsTor=False)</span></li><li class="s-note"><span class="g">·</span><span class="sw2">lease</span><span class="sv">127.0.0.1:9250#s-3387b1fab8fa via socks5h://s-3387b1fab8fa:tp_auth_disabled@127.0.0.1:9250</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">egress is a Tor exit</span><span class="sv">{&#x27;IsTor&#x27;: True, &#x27;IP&#x27;: &#x27;185.220.101.1&#x27;}</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the exit differs from the local address</span></li><li class="s-note"><span class="g">·</span><span class="sw2">pool instances</span><span class="sv">[{&#x27;id&#x27;: 0, &#x27;exit_ip&#x27;: &#x27;204.8.96.142&#x27;, &#x27;country&#x27;: &#x27;US&#x27;, &#x27;score&#x27;: 0, &#x27;state&#x27;: &#x27;healthy&#x27;, &#x27;kinds&#x27;: {}}, {&#x27;id&#x27;: 1, &#x27;exit_ip&#x27;: &#x27;37.221.208.71&#x27;, &#x27;country&#x27;: &#x27;HU&#x27;, &#x27;score&#x27;: 0, &#x27;state&#x27;: &#x27;healthy&#x27;, &#x27;kinds&#x27;: {}}, {&#x27;id&#x27;: 2, &#x27;exit_ip&#x27;: &#x27;185.220.101.1&#x27;, &#x27;country&#x27;: &#x27;DE&#x27;, &#x27;score&#x27;: 0, &#x27;state&#x27;: &#x27;healthy&#x27;, &#x27;kinds&#x27;: {}}, {&#x27;id&#x27;: 3, &#x27;exit_ip&#x27;: &#x27;&#x27;, &#x27;country&#x27;: &#x27;&#x27;, &#x27;score&#x27;: 0, &#x27;state&#x27;: &#x27;starting&#x27;, &#x27;kinds&#x27;: {}}, {&#x27;id&#x27;: 4,…</span></li></ul>
+    <ul class="steps"><li class="s-note"><span class="g">·</span><span class="sw2">this machine&#x27;s own address</span><span class="sv">91.73.67.32 (IsTor=False)</span></li><li class="s-note"><span class="g">·</span><span class="sw2">lease</span><span class="sv">127.0.0.1:9250#s-2704a35aaf37 via socks5h://s-2704a35aaf37:tp_auth_disabled@127.0.0.1:9250</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">egress is a Tor exit</span><span class="sv">{&#x27;IsTor&#x27;: True, &#x27;IP&#x27;: &#x27;166.70.207.2&#x27;}</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the exit differs from the local address</span></li><li class="s-note"><span class="g">·</span><span class="sw2">pool instances</span><span class="sv">[{&#x27;id&#x27;: 0, &#x27;exit_ip&#x27;: &#x27;104.244.73.190&#x27;, &#x27;country&#x27;: &#x27;LU&#x27;, &#x27;score&#x27;: 0, &#x27;state&#x27;: &#x27;healthy&#x27;, &#x27;kinds&#x27;: {}}, {&#x27;id&#x27;: 1, &#x27;exit_ip&#x27;: &#x27;185.220.101.14&#x27;, &#x27;country&#x27;: &#x27;DE&#x27;, &#x27;score&#x27;: 0, &#x27;state&#x27;: &#x27;healthy&#x27;, &#x27;kinds&#x27;: {}}, {&#x27;id&#x27;: 2, &#x27;exit_ip&#x27;: &#x27;192.42.116.45&#x27;, &#x27;country&#x27;: &#x27;NL&#x27;, &#x27;score&#x27;: 0, &#x27;state&#x27;: &#x27;healthy&#x27;, &#x27;kinds&#x27;: {}}, {&#x27;id&#x27;: 3, &#x27;exit_ip&#x27;: &#x27;166.70.207.2&#x27;, &#x27;country&#x27;: &#x27;US&#x27;, &#x27;score&#x27;: 0, &#x27;state&#x27;: &#x27;healthy&#x27;, &#x27;kinds&#x27;…</span></li></ul>
   </div>
 </details><details class="scn v-pass" >
   <summary>
@@ -501,13 +529,13 @@ assertions and the values observed.</p>
     <span class="sid">S12</span>
     <span class="stitle">A session stays pinned to one exit across requests</span>
     <span class="layers"><span class="lchip">L1</span><span class="lchip">L8</span></span>
-    <span class="secs">6.34s</span>
+    <span class="secs">19.46s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> Stickiness is what makes a clearance reusable and lets per-zone history accrue. A rotating address would invalidate both.</p>
     <div class="target">against <code>https://check.torproject.org/api/ip</code></div>
     
-    <ul class="steps"><li class="s-ok"><span class="g">✓</span><span class="sw2">all four requests left from one exit</span><span class="sv">37.221.208.71, 37.221.208.71, 37.221.208.71, 37.221.208.71</span></li><li class="s-note"><span class="g">·</span><span class="sw2">exit IP</span><span class="sv">37.221.208.71</span></li></ul>
+    <ul class="steps"><li class="s-ok"><span class="g">✓</span><span class="sw2">all four requests left from one exit</span><span class="sv">166.70.207.2, 166.70.207.2, 166.70.207.2, 166.70.207.2</span></li><li class="s-note"><span class="g">·</span><span class="sw2">exit IP</span><span class="sv">166.70.207.2</span></li></ul>
   </div>
 </details><details class="scn v-pass" >
   <summary>
@@ -515,13 +543,13 @@ assertions and the values observed.</p>
     <span class="sid">S13</span>
     <span class="stitle">Rotating moves the session to a different exit</span>
     <span class="layers"><span class="lchip">L1</span></span>
-    <span class="secs">3.46s</span>
+    <span class="secs">3.51s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> Rotation is a reassignment inside the pool: the endpoint URL is unchanged, but the address behind it — and therefore the identity — is not.</p>
     <div class="target">against <code>https://check.torproject.org/api/ip</code></div>
     
-    <ul class="steps"><li class="s-ok"><span class="g">✓</span><span class="sw2">the endpoint URL is unchanged</span><span class="sv">socks5h://127.0.0.1:9250</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the exit identifier changed</span><span class="sv">127.0.0.1:9250#s-99aa61399cc1 -&gt; 127.0.0.1:9250#s-1eaa8ada25a5</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the session key changed</span></li><li class="s-note"><span class="g">·</span><span class="sw2">exit IP before/after</span><span class="sv">204.8.96.142 -&gt; 37.221.208.71</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">egress is still Tor</span></li></ul>
+    <ul class="steps"><li class="s-ok"><span class="g">✓</span><span class="sw2">the endpoint URL is unchanged</span><span class="sv">socks5h://127.0.0.1:9250</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the exit identifier changed</span><span class="sv">127.0.0.1:9250#s-05f9ecc59bc9 -&gt; 127.0.0.1:9250#s-f09cbea7cad4</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the session key changed</span></li><li class="s-note"><span class="g">·</span><span class="sw2">exit IP before/after</span><span class="sv">185.220.100.253 -&gt; 185.220.100.253</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">egress is still Tor</span></li></ul>
   </div>
 </details><details class="scn v-pass" >
   <summary>
@@ -529,13 +557,13 @@ assertions and the values observed.</p>
     <span class="sid">S14</span>
     <span class="stitle">A failure report reaches the pool with the kind derived from the layer</span>
     <span class="layers"><span class="lchip">L1</span><span class="lchip">L9</span></span>
-    <span class="secs">2.87s</span>
+    <span class="secs">18.38s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> This is the only signal that catches a soft block — a proxy relaying bytes cannot see a 403 or a captcha inside an HTTPS tunnel — and the pool weighs a report by its kind.</p>
     <div class="target">against <code>http://127.0.0.1:8080</code></div>
     
-    <ul class="steps"><li class="s-ok"><span class="g">✓</span><span class="sw2">L9 Managed JavaScript challenge -&gt; &#x27;captcha&#x27;</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">L1 IP reputation -&gt; &#x27;blocked&#x27;</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">L8 Per-zone behavioural model -&gt; &#x27;rate_limited&#x27;</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">None -&gt; &#x27;transport&#x27;</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">exactly one instance was told it hit a captcha</span><span class="sv">before={0: 0, 1: 0, 2: 0, 3: 0, 4: 0} after={0: 0, 1: 1, 2: 0, 3: 0, 4: 0}</span></li></ul>
+    <ul class="steps"><li class="s-ok"><span class="g">✓</span><span class="sw2">L9 Managed JavaScript challenge -&gt; &#x27;captcha&#x27;</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">L1 IP reputation -&gt; &#x27;blocked&#x27;</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">L8 Per-zone behavioural model -&gt; &#x27;rate_limited&#x27;</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">None -&gt; &#x27;transport&#x27;</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">exactly one instance was told it hit a captcha</span><span class="sv">before={0: 0, 1: 0, 2: 0, 3: 0, 4: 0} after={0: 0, 1: 0, 2: 0, 3: 1, 4: 0}</span></li></ul>
   </div>
 </details><details class="scn v-pass" >
   <summary>
@@ -563,7 +591,7 @@ assertions and the values observed.</p>
     <p class="proves"><strong>What a pass proves.</strong> A negative result worth recording: assuming every Cloudflare host refuses Tor would make the address strategy look more important than it is on this corpus.</p>
     <div class="target">against <code>45 Cloudflare hosts via tor-pool</code></div>
     
-    <ul class="steps"><li class="s-note"><span class="g">·</span><span class="sw2">hosts probed through a Tor exit</span><span class="sv">45</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">most were served outright</span><span class="sv">30/45 served</span></li><li class="s-note"><span class="g">·</span><span class="sw2">challenged instead</span><span class="sv">6/45</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">none produced a reputation block</span><span class="sv">0 found</span></li><li class="s-note"><span class="g">·</span><span class="sw2">consequence</span><span class="sv">on this corpus the binding layer is the managed challenge, not the address — so a browser solver buys more than a residential proxy would.</span></li></ul>
+    <ul class="steps"><li class="s-note"><span class="g">·</span><span class="sw2">hosts probed through a Tor exit</span><span class="sv">45</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">most were served outright</span><span class="sv">33/45 served</span></li><li class="s-note"><span class="g">·</span><span class="sw2">challenged instead</span><span class="sv">8/45</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">none produced a reputation block</span><span class="sv">0 found</span></li><li class="s-note"><span class="g">·</span><span class="sw2">consequence</span><span class="sv">on this corpus the binding layer is the managed challenge, not the address — so a browser solver buys more than a residential proxy would.</span></li></ul>
   </div>
 </details><details class="scn v-inconclusive" open>
   <summary>
@@ -571,7 +599,7 @@ assertions and the values observed.</p>
     <span class="sid">S28</span>
     <span class="stitle">A real ASN ban is diagnosed as reputation and stops without wasting addresses</span>
     <span class="layers"><span class="lchip">L1</span></span>
-    <span class="secs">1.53s</span>
+    <span class="secs">1.79s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The naturally-occurring case: this host bans the machine&#x27;s whole ASN, so no client change of any kind can help. With no alternative address the stop is immediate rather than after spending the rotation budget on the same address.</p>
@@ -585,7 +613,7 @@ assertions and the values observed.</p>
     <span class="sid">S17</span>
     <span class="stitle">A page is served from the archive with the original URL</span>
     <span class="layers"><span class="lchip">L0</span></span>
-    <span class="secs">27.62s</span>
+    <span class="secs">49.74s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The cheapest way past a protected site is not to touch it. The response must carry the real URL, or relative links redirect the whole crawl into the snapshot.</p>
@@ -599,7 +627,7 @@ assertions and the values observed.</p>
     <span class="sid">S23</span>
     <span class="stitle">The ladder escalates on evidence and settles on the cheapest tier that works</span>
     <span class="layers"><span class="lchip">L9</span><span class="lchip">L14</span></span>
-    <span class="secs">44.26s</span>
+    <span class="secs">31.1s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The planner walks up only as far as required, and the archive rescues a host the live stack refuses.</p>
@@ -628,19 +656,40 @@ assertions and the values observed.</p>
   ladder        : direct(10) clearance(100)
   exits         : direct</span></li></ul>
   </div>
+</details><h3 class="area">Rendering — when the HTML is not the content</h3><details class="scn v-pass" >
+  <summary>
+    <span class="pill p-pass">pass</span>
+    <span class="sid">S30</span>
+    <span class="stitle">A browser renders a page whose HTML is not its content</span>
+    <span class="layers"></span>
+    <span class="secs">35.35s</span>
+  </summary>
+  <div class="body">
+    <p class="proves"><strong>What a pass proves.</strong> the one capability HTTP fidelity cannot substitute for, and the one failure that is silent: a shell parses to nothing and raises nothing.</p>
+    <div class="target">against <code>https://www.wuxiaworld.com/</code></div>
+    
+    <ul class="steps"><li class="s-note"><span class="g">·</span><span class="sw2">HTTP visible text from https://www.wuxiaworld.com/</span><span class="sv">10 chars</span></li><li class="s-note"><span class="g">·</span><span class="sw2">target chosen</span><span class="sv">https://www.wuxiaworld.com/ (content selector a.line-clamp-2)</span></li><li class="s-note"><span class="g">·</span><span class="sw2">rendered visible text</span><span class="sv">9538 chars</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the browser produced at least 5x the transport&#x27;s text</span><span class="sv">10 -&gt; 9538 chars</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the rendered page parses into a usable document</span><span class="sv">137</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">a satisfied selector ends the wait early, on evidence</span><span class="sv">1.8s against a 6s settle, 457 chars</span></li><li class="s-note"><span class="g">·</span><span class="sw2">text present when the selector appeared</span><span class="sv">9538 settled -&gt; 457 with a.line-clamp-2</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">a render is not recorded as a tier that worked</span><span class="sv">tier=&#x27;&#x27; successes=0</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the render joined the referrer chain</span><span class="sv">https://www.wuxiaworld.com/</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">a selector that never appears is an error, not an empty page</span><span class="sv">RenderError</span></li><li class="s-note"><span class="g">·</span><span class="sw2">explain()</span><span class="sv">wuxiaworld.com
+  binding layer : nothing has blocked yet
+  tier          : direct (unproven)
+  pacing        : 1.5s mean interval
+  requests      : 0 ok / 0 failed
+  clearance     : none
+  ladder        : direct(10) clearance(100)
+  exits         : direct</span></li></ul>
+  </div>
 </details><h3 class="area">Identity and content safety</h3><details class="scn v-pass" >
   <summary>
     <span class="pill p-pass">pass</span>
     <span class="sid">S18</span>
     <span class="stitle">Hidden and nofollow links are dropped from real pages</span>
     <span class="layers"><span class="lchip">L17</span></span>
-    <span class="secs">19.48s</span>
+    <span class="secs">19.98s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The only layer that returns no error. Following a decoy link poisons the store and flags the session, and nothing in the response says so.</p>
     <div class="target">against <code>https://novelfull.net/</code></div>
     
-    <ul class="steps"><li class="s-note"><span class="g">·</span><span class="sw2">pages read</span><span class="sv">https://tigertranslations.org/, https://chrysanthemumgarden.com/, https://novelfull.com/, https://novelfull.net/, https://dummynovels.com/, https://lightnovelfr.com/, https://freewebnovel.com/, https://ckandawrites.online/, https://www.mangaread.org/, https://mostnovel.com/</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://tigertranslations.org/</span><span class="sv">35 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://chrysanthemumgarden.com/</span><span class="sv">86 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://novelfull.com/</span><span class="sv">114 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://novelfull.net/</span><span class="sv">138 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://dummynovels.com/</span><span class="sv">35 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://lightnovelfr.com/</span><span class="sv">115 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://freewebnovel.com/</span><span class="sv">121 followable, 1 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://ckandawrites.online/</span><span class="sv">180 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://www.mangaread.org/</span><span class="sv">198 followable, 1 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://mostnovel.com/</span><span class="sv">63 followable, 6 rejected</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">real links survive across every page</span><span class="sv">{&#x27;kept&#x27;: 1085, &#x27;rejected&#x27;: 8}</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">genuine decoy markers were found and dropped</span><span class="sv">{&#x27;inside an element hidden by inline style&#x27;: 1, &#x27;rel=nofollow&#x27;: 7}</span></li><li class="s-note"><span class="g">·</span><span class="sw2">rejection reasons seen on real pages</span><span class="sv">{&#x27;inside an element hidden by inline style&#x27;: 1, &#x27;rel=nofollow&#x27;: 7}</span></li><li class="s-note"><span class="g">·</span><span class="sw2">false positives fixed during this run</span><span class="sv">icon-font anchors and overlay/text anchor pairs were being dropped; both are real navigation. 11 of 11 rejections on one host were wrong.</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">a page from the site is not suspected</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">off-topic prose is flagged</span><span class="sv">vocabulary overlap 0% against 3 known pages (threshold 30%)</span></li></ul>
+    <ul class="steps"><li class="s-note"><span class="g">·</span><span class="sw2">pages read</span><span class="sv">https://tigertranslations.org/, https://chrysanthemumgarden.com/, https://novelfull.com/, https://novelfull.net/, https://dummynovels.com/, https://lightnovelfr.com/, https://freewebnovel.com/, https://ckandawrites.online/, https://www.mangaread.org/, https://mostnovel.com/</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://tigertranslations.org/</span><span class="sv">35 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://chrysanthemumgarden.com/</span><span class="sv">85 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://novelfull.com/</span><span class="sv">114 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://novelfull.net/</span><span class="sv">139 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://dummynovels.com/</span><span class="sv">35 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://lightnovelfr.com/</span><span class="sv">115 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://freewebnovel.com/</span><span class="sv">120 followable, 1 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://ckandawrites.online/</span><span class="sv">180 followable, 0 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://www.mangaread.org/</span><span class="sv">201 followable, 1 rejected</span></li><li class="s-note"><span class="g">·</span><span class="sw2">https://mostnovel.com/</span><span class="sv">63 followable, 6 rejected</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">real links survive across every page</span><span class="sv">{&#x27;kept&#x27;: 1087, &#x27;rejected&#x27;: 8}</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">genuine decoy markers were found and dropped</span><span class="sv">{&#x27;inside an element hidden by inline style&#x27;: 1, &#x27;rel=nofollow&#x27;: 7}</span></li><li class="s-note"><span class="g">·</span><span class="sw2">rejection reasons seen on real pages</span><span class="sv">{&#x27;inside an element hidden by inline style&#x27;: 1, &#x27;rel=nofollow&#x27;: 7}</span></li><li class="s-note"><span class="g">·</span><span class="sw2">false positives fixed during this run</span><span class="sv">icon-font anchors and overlay/text anchor pairs were being dropped; both are real navigation. 11 of 11 rejections on one host were wrong.</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">a page from the site is not suspected</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">off-topic prose is flagged</span><span class="sv">vocabulary overlap 0% against 3 known pages (threshold 30%)</span></li></ul>
   </div>
 </details><details class="scn v-pass" >
   <summary>
@@ -662,13 +711,13 @@ assertions and the values observed.</p>
     <span class="sid">S22</span>
     <span class="stitle">Requests are signed, and the signature verifies</span>
     <span class="layers"><span class="lchip">L18</span></span>
-    <span class="secs">0.66s</span>
+    <span class="secs">0.92s</span>
   </summary>
   <div class="body">
     <p class="proves"><strong>What a pass proves.</strong> The one layer with no bypass. Deployed fail-open today, so a valid signature is a positive identification that skips the challenge machinery entirely.</p>
     <div class="target">against <code>https://httpbingo.org</code></div>
     
-    <ul class="steps"><li class="s-ok"><span class="g">✓</span><span class="sw2">the server received Signature-Input</span><span class="sv">sig1=(&quot;signature-agent&quot; &quot;@authority&quot;);created=1785400400;expires=1785400700;keyid=&quot;EvuNv7VDLLgs-tuJ7kdAAsBlV9xiOlaifdhdxBrGh5c&quot;;alg=&quot;ed25519&quot;;tag=&quot;web-bot-auth&quot;</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the server received Signature</span><span class="sv">sig1=:puuByXXzfkzox2OZmN7w+qc3+AZd8HVW9Fbr5XeK3HG7KMLj0E51kS8WJ4E9AAeo2GZB1fTcAT</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the agent was declared</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the tag is web-bot-auth</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the algorithm is ed25519</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the signature verifies against the published key</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">and does not verify for another authority</span></li><li class="s-note"><span class="g">·</span><span class="sw2">directory to publish</span><span class="sv">/.well-known/http-message-signatures-directory -&gt; kid EvuNv7VDLLgs-tuJ7kdAAsBlV9xiOlaifdhdxBrGh5c</span></li></ul>
+    <ul class="steps"><li class="s-ok"><span class="g">✓</span><span class="sw2">the server received Signature-Input</span><span class="sv">sig1=(&quot;signature-agent&quot; &quot;@authority&quot;);created=1785415221;expires=1785415521;keyid=&quot;9Ie00ulnekN9EcOiGeObvQb3SsmovYz2ZP47-SRZ05w&quot;;alg=&quot;ed25519&quot;;tag=&quot;web-bot-auth&quot;</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the server received Signature</span><span class="sv">sig1=:mzBknpCyLs4mZ6QK+UZ8rOi6GbVEoao6OMh8qryHeG46EKLbej8rd38q9uIhvkql8eBNgcCi+l</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the agent was declared</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the tag is web-bot-auth</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the algorithm is ed25519</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">the signature verifies against the published key</span></li><li class="s-ok"><span class="g">✓</span><span class="sw2">and does not verify for another authority</span></li><li class="s-note"><span class="g">·</span><span class="sw2">directory to publish</span><span class="sv">/.well-known/http-message-signatures-directory -&gt; kid 9Ie00ulnekN9EcOiGeObvQb3SsmovYz2ZP47-SRZ05w</span></li></ul>
   </div>
 </details><h3 class="area">Other</h3><details class="scn v-inconclusive" open>
   <summary>
@@ -687,7 +736,7 @@ assertions and the values observed.</p>
 </details>
 
 <h2>Environment</h2>
-<div class="scroll"><table class="env"><tbody><tr><td>scraper</td><td><code>1.0.1</code></td></tr><tr><td>Python (harness)</td><td><code>Python 3.9.6</code></td></tr><tr><td>Python (browser tier)</td><td><code>Python 3.12.13</code></td></tr><tr><td>curl_cffi</td><td><code>0.13.0</code></td></tr><tr><td>impersonation profile</td><td><code>chrome136</code></td></tr><tr><td>nodriver</td><td><code>0.50.3</code></td></tr><tr><td>browser</td><td><code>Google Chrome (headed)</code></td></tr><tr><td>tor-pool</td><td><code>ghcr.io/lncrawl/tor-pool:latest</code></td></tr><tr><td>tor-pool exits</td><td><code>5 instances</code></td></tr><tr><td>local egress</td><td><code>91.73.67.32</code></td></tr></tbody></table></div>
+<div class="scroll"><table class="env"><tbody><tr><td>scraper</td><td><code>1.1.0</code></td></tr><tr><td>Python (harness)</td><td><code>Python 3.9.6</code></td></tr><tr><td>Python (browser tier)</td><td><code>Python 3.12.13</code></td></tr><tr><td>curl_cffi</td><td><code>0.13.0</code></td></tr><tr><td>impersonation profile</td><td><code>chrome136</code></td></tr><tr><td>nodriver</td><td><code>0.50.3</code></td></tr><tr><td>browser</td><td><code>Google Chrome (headed)</code></td></tr><tr><td>tor-pool</td><td><code>ghcr.io/lncrawl/tor-pool:latest</code></td></tr><tr><td>tor-pool exits</td><td><code>5 instances</code></td></tr><tr><td>local egress</td><td><code>91.73.67.32</code></td></tr></tbody></table></div>
 
 <h2>Reproducing this</h2>
 <div class="rerun">

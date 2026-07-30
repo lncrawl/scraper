@@ -164,6 +164,21 @@ class Result:
             self.verdict = "fail"
 
 
+def is_cloudflare(row: Dict[str, Any]) -> bool:
+    """Whether either arm found Cloudflare in front of a host.
+
+    Case-folded, and that is not fussiness: the probe used to write its own lowercase
+    label and now writes the library's `edge()`, which capitalises a product name because
+    the name is displayed. A `== "cloudflare"` comparison silently counted zero Cloudflare
+    hosts across a 315-host corpus, and S25 failed on the consequence rather than on
+    anything about the library.
+    """
+    for who in ("impersonate", "plain"):
+        if str((row.get(who) or {}).get("edge", "")).lower() == "cloudflare":
+            return True
+    return False
+
+
 def _short(value: Any, limit: int = 400) -> str:
     text = value if isinstance(value, str) else repr(value)
     text = " ".join(text.split())
@@ -1302,7 +1317,7 @@ def s28(result: Result) -> None:
 def s25(result: Result) -> None:
     rows = json.loads((HERE / "probe.json").read_text())
     reachable = [r for r in rows if (r["impersonate"] or {}).get("ok")]
-    cf = [r for r in reachable if r["impersonate"].get("edge") == "cloudflare"]
+    cf = [r for r in reachable if is_cloudflare(r)]
     result.note("hosts probed", len(rows))
     result.note("reachable", len(reachable))
     result.note("Cloudflare-fronted", len(cf))

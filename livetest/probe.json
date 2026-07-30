@@ -12,7 +12,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 261478,
-   "seconds": 3.12
+   "seconds": 2.4
   },
   "impersonate": {
    "ok": true,
@@ -23,7 +23,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 261478,
-   "seconds": 1.85
+   "seconds": 1.76
   }
  },
  {
@@ -33,24 +33,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 107540,
-   "seconds": 1.35
+   "bytes": 109096,
+   "seconds": 1.21
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 107530,
-   "seconds": 1.67
+   "bytes": 107700,
+   "seconds": 1.02
   }
  },
  {
@@ -60,24 +60,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5553,
-   "seconds": 0.62
+   "seconds": 0.66
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 52305,
-   "seconds": 1.76
+   "bytes": 52587,
+   "seconds": 0.84
   }
  },
  {
@@ -87,24 +87,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5553,
-   "seconds": 1.09
+   "seconds": 0.63
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 102400,
-   "seconds": 0.57
+   "bytes": 103290,
+   "seconds": 0.74
   }
  },
  {
@@ -114,24 +114,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 5484,
-   "seconds": 1.09
+   "seconds": 1.1
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 39076,
-   "seconds": 0.39
+   "bytes": 39160,
+   "seconds": 0.46
   }
  },
  {
@@ -141,24 +141,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 185028,
-   "seconds": 3.49
+   "seconds": 3.01
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 186984,
-   "seconds": 2.49
+   "seconds": 2.61
   }
  },
  {
@@ -173,8 +173,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 110126,
-   "seconds": 2.71
+   "bytes": 110090,
+   "seconds": 3.72
   },
   "impersonate": {
    "ok": true,
@@ -184,8 +184,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 110126,
-   "seconds": 1.8
+   "bytes": 110090,
+   "seconds": 2.22
   }
  },
  {
@@ -195,24 +195,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5556,
-   "seconds": 0.67
+   "seconds": 0.83
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 103084,
-   "seconds": 1.93
+   "bytes": 104249,
+   "seconds": 1.57
   }
  },
  {
@@ -228,7 +228,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 248936,
-   "seconds": 1.93
+   "seconds": 1.98
   },
   "impersonate": {
    "ok": true,
@@ -239,7 +239,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 266210,
-   "seconds": 1.44
+   "seconds": 1.7
   }
  },
  {
@@ -248,25 +248,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.35
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 473,
+   "seconds": 2.1
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.62
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 473,
+   "seconds": 0.8
   }
  },
  {
@@ -276,24 +276,24 @@
   "plain": {
    "ok": true,
    "status": 404,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 1239,
-   "seconds": 1.43
+   "seconds": 0.95
   },
   "impersonate": {
    "ok": true,
    "status": 404,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 1598,
-   "seconds": 0.66
+   "seconds": 1.13
   }
  },
  {
@@ -303,24 +303,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 317397,
-   "seconds": 2.06
+   "bytes": 317483,
+   "seconds": 1.92
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 319666,
-   "seconds": 1.08
+   "bytes": 322185,
+   "seconds": 0.76
   }
  },
  {
@@ -330,24 +330,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 390237,
-   "seconds": 2.27
+   "seconds": 1.98
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 390596,
-   "seconds": 1.14
+   "seconds": 1.34
   }
  },
  {
@@ -362,8 +362,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 292455,
-   "seconds": 1.67
+   "bytes": 310253,
+   "seconds": 2.54
   },
   "impersonate": {
    "ok": true,
@@ -373,8 +373,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 292455,
-   "seconds": 1.45
+   "bytes": 310253,
+   "seconds": 1.69
   }
  },
  {
@@ -384,24 +384,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 323511,
-   "seconds": 2.28
+   "bytes": 323319,
+   "seconds": 3.01
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 323870,
-   "seconds": 1.7
+   "bytes": 323678,
+   "seconds": 1.9
   }
  },
  {
@@ -411,24 +411,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 323511,
-   "seconds": 1.62
+   "bytes": 323319,
+   "seconds": 1.16
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 323870,
-   "seconds": 0.77
+   "bytes": 323678,
+   "seconds": 0.81
   }
  },
  {
@@ -438,24 +438,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 133859,
-   "seconds": 3.07
+   "bytes": 133858,
+   "seconds": 3.56
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 134303,
-   "seconds": 2.46
+   "seconds": 3.0
   }
  },
  {
@@ -465,24 +465,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5577,
-   "seconds": 0.82
+   "seconds": 0.77
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 137529,
-   "seconds": 1.43
+   "bytes": 137345,
+   "seconds": 0.81
   }
  },
  {
@@ -492,24 +492,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5575,
-   "seconds": 0.82
+   "seconds": 1.2
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 137529,
-   "seconds": 2.38
+   "bytes": 137345,
+   "seconds": 1.55
   }
  },
  {
@@ -525,7 +525,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 0,
-   "seconds": 1.55
+   "seconds": 1.42
   },
   "impersonate": {
    "ok": true,
@@ -536,7 +536,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 17096,
-   "seconds": 1.22
+   "seconds": 1.3
   }
  },
  {
@@ -546,24 +546,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5556,
-   "seconds": 1.2
+   "seconds": 0.77
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5940,
-   "seconds": 0.75
+   "seconds": 0.9
   }
  },
  {
@@ -572,25 +572,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 410,
-   "edge": "unknown",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "HTTP 410",
-   "bytes": 254,
-   "seconds": 3.0
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 1.31
   },
   "impersonate": {
    "ok": true,
-   "status": 200,
+   "status": 429,
    "edge": "cowboy",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 476,
-   "seconds": 1.06
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 0.51
   }
  },
  {
@@ -600,24 +600,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 5488,
-   "seconds": 1.87
+   "seconds": 0.66
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
    "layer": 12,
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 5847,
-   "seconds": 0.73
+   "seconds": 0.56
   }
  },
  {
@@ -632,8 +632,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 242554,
-   "seconds": 1.52
+   "bytes": 241915,
+   "seconds": 1.55
   },
   "impersonate": {
    "ok": true,
@@ -643,7 +643,7 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 242313,
+   "bytes": 242627,
    "seconds": 1.18
   }
  },
@@ -654,17 +654,17 @@
   "plain": {
    "ok": true,
    "status": 522,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "retry",
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
    "bytes": 7255,
-   "seconds": 20.24
+   "seconds": 21.19
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20001 milliseconds with 0 bytes received. See https://curl.se/li",
+   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
    "seconds": 20.0
   }
  },
@@ -681,7 +681,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1035,
-   "seconds": 1.7
+   "seconds": 1.93
   },
   "impersonate": {
    "ok": true,
@@ -692,7 +692,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1084,
-   "seconds": 0.98
+   "seconds": 1.0
   }
  },
  {
@@ -708,7 +708,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1035,
-   "seconds": 1.66
+   "seconds": 1.81
   },
   "impersonate": {
    "ok": true,
@@ -719,7 +719,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1096,
-   "seconds": 0.98
+   "seconds": 0.99
   }
  },
  {
@@ -729,18 +729,24 @@
   "plain": {
    "ok": true,
    "status": 522,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "retry",
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
    "bytes": 7275,
-   "seconds": 20.08
+   "seconds": 20.3
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20003 milliseconds with 0 bytes received. See https://curl.se/li",
-   "seconds": 20.0
+   "ok": true,
+   "status": 522,
+   "edge": "Cloudflare",
+   "action": "retry",
+   "layer": null,
+   "layer_name": null,
+   "detail": "upstream error (HTTP 522)",
+   "bytes": 7275,
+   "seconds": 19.65
   }
  },
  {
@@ -750,24 +756,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 93,
-   "seconds": 1.37
+   "seconds": 1.09
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 4737,
-   "seconds": 0.92
+   "seconds": 1.0
   }
  },
  {
@@ -783,7 +789,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1030,
-   "seconds": 1.79
+   "seconds": 1.93
   },
   "impersonate": {
    "ok": true,
@@ -794,7 +800,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1080,
-   "seconds": 0.92
+   "seconds": 0.98
   }
  },
  {
@@ -804,24 +810,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5558,
-   "seconds": 0.65
+   "seconds": 1.73
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 21936,
-   "seconds": 0.53
+   "seconds": 0.6
   }
  },
  {
@@ -831,24 +837,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "ddos-guard",
+   "edge": "DDoS-Guard",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 962094,
-   "seconds": 1.84
+   "bytes": 961971,
+   "seconds": 2.2
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "ddos-guard",
+   "edge": "DDoS-Guard",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 962295,
-   "seconds": 1.11
+   "bytes": 962174,
+   "seconds": 1.01
   }
  },
  {
@@ -858,24 +864,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 231333,
-   "seconds": 3.34
+   "bytes": 231343,
+   "seconds": 2.59
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 254424,
-   "seconds": 2.25
+   "bytes": 254418,
+   "seconds": 2.16
   }
  },
  {
@@ -885,11 +891,11 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='toonily.com', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.25
+   "seconds": 20.41
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -905,8 +911,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 103361,
-   "seconds": 0.85
+   "bytes": 103345,
+   "seconds": 0.87
   },
   "impersonate": {
    "ok": true,
@@ -916,8 +922,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 103304,
-   "seconds": 1.48
+   "bytes": 103370,
+   "seconds": 0.64
   }
  },
  {
@@ -927,24 +933,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 233312,
-   "seconds": 2.76
+   "seconds": 4.03
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 233671,
-   "seconds": 1.88
+   "seconds": 3.68
   }
  },
  {
@@ -954,24 +960,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 233312,
-   "seconds": 2.53
+   "seconds": 2.07
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 233671,
-   "seconds": 1.88
+   "seconds": 2.25
   }
  },
  {
@@ -987,7 +993,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 0,
-   "seconds": 1.87
+   "seconds": 3.79
   },
   "impersonate": {
    "ok": true,
@@ -998,7 +1004,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 17003,
-   "seconds": 1.39
+   "seconds": 1.25
   }
  },
  {
@@ -1014,7 +1020,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 146,
-   "seconds": 1.32
+   "seconds": 1.41
   },
   "impersonate": {
    "ok": true,
@@ -1025,7 +1031,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 548,
-   "seconds": 0.72
+   "seconds": 0.67
   }
  },
  {
@@ -1035,24 +1041,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 147110,
-   "seconds": 1.86
+   "seconds": 0.92
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 147469,
-   "seconds": 0.48
+   "seconds": 0.57
   }
  },
  {
@@ -1062,24 +1068,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5599,
-   "seconds": 1.79
+   "seconds": 0.84
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5961,
-   "seconds": 1.5
+   "seconds": 0.42
   }
  },
  {
@@ -1089,24 +1095,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 671074,
-   "seconds": 1.77
+   "seconds": 1.82
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 671433,
-   "seconds": 1.48
+   "seconds": 0.9
   }
  },
  {
@@ -1116,24 +1122,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5605,
-   "seconds": 0.82
+   "seconds": 0.79
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 4370,
-   "seconds": 1.32
+   "seconds": 0.61
   }
  },
  {
@@ -1143,24 +1149,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 117344,
-   "seconds": 1.74
+   "bytes": 117345,
+   "seconds": 2.27
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 117343,
-   "seconds": 1.61
+   "bytes": 117345,
+   "seconds": 1.53
   }
  },
  {
@@ -1170,24 +1176,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 48431,
-   "seconds": 2.6
+   "seconds": 2.33
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 48790,
-   "seconds": 1.39
+   "seconds": 1.41
   }
  },
  {
@@ -1197,24 +1203,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 159278,
-   "seconds": 1.28
+   "seconds": 6.25
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 159637,
-   "seconds": 1.82
+   "seconds": 2.09
   }
  },
  {
@@ -1230,7 +1236,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 477,
-   "seconds": 2.12
+   "seconds": 1.38
   },
   "impersonate": {
    "ok": true,
@@ -1241,7 +1247,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 477,
-   "seconds": 0.57
+   "seconds": 0.48
   }
  },
  {
@@ -1257,7 +1263,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 114322,
-   "seconds": 1.97
+   "seconds": 1.82
   },
   "impersonate": {
    "ok": true,
@@ -1268,7 +1274,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 114322,
-   "seconds": 1.75
+   "seconds": 2.29
   }
  },
  {
@@ -1284,7 +1290,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 114322,
-   "seconds": 3.05
+   "seconds": 2.91
   },
   "impersonate": {
    "ok": true,
@@ -1295,7 +1301,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 114322,
-   "seconds": 2.76
+   "seconds": 2.87
   }
  },
  {
@@ -1305,24 +1311,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "ddos-guard",
+   "edge": "DDoS-Guard",
    "action": "escalate",
-   "layer": 15,
-   "layer_name": "L15 Operator edge code",
-   "detail": "forbidden by the origin",
+   "layer": 12,
+   "layer_name": "L12 Super Bot Fight Mode",
+   "detail": "DDoS-Guard refused the request",
    "bytes": 146,
-   "seconds": 1.36
+   "seconds": 0.93
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "ddos-guard",
+   "edge": "DDoS-Guard",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with a success status",
-   "bytes": 40867,
-   "seconds": 0.82
+   "detail": "DDoS-Guard challenge served with a success status",
+   "bytes": 39768,
+   "seconds": 0.72
   }
  },
  {
@@ -1332,24 +1338,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 1359,
-   "seconds": 1.05
+   "seconds": 1.49
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 10,
    "layer_name": "L10 Turnstile",
    "detail": "challenge served with a success status",
    "bytes": 16075,
-   "seconds": 1.68
+   "seconds": 0.8
   }
  },
  {
@@ -1364,8 +1370,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 162003,
-   "seconds": 2.93
+   "bytes": 162299,
+   "seconds": 2.85
   },
   "impersonate": {
    "ok": true,
@@ -1375,8 +1381,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 167270,
-   "seconds": 2.42
+   "bytes": 167572,
+   "seconds": 2.48
   }
  },
  {
@@ -1392,7 +1398,7 @@
    "layer_name": null,
    "detail": "HTTP 406",
    "bytes": 226,
-   "seconds": 1.68
+   "seconds": 1.55
   },
   "impersonate": {
    "ok": true,
@@ -1403,7 +1409,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 135002,
-   "seconds": 1.49
+   "seconds": 1.5
   }
  },
  {
@@ -1419,7 +1425,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 478,
-   "seconds": 1.35
+   "seconds": 1.07
   },
   "impersonate": {
    "ok": true,
@@ -1430,7 +1436,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 478,
-   "seconds": 0.53
+   "seconds": 0.51
   }
  },
  {
@@ -1446,7 +1452,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 12314,
-   "seconds": 2.25
+   "seconds": 2.84
   },
   "impersonate": {
    "ok": true,
@@ -1457,7 +1463,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 12314,
-   "seconds": 1.22
+   "seconds": 0.86
   }
  },
  {
@@ -1465,19 +1471,13 @@
   "file": "sources/pt/blnovels.py",
   "lang": "pt",
   "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 215574,
-   "seconds": 20.5
+   "ok": false,
+   "error": "ReadTimeout: HTTPSConnectionPool(host='blnovels.net', port=443): Read timed out. (read timeout=20.0)",
+   "seconds": 21.44
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
+   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20001 milliseconds with 0 bytes received. See https://curl.se/li",
    "seconds": 20.0
   }
  },
@@ -1488,24 +1488,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5585,
-   "seconds": 0.97
+   "seconds": 0.59
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5859,
-   "seconds": 0.44
+   "seconds": 0.43
   }
  },
  {
@@ -1520,8 +1520,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 86083,
-   "seconds": 0.9
+   "bytes": 86112,
+   "seconds": 0.72
   },
   "impersonate": {
    "ok": true,
@@ -1531,8 +1531,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 86094,
-   "seconds": 0.41
+   "bytes": 86018,
+   "seconds": 0.48
   }
  },
  {
@@ -1542,24 +1542,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 73292,
-   "seconds": 1.86
+   "seconds": 1.53
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 73651,
-   "seconds": 0.58
+   "seconds": 0.42
   }
  },
  {
@@ -1569,24 +1569,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 51069,
-   "seconds": 0.71
+   "bytes": 51068,
+   "seconds": 1.65
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 50781,
-   "seconds": 0.42
+   "seconds": 0.39
   }
  },
  {
@@ -1596,24 +1596,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 101667,
-   "seconds": 0.9
+   "bytes": 101665,
+   "seconds": 0.85
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 102031,
-   "seconds": 0.52
+   "bytes": 102026,
+   "seconds": 0.47
   }
  },
  {
@@ -1623,24 +1623,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 5485,
-   "seconds": 0.99
+   "seconds": 0.73
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 296938,
-   "seconds": 1.35
+   "bytes": 297156,
+   "seconds": 1.79
   }
  },
  {
@@ -1650,24 +1650,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5533,
-   "seconds": 0.76
+   "seconds": 0.67
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 277100,
-   "seconds": 0.97
+   "bytes": 277409,
+   "seconds": 0.69
   }
  },
  {
@@ -1677,24 +1677,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "unknown",
+   "edge": "Fastly",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 2909,
-   "seconds": 1.66
+   "seconds": 0.4
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "unknown",
+   "edge": "Fastly",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 2909,
-   "seconds": 0.13
+   "seconds": 0.18
   }
  },
  {
@@ -1710,7 +1710,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 244577,
-   "seconds": 1.13
+   "seconds": 1.51
   },
   "impersonate": {
    "ok": true,
@@ -1721,7 +1721,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 244577,
-   "seconds": 0.82
+   "seconds": 0.79
   }
  },
  {
@@ -1731,24 +1731,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5531,
-   "seconds": 1.09
+   "seconds": 0.86
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 24094,
-   "seconds": 0.42
+   "seconds": 0.46
   }
  },
  {
@@ -1757,14 +1757,14 @@
   "lang": "ar",
   "plain": {
    "ok": true,
-   "status": 401,
+   "status": 200,
    "edge": "unknown",
-   "action": "refuse",
-   "layer": 19,
-   "layer_name": "L19 Identity-provider gate",
-   "detail": "authentication required (HTTP 401)",
-   "bytes": 9,
-   "seconds": 2.11
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 195,
+   "seconds": 3.42
   },
   "impersonate": {
    "ok": true,
@@ -1775,7 +1775,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 472,
-   "seconds": 0.55
+   "seconds": 0.58
   }
  },
  {
@@ -1785,24 +1785,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 49255,
-   "seconds": 1.06
+   "bytes": 49265,
+   "seconds": 0.95
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 49614,
-   "seconds": 0.63
+   "bytes": 49624,
+   "seconds": 3.51
   }
  },
  {
@@ -1818,7 +1818,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.14
+   "seconds": 1.13
   },
   "impersonate": {
    "ok": true,
@@ -1829,7 +1829,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.45
+   "seconds": 0.47
   }
  },
  {
@@ -1839,24 +1839,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 1526949,
-   "seconds": 3.04
+   "bytes": 1530996,
+   "seconds": 2.78
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 1527308,
-   "seconds": 2.63
+   "bytes": 1531355,
+   "seconds": 2.75
   }
  },
  {
@@ -1866,24 +1866,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5443,
-   "seconds": 0.68
+   "seconds": 0.77
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5827,
-   "seconds": 0.43
+   "seconds": 0.37
   }
  },
  {
@@ -1893,24 +1893,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 20297,
-   "seconds": 1.52
+   "seconds": 1.55
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 20656,
-   "seconds": 1.05
+   "seconds": 1.13
   }
  },
  {
@@ -1920,24 +1920,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5561,
-   "seconds": 1.93
+   "seconds": 0.71
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5945,
-   "seconds": 0.59
+   "seconds": 0.36
   }
  },
  {
@@ -1953,7 +1953,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 980,
-   "seconds": 2.1
+   "seconds": 1.68
   },
   "impersonate": {
    "ok": true,
@@ -1964,7 +1964,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1052,
-   "seconds": 1.89
+   "seconds": 1.01
   }
  },
  {
@@ -1974,7 +1974,7 @@
   "plain": {
    "ok": true,
    "status": 404,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
@@ -1985,13 +1985,13 @@
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 34206,
-   "seconds": 0.54
+   "seconds": 0.36
   }
  },
  {
@@ -2001,24 +2001,24 @@
   "plain": {
    "ok": true,
    "status": 404,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 14,
-   "seconds": 1.25
+   "seconds": 1.26
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 34206,
-   "seconds": 0.85
+   "seconds": 0.89
   }
  },
  {
@@ -2033,8 +2033,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 53082,
-   "seconds": 0.65
+   "bytes": 53053,
+   "seconds": 0.68
   },
   "impersonate": {
    "ok": true,
@@ -2044,8 +2044,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 53081,
-   "seconds": 0.46
+   "bytes": 53052,
+   "seconds": 0.48
   }
  },
  {
@@ -2061,7 +2061,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.17
+   "seconds": 1.76
   },
   "impersonate": {
    "ok": true,
@@ -2072,7 +2072,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.64
+   "seconds": 4.16
   }
  },
  {
@@ -2082,24 +2082,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 6143,
-   "seconds": 1.89
+   "seconds": 0.93
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 6787,
-   "seconds": 0.7
+   "seconds": 0.72
   }
  },
  {
@@ -2109,17 +2109,17 @@
   "plain": {
    "ok": true,
    "status": 522,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "retry",
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
    "bytes": 7263,
-   "seconds": 19.95
+   "seconds": 21.33
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20003 milliseconds with 0 bytes received. See https://curl.se/li",
+   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
    "seconds": 20.0
   }
  },
@@ -2130,24 +2130,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 439492,
-   "seconds": 1.69
+   "bytes": 440395,
+   "seconds": 1.99
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 440320,
-   "seconds": 1.3
+   "bytes": 440521,
+   "seconds": 1.82
   }
  },
  {
@@ -2157,17 +2157,17 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 4544,
-   "seconds": 1.14
+   "seconds": 0.71
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20003 milliseconds with 0 bytes received. See https://curl.se/li",
+   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
    "seconds": 20.0
   }
  },
@@ -2184,18 +2184,18 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 476,
-   "seconds": 1.12
+   "seconds": 1.65
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.61
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 476,
+   "seconds": 0.98
   }
  },
  {
@@ -2205,24 +2205,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118432,
-   "seconds": 0.68
+   "bytes": 118183,
+   "seconds": 0.82
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118791,
-   "seconds": 0.46
+   "bytes": 118542,
+   "seconds": 0.39
   }
  },
  {
@@ -2232,18 +2232,18 @@
   "plain": {
    "ok": false,
    "error": "SSLError: HTTPSConnectionPool(host='novelfrance.fr', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '",
-   "seconds": 0.46
+   "seconds": 0.36
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
    "layer": 12,
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 6130,
-   "seconds": 0.43
+   "seconds": 0.48
   }
  },
  {
@@ -2259,7 +2259,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 692,
-   "seconds": 1.4
+   "seconds": 1.36
   },
   "impersonate": {
    "ok": true,
@@ -2270,7 +2270,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 692,
-   "seconds": 0.87
+   "seconds": 1.0
   }
  },
  {
@@ -2280,24 +2280,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 4549,
-   "seconds": 2.58
+   "seconds": 4.28
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 121177,
-   "seconds": 1.54
+   "bytes": 117741,
+   "seconds": 4.69
   }
  },
  {
@@ -2307,24 +2307,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 4549,
-   "seconds": 1.57
+   "seconds": 0.66
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 121177,
-   "seconds": 1.23
+   "bytes": 117741,
+   "seconds": 1.2
   }
  },
  {
@@ -2334,24 +2334,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "ddos-guard",
+   "edge": "DDoS-Guard",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 2644295,
-   "seconds": 2.06
+   "bytes": 2760576,
+   "seconds": 2.97
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "ddos-guard",
+   "edge": "DDoS-Guard",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 2642895,
-   "seconds": 1.74
+   "bytes": 2745811,
+   "seconds": 1.7
   }
  },
  {
@@ -2367,7 +2367,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.96
+   "seconds": 1.88
   },
   "impersonate": {
    "ok": true,
@@ -2378,7 +2378,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.47
+   "seconds": 0.54
   }
  },
  {
@@ -2387,14 +2387,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 200,
+   "status": 429,
    "edge": "cowboy",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 475,
-   "seconds": 1.74
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 9.59
   },
   "impersonate": {
    "ok": true,
@@ -2405,7 +2405,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.88
+   "seconds": 3.94
   }
  },
  {
@@ -2415,24 +2415,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 153444,
-   "seconds": 2.85
+   "bytes": 153443,
+   "seconds": 2.33
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 153803,
-   "seconds": 2.56
+   "bytes": 153802,
+   "seconds": 1.95
   }
  },
  {
@@ -2442,24 +2442,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5446,
-   "seconds": 0.82
+   "seconds": 0.66
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5830,
-   "seconds": 0.43
+   "seconds": 0.54
   }
  },
  {
@@ -2469,24 +2469,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5450,
-   "seconds": 0.79
+   "seconds": 0.78
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5834,
-   "seconds": 0.45
+   "seconds": 0.53
   }
  },
  {
@@ -2496,24 +2496,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
-   "bytes": 5453,
-   "seconds": 0.74
+   "bytes": 5474,
+   "seconds": 0.82
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5859,
-   "seconds": 0.44
+   "seconds": 0.48
   }
  },
  {
@@ -2523,24 +2523,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5449,
-   "seconds": 1.08
+   "seconds": 0.89
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5833,
-   "seconds": 0.48
+   "seconds": 0.56
   }
  },
  {
@@ -2550,24 +2550,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "ddos-guard",
+   "edge": "DDoS-Guard",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 7830,
-   "seconds": 0.98
+   "seconds": 1.27
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "ddos-guard",
+   "edge": "DDoS-Guard",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 7830,
-   "seconds": 0.58
+   "seconds": 0.71
   }
  },
  {
@@ -2583,7 +2583,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 121152,
-   "seconds": 1.32
+   "seconds": 1.4
   },
   "impersonate": {
    "ok": true,
@@ -2593,8 +2593,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 121105,
-   "seconds": 0.43
+   "bytes": 121182,
+   "seconds": 0.65
   }
  },
  {
@@ -2610,7 +2610,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 80864,
-   "seconds": 1.48
+   "seconds": 1.65
   },
   "impersonate": {
    "ok": true,
@@ -2621,7 +2621,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 80864,
-   "seconds": 1.0
+   "seconds": 1.05
   }
  },
  {
@@ -2631,24 +2631,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5559,
-   "seconds": 0.78
+   "seconds": 1.02
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 156374,
-   "seconds": 0.58
+   "bytes": 157364,
+   "seconds": 0.81
   }
  },
  {
@@ -2663,8 +2663,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123425,
-   "seconds": 1.52
+   "bytes": 123424,
+   "seconds": 1.68
   },
   "impersonate": {
    "ok": true,
@@ -2675,7 +2675,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 123257,
-   "seconds": 1.3
+   "seconds": 1.22
   }
  },
  {
@@ -2691,7 +2691,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 6956,
-   "seconds": 1.1
+   "seconds": 1.19
   },
   "impersonate": {
    "ok": true,
@@ -2702,7 +2702,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1632,
-   "seconds": 0.47
+   "seconds": 0.58
   }
  },
  {
@@ -2712,24 +2712,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 926104,
-   "seconds": 2.25
+   "bytes": 926430,
+   "seconds": 2.43
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 926186,
-   "seconds": 1.91
+   "bytes": 926511,
+   "seconds": 1.81
   }
  },
  {
@@ -2739,24 +2739,24 @@
   "plain": {
    "ok": true,
    "status": 503,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "retry",
    "layer": null,
    "layer_name": null,
    "detail": "origin unavailable",
    "bytes": 326,
-   "seconds": 1.86
+   "seconds": 1.84
   },
   "impersonate": {
    "ok": true,
    "status": 503,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "retry",
    "layer": null,
    "layer_name": null,
    "detail": "origin unavailable",
    "bytes": 685,
-   "seconds": 3.38
+   "seconds": 3.14
   }
  },
  {
@@ -2766,24 +2766,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 124681,
-   "seconds": 1.58
+   "bytes": 124610,
+   "seconds": 1.95
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 125725,
-   "seconds": 0.7
+   "bytes": 125654,
+   "seconds": 0.44
   }
  },
  {
@@ -2799,7 +2799,7 @@
    "layer_name": null,
    "detail": "HTTP 406",
    "bytes": 226,
-   "seconds": 2.64
+   "seconds": 2.31
   },
   "impersonate": {
    "ok": true,
@@ -2810,7 +2810,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 72208,
-   "seconds": 2.35
+   "seconds": 1.69
   }
  },
  {
@@ -2820,24 +2820,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5554,
-   "seconds": 0.74
+   "seconds": 0.8
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 475789,
-   "seconds": 2.88
+   "bytes": 476467,
+   "seconds": 2.27
   }
  },
  {
@@ -2847,24 +2847,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5583,
-   "seconds": 0.68
+   "seconds": 0.96
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 6063,
-   "seconds": 1.93
+   "seconds": 2.73
   }
  },
  {
@@ -2874,24 +2874,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5561,
-   "seconds": 0.62
+   "seconds": 1.18
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5945,
-   "seconds": 0.36
+   "seconds": 0.4
   }
  },
  {
@@ -2901,24 +2901,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5557,
-   "seconds": 0.61
+   "seconds": 0.8
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5941,
-   "seconds": 1.21
+   "seconds": 0.44
   }
  },
  {
@@ -2934,7 +2934,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.66
+   "seconds": 1.26
   },
   "impersonate": {
    "ok": true,
@@ -2945,7 +2945,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.05
+   "seconds": 0.54
   }
  },
  {
@@ -2961,7 +2961,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.36
+   "seconds": 1.24
   },
   "impersonate": {
    "ok": true,
@@ -2972,7 +2972,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.8
+   "seconds": 1.18
   }
  },
  {
@@ -2988,7 +2988,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.5
+   "seconds": 1.52
   },
   "impersonate": {
    "ok": true,
@@ -2999,7 +2999,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.74
+   "seconds": 0.58
   }
  },
  {
@@ -3008,25 +3008,25 @@
   "lang": "multi",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.47
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 478,
+   "seconds": 1.06
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.62
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 478,
+   "seconds": 0.58
   }
  },
  {
@@ -3036,24 +3036,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 5484,
-   "seconds": 0.92
+   "seconds": 0.77
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 40587,
-   "seconds": 1.73
+   "seconds": 0.73
   }
  },
  {
@@ -3063,24 +3063,24 @@
   "plain": {
    "ok": true,
    "status": 502,
-   "edge": "ddos-guard",
+   "edge": "DDoS-Guard",
    "action": "retry",
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 502)",
    "bytes": 585,
-   "seconds": 1.71
+   "seconds": 1.38
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "ddos-guard",
+   "edge": "DDoS-Guard",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 442399,
-   "seconds": 1.41
+   "bytes": 442507,
+   "seconds": 1.93
   }
  },
  {
@@ -3095,8 +3095,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 74390,
-   "seconds": 1.82
+   "bytes": 74291,
+   "seconds": 1.5
   },
   "impersonate": {
    "ok": true,
@@ -3107,7 +3107,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 74336,
-   "seconds": 1.84
+   "seconds": 0.75
   }
  },
  {
@@ -3123,7 +3123,7 @@
    "layer_name": "L15 Operator edge code",
    "detail": "forbidden by the origin",
    "bytes": 146,
-   "seconds": 1.64
+   "seconds": 1.36
   },
   "impersonate": {
    "ok": true,
@@ -3133,8 +3133,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 65249,
-   "seconds": 1.23
+   "bytes": 64833,
+   "seconds": 1.07
   }
  },
  {
@@ -3144,24 +3144,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 524208,
-   "seconds": 2.32
+   "bytes": 523600,
+   "seconds": 1.35
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 530901,
-   "seconds": 2.03
+   "bytes": 530293,
+   "seconds": 0.93
   }
  },
  {
@@ -3177,7 +3177,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1030,
-   "seconds": 1.95
+   "seconds": 1.72
   },
   "impersonate": {
    "ok": true,
@@ -3188,7 +3188,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1080,
-   "seconds": 1.05
+   "seconds": 0.86
   }
  },
  {
@@ -3198,24 +3198,24 @@
   "plain": {
    "ok": true,
    "status": 404,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 1.63
+   "seconds": 1.41
   },
   "impersonate": {
    "ok": true,
    "status": 404,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 1.77
+   "seconds": 0.67
   }
  },
  {
@@ -3225,11 +3225,11 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='battwo.com', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.35
+   "seconds": 20.34
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -3240,24 +3240,24 @@
   "plain": {
    "ok": true,
    "status": 404,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 1.56
+   "seconds": 1.77
   },
   "impersonate": {
    "ok": true,
    "status": 404,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 0.94
+   "seconds": 0.84
   }
  },
  {
@@ -3267,24 +3267,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 70061,
-   "seconds": 1.82
+   "seconds": 1.31
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 70414,
-   "seconds": 1.77
+   "seconds": 1.98
   }
  },
  {
@@ -3294,11 +3294,11 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='dto.to', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.39
+   "seconds": 20.35
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -3309,24 +3309,24 @@
   "plain": {
    "ok": true,
    "status": 404,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 1.17
+   "seconds": 1.18
   },
   "impersonate": {
    "ok": true,
    "status": 404,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 0.68
+   "seconds": 0.93
   }
  },
  {
@@ -3342,7 +3342,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 142907,
-   "seconds": 0.93
+   "seconds": 0.67
   },
   "impersonate": {
    "ok": true,
@@ -3353,7 +3353,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 142907,
-   "seconds": 0.45
+   "seconds": 0.4
   }
  },
  {
@@ -3363,7 +3363,7 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='wto.to', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.35
+   "seconds": 20.25
   },
   "impersonate": {
    "ok": false,
@@ -3378,24 +3378,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 207334,
-   "seconds": 1.41
+   "seconds": 0.9
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 207687,
-   "seconds": 0.88
+   "seconds": 0.71
   }
  },
  {
@@ -3405,24 +3405,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5559,
-   "seconds": 0.8
+   "seconds": 0.95
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5836,
-   "seconds": 0.42
+   "seconds": 0.37
   }
  },
  {
@@ -3432,24 +3432,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 11893,
-   "seconds": 2.22
+   "seconds": 1.9
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 12252,
-   "seconds": 1.23
+   "seconds": 1.53
   }
  },
  {
@@ -3465,7 +3465,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1,
-   "seconds": 2.38
+   "seconds": 1.52
   },
   "impersonate": {
    "ok": true,
@@ -3475,8 +3475,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 182987,
-   "seconds": 1.75
+   "bytes": 183301,
+   "seconds": 1.6
   }
  },
  {
@@ -3492,7 +3492,7 @@
    "layer_name": "L15 Operator edge code",
    "detail": "forbidden by the origin",
    "bytes": 146,
-   "seconds": 1.73
+   "seconds": 1.55
   },
   "impersonate": {
    "ok": true,
@@ -3502,8 +3502,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 115094,
-   "seconds": 1.32
+   "bytes": 115032,
+   "seconds": 1.23
   }
  },
  {
@@ -3518,8 +3518,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 119300,
-   "seconds": 1.68
+   "bytes": 119195,
+   "seconds": 1.6
   },
   "impersonate": {
    "ok": true,
@@ -3529,8 +3529,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 4478,
-   "seconds": 0.66
+   "bytes": 4477,
+   "seconds": 1.82
   }
  },
  {
@@ -3545,8 +3545,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 119300,
-   "seconds": 2.31
+   "bytes": 119195,
+   "seconds": 2.06
   },
   "impersonate": {
    "ok": true,
@@ -3557,7 +3557,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4478,
-   "seconds": 0.59
+   "seconds": 0.58
   }
  },
  {
@@ -3572,8 +3572,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 167530,
-   "seconds": 0.94
+   "bytes": 167138,
+   "seconds": 0.69
   },
   "impersonate": {
    "ok": true,
@@ -3583,8 +3583,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 167276,
-   "seconds": 0.65
+   "bytes": 167132,
+   "seconds": 0.46
   }
  },
  {
@@ -3594,11 +3594,11 @@
   "plain": {
    "ok": false,
    "error": "ConnectTimeout: HTTPSConnectionPool(host='mtlreader.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HT",
-   "seconds": 20.17
+   "seconds": 20.13
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20001 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -3609,24 +3609,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 172236,
-   "seconds": 1.46
+   "bytes": 170815,
+   "seconds": 1.32
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 172750,
-   "seconds": 0.97
+   "bytes": 171331,
+   "seconds": 0.98
   }
  },
  {
@@ -3642,7 +3642,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.3
+   "seconds": 1.2
   },
   "impersonate": {
    "ok": true,
@@ -3653,7 +3653,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.61
+   "seconds": 0.54
   }
  },
  {
@@ -3663,24 +3663,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 9,
-   "seconds": 2.88
+   "seconds": 2.85
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 23844,
-   "seconds": 2.4
+   "seconds": 1.27
   }
  },
  {
@@ -3689,14 +3689,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 200,
-   "edge": "cowboy",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 476,
-   "seconds": 1.45
+   "status": 401,
+   "edge": "unknown",
+   "action": "refuse",
+   "layer": 19,
+   "layer_name": "L19 Identity-provider gate",
+   "detail": "authentication required (HTTP 401)",
+   "bytes": 9,
+   "seconds": 2.28
   },
   "impersonate": {
    "ok": true,
@@ -3707,7 +3707,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 476,
-   "seconds": 0.65
+   "seconds": 0.46
   }
  },
  {
@@ -3722,8 +3722,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 115647,
-   "seconds": 0.93
+   "bytes": 115699,
+   "seconds": 0.9
   },
   "impersonate": {
    "ok": true,
@@ -3733,8 +3733,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 115605,
-   "seconds": 0.57
+   "bytes": 115682,
+   "seconds": 0.5
   }
  },
  {
@@ -3744,24 +3744,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5445,
-   "seconds": 0.83
+   "seconds": 0.78
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5829,
-   "seconds": 0.66
+   "seconds": 0.41
   }
  },
  {
@@ -3771,24 +3771,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 59228,
-   "seconds": 1.78
+   "seconds": 1.71
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 59228,
-   "seconds": 1.15
+   "seconds": 0.88
   }
  },
  {
@@ -3803,8 +3803,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 238964,
-   "seconds": 0.81
+   "bytes": 238968,
+   "seconds": 0.82
   },
   "impersonate": {
    "ok": true,
@@ -3814,8 +3814,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 238947,
-   "seconds": 0.5
+   "bytes": 238922,
+   "seconds": 0.45
   }
  },
  {
@@ -3830,8 +3830,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 176231,
-   "seconds": 0.95
+   "bytes": 176213,
+   "seconds": 0.74
   },
   "impersonate": {
    "ok": true,
@@ -3841,8 +3841,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 176124,
-   "seconds": 0.48
+   "bytes": 176106,
+   "seconds": 1.28
   }
  },
  {
@@ -3852,24 +3852,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
-   "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
-   "bytes": 8105,
-   "seconds": 0.9
+   "edge": "Cloudflare",
+   "action": "refuse",
+   "layer": null,
+   "layer_name": null,
+   "detail": "the zone's DNS points at a prohibited address (Cloudflare 1000)",
+   "bytes": 8104,
+   "seconds": 0.78
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
-   "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "edge": "Cloudflare",
+   "action": "refuse",
+   "layer": null,
+   "layer_name": null,
+   "detail": "the zone's DNS points at a prohibited address (Cloudflare 1000)",
    "bytes": 14208,
-   "seconds": 0.84
+   "seconds": 0.55
   }
  },
  {
@@ -3879,24 +3879,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 295355,
-   "seconds": 3.55
+   "seconds": 2.88
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 295714,
-   "seconds": 1.47
+   "seconds": 1.56
   }
  },
  {
@@ -3911,8 +3911,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 245103,
-   "seconds": 1.64
+   "bytes": 245224,
+   "seconds": 1.44
   },
   "impersonate": {
    "ok": true,
@@ -3922,8 +3922,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 245101,
-   "seconds": 1.0
+   "bytes": 245222,
+   "seconds": 1.13
   }
  },
  {
@@ -3938,7 +3938,7 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 122081,
+   "bytes": 122683,
    "seconds": 0.65
   },
   "impersonate": {
@@ -3950,7 +3950,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 122593,
-   "seconds": 0.44
+   "seconds": 0.46
   }
  },
  {
@@ -3965,8 +3965,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 196084,
-   "seconds": 0.71
+   "bytes": 196774,
+   "seconds": 0.7
   },
   "impersonate": {
    "ok": true,
@@ -3976,8 +3976,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 196757,
-   "seconds": 0.47
+   "bytes": 196680,
+   "seconds": 0.45
   }
  },
  {
@@ -3987,7 +3987,7 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
@@ -3998,7 +3998,7 @@
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
@@ -4019,8 +4019,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 130593,
-   "seconds": 1.04
+   "bytes": 130625,
+   "seconds": 0.68
   },
   "impersonate": {
    "ok": true,
@@ -4030,8 +4030,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 130503,
-   "seconds": 0.42
+   "bytes": 130527,
+   "seconds": 0.45
   }
  },
  {
@@ -4041,24 +4041,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 226071,
-   "seconds": 3.31
+   "seconds": 1.74
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 226430,
-   "seconds": 1.61
+   "seconds": 1.93
   }
  },
  {
@@ -4068,24 +4068,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 9770,
-   "seconds": 0.87
+   "seconds": 0.48
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 9770,
-   "seconds": 0.85
+   "seconds": 0.38
   }
  },
  {
@@ -4101,7 +4101,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 208924,
-   "seconds": 2.42
+   "seconds": 0.78
   },
   "impersonate": {
    "ok": true,
@@ -4111,8 +4111,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 211457,
-   "seconds": 0.45
+   "bytes": 208830,
+   "seconds": 0.66
   }
  },
  {
@@ -4127,8 +4127,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 298761,
-   "seconds": 6.68
+   "bytes": 298963,
+   "seconds": 13.64
   },
   "impersonate": {
    "ok": true,
@@ -4138,8 +4138,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 298776,
-   "seconds": 5.55
+   "bytes": 298975,
+   "seconds": 8.09
   }
  },
  {
@@ -4149,24 +4149,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 23924,
-   "seconds": 0.64
+   "seconds": 0.68
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 24283,
-   "seconds": 1.53
+   "seconds": 0.57
   }
  },
  {
@@ -4176,24 +4176,24 @@
   "plain": {
    "ok": true,
    "status": 503,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "retry",
    "layer": null,
    "layer_name": null,
    "detail": "origin unavailable",
    "bytes": 4476,
-   "seconds": 0.82
+   "seconds": 0.75
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 5776,
-   "seconds": 0.53
+   "seconds": 1.11
   }
  },
  {
@@ -4203,24 +4203,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 267418,
-   "seconds": 0.86
+   "bytes": 267403,
+   "seconds": 0.88
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 267777,
-   "seconds": 0.54
+   "bytes": 267762,
+   "seconds": 0.46
   }
  },
  {
@@ -4230,24 +4230,24 @@
   "plain": {
    "ok": true,
    "status": 520,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "retry",
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 520)",
    "bytes": 7329,
-   "seconds": 1.1
+   "seconds": 1.41
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
    "layer": 12,
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 2539,
-   "seconds": 1.91
+   "seconds": 1.12
   }
  },
  {
@@ -4257,24 +4257,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 652802,
-   "seconds": 1.04
+   "seconds": 0.93
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 653155,
-   "seconds": 0.62
+   "seconds": 1.78
   }
  },
  {
@@ -4284,24 +4284,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 262475,
-   "seconds": 3.03
+   "bytes": 259781,
+   "seconds": 3.66
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 264293,
-   "seconds": 3.71
+   "bytes": 262533,
+   "seconds": 3.83
   }
  },
  {
@@ -4311,24 +4311,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 28893,
-   "seconds": 1.66
+   "bytes": 28952,
+   "seconds": 1.55
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 28893,
-   "seconds": 0.37
+   "bytes": 28952,
+   "seconds": 0.42
   }
  },
  {
@@ -4336,14 +4336,26 @@
   "file": "sources/zh/ddxsss.py",
   "lang": "zh",
   "plain": {
-   "ok": false,
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='www.ddxss.cc', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTT",
-   "seconds": 20.56
+   "ok": true,
+   "status": 200,
+   "edge": "apache",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 975,
+   "seconds": 1.71
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 200,
+   "edge": "apache",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 1048,
+   "seconds": 1.08
   }
  },
  {
@@ -4359,11 +4371,11 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1010,
-   "seconds": 1.66
+   "seconds": 1.86
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -4374,24 +4386,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5449,
-   "seconds": 0.66
+   "seconds": 1.5
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5833,
-   "seconds": 0.37
+   "seconds": 0.5
   }
  },
  {
@@ -4401,24 +4413,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 222099,
-   "seconds": 0.7
+   "seconds": 1.19
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 222458,
-   "seconds": 0.47
+   "seconds": 0.58
   }
  },
  {
@@ -4428,17 +4440,17 @@
   "plain": {
    "ok": true,
    "status": 522,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "retry",
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
    "bytes": 7255,
-   "seconds": 19.92
+   "seconds": 20.68
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20003 milliseconds with 0 bytes received. See https://curl.se/li",
+   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
    "seconds": 20.0
   }
  },
@@ -4449,24 +4461,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "ddos-guard",
+   "edge": "DDoS-Guard",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 216934,
-   "seconds": 1.88
+   "bytes": 218854,
+   "seconds": 1.15
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "ddos-guard",
+   "edge": "DDoS-Guard",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 217338,
-   "seconds": 1.02
+   "bytes": 218854,
+   "seconds": 1.25
   }
  },
  {
@@ -4481,8 +4493,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118890,
-   "seconds": 0.63
+   "bytes": 118908,
+   "seconds": 0.88
   },
   "impersonate": {
    "ok": true,
@@ -4492,8 +4504,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118862,
-   "seconds": 0.82
+   "bytes": 118939,
+   "seconds": 0.67
   }
  },
  {
@@ -4508,8 +4520,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 276136,
-   "seconds": 2.15
+   "bytes": 260505,
+   "seconds": 1.94
   },
   "impersonate": {
    "ok": true,
@@ -4519,8 +4531,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 276142,
-   "seconds": 1.16
+   "bytes": 276284,
+   "seconds": 1.07
   }
  },
  {
@@ -4530,24 +4542,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 168757,
-   "seconds": 1.91
+   "bytes": 168784,
+   "seconds": 1.61
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 169768,
-   "seconds": 1.36
+   "seconds": 1.29
   }
  },
  {
@@ -4557,24 +4569,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 371437,
-   "seconds": 2.89
+   "bytes": 362171,
+   "seconds": 2.75
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 429949,
-   "seconds": 1.66
+   "bytes": 429891,
+   "seconds": 0.97
   }
  },
  {
@@ -4584,24 +4596,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 343819,
-   "seconds": 1.85
+   "bytes": 343700,
+   "seconds": 1.94
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 346159,
-   "seconds": 1.66
+   "bytes": 346040,
+   "seconds": 1.48
   }
  },
  {
@@ -4617,7 +4629,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.83
+   "seconds": 1.31
   },
   "impersonate": {
    "ok": true,
@@ -4628,7 +4640,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.64
+   "seconds": 7.54
   }
  },
  {
@@ -4636,26 +4648,14 @@
   "file": "sources/en/n/novelnextz.py",
   "lang": "en",
   "plain": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.44
+   "ok": false,
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='novelnextz.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<H",
+   "seconds": 20.48
   },
   "impersonate": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.66
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "seconds": 20.0
   }
  },
  {
@@ -4671,7 +4671,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 240465,
-   "seconds": 2.24
+   "seconds": 2.33
   },
   "impersonate": {
    "ok": true,
@@ -4682,7 +4682,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 240465,
-   "seconds": 1.6
+   "seconds": 2.42
   }
  },
  {
@@ -4698,7 +4698,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 72254,
-   "seconds": 1.95
+   "seconds": 1.51
   },
   "impersonate": {
    "ok": true,
@@ -4709,7 +4709,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 72254,
-   "seconds": 0.88
+   "seconds": 1.17
   }
  },
  {
@@ -4719,24 +4719,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 134355,
-   "seconds": 1.96
+   "bytes": 135111,
+   "seconds": 1.7
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 134869,
-   "seconds": 1.27
+   "bytes": 135624,
+   "seconds": 1.01
   }
  },
  {
@@ -4752,7 +4752,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 93803,
-   "seconds": 2.1
+   "seconds": 1.95
   },
   "impersonate": {
    "ok": true,
@@ -4763,7 +4763,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 93803,
-   "seconds": 1.28
+   "seconds": 1.23
   }
  },
  {
@@ -4778,8 +4778,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 6955,
-   "seconds": 1.49
+   "bytes": 6956,
+   "seconds": 1.25
   },
   "impersonate": {
    "ok": true,
@@ -4790,7 +4790,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1640,
-   "seconds": 0.51
+   "seconds": 0.64
   }
  },
  {
@@ -4806,7 +4806,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 17849,
-   "seconds": 2.98
+   "seconds": 1.81
   },
   "impersonate": {
    "ok": true,
@@ -4817,7 +4817,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 17849,
-   "seconds": 1.37
+   "seconds": 1.01
   }
  },
  {
@@ -4833,7 +4833,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1005,
-   "seconds": 1.6
+   "seconds": 1.93
   },
   "impersonate": {
    "ok": true,
@@ -4844,7 +4844,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1072,
-   "seconds": 0.87
+   "seconds": 0.98
   }
  },
  {
@@ -4854,24 +4854,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 58231,
-   "seconds": 1.08
+   "bytes": 58335,
+   "seconds": 2.76
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 58534,
-   "seconds": 0.82
+   "bytes": 58277,
+   "seconds": 0.97
   }
  },
  {
@@ -4881,24 +4881,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 36241,
-   "seconds": 1.98
+   "seconds": 2.72
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 36241,
-   "seconds": 1.46
+   "seconds": 1.42
   }
  },
  {
@@ -4908,24 +4908,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 36241,
-   "seconds": 1.7
+   "seconds": 2.18
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 36241,
-   "seconds": 1.4
+   "seconds": 1.75
   }
  },
  {
@@ -4935,18 +4935,18 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 63035,
-   "seconds": 1.16
+   "seconds": 1.85
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
@@ -4962,24 +4962,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 146,
-   "seconds": 1.1
+   "seconds": 2.57
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
    "layer": 12,
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 907,
-   "seconds": 0.97
+   "seconds": 1.0
   }
  },
  {
@@ -4995,7 +4995,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 34828,
-   "seconds": 2.23
+   "seconds": 2.45
   },
   "impersonate": {
    "ok": true,
@@ -5006,7 +5006,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 34828,
-   "seconds": 1.7
+   "seconds": 2.87
   }
  },
  {
@@ -5016,24 +5016,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 302116,
-   "seconds": 1.93
+   "seconds": 1.81
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 302475,
-   "seconds": 1.62
+   "seconds": 1.56
   }
  },
  {
@@ -5043,24 +5043,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5447,
-   "seconds": 0.59
+   "seconds": 0.84
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5831,
-   "seconds": 0.51
+   "seconds": 0.36
   }
  },
  {
@@ -5076,7 +5076,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 248227,
-   "seconds": 1.35
+   "seconds": 1.25
   },
   "impersonate": {
    "ok": true,
@@ -5087,7 +5087,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 248227,
-   "seconds": 0.7
+   "seconds": 0.75
   }
  },
  {
@@ -5103,7 +5103,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.33
+   "seconds": 1.82
   },
   "impersonate": {
    "ok": true,
@@ -5114,7 +5114,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.56
+   "seconds": 0.91
   }
  },
  {
@@ -5130,7 +5130,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.25
+   "seconds": 7.9
   },
   "impersonate": {
    "ok": true,
@@ -5141,7 +5141,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.53
+   "seconds": 1.14
   }
  },
  {
@@ -5157,7 +5157,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.73
+   "seconds": 1.26
   },
   "impersonate": {
    "ok": true,
@@ -5168,7 +5168,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.85
+   "seconds": 0.56
   }
  },
  {
@@ -5184,7 +5184,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 2.75
+   "seconds": 4.6
   },
   "impersonate": {
    "ok": true,
@@ -5195,7 +5195,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.04
+   "seconds": 4.22
   }
  },
  {
@@ -5205,24 +5205,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 4357,
-   "seconds": 0.7
+   "seconds": 1.92
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 4357,
-   "seconds": 0.56
+   "seconds": 0.66
   }
  },
  {
@@ -5232,24 +5232,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 61731,
-   "seconds": 1.52
+   "bytes": 62621,
+   "seconds": 1.92
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62090,
-   "seconds": 1.06
+   "bytes": 62980,
+   "seconds": 1.54
   }
  },
  {
@@ -5259,24 +5259,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 61731,
-   "seconds": 1.04
+   "bytes": 62621,
+   "seconds": 1.51
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62090,
-   "seconds": 0.78
+   "bytes": 62980,
+   "seconds": 2.63
   }
  },
  {
@@ -5286,24 +5286,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 61731,
-   "seconds": 1.48
+   "bytes": 62621,
+   "seconds": 1.94
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62090,
-   "seconds": 1.71
+   "bytes": 62980,
+   "seconds": 3.66
   }
  },
  {
@@ -5313,11 +5313,11 @@
   "plain": {
    "ok": false,
    "error": "ConnectTimeout: HTTPSConnectionPool(host='lightnovel.world', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(",
-   "seconds": 20.75
+   "seconds": 20.77
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -5333,8 +5333,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 405161,
-   "seconds": 0.99
+   "bytes": 405233,
+   "seconds": 1.13
   },
   "impersonate": {
    "ok": true,
@@ -5344,8 +5344,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 405282,
-   "seconds": 0.51
+   "bytes": 405283,
+   "seconds": 0.75
   }
  },
  {
@@ -5355,24 +5355,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5578,
-   "seconds": 0.84
+   "seconds": 1.13
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5941,
-   "seconds": 0.38
+   "seconds": 0.69
   }
  },
  {
@@ -5382,24 +5382,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 495286,
-   "seconds": 2.01
+   "bytes": 495339,
+   "seconds": 4.4
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 495645,
-   "seconds": 1.71
+   "bytes": 495698,
+   "seconds": 1.49
   }
  },
  {
@@ -5407,26 +5407,14 @@
   "file": "sources/en/w/wuxiablog.py",
   "lang": "en",
   "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 985,
-   "seconds": 1.89
+   "ok": false,
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='www.wuxia.blog', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<H",
+   "seconds": 20.24
   },
   "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 1056,
-   "seconds": 1.04
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20001 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "seconds": 20.0
   }
  },
  {
@@ -5436,24 +5424,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 69244,
-   "seconds": 1.85
+   "seconds": 1.64
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 69603,
-   "seconds": 1.21
+   "seconds": 1.43
   }
  },
  {
@@ -5463,24 +5451,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 69244,
-   "seconds": 1.01
+   "seconds": 0.79
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 69603,
-   "seconds": 0.71
+   "seconds": 0.42
   }
  },
  {
@@ -5490,24 +5478,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 19345,
-   "seconds": 1.66
+   "seconds": 2.25
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 19704,
-   "seconds": 1.16
+   "seconds": 1.79
   }
  },
  {
@@ -5517,24 +5505,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5551,
-   "seconds": 0.77
+   "seconds": 0.98
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 49139,
-   "seconds": 0.65
+   "seconds": 1.59
   }
  },
  {
@@ -5544,24 +5532,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 173571,
-   "seconds": 1.8
+   "seconds": 8.6
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 173930,
-   "seconds": 2.46
+   "seconds": 1.52
   }
  },
  {
@@ -5571,24 +5559,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 173571,
-   "seconds": 1.96
+   "seconds": 9.12
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 173930,
-   "seconds": 2.38
+   "seconds": 2.52
   }
  },
  {
@@ -5598,24 +5586,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 62353,
-   "seconds": 0.95
+   "seconds": 0.65
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 62712,
-   "seconds": 0.43
+   "seconds": 0.6
   }
  },
  {
@@ -5631,7 +5619,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 112840,
-   "seconds": 1.54
+   "seconds": 1.62
   },
   "impersonate": {
    "ok": true,
@@ -5642,7 +5630,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 112840,
-   "seconds": 1.26
+   "seconds": 1.38
   }
  },
  {
@@ -5658,7 +5646,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 0,
-   "seconds": 2.07
+   "seconds": 1.59
   },
   "impersonate": {
    "ok": true,
@@ -5669,7 +5657,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4622,
-   "seconds": 0.9
+   "seconds": 0.92
   }
  },
  {
@@ -5678,25 +5666,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.19
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 481,
+   "seconds": 1.09
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.56
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 481,
+   "seconds": 0.54
   }
  },
  {
@@ -5711,8 +5699,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 154586,
-   "seconds": 2.67
+   "bytes": 138550,
+   "seconds": 2.73
   },
   "impersonate": {
    "ok": true,
@@ -5722,8 +5710,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 154586,
-   "seconds": 1.72
+   "bytes": 138550,
+   "seconds": 1.86
   }
  },
  {
@@ -5733,24 +5721,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 63954,
-   "seconds": 1.01
+   "seconds": 1.08
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 64313,
-   "seconds": 0.59
+   "seconds": 1.74
   }
  },
  {
@@ -5760,18 +5748,18 @@
   "plain": {
    "ok": false,
    "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
-   "seconds": 5.46
+   "seconds": 5.77
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 29122,
-   "seconds": 1.13
+   "bytes": 29053,
+   "seconds": 2.14
   }
  },
  {
@@ -5781,18 +5769,18 @@
   "plain": {
    "ok": false,
    "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
-   "seconds": 5.68
+   "seconds": 5.55
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 29119,
-   "seconds": 2.1
+   "bytes": 29050,
+   "seconds": 1.99
   }
  },
  {
@@ -5802,24 +5790,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5565,
-   "seconds": 0.76
+   "seconds": 1.35
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 173702,
-   "seconds": 3.87
+   "bytes": 166457,
+   "seconds": 2.0
   }
  },
  {
@@ -5829,24 +5817,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 100873,
-   "seconds": 2.3
+   "seconds": 3.08
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 101232,
-   "seconds": 1.55
+   "seconds": 1.92
   }
  },
  {
@@ -5856,24 +5844,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 187885,
-   "seconds": 1.44
+   "seconds": 1.67
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 188244,
-   "seconds": 1.31
+   "seconds": 1.02
   }
  },
  {
@@ -5883,24 +5871,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 361,
-   "seconds": 1.48
+   "seconds": 1.61
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 361,
-   "seconds": 1.65
+   "seconds": 1.35
   }
  },
  {
@@ -5910,24 +5898,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 57374,
-   "seconds": 0.91
+   "bytes": 58597,
+   "seconds": 0.96
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 57733,
-   "seconds": 0.41
+   "bytes": 58956,
+   "seconds": 0.98
   }
  },
  {
@@ -5937,24 +5925,24 @@
   "plain": {
    "ok": true,
    "status": 418,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 418",
    "bytes": 1,
-   "seconds": 1.32
+   "seconds": 13.46
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 416191,
-   "seconds": 1.54
+   "bytes": 415802,
+   "seconds": 1.14
   }
  },
  {
@@ -5969,8 +5957,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 124728,
-   "seconds": 1.21
+   "bytes": 123982,
+   "seconds": 1.55
   },
   "impersonate": {
    "ok": true,
@@ -5980,8 +5968,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 124728,
-   "seconds": 0.86
+   "bytes": 123982,
+   "seconds": 1.04
   }
  },
  {
@@ -5997,7 +5985,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 6956,
-   "seconds": 1.03
+   "seconds": 1.3
   },
   "impersonate": {
    "ok": true,
@@ -6008,7 +5996,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1616,
-   "seconds": 0.48
+   "seconds": 0.8
   }
  },
  {
@@ -6018,24 +6006,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 64861,
-   "seconds": 0.85
+   "bytes": 64863,
+   "seconds": 1.14
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 65220,
-   "seconds": 0.62
+   "bytes": 65222,
+   "seconds": 0.93
   }
  },
  {
@@ -6051,7 +6039,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.41
+   "seconds": 1.48
   },
   "impersonate": {
    "ok": true,
@@ -6062,7 +6050,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.67
+   "seconds": 11.47
   }
  },
  {
@@ -6077,8 +6065,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 145064,
-   "seconds": 2.16
+   "bytes": 145151,
+   "seconds": 0.77
   },
   "impersonate": {
    "ok": true,
@@ -6088,8 +6076,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 145134,
-   "seconds": 0.66
+   "bytes": 145057,
+   "seconds": 0.73
   }
  },
  {
@@ -6099,24 +6087,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 6005,
-   "seconds": 1.14
+   "seconds": 0.85
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
    "layer": 12,
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 6005,
-   "seconds": 1.53
+   "seconds": 0.65
   }
  },
  {
@@ -6131,8 +6119,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "origin unavailable",
-   "bytes": 19085,
-   "seconds": 1.52
+   "bytes": 19087,
+   "seconds": 2.01
   },
   "impersonate": {
    "ok": true,
@@ -6142,7 +6130,7 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 215809,
+   "bytes": 215751,
    "seconds": 1.06
   }
  },
@@ -6153,24 +6141,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 55784,
-   "seconds": 1.12
+   "bytes": 55786,
+   "seconds": 1.33
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 56143,
-   "seconds": 0.86
+   "bytes": 56145,
+   "seconds": 0.9
   }
  },
  {
@@ -6180,24 +6168,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 55784,
-   "seconds": 3.41
+   "bytes": 55786,
+   "seconds": 4.42
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 56143,
-   "seconds": 2.12
+   "bytes": 56145,
+   "seconds": 1.68
   }
  },
  {
@@ -6207,13 +6195,13 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "unknown",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 195,
-   "seconds": 2.9
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 475,
+   "seconds": 1.09
   },
   "impersonate": {
    "ok": true,
@@ -6224,7 +6212,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 475,
-   "seconds": 0.66
+   "seconds": 0.67
   }
  },
  {
@@ -6240,18 +6228,18 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2,
-   "seconds": 1.98
+   "seconds": 1.73
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudfront",
+   "edge": "nginx",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 42341,
-   "seconds": 2.59
+   "bytes": 13044,
+   "seconds": 4.5
   }
  },
  {
@@ -6261,24 +6249,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 19345,
-   "seconds": 1.76
+   "seconds": 3.03
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 19704,
-   "seconds": 0.95
+   "seconds": 1.28
   }
  },
  {
@@ -6294,7 +6282,7 @@
    "layer_name": null,
    "detail": "HTTP 406",
    "bytes": 226,
-   "seconds": 1.55
+   "seconds": 1.52
   },
   "impersonate": {
    "ok": true,
@@ -6305,7 +6293,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 57395,
-   "seconds": 4.37
+   "seconds": 4.41
   }
  },
  {
@@ -6332,7 +6320,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.26
+   "seconds": 0.64
   }
  },
  {
@@ -6347,7 +6335,7 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 140557,
+   "bytes": 140730,
    "seconds": 1.09
   },
   "impersonate": {
@@ -6358,8 +6346,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 140347,
-   "seconds": 0.66
+   "bytes": 140697,
+   "seconds": 0.81
   }
  },
  {
@@ -6375,18 +6363,18 @@
    "layer_name": null,
    "detail": "",
    "bytes": 7037,
-   "seconds": 1.38
+   "seconds": 1.63
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudfront",
+   "edge": "AWS WAF",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 36257,
-   "seconds": 1.84
+   "seconds": 1.71
   }
  },
  {
@@ -6396,24 +6384,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudfront",
+   "edge": "CloudFront",
    "action": "escalate",
    "layer": 15,
    "layer_name": "L15 Operator edge code",
-   "detail": "forbidden by the origin",
+   "detail": "CloudFront refused the request",
    "bytes": 150,
-   "seconds": 0.46
+   "seconds": 0.68
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudfront",
+   "edge": "AWS WAF",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 118956,
-   "seconds": 1.49
+   "seconds": 0.68
   }
  },
  {
@@ -6423,24 +6411,24 @@
   "plain": {
    "ok": true,
    "status": 404,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 14,
-   "seconds": 1.52
+   "seconds": 2.37
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 34206,
-   "seconds": 0.93
+   "seconds": 6.57
   }
  },
  {
@@ -6450,24 +6438,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 4546,
-   "seconds": 0.61
+   "seconds": 6.12
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 21077,
-   "seconds": 0.84
+   "seconds": 1.52
   }
  },
  {
@@ -6477,24 +6465,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5557,
-   "seconds": 0.91
+   "seconds": 0.85
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
-   "bytes": 5941,
-   "seconds": 0.38
+   "bytes": 5963,
+   "seconds": 0.6
   }
  },
  {
@@ -6510,7 +6498,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 5300,
-   "seconds": 1.85
+   "seconds": 1.88
   },
   "impersonate": {
    "ok": true,
@@ -6521,7 +6509,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 5300,
-   "seconds": 1.05
+   "seconds": 0.96
   }
  },
  {
@@ -6536,8 +6524,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59284,
-   "seconds": 4.04
+   "bytes": 59748,
+   "seconds": 3.5
   },
   "impersonate": {
    "ok": true,
@@ -6547,8 +6535,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59284,
-   "seconds": 2.23
+   "bytes": 59748,
+   "seconds": 2.44
   }
  },
  {
@@ -6563,8 +6551,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 58624,
-   "seconds": 1.8
+   "bytes": 59088,
+   "seconds": 2.73
   },
   "impersonate": {
    "ok": true,
@@ -6574,8 +6562,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 58624,
-   "seconds": 1.33
+   "bytes": 59088,
+   "seconds": 4.15
   }
  },
  {
@@ -6590,8 +6578,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59284,
-   "seconds": 3.31
+   "bytes": 59748,
+   "seconds": 3.58
   },
   "impersonate": {
    "ok": true,
@@ -6601,8 +6589,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59284,
-   "seconds": 2.29
+   "bytes": 59748,
+   "seconds": 2.53
   }
  },
  {
@@ -6617,8 +6605,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 40281,
-   "seconds": 1.8
+   "bytes": 41643,
+   "seconds": 2.7
   },
   "impersonate": {
    "ok": true,
@@ -6628,8 +6616,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 40281,
-   "seconds": 1.06
+   "bytes": 41643,
+   "seconds": 7.88
   }
  },
  {
@@ -6639,24 +6627,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 46552,
-   "seconds": 0.75
+   "seconds": 0.88
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 46911,
-   "seconds": 0.85
+   "seconds": 0.61
   }
  },
  {
@@ -6666,24 +6654,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 5491,
-   "seconds": 1.06
+   "seconds": 0.61
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 172297,
-   "seconds": 1.88
+   "seconds": 3.56
   }
  },
  {
@@ -6699,7 +6687,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2,
-   "seconds": 1.15
+   "seconds": 1.08
   },
   "impersonate": {
    "ok": true,
@@ -6709,8 +6697,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 13049,
-   "seconds": 2.58
+   "bytes": 13051,
+   "seconds": 4.87
   }
  },
  {
@@ -6718,15 +6706,9 @@
   "file": "sources/en/i/isotls.py",
   "lang": "en",
   "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "netlify",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 63064,
-   "seconds": 1.98
+   "ok": false,
+   "error": "ConnectionError: ('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))",
+   "seconds": 9.52
   },
   "impersonate": {
    "ok": true,
@@ -6736,8 +6718,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62748,
-   "seconds": 1.39
+   "bytes": 63066,
+   "seconds": 1.42
   }
  },
  {
@@ -6745,15 +6727,9 @@
   "file": "sources/en/i/isotls.py",
   "lang": "en",
   "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "netlify",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 63063,
-   "seconds": 1.33
+   "ok": false,
+   "error": "SSLError: HTTPSConnectionPool(host='www.isotls.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '",
+   "seconds": 4.86
   },
   "impersonate": {
    "ok": true,
@@ -6763,8 +6739,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 63070,
-   "seconds": 0.83
+   "bytes": 63055,
+   "seconds": 1.17
   }
  },
  {
@@ -6774,24 +6750,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5558,
-   "seconds": 0.7
+   "seconds": 0.61
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5942,
-   "seconds": 0.78
+   "seconds": 0.35
   }
  },
  {
@@ -6801,24 +6777,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 118357,
-   "seconds": 1.62
+   "seconds": 0.63
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 118716,
-   "seconds": 0.4
+   "seconds": 0.58
   }
  },
  {
@@ -6828,24 +6804,24 @@
   "plain": {
    "ok": true,
    "status": 406,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 406",
    "bytes": 1164,
-   "seconds": 1.61
+   "seconds": 1.51
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 350212,
-   "seconds": 1.96
+   "seconds": 4.23
   }
  },
  {
@@ -6860,8 +6836,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 196714,
-   "seconds": 6.4
+   "bytes": 196748,
+   "seconds": 7.67
   },
   "impersonate": {
    "ok": true,
@@ -6872,7 +6848,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 196714,
-   "seconds": 8.03
+   "seconds": 7.89
   }
  },
  {
@@ -6887,8 +6863,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 114027,
-   "seconds": 1.57
+   "bytes": 114022,
+   "seconds": 2.95
   },
   "impersonate": {
    "ok": true,
@@ -6898,8 +6874,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 113929,
-   "seconds": 1.43
+   "bytes": 114009,
+   "seconds": 1.54
   }
  },
  {
@@ -6914,8 +6890,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 114027,
-   "seconds": 0.71
+   "bytes": 114103,
+   "seconds": 1.02
   },
   "impersonate": {
    "ok": true,
@@ -6925,8 +6901,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 113933,
-   "seconds": 0.45
+   "bytes": 113929,
+   "seconds": 1.62
   }
  },
  {
@@ -6936,24 +6912,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 313507,
-   "seconds": 1.02
+   "seconds": 1.39
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 313913,
-   "seconds": 0.86
+   "seconds": 0.9
   }
  },
  {
@@ -6968,8 +6944,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 184775,
-   "seconds": 1.73
+   "bytes": 184843,
+   "seconds": 2.04
   },
   "impersonate": {
    "ok": true,
@@ -6979,8 +6955,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 184758,
-   "seconds": 1.81
+   "bytes": 184672,
+   "seconds": 1.34
   }
  },
  {
@@ -6995,8 +6971,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 184766,
-   "seconds": 0.7
+   "bytes": 184775,
+   "seconds": 0.86
   },
   "impersonate": {
    "ok": true,
@@ -7006,8 +6982,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 184758,
-   "seconds": 0.58
+   "bytes": 184672,
+   "seconds": 0.66
   }
  },
  {
@@ -7016,12 +6992,12 @@
   "lang": "en",
   "plain": {
    "ok": false,
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='www.lnreader.org', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(",
-   "seconds": 20.51
+   "error": "ReadTimeout: HTTPSConnectionPool(host='www.lnreader.org', port=443): Read timed out. (read timeout=20.0)",
+   "seconds": 20.73
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -7031,12 +7007,12 @@
   "lang": "en",
   "plain": {
    "ok": false,
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='lnreader.org', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTT",
-   "seconds": 20.13
+   "error": "ReadTimeout: HTTPSConnectionPool(host='lnreader.org', port=443): Read timed out. (read timeout=20.0)",
+   "seconds": 20.57
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20001 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -7053,7 +7029,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1030,
-   "seconds": 1.77
+   "seconds": 1.72
   },
   "impersonate": {
    "ok": true,
@@ -7064,7 +7040,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1080,
-   "seconds": 0.93
+   "seconds": 0.92
   }
  },
  {
@@ -7074,24 +7050,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 4554,
-   "seconds": 0.52
+   "seconds": 0.45
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
    "layer": 12,
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 4913,
-   "seconds": 0.34
+   "seconds": 0.26
   }
  },
  {
@@ -7107,7 +7083,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1030,
-   "seconds": 2.49
+   "seconds": 1.71
   },
   "impersonate": {
    "ok": true,
@@ -7118,7 +7094,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1092,
-   "seconds": 0.92
+   "seconds": 0.85
   }
  },
  {
@@ -7128,24 +7104,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5554,
-   "seconds": 0.76
+   "seconds": 1.3
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 64524,
-   "seconds": 1.55
+   "seconds": 1.46
   }
  },
  {
@@ -7160,8 +7136,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 146639,
-   "seconds": 0.93
+   "bytes": 149828,
+   "seconds": 0.89
   },
   "impersonate": {
    "ok": true,
@@ -7171,8 +7147,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 146653,
-   "seconds": 0.5
+   "bytes": 152134,
+   "seconds": 0.54
   }
  },
  {
@@ -7182,24 +7158,24 @@
   "plain": {
    "ok": true,
    "status": 526,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "retry",
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 526)",
    "bytes": 7247,
-   "seconds": 1.93
+   "seconds": 1.24
   },
   "impersonate": {
    "ok": true,
    "status": 526,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "retry",
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 526)",
    "bytes": 7247,
-   "seconds": 0.95
+   "seconds": 0.75
   }
  },
  {
@@ -7209,24 +7185,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 32367,
-   "seconds": 1.86
+   "seconds": 1.0
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 32367,
-   "seconds": 0.63
+   "seconds": 0.59
   }
  },
  {
@@ -7236,12 +7212,12 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='superchat.live', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 22.32
+   "seconds": 22.47
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 19198 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.85
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 19145 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "seconds": 20.88
   }
  },
  {
@@ -7256,8 +7232,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 14338,
-   "seconds": 2.52
+   "bytes": 15240,
+   "seconds": 5.54
   },
   "impersonate": {
    "ok": true,
@@ -7267,8 +7243,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 14338,
-   "seconds": 1.71
+   "bytes": 15240,
+   "seconds": 1.18
   }
  },
  {
@@ -7278,11 +7254,11 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='www.literotica.com', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.33
+   "seconds": 20.65
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -7299,7 +7275,7 @@
    "layer_name": "L15 Operator edge code",
    "detail": "forbidden by the origin",
    "bytes": 0,
-   "seconds": 1.49
+   "seconds": 1.72
   },
   "impersonate": {
    "ok": true,
@@ -7309,8 +7285,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 299780,
-   "seconds": 2.11
+   "bytes": 300808,
+   "seconds": 2.31
   }
  },
  {
@@ -7320,24 +7296,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 295220,
-   "seconds": 1.02
+   "seconds": 1.66
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 295612,
-   "seconds": 0.55
+   "seconds": 0.95
   }
  },
  {
@@ -7347,24 +7323,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 168537,
-   "seconds": 8.18
+   "bytes": 168539,
+   "seconds": 7.85
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 168898,
-   "seconds": 2.11
+   "seconds": 2.93
   }
  },
  {
@@ -7374,24 +7350,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 33493,
-   "seconds": 1.54
+   "seconds": 2.96
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 33852,
-   "seconds": 0.97
+   "seconds": 0.95
   }
  },
  {
@@ -7400,14 +7376,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 401,
+   "status": 200,
    "edge": "unknown",
-   "action": "refuse",
-   "layer": 19,
-   "layer_name": "L19 Identity-provider gate",
-   "detail": "authentication required (HTTP 401)",
-   "bytes": 9,
-   "seconds": 2.61
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 195,
+   "seconds": 3.34
   },
   "impersonate": {
    "ok": true,
@@ -7418,7 +7394,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 478,
-   "seconds": 0.46
+   "seconds": 0.96
   }
  },
  {
@@ -7434,7 +7410,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4513,
-   "seconds": 2.51
+   "seconds": 2.8
   },
   "impersonate": {
    "ok": true,
@@ -7445,7 +7421,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4513,
-   "seconds": 1.81
+   "seconds": 1.77
   }
  },
  {
@@ -7455,24 +7431,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5555,
-   "seconds": 1.86
+   "seconds": 1.55
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 42389,
-   "seconds": 1.32
+   "bytes": 42782,
+   "seconds": 2.05
   }
  },
  {
@@ -7482,24 +7458,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5534,
-   "seconds": 0.71
+   "seconds": 1.75
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 42389,
-   "seconds": 0.78
+   "bytes": 42782,
+   "seconds": 0.89
   }
  },
  {
@@ -7509,24 +7485,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5537,
-   "seconds": 0.93
+   "seconds": 0.65
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 711309,
-   "seconds": 1.29
+   "bytes": 709230,
+   "seconds": 1.44
   }
  },
  {
@@ -7541,8 +7517,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 100698,
-   "seconds": 1.34
+   "bytes": 100697,
+   "seconds": 1.29
   },
   "impersonate": {
    "ok": true,
@@ -7552,8 +7528,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 100649,
-   "seconds": 0.82
+   "bytes": 100699,
+   "seconds": 1.05
   }
  },
  {
@@ -7569,7 +7545,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 0,
-   "seconds": 2.5
+   "seconds": 3.43
   },
   "impersonate": {
    "ok": true,
@@ -7580,7 +7556,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 16769,
-   "seconds": 1.3
+   "seconds": 1.46
   }
  },
  {
@@ -7596,7 +7572,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 0,
-   "seconds": 1.5
+   "seconds": 1.75
   },
   "impersonate": {
    "ok": true,
@@ -7607,7 +7583,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 16761,
-   "seconds": 1.21
+   "seconds": 1.34
   }
  },
  {
@@ -7617,24 +7593,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 227227,
-   "seconds": 1.07
+   "seconds": 0.86
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 227586,
-   "seconds": 0.49
+   "seconds": 0.55
   }
  },
  {
@@ -7644,24 +7620,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 5485,
-   "seconds": 1.23
+   "seconds": 0.78
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 20,
-   "seconds": 0.57
+   "seconds": 0.77
   }
  },
  {
@@ -7671,24 +7647,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
    "bytes": 5485,
-   "seconds": 0.71
+   "seconds": 0.92
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 501315,
-   "seconds": 3.1
+   "bytes": 501300,
+   "seconds": 3.13
   }
  },
  {
@@ -7698,18 +7674,24 @@
   "plain": {
    "ok": true,
    "status": 522,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "retry",
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
    "bytes": 7281,
-   "seconds": 20.36
+   "seconds": 20.05
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20003 milliseconds with 0 bytes received. See https://curl.se/li",
-   "seconds": 20.0
+   "ok": true,
+   "status": 522,
+   "edge": "Cloudflare",
+   "action": "retry",
+   "layer": null,
+   "layer_name": null,
+   "detail": "upstream error (HTTP 522)",
+   "bytes": 7281,
+   "seconds": 19.95
   }
  },
  {
@@ -7718,25 +7700,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "nginx",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.74
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 481,
+   "seconds": 0.8
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "nginx",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.32
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 481,
+   "seconds": 0.45
   }
  },
  {
@@ -7746,24 +7728,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5560,
-   "seconds": 1.86
+   "seconds": 0.73
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 19117,
-   "seconds": 0.47
+   "seconds": 1.65
   }
  },
  {
@@ -7779,7 +7761,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 121525,
-   "seconds": 1.27
+   "seconds": 0.66
   },
   "impersonate": {
    "ok": true,
@@ -7790,7 +7772,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 121431,
-   "seconds": 0.6
+   "seconds": 0.65
   }
  },
  {
@@ -7800,24 +7782,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudfront",
+   "edge": "CloudFront",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 278797,
-   "seconds": 2.43
+   "bytes": 270922,
+   "seconds": 2.41
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudfront",
+   "edge": "CloudFront",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 273414,
-   "seconds": 1.29
+   "bytes": 264684,
+   "seconds": 2.23
   }
  },
  {
@@ -7827,24 +7809,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 117612,
-   "seconds": 1.97
+   "seconds": 2.17
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 117971,
-   "seconds": 1.26
+   "seconds": 1.76
   }
  },
  {
@@ -7860,7 +7842,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 484,
-   "seconds": 1.18
+   "seconds": 1.42
   },
   "impersonate": {
    "ok": true,
@@ -7871,7 +7853,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 484,
-   "seconds": 0.54
+   "seconds": 0.61
   }
  },
  {
@@ -7881,24 +7863,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 64165,
-   "seconds": 1.34
+   "seconds": 0.86
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 64524,
-   "seconds": 0.58
+   "seconds": 1.29
   }
  },
  {
@@ -7908,13 +7890,13 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "unknown",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 195,
-   "seconds": 2.53
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 475,
+   "seconds": 1.46
   },
   "impersonate": {
    "ok": true,
@@ -7925,7 +7907,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 475,
-   "seconds": 0.54
+   "seconds": 0.67
   }
  },
  {
@@ -7935,24 +7917,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 167892,
-   "seconds": 1.71
+   "bytes": 165677,
+   "seconds": 1.63
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 166861,
-   "seconds": 2.54
+   "bytes": 167270,
+   "seconds": 1.28
   }
  },
  {
@@ -7962,24 +7944,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 47132,
-   "seconds": 0.86
+   "bytes": 47180,
+   "seconds": 1.41
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 47491,
-   "seconds": 0.77
+   "bytes": 47539,
+   "seconds": 0.73
   }
  },
  {
@@ -7995,7 +7977,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.25
+   "seconds": 2.16
   },
   "impersonate": {
    "ok": true,
@@ -8006,7 +7988,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.65
+   "seconds": 7.46
   }
  },
  {
@@ -8022,7 +8004,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 2.2
+   "seconds": 20.31
   },
   "impersonate": {
    "ok": true,
@@ -8033,7 +8015,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.6
+   "seconds": 11.69
   }
  },
  {
@@ -8049,7 +8031,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2,
-   "seconds": 1.27
+   "seconds": 1.32
   },
   "impersonate": {
    "ok": true,
@@ -8059,8 +8041,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 13042,
-   "seconds": 2.71
+   "bytes": 13043,
+   "seconds": 4.77
   }
  },
  {
@@ -8070,24 +8052,24 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 233316,
-   "seconds": 1.47
+   "seconds": 1.03
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
    "bytes": 233316,
-   "seconds": 0.52
+   "seconds": 0.53
   }
  },
  {
@@ -8102,8 +8084,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 116447,
-   "seconds": 2.89
+   "bytes": 116454,
+   "seconds": 1.78
   },
   "impersonate": {
    "ok": true,
@@ -8113,8 +8095,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 116409,
-   "seconds": 1.3
+   "bytes": 116360,
+   "seconds": 1.23
   }
  },
  {
@@ -8130,18 +8112,12 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.55
+   "seconds": 8.85
   },
   "impersonate": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.66
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "seconds": 20.0
   }
  },
  {
@@ -8151,11 +8127,11 @@
   "plain": {
    "ok": false,
    "error": "ConnectTimeout: HTTPSConnectionPool(host='pianmanga.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HT",
-   "seconds": 20.71
+   "seconds": 20.6
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -8171,8 +8147,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 122370,
-   "seconds": 1.26
+   "bytes": 123525,
+   "seconds": 0.91
   },
   "impersonate": {
    "ok": true,
@@ -8182,8 +8158,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 121833,
-   "seconds": 1.0
+   "bytes": 123525,
+   "seconds": 0.7
   }
  },
  {
@@ -8198,8 +8174,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 121833,
-   "seconds": 1.85
+   "bytes": 123525,
+   "seconds": 1.88
   },
   "impersonate": {
    "ok": true,
@@ -8209,8 +8185,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 122080,
-   "seconds": 1.63
+   "bytes": 123525,
+   "seconds": 1.09
   }
  },
  {
@@ -8220,18 +8196,18 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5550,
-   "seconds": 0.96
+   "seconds": 0.83
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
@@ -8247,24 +8223,24 @@
   "plain": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5549,
-   "seconds": 0.76
+   "seconds": 0.72
   },
   "impersonate": {
    "ok": true,
    "status": 403,
-   "edge": "cloudflare",
+   "edge": "Cloudflare",
    "action": "solve",
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5933,
-   "seconds": 0.74
+   "seconds": 0.64
   }
  },
  {
@@ -8280,7 +8256,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 149,
-   "seconds": 0.6
+   "seconds": 3.74
   },
   "impersonate": {
    "ok": true,
@@ -8291,7 +8267,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 149,
-   "seconds": 0.33
+   "seconds": 0.36
   }
  }
 ]

@@ -38,6 +38,20 @@ def esc(value: Any) -> str:
     return html.escape(str(value), quote=True)
 
 
+def is_cloudflare(row: Dict[str, Any]) -> bool:
+    """Whether either arm found Cloudflare in front of a host.
+
+    Case-folded, and that is not fussiness: the probe used to write its own lowercase
+    label and now writes the library's `edge()`, which capitalises a product name
+    because the name is displayed. A `== "cloudflare"` comparison silently counted zero
+    Cloudflare hosts across a 315-host corpus.
+    """
+    for who in ("impersonate", "plain"):
+        if str((row.get(who) or {}).get("edge", "")).lower() == "cloudflare":
+            return True
+    return False
+
+
 def sh(command: str) -> str:
     try:
         return subprocess.run(
@@ -55,12 +69,7 @@ def stat_tiles(results: List[Dict[str, Any]], probe: Optional[List[Dict[str, Any
     checks = sum(1 for r in results for s in r["steps"] if s["ok"] is True)
     failed = sum(1 for r in results for s in r["steps"] if s["ok"] is False)
     hosts = len(probe or [])
-    cf = sum(
-        1
-        for r in (probe or [])
-        if (r.get("impersonate") or {}).get("edge") == "cloudflare"
-        or (r.get("plain") or {}).get("edge") == "cloudflare"
-    )
+    cf = sum(1 for r in (probe or []) if is_cloudflare(r))
     tiles = [
         (f"{passed}/{len(results)}", "scenarios passed", ""),
         (str(checks), "assertions verified live", f"{failed} failed"),
@@ -193,12 +202,7 @@ def scenario_card(row: Dict[str, Any]) -> str:
 
 
 def corpus_section(probe: List[Dict[str, Any]], tor: Optional[List[Dict[str, Any]]]) -> str:
-    cf = [
-        r
-        for r in probe
-        if (r.get("impersonate") or {}).get("edge") == "cloudflare"
-        or (r.get("plain") or {}).get("edge") == "cloudflare"
-    ]
+    cf = [r for r in probe if is_cloudflare(r)]
     wins = [
         r
         for r in cf
@@ -253,9 +257,9 @@ def stat_row(total: int, cf: int, wins: int) -> str:
 </div>"""
 
 
-def environment() -> str:
+def environment(version: str) -> str:
     rows = [
-        ("scraper", sh('uv run python -c "import scraper; print(scraper.__version__)"') or "1.0.0"),
+        ("scraper", version),
         ("Python (harness)", sh("uv run python -V")),
         ("Python (browser tier)", sh("/tmp/scr312/bin/python -V") or "3.12 (separate venv)"),
         ("curl_cffi", sh('uv run python -c "import curl_cffi; print(curl_cffi.__version__)"')),
@@ -420,15 +424,16 @@ def main() -> None:
     results.sort(key=lambda r: r["id"])
 
     stamp = dt.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z")
+    version = sh('uv run python -c "import scraper; print(scraper.__version__)"') or "unknown"
     passed = sum(1 for r in results if r["verdict"] == "pass")
 
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>lncrawl-scraper 1.0 — live verification report</title>
+<title>lncrawl-scraper {esc(version)} — live verification report</title>
 <style>{CSS}</style></head><body><div class="wrap">
 
-<p class="sub">lncrawl-scraper 1.0.0 · {esc(stamp)}</p>
+<p class="sub">lncrawl-scraper {esc(version)} · {esc(stamp)}</p>
 <h1>Live verification against real Cloudflare-protected sites</h1>
 <p class="lede">Every code path in the scraper, exercised against production Cloudflare
 deployments rather than fixtures — the transport group, the diagnosis classifier, the
@@ -454,7 +459,7 @@ assertions and the values observed.</p>
 {scenarios_section(results)}
 
 <h2>Environment</h2>
-{environment()}
+{environment(version)}
 
 <h2>Reproducing this</h2>
 <div class="rerun">
