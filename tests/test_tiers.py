@@ -10,9 +10,11 @@ from typing import Any, Dict, List, Optional
 import pytest
 import requests
 
+from scraper import Scraper
 from scraper.browser import CallableSolver, SolveResult
-from scraper.exceptions import TierUnavailable
+from scraper.exceptions import ConfigError, TierUnavailable
 from scraper.identity import Clearance, Identity
+from scraper.layers import Layer
 from scraper.tiers import ArchiveTier, Call, DirectTier, ManagedTier, Tier, http_provider
 from scraper.tiers.archive import SOURCE_HEADER
 from scraper.tiers.clearance import ClearanceTier
@@ -590,3 +592,96 @@ class TestClearanceTier:
         clearance_tier(solver, FakeTransport()).close()
 
         assert closed == [True]
+
+
+class TestRegisteringATier:
+    """The seam two documents promised. It used to be "edit `_build_tiers`".
+
+    Which is not extensibility — it is an instruction to patch a private method of an
+    installed library, and it breaks on the next refactor with no deprecation to notice.
+    """
+
+    class Cache(Tier):
+        name = "cache"
+        cost = 5
+        reach = frozenset({Layer.IP_REPUTATION})
+
+        def __init__(self) -> None:
+            self.calls: List[str] = []
+
+        def send(self, call: Call) -> requests.Response:
+            self.calls.append(call.url)
+            return make_response(body="<h1>from the cache</h1>", url=call.url)
+
+    def test_a_custom_tier_joins_the_ladder_at_its_own_cost(self, make_config):
+        cache = self.Cache()
+        config = make_config(tiers=[cache])
+        with Scraper(config=config) as scraper:
+            rungs = [cap.name for cap in scraper.planner.ladder()]
+        assert rungs == ["cache", "direct"], "cost decides the order, not registration"
+
+    def test_it_is_chosen_when_it_is_the_cheapest_that_covers_the_layer(self, make_config):
+        cache = self.Cache()
+        transport = FakeTransport()
+        config = make_config(transport=transport, tiers=[cache])
+        with Scraper(config=config) as scraper:
+            # A remembered reputation block: the cheapest rung claiming layer 1 wins.
+            scraper.memory.record_failure(URL, Layer.IP_REPUTATION)
+            response = scraper.get(URL)
+        assert "from the cache" in response.text
+        assert cache.calls == [URL]
+        assert transport.calls == [], "the custom rung served it, not the direct one"
+
+    def test_a_name_that_is_already_taken_is_refused(self, make_config):
+        class Impostor(Tier):
+            name = "direct"
+
+            def send(self, call: Call) -> requests.Response:
+                raise AssertionError("never reached")
+
+        with pytest.raises(ConfigError, match="already built"):
+            Scraper(config=make_config(tiers=[Impostor()]))
+
+    def test_a_tier_may_not_claim_a_layer_that_reads_a_secret(self):
+        # Refused rather than filtered: dropping the claim quietly would leave the
+        # author believing the planner had honoured it, and layers 18 and 19 are held
+        # or they are not — a rung offering one would be offered for something no rung
+        # can do.
+        class Overreaching(Tier):
+            name = "wishful"
+            reach = frozenset({Layer.WEB_BOT_AUTH, Layer.ACCESS})
+
+            def send(self, call: Call) -> requests.Response:
+                raise AssertionError("never reached")
+
+        with pytest.raises(ConfigError, match="read a secret"):
+            Overreaching().capability()
+
+    def test_reach_is_closed_over_the_transport_group(self):
+        # No technique satisfies one of layers 2-5 without the others, so a tier that
+        # names one has named all four whether it knows it or not.
+        class Impersonating(Tier):
+            name = "impersonating"
+            reach = frozenset({Layer.TLS_FINGERPRINT})
+
+            def send(self, call: Call) -> requests.Response:
+                raise AssertionError("never reached")
+
+        reach = Impersonating().capability().reach
+        assert Layer.HEADER_ORDER in reach
+        assert Layer.HTTP_FRAMES in reach
+
+    def test_a_custom_tier_is_closed_with_the_others(self, make_config):
+        closed = {"yes": False}
+
+        class Closing(Tier):
+            name = "closing"
+
+            def send(self, call: Call) -> requests.Response:
+                raise AssertionError("never reached")
+
+            def close(self) -> None:
+                closed["yes"] = True
+
+        Scraper(config=make_config(tiers=[Closing()])).close()
+        assert closed["yes"]

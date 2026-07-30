@@ -86,6 +86,7 @@ deployment can place it on a volume. See [behaviour.md](behaviour.md#persistence
 | `archive` / `archive_max_age` | The `archive` tier. Set a max age. |
 | `managed` | The `managed` tier. A provider callable. |
 | `botauth` | Signs every request. Layer 18, and the cheapest tier there is. |
+| `tiers` | Rungs of your own. Each declares its cost and reach; see [tiers.md](tiers.md#writing-a-tier). |
 
 See [tiers.md](tiers.md).
 

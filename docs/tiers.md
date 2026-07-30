@@ -173,8 +173,36 @@ of repetitions turns it into a machine-learning verdict.
 
 ## Writing a tier
 
-Subclass `scraper.tiers.Tier`, implement `send(call) -> requests.Response`, add a
-`Capability` with an honest reach, and register the name in `Scraper._build_tiers`. Two rules:
+Subclass `scraper.tiers.Tier`, implement `send(call) -> requests.Response`, declare a cost
+and an honest reach, and pass an instance in `ScraperConfig.tiers`:
+
+```python
+from scraper import Layer, Scraper, ScraperConfig
+from scraper.tiers import Call, Tier
+
+class CacheTier(Tier):
+    name = "cache"                                  # what OriginProfile.tier records
+    cost = 5                                        # cheaper than direct, so tried first
+    reach = frozenset({Layer.IP_REPUTATION})        # what it can actually get past
+
+    def send(self, call: Call) -> requests.Response:
+        ...
+
+scraper = Scraper(config=ScraperConfig(tiers=[CacheTier()]))
+```
+
+Nothing else is needed. The planner sees it through `Tier.capability()` and picks it by cost
+like any other rung, `close()` is called with the rest, and the name is refused if it collides
+with a built-in one.
+
+**Be honest about `reach`.** The planner treats it as a claim about capability, so an inflated
+one sends every retrieval to a tier that cannot help and stops the ladder before the tier that
+could. Two claims are enforced rather than trusted: naming one of layers 2–5 names all four
+(`layers.expand`, because no technique satisfies one without the others), and naming layer 18
+or 19 raises `ConfigError` — those read a secret, and a rung offering one would be offered for
+something no rung can do.
+
+Two rules:
 
 - Everything a tier needs arrives in the `Call`; anything it learns goes back through the
   return value. A tier that reacts on its own is a tier that rotates a proxy over a pacing

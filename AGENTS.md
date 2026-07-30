@@ -25,8 +25,10 @@ uv run poe cov          # pytest with coverage
 uv run poe build        # lint + test + uv build
 ```
 
-Always run `uv run poe lint` before considering a change done. CI runs `lint`, a `build`
-matrix across the supported Python versions, and `coverage`.
+Always run `uv run poe lint` before considering a change done. CI runs `lint`, then a
+matrix across every supported Python version that **tests and builds** on each, then
+`coverage`. The two ends of the matrix are the ones worth watching: 3.9 and 3.14 resolve
+without nodriver, since the browser extra is marked for 3.10 to 3.13.
 
 ## Architecture
 

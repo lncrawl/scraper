@@ -19,7 +19,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple
 
 from .botauth import BotAuthConfig
 from .browser import BrowserSolver
@@ -27,6 +27,9 @@ from .exits import ExitSpec
 from .pacing import PacingPolicy
 from .tiers.managed import Provider
 from .transport import Transport
+
+if TYPE_CHECKING:
+    from .tiers import Tier
 
 APP_DIR_NAME = "lncrawl-scraper"
 
@@ -68,6 +71,10 @@ class ScraperConfig:
         exits: Configured addresses, best kind first after sorting. The single most
             consequential setting: reputation is not something a client emits, so
             no amount of transport fidelity substitutes for a better address.
+        tiers: Extra rungs on the ladder. Each is a :class:`~scraper.tiers.Tier`
+            declaring its own cost and reach, and the planner picks it on evidence like
+            any other. The seam for a capability this library does not have — a
+            provider that speaks a protocol of its own, a cache in front of the site.
         browser: A challenge solver. The second most consequential: without one,
             every challenged page is out of reach no matter how patient the run is.
         archive: Allow serving pages from the Wayback Machine. Off by default
@@ -112,6 +119,7 @@ class ScraperConfig:
     pacing: PacingPolicy = field(default_factory=PacingPolicy)
 
     # -- capabilities ----------------------------------------------------------------
+    tiers: List["Tier"] = field(default_factory=list)
     browser: Optional[BrowserSolver] = None
     archive: bool = False
     archive_max_age: float = 0.0

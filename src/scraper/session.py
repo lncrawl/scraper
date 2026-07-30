@@ -37,6 +37,7 @@ from .diagnosis import Action, Diagnosis, diagnose, diagnose_transport
 from .exceptions import (
     Aborted,
     Blocked,
+    ConfigError,
     Exhausted,
     Impassable,
     MissingDependency,
@@ -129,8 +130,10 @@ class Scraper:
 
         self._tiers: Dict[str, Tier] = self._build_tiers()
         archive, browser, managed = self.config.capabilities_enabled()
+        capabilities = default_capabilities(archive=archive, browser=browser, managed=managed)
+        capabilities += [tier.capability() for tier in self.config.tiers]
         self.planner = Planner(
-            default_capabilities(archive=archive, browser=browser, managed=managed),
+            capabilities,
             max_attempts=self.config.max_attempts,
             max_rotations=self.config.max_rotations,
             promote_after=self.config.promote_after,
@@ -165,6 +168,13 @@ class Scraper:
             )
         if self.config.managed is not None:
             tiers["managed"] = ManagedTier(self.config.managed)
+        for extra in self.config.tiers:
+            if extra.name in tiers:
+                raise ConfigError(
+                    f"a tier named {extra.name!r} is already built; give the custom one "
+                    "a different name"
+                )
+            tiers[extra.name] = extra
         return tiers
 
     # -- the retrieval loop ------------------------------------------------------------

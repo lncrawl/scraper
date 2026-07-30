@@ -11,11 +11,14 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any, Dict, Iterator, Optional, Tuple
+from typing import Any, Dict, FrozenSet, Iterator, Optional, Tuple
 
 import requests
 
+from ..exceptions import ConfigError
 from ..identity import Clearance, Identity
+from ..layers import IMPASSABLE, Layer, expand
+from ..planner import Capability
 from ..utils.signals import AbortSignal
 
 
@@ -70,12 +73,42 @@ class Call:
 class Tier:
     """A way of retrieving a page.
 
+    Subclass, implement :meth:`send`, declare an honest :attr:`reach`, and pass an
+    instance in :attr:`~scraper.ScraperConfig.tiers`. Nothing else is needed — the
+    planner sees it through :meth:`capability` and picks it by cost like any other rung.
+
     Args:
-        name: Must match the :class:`~scraper.planner.Capability` name, since that
-            is how the planner refers to it.
+        name: How the planner refers to this tier, and what
+            :attr:`~scraper.OriginProfile.tier` records when it works. Must be unique
+            among the tiers a scraper is built with.
+        cost: Relative expense, for ordering only. The default sits between a browser
+            launch and a metered provider, which is where a custom tier usually
+            belongs — but the gaps are the meaning, so set it deliberately.
+        reach: Layers this tier can actually pass. Be honest: the planner treats this
+            as a claim about capability, so an inflated one sends every retrieval to a
+            tier that cannot help and stops the ladder before the tier that could.
     """
 
     name = "tier"
+    cost = 500
+    reach: FrozenSet[Layer] = frozenset()
+
+    def capability(self) -> Capability:
+        """How the planner sees this tier.
+
+        Reach is closed over the transport group, because no technique satisfies one of
+        layers 2-5 without the others.
+        """
+        claimed = frozenset(self.reach)
+        secret = claimed & IMPASSABLE
+        if secret:
+            # Refused rather than filtered. These layers read a secret the caller either
+            # holds or does not, so a tier claiming one would make the planner offer a
+            # stronger rung for something no rung can do — and dropping the claim
+            # quietly would leave the author believing it had been honoured.
+            named = ", ".join(str(layer) for layer in sorted(secret, key=lambda x: x.value))
+            raise ConfigError(f"tier {self.name!r} cannot claim {named}: those read a secret")
+        return Capability(name=self.name, cost=self.cost, reach=expand(claimed))
 
     def send(self, call: Call) -> requests.Response:
         raise NotImplementedError

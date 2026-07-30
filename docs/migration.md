@@ -62,7 +62,7 @@ made the common path the broken one.
 | `disable_v1/v2/v3/turnstile`, `solve_depth`, `double_down` | removed with the in-process solvers |
 | `auto_refresh_on_403`, `max_403_retries` | `max_attempts`, `max_rotations` — and the planner decides which |
 | `session_refresh_interval` | removed. Identity is held until evidence says otherwise. |
-| `pre_hook`, `post_hook` | removed. Supply a `Transport` or a tier. |
+| `pre_hook`, `post_hook` | removed. Supply a `Transport`, or a tier via `ScraperConfig.tiers`. |
 | `verify_ssl` | `verify_tls` |
 | `proxy.fallback_to_direct` | removed. An empty `exits` list is a direct connection; a silent fallback hid the reason a scrape failed. |
 
