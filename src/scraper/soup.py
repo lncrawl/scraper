@@ -7,6 +7,8 @@ selector matches nothing.
 
 from __future__ import annotations
 
+import codecs
+import re
 import threading
 from functools import cached_property
 from typing import Any, Dict, Generator, List, Optional, Union
@@ -14,6 +16,54 @@ from typing import Any, Dict, Generator, List, Optional, Union
 import lxml.etree as etree
 from bs4 import BeautifulSoup, Tag
 from requests import Response
+
+# The HTML spec requires a charset declaration in the first 1024 bytes. Real pages
+# put a licence comment above it, so the window is wider than the spec demands.
+_SNIFF_BYTES = 4096
+
+_META_CHARSET = re.compile(
+    rb"""<meta[^>]+charset\s*=\s*["']?\s*([a-z0-9_\-:.+]+)""",
+    re.IGNORECASE,
+)
+
+
+def _usable(name: str) -> str:
+    """*name* if Python can decode with it, otherwise ``""``.
+
+    Only ever applied to a charset a server declared, never to one the caller passed:
+    a site that advertises a codec that does not exist should degrade to the next
+    candidate, while a caller who names one should hear about it.
+    """
+    if not name:
+        return ""
+    try:
+        codecs.lookup(name)
+    except LookupError:
+        return ""
+    return name
+
+
+def _header_charset(response: Response) -> str:
+    """The charset the HTTP header actually declared, or ``""``.
+
+    Deliberately not ``response.encoding``: requests fills that with ISO-8859-1 for
+    any ``text/*`` response that declared no charset, so preferring it would decode a
+    UTF-8 page whose only declaration is a meta tag as Latin-1.
+    """
+    content_type = str(response.headers.get("content-type", ""))
+    for part in content_type.split(";")[1:]:
+        name, _, value = part.partition("=")
+        if name.strip().lower() == "charset":
+            return _usable(value.strip().strip("\"'"))
+    return ""
+
+
+def _sniff_charset(raw: bytes) -> str:
+    """The charset a meta tag near the top of *raw* declares, or ``""``."""
+    match = _META_CHARSET.search(raw[:_SNIFF_BYTES])
+    if not match:
+        return ""
+    return _usable(match.group(1).decode("ascii", "ignore"))
 
 
 class PageSoup:
@@ -86,7 +136,11 @@ class PageSoup:
 
         Args:
         - data (Union[Response, bytes, str, Any]): The data to create an PageSoup from.
-        - encoding (Optional[str]): The encoding of the data.
+        - encoding (Optional[str]): The encoding of the data. Omit it and the charset is
+          taken from the first source that declares a usable one: the response's own
+          ``Content-Type`` header, then a ``<meta charset>`` near the top of the markup,
+          then UTF-8. A page whose only declaration is a meta tag is the common case,
+          so a caller should rarely need to name one.
         - parser (Optional[str]): Desirable features of the parser to be used.
           This may be the name of a specific parser ("lxml", "lxml-xml", "html.parser", or "html5lib")
           or it may be the type of markup to be used ("html", "html5", "xml"). It's recommended that
@@ -94,9 +148,9 @@ class PageSoup:
           and virtual environments. Default: "lxml".
         """
         if isinstance(data, Response):
-            return cls.create(data.content, encoding)
+            return cls.create(data.content, encoding or _header_charset(data), parser)
         elif isinstance(data, bytes):
-            html = data.decode(encoding or "utf8", "ignore")
+            html = data.decode(encoding or _sniff_charset(data) or "utf8", "ignore")
         elif isinstance(data, str):
             html = data
         else:

@@ -2,6 +2,9 @@
 
 from unittest.mock import MagicMock
 
+from requests import Response
+from requests.utils import get_encoding_from_headers
+
 from scraper import PageSoup
 
 HTML = """
@@ -37,6 +40,89 @@ def test_invalid_data_type_raises():
 
     with pytest.raises(ValueError):
         PageSoup.create(12345)  # type: ignore[arg-type]
+
+
+# --- charset resolution ---------------------------------------------------
+
+
+def _response(body: bytes, content_type: str = "text/html") -> Response:
+    reply = Response()
+    reply.status_code = 200
+    reply._content = body
+    reply.headers["content-type"] = content_type
+    # What requests puts here for a text/* response that declared no charset.
+    # Nothing should read it; the point of these tests is that nothing does.
+    reply.encoding = get_encoding_from_headers(reply.headers)
+    return reply
+
+
+GBK_BODY = "<html><head></head><body><h1>天才医生</h1></body></html>".encode("gbk")
+GBK_META = (
+    b'<html><head><meta charset="gbk"></head><body><h1>'
+    + "天才医生".encode("gbk")
+    + b"</h1></body></html>"
+)
+
+
+def test_header_charset_decodes_the_body():
+    s = PageSoup.create(_response(GBK_BODY, "text/html; charset=gbk"))
+    assert s.select_one("h1").text == "天才医生"
+
+
+def test_meta_charset_is_sniffed_when_the_header_is_silent():
+    """The common case: no charset on the header, one in a meta tag.
+
+    requests reports ISO-8859-1 for this response, so a reader of
+    ``response.encoding`` decodes every multi-byte character into mojibake.
+    """
+    s = PageSoup.create(_response(GBK_META))
+    assert s.select_one("h1").text == "天才医生"
+
+
+def test_meta_charset_is_sniffed_from_bare_bytes():
+    assert PageSoup.create(GBK_META).select_one("h1").text == "天才医生"
+
+
+def test_http_equiv_content_type_is_sniffed():
+    body = (
+        b'<html><head><meta http-equiv="Content-Type" '
+        b'content="text/html; charset=gbk"></head><body><h1>'
+        + "天才医生".encode("gbk")
+        + b"</h1></body></html>"
+    )
+    assert PageSoup.create(body).select_one("h1").text == "天才医生"
+
+
+def test_explicit_encoding_wins_over_every_declaration():
+    body = '<html><head><meta charset="gbk"></head><body><h1>ok</h1></body></html>'.encode("utf8")
+    s = PageSoup.create(_response(body, "text/html; charset=gbk"), encoding="utf8")
+    assert s.select_one("h1").text == "ok"
+
+
+def test_undecodable_declaration_falls_back_to_utf8():
+    """A site advertising a codec that does not exist must not raise."""
+    body = '<html><head><meta charset="unicode"></head><body><h1>ok</h1></body></html>'.encode()
+    assert PageSoup.create(body).select_one("h1").text == "ok"
+
+    from_header = PageSoup.create(_response(body, "text/html; charset=nonsense"))
+    assert from_header.select_one("h1").text == "ok"
+
+
+def test_no_declaration_anywhere_is_utf8():
+    body = "<html><body><h1>héllo</h1></body></html>".encode()
+    assert PageSoup.create(body).select_one("h1").text == "héllo"
+
+
+def _builder_name(soup: PageSoup) -> str:
+    return str(getattr(getattr(soup.tag, "builder", None), "NAME", ""))
+
+
+def test_parser_survives_the_response_branch():
+    """`create` used to recurse without `parser`, so a Response always got lxml."""
+    body = b"<html><body><p>x</p></body></html>"
+
+    assert _builder_name(PageSoup.create(_response(body), parser="html.parser")) == "html.parser"
+    assert _builder_name(PageSoup.create(_response(body))) == "lxml"
 
 
 # --- null-safety ----------------------------------------------------------
