@@ -22,7 +22,7 @@ import requests
 
 from scraper import ExitKind, ExitSpec, Scraper, ScraperConfig, SharedState
 from scraper.browser import BrowserSolver, SolveResult
-from scraper.exceptions import Aborted, Blocked, Exhausted, Impassable, Poisoned
+from scraper.exceptions import Aborted, Blocked, Exhausted, Impassable, Poisoned, ScraperError
 from scraper.exits import TorPoolSpec
 from scraper.layers import Layer
 
@@ -544,6 +544,48 @@ class TestControl:
                 scraper.get_file("https://example.com/big.bin", tmp_path / "big.bin")
         # The partial file was never left behind: the write is atomic.
         assert not (tmp_path / "big.bin").exists()
+
+    def test_a_challenge_is_never_written_to_the_download_target(self, tmp_path: Path):
+        """A challenge answers 200, so the status cannot be what decides this.
+
+        Written after finding that `_download` blanked the body before diagnosis ran,
+        so an interstitial was streamed to the caller's path and accepted — a chapter
+        image that is really a Cloudflare page, indistinguishable once the response
+        is gone.
+        """
+
+        class Interstitial(FakeTransport):
+            @contextmanager
+            def stream(self, method: str, url: str, **kwargs: Any):
+                response = make_response(200, CHALLENGE_BODY, url=url)
+
+                def chunks():
+                    yield CHALLENGE_BODY.encode()
+
+                yield response, chunks()
+
+        target = tmp_path / "cover.jpg"
+        with scraper_for(Interstitial()) as scraper:
+            with pytest.raises(ScraperError):
+                scraper.get_file(URL, target)
+        assert not target.exists()
+
+    def test_a_clean_body_still_reaches_the_target(self, tmp_path: Path):
+        class Asset(FakeTransport):
+            @contextmanager
+            def stream(self, method: str, url: str, **kwargs: Any):
+                response = make_response(body="", url=url)
+
+                def chunks():
+                    yield b"\x89PNG\r\n\x1a\n"
+                    yield b"payload"
+
+                yield response, chunks()
+
+        target = tmp_path / "cover.png"
+        with scraper_for(Asset()) as scraper:
+            assert scraper.get_file(URL, target) == target
+        assert target.read_bytes() == b"\x89PNG\r\n\x1a\npayload"
 
     def test_closing_closes_the_transport(self):
         transport = FakeTransport()

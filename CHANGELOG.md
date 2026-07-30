@@ -4,6 +4,36 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-07-30
+
+### Fixed
+
+- **A response is decoded the way it declares itself.** `PageSoup.create` read the body
+  of a `Response` as UTF-8 with `errors="ignore"` and never looked at what the page said
+  its charset was, so every multi-byte character on a non-UTF-8 site was silently
+  dropped — a GBK page returned an empty title rather than a wrong one. The charset now
+  comes from the first source that declares a usable one: an explicit `encoding=`
+  argument, then the response's `Content-Type` header, then a `<meta charset>` near the
+  top of the markup, then UTF-8. A charset the server names but Python cannot load falls
+  through to the next candidate instead of raising.
+
+  Deliberately *not* `response.encoding`: requests fills that with ISO-8859-1 for any
+  `text/*` response that declared no charset, so preferring it would mojibake exactly the
+  pages this fixes. `Scraper._peek` does read it, which is why diagnosis and the parsed
+  soup could disagree about the same bytes.
+
+- **`parser` survives a `Response`.** `PageSoup.create` recursed into its own bytes
+  branch without passing `parser` on, so `ScraperConfig.parser` and `Scraper(parser=…)`
+  had no effect on `get_soup`, `post_soup` or `make_soup(response)` — the only paths a
+  caller uses — and everything was parsed with lxml.
+
+- **A challenge is no longer written to a download target.** `stream_to` blanked the body
+  before diagnosis ran, so a challenge interstitial — which arrives with a 200 and a body
+  — was streamed to the caller's path and accepted. `get_file` produced a file that was
+  really a Cloudflare page, indistinguishable from the asset once the response was gone.
+  The opening bytes are now held back and diagnosed before the file is created, and the
+  abort signal is honoured while they are buffered as well as while the rest is written.
+
 ## [1.0.0] - 2026-07-29
 
 A complete rewrite. There are no compatibility shims: almost every import changes.
@@ -378,6 +408,7 @@ Initial public release of `lncrawl-scraper`, extracted from
   rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[1.0.1]: https://github.com/lncrawl/scraper/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/lncrawl/scraper/compare/v0.2.6...v1.0.0
 [0.2.6]: https://github.com/lncrawl/scraper/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/lncrawl/scraper/compare/v0.2.4...v0.2.5

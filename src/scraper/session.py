@@ -309,13 +309,44 @@ class Scraper:
                 # body, not a status.
                 response._content = b"".join(chunks)[:_PEEK_BYTES]  # noqa: SLF001
                 return response
-            with atomic_write(target) as handle:
-                for chunk in chunks:
-                    if self.signal.is_set():
-                        raise Aborted("aborted during download")
-                    handle.write(chunk)
-            response._content = b""  # noqa: SLF001 - the body went to disk
+
+            # A challenge answers 200 and carries a body, so the status alone does not
+            # say this is the file that was asked for. Hold the opening bytes back and
+            # diagnose them before the file exists: writing first and judging after
+            # would leave an interstitial on disk under the caller's name, which is
+            # indistinguishable from the real thing once the response is gone.
+            head: List[bytes] = []
+            buffered = 0
+            for chunk in chunks:
+                if self.signal.is_set():
+                    raise Aborted("aborted during download")
+                head.append(chunk)
+                buffered += len(chunk)
+                if buffered >= _PEEK_BYTES:
+                    break
+            response._content = b"".join(head)[:_PEEK_BYTES]  # noqa: SLF001
+            if self._reads_as_content(response, call):
+                with atomic_write(target) as handle:
+                    for chunk in head:
+                        handle.write(chunk)
+                    for chunk in chunks:
+                        if self.signal.is_set():
+                            raise Aborted("aborted during download")
+                        handle.write(chunk)
         return response
+
+    def _reads_as_content(self, response: requests.Response, call: Call) -> bool:
+        """Whether a 2xx body is the asset asked for rather than an interstitial."""
+        return (
+            diagnose(
+                status=response.status_code,
+                headers=response.headers,
+                body=self._peek(response),
+                url=call.url,
+                user_agent=self._sent_user_agent(response, call),
+            ).action
+            is Action.ACCEPT
+        )
 
     # -- decisions ---------------------------------------------------------------------
 
