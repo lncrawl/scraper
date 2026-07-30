@@ -485,3 +485,64 @@ def test_a_nodriver_that_cannot_be_imported_names_the_supported_range(monkeypatc
         monkeypatch.setattr(builtins, "__import__", broken)
         with pytest.raises(MissingDependency, match="3.10 to 3.13"):
             NoDriverSolver().solve("https://example.com/")
+
+
+def test_a_per_origin_exit_id_still_shares_one_browser_profile(tmp_path):
+    """`exit_id` became `direct#<origin>` so gates and clearances are per origin.
+
+    A Chrome profile is tens of megabytes, so following that key would leave one per
+    site — twenty gigabytes for a consumer with a few hundred sources.
+    """
+    from scraper.browser import profile_dir_for
+
+    a = profile_dir_for(tmp_path, "direct#a.example")
+    b = profile_dir_for(tmp_path, "direct#b.example")
+    assert a == b == tmp_path / "direct"
+    # A real address still gets its own: a clean exit must not inherit a burnt one's
+    # accumulated session.
+    assert profile_dir_for(tmp_path, "res.test#s-1") != a
+
+
+class TestProfilesDoNotAccumulate:
+    """A proxied exit id carries a session key, so every rotation that reaches a solve
+    leaves another tens-of-megabytes profile behind, and nothing used to remove one.
+    """
+
+    def _aged(self, path, seconds):
+        import os
+        import time
+
+        stamp = time.time() - seconds
+        os.utime(path, (stamp, stamp))
+
+    def test_the_oldest_profiles_are_removed_beyond_the_cap(self, tmp_path):
+        from scraper.browser import MAX_PROFILES, profile_dir_for
+
+        for n in range(MAX_PROFILES + 5):
+            made = profile_dir_for(tmp_path, f"res.test#s-{n}")
+            assert made is not None
+            self._aged(made, 3600 + (MAX_PROFILES + 5 - n))
+
+        kept = profile_dir_for(tmp_path, "res.test#s-new")
+        alive = sorted(item.name for item in tmp_path.iterdir() if item.is_dir())
+        assert len(alive) <= MAX_PROFILES + 1
+        assert kept is not None and kept.name in alive
+
+    def test_a_recently_used_profile_survives_the_cap(self, tmp_path):
+        # Two scrapers may share a data dir, and each solver only serialises against
+        # itself, so a directory another process has a browser in must not be deleted.
+        from scraper.browser import MAX_PROFILES, prune_profiles
+
+        for n in range(MAX_PROFILES + 4):
+            (tmp_path / f"res.test_s-{n}").mkdir()
+        assert prune_profiles(tmp_path) == 0
+        assert len(list(tmp_path.iterdir())) == MAX_PROFILES + 4
+
+    def test_nothing_is_removed_under_the_cap(self, tmp_path):
+        from scraper.browser import prune_profiles
+
+        for n in range(3):
+            made = tmp_path / f"res.test_s-{n}"
+            made.mkdir()
+            self._aged(made, 99999)
+        assert prune_profiles(tmp_path) == 0

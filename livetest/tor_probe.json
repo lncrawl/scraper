@@ -33,11 +33,11 @@
  },
  {
   "url": "https://dummynovels.com/",
-  "status": 403,
-  "action": "escalate",
-  "layer": 12,
-  "layer_name": "L12 Super Bot Fight Mode",
-  "detail": "scored as automated"
+  "status": 401,
+  "action": "refuse",
+  "layer": 19,
+  "layer_name": "L19 Identity-provider gate",
+  "detail": "authentication required (HTTP 401)"
  },
  {
   "url": "https://freewebnovel.com/",
@@ -97,19 +97,19 @@
  },
  {
   "url": "https://www.webnovel.com/",
-  "status": 200,
-  "action": "accept",
-  "layer": null,
-  "layer_name": null,
-  "detail": ""
+  "status": 403,
+  "action": "solve",
+  "layer": 9,
+  "layer_name": "L9 Managed JavaScript challenge",
+  "detail": "challenge served with 403"
  },
  {
   "url": "https://m.webnovel.com/",
-  "status": 200,
-  "action": "accept",
-  "layer": null,
-  "layer_name": null,
-  "detail": ""
+  "status": 403,
+  "action": "solve",
+  "layer": 9,
+  "layer_name": "L9 Managed JavaScript challenge",
+  "detail": "challenge served with 403"
  },
  {
   "url": "https://centralnovel.com/",
@@ -128,28 +128,12 @@
   "detail": "scored as automated"
  },
  {
-  "url": "https://readlightnovel.me/",
-  "status": 522,
-  "action": "retry",
-  "layer": null,
-  "layer_name": null,
-  "detail": "upstream error (HTTP 522)"
- },
- {
-  "url": "https://www.readlightnovel.me/",
-  "status": 522,
-  "action": "retry",
-  "layer": null,
-  "layer_name": null,
-  "detail": "upstream error (HTTP 522)"
- },
- {
   "url": "https://yukinovel.me/",
-  "status": 439,
+  "status": 200,
   "action": "accept",
   "layer": null,
   "layer_name": null,
-  "detail": "HTTP 439"
+  "detail": ""
  },
  {
   "url": "https://www.fanfiction.net/",
@@ -217,11 +201,11 @@
  },
  {
   "url": "https://lazygirltranslations.com/",
-  "status": 403,
-  "action": "escalate",
-  "layer": 12,
-  "layer_name": "L12 Super Bot Fight Mode",
-  "detail": "scored as automated"
+  "status": 200,
+  "action": "accept",
+  "layer": null,
+  "layer_name": null,
+  "detail": ""
  },
  {
   "url": "https://lightnovelsonl.com/",
@@ -233,11 +217,11 @@
  },
  {
   "url": "https://wordrain69.com/",
-  "status": 403,
-  "action": "escalate",
-  "layer": 12,
-  "layer_name": "L12 Super Bot Fight Mode",
-  "detail": "scored as automated"
+  "status": 200,
+  "action": "accept",
+  "layer": null,
+  "layer_name": null,
+  "detail": ""
  },
  {
   "url": "https://ranobes.top/",
@@ -353,6 +337,22 @@
  },
  {
   "url": "https://www.69shu.com/",
+  "status": 200,
+  "action": "accept",
+  "layer": null,
+  "layer_name": null,
+  "detail": ""
+ },
+ {
+  "url": "https://genesistls.com/",
+  "status": 200,
+  "action": "accept",
+  "layer": null,
+  "layer_name": null,
+  "detail": ""
+ },
+ {
+  "url": "https://dobytranslations.com/",
   "status": 200,
   "action": "accept",
   "layer": null,

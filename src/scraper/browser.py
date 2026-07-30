@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import logging
 import re
+import shutil
 import threading
 import time
 from pathlib import Path
@@ -51,6 +52,22 @@ CLEARANCE_FALLBACK_TTL = 900.0
 Deliberately shorter than the platform default, which the site operator can
 configure anyway. Over-estimating means requests are sent with a dead cookie and
 the resulting challenge reads as a solver failure.
+"""
+
+MAX_PROFILES = 8
+"""Browser profile directories to keep under the profile root.
+
+A profile is tens of megabytes, and a proxied exit id carries a session key — so every
+rotation that reaches a solve leaves another one behind, without limit. Keying them
+coarsely is not the alternative: for a pool endpoint the URL is constant while the exit
+IP is not, so one shared profile would hand a fresh session the history of a burnt exit.
+"""
+
+_PROFILE_GRACE = 300.0
+"""Seconds a profile is left alone regardless of the cap.
+
+Two scrapers can share a data dir, and each solver only serialises against itself, so
+the directory being deleted must not be one another process has a browser in.
 """
 
 _SOLVED_COOKIES = ("cf_clearance", "__cf_bm", "cf_chl_rc_ni")
@@ -200,7 +217,7 @@ class NoDriverSolver(BrowserSolver):
         timeout: float,
     ) -> SolveResult:
         try:
-            import nodriver
+            import nodriver  # pyright: ignore[reportMissingImports] - absent outside 3.10-3.13
         except (ImportError, SyntaxError, TypeError) as exc:
             # Neither failure is an ImportError. Before 3.10 nodriver's module body
             # evaluates `str | Path`, a TypeError; from 3.14 its generated
@@ -315,7 +332,44 @@ def profile_dir_for(root: Optional[Path], exit_id: str) -> Optional[Path]:
     """
     if root is None:
         return None
-    safe = re.sub(r"[^A-Za-z0-9._-]+", "_", exit_id or "direct")[:64]
+    # Keyed on the address, not the exit id. An id is `direct#<origin>` so the
+    # concurrency gate and stored clearances can be per origin, but a Chrome profile is
+    # tens of megabytes and a consumer with a few hundred sources would keep one each.
+    address = "direct" if exit_id.startswith("direct#") else (exit_id or "direct")
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "_", address)[:64]
     path = Path(root) / safe
     path.mkdir(parents=True, exist_ok=True)
+    prune_profiles(Path(root), keep=path)
     return path
+
+
+def prune_profiles(root: Path, *, keep: Optional[Path] = None) -> int:
+    """Delete the least recently used profiles beyond :data:`MAX_PROFILES`.
+
+    Returns how many were removed. Anything touched within :data:`_PROFILE_GRACE`
+    is left alone even when over the cap, since it may be open in another process.
+    """
+    try:
+        found = [item for item in root.iterdir() if item.is_dir()]
+    except OSError:
+        return 0
+    if len(found) <= MAX_PROFILES:
+        return 0
+
+    def touched(item: Path) -> float:
+        try:
+            return item.stat().st_mtime
+        except OSError:
+            return 0.0
+
+    now = time.time()
+    found.sort(key=touched, reverse=True)
+    removed = 0
+    for stale in found[MAX_PROFILES:]:
+        if stale == keep or now - touched(stale) < _PROFILE_GRACE:
+            continue
+        shutil.rmtree(stale, ignore_errors=True)
+        removed += 1
+    if removed:
+        logger.debug("removed %d stale browser profile(s) from %s", removed, root)
+    return removed

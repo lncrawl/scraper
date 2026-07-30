@@ -9,9 +9,9 @@
    "L10"
   ],
   "proves": "solve-once-and-reuse: the expensive tier runs once and the clearance is replayed on the identity that earned it, so later pages cost one HTTP request.",
-  "target": "https://m.webnovel.com/",
+  "target": "https://centralnovel.com/",
   "verdict": "pass",
-  "seconds": 21.67,
+  "seconds": 18.28,
   "steps": [
    {
     "what": "direct tier against https://www.webnovel.com/",
@@ -20,12 +20,17 @@
    },
    {
     "what": "direct tier against https://m.webnovel.com/",
+    "value": "{'status': 200, 'action': 'accept', 'layer': None}",
+    "ok": null
+   },
+   {
+    "what": "direct tier against https://centralnovel.com/",
     "value": "{'status': 403, 'action': 'solve', 'layer': 'L9 Managed JavaScript challenge'}",
     "ok": null
    },
    {
     "what": "target chosen",
-    "value": "https://m.webnovel.com/",
+    "value": "https://centralnovel.com/",
     "ok": null
    },
    {
@@ -35,7 +40,7 @@
    },
    {
     "what": "the challenged host was retrieved",
-    "value": "HTTP 200, 137604 bytes",
+    "value": "HTTP 200, 210943 bytes",
     "ok": true
    },
    {
@@ -55,7 +60,7 @@
    },
    {
     "what": "clearance cookies",
-    "value": "['NEXT_LOCALE', '__cf_bm', '_csrfToken', 'bookCitysex', 'e1', 'e2', 'sessionid', 'webnovel-content-language', 'webnovel-language', 'webnovel_uuid']",
+    "value": "['cf_clearance']",
     "ok": null
    },
    {
@@ -65,7 +70,7 @@
    },
    {
     "what": "valid for",
-    "value": "1797s",
+    "value": "31535998s",
     "ok": null
    },
    {
@@ -85,7 +90,7 @@
    },
    {
     "what": "explain()",
-    "value": "m.webnovel.com\n  binding layer : L9 Managed JavaScript challenge \u2014 reads a hybrid property, solve\n  tier          : clearance\n  pacing        : 1.5s mean interval\n  requests      : 4 ok / 3 failed\n  clearance     : 1787s left\n  ladder        : direct(10) clearance(100)\n  exits         : direct",
+    "value": "centralnovel.com\n  binding layer : L9 Managed JavaScript challenge \u2014 reads a hybrid property, solve\n  tier          : clearance\n  pacing        : 1.5s mean interval\n  requests      : 12 ok / 1 failed\n  clearance     : 31535995s left\n  ladder        : direct(10) clearance(100)\n  exits         : direct",
     "ok": null
    }
   ],

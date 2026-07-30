@@ -12,7 +12,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 261478,
-   "seconds": 2.53
+   "seconds": 3.12
   },
   "impersonate": {
    "ok": true,
@@ -23,7 +23,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 261478,
-   "seconds": 1.94
+   "seconds": 1.85
   }
  },
  {
@@ -38,8 +38,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 108407,
-   "seconds": 0.74
+   "bytes": 107540,
+   "seconds": 1.35
   },
   "impersonate": {
    "ok": true,
@@ -49,8 +49,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 109774,
-   "seconds": 0.9
+   "bytes": 107530,
+   "seconds": 1.67
   }
  },
  {
@@ -66,7 +66,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5553,
-   "seconds": 0.15
+   "seconds": 0.62
   },
   "impersonate": {
    "ok": true,
@@ -76,8 +76,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 52282,
-   "seconds": 0.59
+   "bytes": 52305,
+   "seconds": 1.76
   }
  },
  {
@@ -86,14 +86,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 200,
+   "status": 403,
    "edge": "cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 101780,
-   "seconds": 0.39
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5553,
+   "seconds": 1.09
   },
   "impersonate": {
    "ok": true,
@@ -103,8 +103,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 102133,
-   "seconds": 0.39
+   "bytes": 102400,
+   "seconds": 0.57
   }
  },
  {
@@ -120,7 +120,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 5484,
-   "seconds": 0.18
+   "seconds": 1.09
   },
   "impersonate": {
    "ok": true,
@@ -130,8 +130,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 39081,
-   "seconds": 0.24
+   "bytes": 39076,
+   "seconds": 0.39
   }
  },
  {
@@ -146,8 +146,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 184846,
-   "seconds": 2.66
+   "bytes": 185028,
+   "seconds": 3.49
   },
   "impersonate": {
    "ok": true,
@@ -157,8 +157,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 186802,
-   "seconds": 2.16
+   "bytes": 186984,
+   "seconds": 2.49
   }
  },
  {
@@ -173,8 +173,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 109988,
-   "seconds": 2.7
+   "bytes": 110126,
+   "seconds": 2.71
   },
   "impersonate": {
    "ok": true,
@@ -184,8 +184,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 109988,
-   "seconds": 2.35
+   "bytes": 110126,
+   "seconds": 1.8
   }
  },
  {
@@ -201,7 +201,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5556,
-   "seconds": 0.19
+   "seconds": 0.67
   },
   "impersonate": {
    "ok": true,
@@ -211,8 +211,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 103341,
-   "seconds": 1.97
+   "bytes": 103084,
+   "seconds": 1.93
   }
  },
  {
@@ -227,8 +227,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 248818,
-   "seconds": 1.79
+   "bytes": 248936,
+   "seconds": 1.93
   },
   "impersonate": {
    "ok": true,
@@ -238,8 +238,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 266092,
-   "seconds": 1.69
+   "bytes": 266210,
+   "seconds": 1.44
   }
  },
  {
@@ -255,7 +255,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.18
+   "seconds": 1.35
   },
   "impersonate": {
    "ok": true,
@@ -266,7 +266,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.51
+   "seconds": 0.62
   }
  },
  {
@@ -282,7 +282,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 1239,
-   "seconds": 1.01
+   "seconds": 1.43
   },
   "impersonate": {
    "ok": true,
@@ -293,7 +293,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 1598,
-   "seconds": 0.34
+   "seconds": 0.66
   }
  },
  {
@@ -308,8 +308,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 316295,
-   "seconds": 1.7
+   "bytes": 317397,
+   "seconds": 2.06
   },
   "impersonate": {
    "ok": true,
@@ -319,8 +319,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 319453,
-   "seconds": 0.3
+   "bytes": 319666,
+   "seconds": 1.08
   }
  },
  {
@@ -336,7 +336,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 390237,
-   "seconds": 1.53
+   "seconds": 2.27
   },
   "impersonate": {
    "ok": true,
@@ -347,7 +347,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 390596,
-   "seconds": 0.58
+   "seconds": 1.14
   }
  },
  {
@@ -362,8 +362,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 340995,
-   "seconds": 1.81
+   "bytes": 292455,
+   "seconds": 1.67
   },
   "impersonate": {
    "ok": true,
@@ -373,8 +373,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 340995,
-   "seconds": 1.61
+   "bytes": 292455,
+   "seconds": 1.45
   }
  },
  {
@@ -389,8 +389,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 323400,
-   "seconds": 1.1
+   "bytes": 323511,
+   "seconds": 2.28
   },
   "impersonate": {
    "ok": true,
@@ -400,8 +400,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 323759,
-   "seconds": 0.68
+   "bytes": 323870,
+   "seconds": 1.7
   }
  },
  {
@@ -416,8 +416,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 323400,
-   "seconds": 1.01
+   "bytes": 323511,
+   "seconds": 1.62
   },
   "impersonate": {
    "ok": true,
@@ -427,8 +427,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 323759,
-   "seconds": 0.39
+   "bytes": 323870,
+   "seconds": 0.77
   }
  },
  {
@@ -443,8 +443,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 134050,
-   "seconds": 2.97
+   "bytes": 133859,
+   "seconds": 3.07
   },
   "impersonate": {
    "ok": true,
@@ -454,8 +454,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 134496,
-   "seconds": 0.84
+   "bytes": 134303,
+   "seconds": 2.46
   }
  },
  {
@@ -471,7 +471,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5577,
-   "seconds": 0.21
+   "seconds": 0.82
   },
   "impersonate": {
    "ok": true,
@@ -481,8 +481,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 137780,
-   "seconds": 0.78
+   "bytes": 137529,
+   "seconds": 1.43
   }
  },
  {
@@ -498,7 +498,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5575,
-   "seconds": 0.41
+   "seconds": 0.82
   },
   "impersonate": {
    "ok": true,
@@ -508,8 +508,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 137780,
-   "seconds": 0.96
+   "bytes": 137529,
+   "seconds": 2.38
   }
  },
  {
@@ -525,7 +525,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 0,
-   "seconds": 1.89
+   "seconds": 1.55
   },
   "impersonate": {
    "ok": true,
@@ -536,7 +536,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 17096,
-   "seconds": 2.62
+   "seconds": 1.22
   }
  },
  {
@@ -552,7 +552,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5556,
-   "seconds": 0.19
+   "seconds": 1.2
   },
   "impersonate": {
    "ok": true,
@@ -563,7 +563,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5940,
-   "seconds": 1.12
+   "seconds": 0.75
   }
  },
  {
@@ -579,7 +579,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 254,
-   "seconds": 3.22
+   "seconds": 3.0
   },
   "impersonate": {
    "ok": true,
@@ -590,7 +590,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 476,
-   "seconds": 0.84
+   "seconds": 1.06
   }
  },
  {
@@ -606,7 +606,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 5488,
-   "seconds": 0.18
+   "seconds": 1.87
   },
   "impersonate": {
    "ok": true,
@@ -617,7 +617,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 5847,
-   "seconds": 0.23
+   "seconds": 0.73
   }
  },
  {
@@ -632,8 +632,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 246434,
-   "seconds": 1.66
+   "bytes": 242554,
+   "seconds": 1.52
   },
   "impersonate": {
    "ok": true,
@@ -643,8 +643,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 246489,
-   "seconds": 0.97
+   "bytes": 242313,
+   "seconds": 1.18
   }
  },
  {
@@ -659,19 +659,13 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
-   "bytes": 7251,
-   "seconds": 19.91
+   "bytes": 7255,
+   "seconds": 20.24
   },
   "impersonate": {
-   "ok": true,
-   "status": 522,
-   "edge": "cloudflare",
-   "action": "retry",
-   "layer": null,
-   "layer_name": null,
-   "detail": "upstream error (HTTP 522)",
-   "bytes": 7251,
-   "seconds": 19.98
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20001 milliseconds with 0 bytes received. See https://curl.se/li",
+   "seconds": 20.0
   }
  },
  {
@@ -687,7 +681,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1035,
-   "seconds": 1.89
+   "seconds": 1.7
   },
   "impersonate": {
    "ok": true,
@@ -698,7 +692,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1084,
-   "seconds": 1.17
+   "seconds": 0.98
   }
  },
  {
@@ -714,7 +708,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1035,
-   "seconds": 1.83
+   "seconds": 1.66
   },
   "impersonate": {
    "ok": true,
@@ -725,7 +719,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1096,
-   "seconds": 0.92
+   "seconds": 0.98
   }
  },
  {
@@ -740,19 +734,13 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
-   "bytes": 7271,
-   "seconds": 19.93
+   "bytes": 7275,
+   "seconds": 20.08
   },
   "impersonate": {
-   "ok": true,
-   "status": 522,
-   "edge": "cloudflare",
-   "action": "retry",
-   "layer": null,
-   "layer_name": null,
-   "detail": "upstream error (HTTP 522)",
-   "bytes": 7271,
-   "seconds": 19.75
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20003 milliseconds with 0 bytes received. See https://curl.se/li",
+   "seconds": 20.0
   }
  },
  {
@@ -768,18 +756,18 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 93,
-   "seconds": 0.58
+   "seconds": 1.37
   },
   "impersonate": {
    "ok": true,
-   "status": 439,
+   "status": 200,
    "edge": "cloudflare",
    "action": "accept",
    "layer": null,
    "layer_name": null,
-   "detail": "HTTP 439",
-   "bytes": 0,
-   "seconds": 0.23
+   "detail": "",
+   "bytes": 4737,
+   "seconds": 0.92
   }
  },
  {
@@ -795,7 +783,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1030,
-   "seconds": 1.94
+   "seconds": 1.79
   },
   "impersonate": {
    "ok": true,
@@ -806,7 +794,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1080,
-   "seconds": 1.01
+   "seconds": 0.92
   }
  },
  {
@@ -822,7 +810,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5558,
-   "seconds": 0.3
+   "seconds": 0.65
   },
   "impersonate": {
    "ok": true,
@@ -833,7 +821,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 21936,
-   "seconds": 0.4
+   "seconds": 0.53
   }
  },
  {
@@ -848,8 +836,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 963548,
-   "seconds": 2.26
+   "bytes": 962094,
+   "seconds": 1.84
   },
   "impersonate": {
    "ok": true,
@@ -859,8 +847,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 963546,
-   "seconds": 1.08
+   "bytes": 962295,
+   "seconds": 1.11
   }
  },
  {
@@ -875,8 +863,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 231313,
-   "seconds": 1.98
+   "bytes": 231333,
+   "seconds": 3.34
   },
   "impersonate": {
    "ok": true,
@@ -886,8 +874,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 252299,
-   "seconds": 1.45
+   "bytes": 254424,
+   "seconds": 2.25
   }
  },
  {
@@ -897,11 +885,11 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='toonily.com', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.26
+   "seconds": 20.25
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -917,8 +905,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 102705,
-   "seconds": 0.87
+   "bytes": 103361,
+   "seconds": 0.85
   },
   "impersonate": {
    "ok": true,
@@ -928,8 +916,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 102581,
-   "seconds": 0.59
+   "bytes": 103304,
+   "seconds": 1.48
   }
  },
  {
@@ -944,8 +932,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 233316,
-   "seconds": 2.9
+   "bytes": 233312,
+   "seconds": 2.76
   },
   "impersonate": {
    "ok": true,
@@ -955,8 +943,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 233675,
-   "seconds": 1.77
+   "bytes": 233671,
+   "seconds": 1.88
   }
  },
  {
@@ -971,8 +959,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 233316,
-   "seconds": 1.59
+   "bytes": 233312,
+   "seconds": 2.53
   },
   "impersonate": {
    "ok": true,
@@ -982,8 +970,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 233675,
-   "seconds": 1.27
+   "bytes": 233671,
+   "seconds": 1.88
   }
  },
  {
@@ -999,7 +987,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 0,
-   "seconds": 1.8
+   "seconds": 1.87
   },
   "impersonate": {
    "ok": true,
@@ -1010,7 +998,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 17003,
-   "seconds": 1.49
+   "seconds": 1.39
   }
  },
  {
@@ -1026,7 +1014,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 146,
-   "seconds": 1.38
+   "seconds": 1.32
   },
   "impersonate": {
    "ok": true,
@@ -1037,7 +1025,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 548,
-   "seconds": 1.04
+   "seconds": 0.72
   }
  },
  {
@@ -1053,7 +1041,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 147110,
-   "seconds": 1.09
+   "seconds": 1.86
   },
   "impersonate": {
    "ok": true,
@@ -1064,7 +1052,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 147469,
-   "seconds": 0.4
+   "seconds": 0.48
   }
  },
  {
@@ -1080,7 +1068,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5599,
-   "seconds": 0.56
+   "seconds": 1.79
   },
   "impersonate": {
    "ok": true,
@@ -1091,7 +1079,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5961,
-   "seconds": 0.13
+   "seconds": 1.5
   }
  },
  {
@@ -1107,7 +1095,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 671074,
-   "seconds": 1.83
+   "seconds": 1.77
   },
   "impersonate": {
    "ok": true,
@@ -1118,7 +1106,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 671433,
-   "seconds": 0.59
+   "seconds": 1.48
   }
  },
  {
@@ -1134,7 +1122,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5605,
-   "seconds": 0.54
+   "seconds": 0.82
   },
   "impersonate": {
    "ok": true,
@@ -1145,7 +1133,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4370,
-   "seconds": 0.99
+   "seconds": 1.32
   }
  },
  {
@@ -1160,8 +1148,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118922,
-   "seconds": 2.01
+   "bytes": 117344,
+   "seconds": 1.74
   },
   "impersonate": {
    "ok": true,
@@ -1171,8 +1159,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118922,
-   "seconds": 0.87
+   "bytes": 117343,
+   "seconds": 1.61
   }
  },
  {
@@ -1188,7 +1176,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 48431,
-   "seconds": 2.52
+   "seconds": 2.6
   },
   "impersonate": {
    "ok": true,
@@ -1199,7 +1187,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 48790,
-   "seconds": 0.54
+   "seconds": 1.39
   }
  },
  {
@@ -1215,7 +1203,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 159278,
-   "seconds": 1.94
+   "seconds": 1.28
   },
   "impersonate": {
    "ok": true,
@@ -1226,7 +1214,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 159637,
-   "seconds": 0.65
+   "seconds": 1.82
   }
  },
  {
@@ -1242,7 +1230,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 477,
-   "seconds": 1.79
+   "seconds": 2.12
   },
   "impersonate": {
    "ok": true,
@@ -1253,7 +1241,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 477,
-   "seconds": 0.75
+   "seconds": 0.57
   }
  },
  {
@@ -1269,7 +1257,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 114322,
-   "seconds": 1.08
+   "seconds": 1.97
   },
   "impersonate": {
    "ok": true,
@@ -1280,7 +1268,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 114322,
-   "seconds": 0.61
+   "seconds": 1.75
   }
  },
  {
@@ -1296,7 +1284,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 114322,
-   "seconds": 1.9
+   "seconds": 3.05
   },
   "impersonate": {
    "ok": true,
@@ -1307,7 +1295,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 114322,
-   "seconds": 0.99
+   "seconds": 2.76
   }
  },
  {
@@ -1323,7 +1311,7 @@
    "layer_name": "L15 Operator edge code",
    "detail": "forbidden by the origin",
    "bytes": 146,
-   "seconds": 1.24
+   "seconds": 1.36
   },
   "impersonate": {
    "ok": true,
@@ -1333,8 +1321,8 @@
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with a success status",
-   "bytes": 41174,
-   "seconds": 0.77
+   "bytes": 40867,
+   "seconds": 0.82
   }
  },
  {
@@ -1350,7 +1338,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 1359,
-   "seconds": 1.09
+   "seconds": 1.05
   },
   "impersonate": {
    "ok": true,
@@ -1361,7 +1349,7 @@
    "layer_name": "L10 Turnstile",
    "detail": "challenge served with a success status",
    "bytes": 16075,
-   "seconds": 0.39
+   "seconds": 1.68
   }
  },
  {
@@ -1376,8 +1364,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 161064,
-   "seconds": 2.21
+   "bytes": 162003,
+   "seconds": 2.93
   },
   "impersonate": {
    "ok": true,
@@ -1387,8 +1375,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 166238,
-   "seconds": 1.6
+   "bytes": 167270,
+   "seconds": 2.42
   }
  },
  {
@@ -1404,7 +1392,7 @@
    "layer_name": null,
    "detail": "HTTP 406",
    "bytes": 226,
-   "seconds": 1.87
+   "seconds": 1.68
   },
   "impersonate": {
    "ok": true,
@@ -1415,7 +1403,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 135002,
-   "seconds": 2.58
+   "seconds": 1.49
   }
  },
  {
@@ -1431,7 +1419,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 478,
-   "seconds": 1.2
+   "seconds": 1.35
   },
   "impersonate": {
    "ok": true,
@@ -1442,7 +1430,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 478,
-   "seconds": 0.45
+   "seconds": 0.53
   }
  },
  {
@@ -1458,7 +1446,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 12314,
-   "seconds": 1.66
+   "seconds": 2.25
   },
   "impersonate": {
    "ok": true,
@@ -1469,7 +1457,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 12314,
-   "seconds": 0.87
+   "seconds": 1.22
   }
  },
  {
@@ -1477,9 +1465,15 @@
   "file": "sources/pt/blnovels.py",
   "lang": "pt",
   "plain": {
-   "ok": false,
-   "error": "ReadTimeout: HTTPSConnectionPool(host='blnovels.net', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.69
+   "ok": true,
+   "status": 200,
+   "edge": "cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 215574,
+   "seconds": 20.5
   },
   "impersonate": {
    "ok": false,
@@ -1500,7 +1494,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5585,
-   "seconds": 0.37
+   "seconds": 0.97
   },
   "impersonate": {
    "ok": true,
@@ -1511,7 +1505,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5859,
-   "seconds": 0.21
+   "seconds": 0.44
   }
  },
  {
@@ -1526,8 +1520,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 86112,
-   "seconds": 0.92
+   "bytes": 86083,
+   "seconds": 0.9
   },
   "impersonate": {
    "ok": true,
@@ -1554,7 +1548,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 73292,
-   "seconds": 1.07
+   "seconds": 1.86
   },
   "impersonate": {
    "ok": true,
@@ -1565,7 +1559,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 73651,
-   "seconds": 0.1
+   "seconds": 0.58
   }
  },
  {
@@ -1581,7 +1575,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 51069,
-   "seconds": 0.98
+   "seconds": 0.71
   },
   "impersonate": {
    "ok": true,
@@ -1592,7 +1586,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 50781,
-   "seconds": 0.33
+   "seconds": 0.42
   }
  },
  {
@@ -1607,8 +1601,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 101665,
-   "seconds": 0.95
+   "bytes": 101667,
+   "seconds": 0.9
   },
   "impersonate": {
    "ok": true,
@@ -1618,8 +1612,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 102028,
-   "seconds": 0.47
+   "bytes": 102031,
+   "seconds": 0.52
   }
  },
  {
@@ -1635,7 +1629,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 5485,
-   "seconds": 0.6
+   "seconds": 0.99
   },
   "impersonate": {
    "ok": true,
@@ -1645,8 +1639,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 296547,
-   "seconds": 1.82
+   "bytes": 296938,
+   "seconds": 1.35
   }
  },
  {
@@ -1662,7 +1656,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5533,
-   "seconds": 0.3
+   "seconds": 0.76
   },
   "impersonate": {
    "ok": true,
@@ -1672,8 +1666,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 277409,
-   "seconds": 0.41
+   "bytes": 277100,
+   "seconds": 0.97
   }
  },
  {
@@ -1689,7 +1683,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2909,
-   "seconds": 0.42
+   "seconds": 1.66
   },
   "impersonate": {
    "ok": true,
@@ -1700,7 +1694,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2909,
-   "seconds": 0.11
+   "seconds": 0.13
   }
  },
  {
@@ -1716,7 +1710,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 244577,
-   "seconds": 1.43
+   "seconds": 1.13
   },
   "impersonate": {
    "ok": true,
@@ -1727,7 +1721,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 244577,
-   "seconds": 0.88
+   "seconds": 0.82
   }
  },
  {
@@ -1743,7 +1737,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5531,
-   "seconds": 0.41
+   "seconds": 1.09
   },
   "impersonate": {
    "ok": true,
@@ -1754,7 +1748,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 24094,
-   "seconds": 0.7
+   "seconds": 0.42
   }
  },
  {
@@ -1763,14 +1757,14 @@
   "lang": "ar",
   "plain": {
    "ok": true,
-   "status": 410,
+   "status": 401,
    "edge": "unknown",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "HTTP 410",
-   "bytes": 254,
-   "seconds": 3.24
+   "action": "refuse",
+   "layer": 19,
+   "layer_name": "L19 Identity-provider gate",
+   "detail": "authentication required (HTTP 401)",
+   "bytes": 9,
+   "seconds": 2.11
   },
   "impersonate": {
    "ok": true,
@@ -1781,7 +1775,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 472,
-   "seconds": 0.8
+   "seconds": 0.55
   }
  },
  {
@@ -1797,7 +1791,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 49255,
-   "seconds": 0.41
+   "seconds": 1.06
   },
   "impersonate": {
    "ok": true,
@@ -1808,7 +1802,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 49614,
-   "seconds": 0.44
+   "seconds": 0.63
   }
  },
  {
@@ -1824,7 +1818,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.32
+   "seconds": 1.14
   },
   "impersonate": {
    "ok": true,
@@ -1835,7 +1829,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.47
+   "seconds": 0.45
   }
  },
  {
@@ -1850,8 +1844,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 1509602,
-   "seconds": 2.08
+   "bytes": 1526949,
+   "seconds": 3.04
   },
   "impersonate": {
    "ok": true,
@@ -1861,8 +1855,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 1509961,
-   "seconds": 1.95
+   "bytes": 1527308,
+   "seconds": 2.63
   }
  },
  {
@@ -1878,7 +1872,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5443,
-   "seconds": 0.49
+   "seconds": 0.68
   },
   "impersonate": {
    "ok": true,
@@ -1889,7 +1883,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5827,
-   "seconds": 0.12
+   "seconds": 0.43
   }
  },
  {
@@ -1905,7 +1899,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 20297,
-   "seconds": 0.96
+   "seconds": 1.52
   },
   "impersonate": {
    "ok": true,
@@ -1916,7 +1910,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 20656,
-   "seconds": 1.29
+   "seconds": 1.05
   }
  },
  {
@@ -1932,7 +1926,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5561,
-   "seconds": 0.4
+   "seconds": 1.93
   },
   "impersonate": {
    "ok": true,
@@ -1943,7 +1937,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5945,
-   "seconds": 0.11
+   "seconds": 0.59
   }
  },
  {
@@ -1959,7 +1953,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 980,
-   "seconds": 2.26
+   "seconds": 2.1
   },
   "impersonate": {
    "ok": true,
@@ -1970,7 +1964,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1052,
-   "seconds": 1.13
+   "seconds": 1.89
   }
  },
  {
@@ -1986,7 +1980,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 14,
-   "seconds": 0.37
+   "seconds": 0.65
   },
   "impersonate": {
    "ok": true,
@@ -1997,7 +1991,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 34206,
-   "seconds": 0.12
+   "seconds": 0.54
   }
  },
  {
@@ -2013,7 +2007,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 14,
-   "seconds": 0.59
+   "seconds": 1.25
   },
   "impersonate": {
    "ok": true,
@@ -2024,7 +2018,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 34206,
-   "seconds": 0.39
+   "seconds": 0.85
   }
  },
  {
@@ -2039,8 +2033,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 53198,
-   "seconds": 1.22
+   "bytes": 53082,
+   "seconds": 0.65
   },
   "impersonate": {
    "ok": true,
@@ -2050,8 +2044,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 53197,
-   "seconds": 1.52
+   "bytes": 53081,
+   "seconds": 0.46
   }
  },
  {
@@ -2067,7 +2061,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.05
+   "seconds": 1.17
   },
   "impersonate": {
    "ok": true,
@@ -2078,7 +2072,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.58
+   "seconds": 0.64
   }
  },
  {
@@ -2094,7 +2088,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 6143,
-   "seconds": 0.97
+   "seconds": 1.89
   },
   "impersonate": {
    "ok": true,
@@ -2105,7 +2099,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 6787,
-   "seconds": 0.33
+   "seconds": 0.7
   }
  },
  {
@@ -2120,19 +2114,13 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
-   "bytes": 7259,
-   "seconds": 19.88
+   "bytes": 7263,
+   "seconds": 19.95
   },
   "impersonate": {
-   "ok": true,
-   "status": 522,
-   "edge": "cloudflare",
-   "action": "retry",
-   "layer": null,
-   "layer_name": null,
-   "detail": "upstream error (HTTP 522)",
-   "bytes": 7259,
-   "seconds": 19.97
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20003 milliseconds with 0 bytes received. See https://curl.se/li",
+   "seconds": 20.0
   }
  },
  {
@@ -2147,8 +2135,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 440117,
-   "seconds": 2.28
+   "bytes": 439492,
+   "seconds": 1.69
   },
   "impersonate": {
    "ok": true,
@@ -2158,8 +2146,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 440505,
-   "seconds": 0.78
+   "bytes": 440320,
+   "seconds": 1.3
   }
  },
  {
@@ -2175,18 +2163,12 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 4544,
-   "seconds": 0.75
+   "seconds": 1.14
   },
   "impersonate": {
-   "ok": true,
-   "status": 522,
-   "edge": "cloudflare",
-   "action": "retry",
-   "layer": null,
-   "layer_name": null,
-   "detail": "upstream error (HTTP 522)",
-   "bytes": 7215,
-   "seconds": 19.54
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20003 milliseconds with 0 bytes received. See https://curl.se/li",
+   "seconds": 20.0
   }
  },
  {
@@ -2195,14 +2177,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.09
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 476,
+   "seconds": 1.12
   },
   "impersonate": {
    "ok": true,
@@ -2213,7 +2195,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.6
+   "seconds": 0.61
   }
  },
  {
@@ -2228,8 +2210,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118435,
-   "seconds": 1.23
+   "bytes": 118432,
+   "seconds": 0.68
   },
   "impersonate": {
    "ok": true,
@@ -2239,8 +2221,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118794,
-   "seconds": 0.19
+   "bytes": 118791,
+   "seconds": 0.46
   }
  },
  {
@@ -2250,7 +2232,7 @@
   "plain": {
    "ok": false,
    "error": "SSLError: HTTPSConnectionPool(host='novelfrance.fr', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '",
-   "seconds": 0.31
+   "seconds": 0.46
   },
   "impersonate": {
    "ok": true,
@@ -2261,7 +2243,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 6130,
-   "seconds": 0.16
+   "seconds": 0.43
   }
  },
  {
@@ -2277,7 +2259,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 692,
-   "seconds": 2.51
+   "seconds": 1.4
   },
   "impersonate": {
    "ok": true,
@@ -2288,7 +2270,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 692,
-   "seconds": 1.11
+   "seconds": 0.87
   }
  },
  {
@@ -2304,7 +2286,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 4549,
-   "seconds": 1.7
+   "seconds": 2.58
   },
   "impersonate": {
    "ok": true,
@@ -2314,8 +2296,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 116561,
-   "seconds": 1.68
+   "bytes": 121177,
+   "seconds": 1.54
   }
  },
  {
@@ -2331,7 +2313,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 4549,
-   "seconds": 0.19
+   "seconds": 1.57
   },
   "impersonate": {
    "ok": true,
@@ -2341,8 +2323,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 116561,
-   "seconds": 1.31
+   "bytes": 121177,
+   "seconds": 1.23
   }
  },
  {
@@ -2357,8 +2339,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 2667710,
-   "seconds": 2.4
+   "bytes": 2644295,
+   "seconds": 2.06
   },
   "impersonate": {
    "ok": true,
@@ -2368,8 +2350,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 2668114,
-   "seconds": 1.53
+   "bytes": 2642895,
+   "seconds": 1.74
   }
  },
  {
@@ -2385,7 +2367,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.22
+   "seconds": 1.96
   },
   "impersonate": {
    "ok": true,
@@ -2396,7 +2378,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.6
+   "seconds": 0.47
   }
  },
  {
@@ -2405,14 +2387,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.33
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 475,
+   "seconds": 1.74
   },
   "impersonate": {
    "ok": true,
@@ -2423,7 +2405,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.6
+   "seconds": 0.88
   }
  },
  {
@@ -2438,8 +2420,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 152912,
-   "seconds": 3.29
+   "bytes": 153444,
+   "seconds": 2.85
   },
   "impersonate": {
    "ok": true,
@@ -2449,8 +2431,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 153271,
-   "seconds": 2.51
+   "bytes": 153803,
+   "seconds": 2.56
   }
  },
  {
@@ -2466,7 +2448,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5446,
-   "seconds": 0.64
+   "seconds": 0.82
   },
   "impersonate": {
    "ok": true,
@@ -2477,7 +2459,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5830,
-   "seconds": 0.18
+   "seconds": 0.43
   }
  },
  {
@@ -2504,7 +2486,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5834,
-   "seconds": 0.16
+   "seconds": 0.45
   }
  },
  {
@@ -2520,7 +2502,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5453,
-   "seconds": 0.76
+   "seconds": 0.74
   },
   "impersonate": {
    "ok": true,
@@ -2531,7 +2513,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5859,
-   "seconds": 0.16
+   "seconds": 0.44
   }
  },
  {
@@ -2547,7 +2529,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5449,
-   "seconds": 0.44
+   "seconds": 1.08
   },
   "impersonate": {
    "ok": true,
@@ -2558,7 +2540,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5833,
-   "seconds": 0.18
+   "seconds": 0.48
   }
  },
  {
@@ -2574,7 +2556,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 7830,
-   "seconds": 1.0
+   "seconds": 0.98
   },
   "impersonate": {
    "ok": true,
@@ -2585,7 +2567,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 7830,
-   "seconds": 0.99
+   "seconds": 0.58
   }
  },
  {
@@ -2600,8 +2582,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 121124,
-   "seconds": 0.91
+   "bytes": 121152,
+   "seconds": 1.32
   },
   "impersonate": {
    "ok": true,
@@ -2611,8 +2593,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 121101,
-   "seconds": 0.44
+   "bytes": 121105,
+   "seconds": 0.43
   }
  },
  {
@@ -2628,7 +2610,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 80864,
-   "seconds": 1.72
+   "seconds": 1.48
   },
   "impersonate": {
    "ok": true,
@@ -2639,7 +2621,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 80864,
-   "seconds": 1.02
+   "seconds": 1.0
   }
  },
  {
@@ -2655,7 +2637,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5559,
-   "seconds": 0.54
+   "seconds": 0.78
   },
   "impersonate": {
    "ok": true,
@@ -2665,8 +2647,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 153274,
-   "seconds": 0.48
+   "bytes": 156374,
+   "seconds": 0.58
   }
  },
  {
@@ -2681,8 +2663,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123428,
-   "seconds": 2.04
+   "bytes": 123425,
+   "seconds": 1.52
   },
   "impersonate": {
    "ok": true,
@@ -2692,8 +2674,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123253,
-   "seconds": 1.06
+   "bytes": 123257,
+   "seconds": 1.3
   }
  },
  {
@@ -2709,7 +2691,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 6956,
-   "seconds": 1.24
+   "seconds": 1.1
   },
   "impersonate": {
    "ok": true,
@@ -2720,7 +2702,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1632,
-   "seconds": 0.56
+   "seconds": 0.47
   }
  },
  {
@@ -2735,8 +2717,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 922742,
-   "seconds": 2.07
+   "bytes": 926104,
+   "seconds": 2.25
   },
   "impersonate": {
    "ok": true,
@@ -2746,8 +2728,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 922823,
-   "seconds": 0.64
+   "bytes": 926186,
+   "seconds": 1.91
   }
  },
  {
@@ -2763,7 +2745,7 @@
    "layer_name": null,
    "detail": "origin unavailable",
    "bytes": 326,
-   "seconds": 1.41
+   "seconds": 1.86
   },
   "impersonate": {
    "ok": true,
@@ -2774,7 +2756,7 @@
    "layer_name": null,
    "detail": "origin unavailable",
    "bytes": 685,
-   "seconds": 0.37
+   "seconds": 3.38
   }
  },
  {
@@ -2789,8 +2771,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 124682,
-   "seconds": 1.39
+   "bytes": 124681,
+   "seconds": 1.58
   },
   "impersonate": {
    "ok": true,
@@ -2800,8 +2782,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 125726,
-   "seconds": 0.26
+   "bytes": 125725,
+   "seconds": 0.7
   }
  },
  {
@@ -2817,7 +2799,7 @@
    "layer_name": null,
    "detail": "HTTP 406",
    "bytes": 226,
-   "seconds": 3.01
+   "seconds": 2.64
   },
   "impersonate": {
    "ok": true,
@@ -2828,7 +2810,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 72208,
-   "seconds": 1.4
+   "seconds": 2.35
   }
  },
  {
@@ -2844,7 +2826,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5554,
-   "seconds": 0.19
+   "seconds": 0.74
   },
   "impersonate": {
    "ok": true,
@@ -2854,8 +2836,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 445719,
-   "seconds": 1.6
+   "bytes": 475789,
+   "seconds": 2.88
   }
  },
  {
@@ -2871,7 +2853,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5583,
-   "seconds": 0.4
+   "seconds": 0.68
   },
   "impersonate": {
    "ok": true,
@@ -2882,7 +2864,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 6063,
-   "seconds": 0.44
+   "seconds": 1.93
   }
  },
  {
@@ -2898,7 +2880,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5561,
-   "seconds": 0.4
+   "seconds": 0.62
   },
   "impersonate": {
    "ok": true,
@@ -2909,7 +2891,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5945,
-   "seconds": 0.1
+   "seconds": 0.36
   }
  },
  {
@@ -2936,7 +2918,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5941,
-   "seconds": 0.18
+   "seconds": 1.21
   }
  },
  {
@@ -2952,7 +2934,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.99
+   "seconds": 1.66
   },
   "impersonate": {
    "ok": true,
@@ -2963,7 +2945,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.5
+   "seconds": 1.05
   }
  },
  {
@@ -2979,7 +2961,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 2.02
+   "seconds": 1.36
   },
   "impersonate": {
    "ok": true,
@@ -2990,7 +2972,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.65
+   "seconds": 0.8
   }
  },
  {
@@ -3006,7 +2988,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.09
+   "seconds": 1.5
   },
   "impersonate": {
    "ok": true,
@@ -3017,7 +2999,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.53
+   "seconds": 0.74
   }
  },
  {
@@ -3033,7 +3015,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.09
+   "seconds": 1.47
   },
   "impersonate": {
    "ok": true,
@@ -3044,7 +3026,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.55
+   "seconds": 1.62
   }
  },
  {
@@ -3060,7 +3042,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 5484,
-   "seconds": 0.69
+   "seconds": 0.92
   },
   "impersonate": {
    "ok": true,
@@ -3071,7 +3053,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 40587,
-   "seconds": 0.41
+   "seconds": 1.73
   }
  },
  {
@@ -3087,7 +3069,7 @@
    "layer_name": null,
    "detail": "upstream error (HTTP 502)",
    "bytes": 585,
-   "seconds": 1.84
+   "seconds": 1.71
   },
   "impersonate": {
    "ok": true,
@@ -3097,8 +3079,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 443088,
-   "seconds": 1.77
+   "bytes": 442399,
+   "seconds": 1.41
   }
  },
  {
@@ -3113,8 +3095,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 73633,
-   "seconds": 1.61
+   "bytes": 74390,
+   "seconds": 1.82
   },
   "impersonate": {
    "ok": true,
@@ -3124,8 +3106,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 74059,
-   "seconds": 1.0
+   "bytes": 74336,
+   "seconds": 1.84
   }
  },
  {
@@ -3141,7 +3123,7 @@
    "layer_name": "L15 Operator edge code",
    "detail": "forbidden by the origin",
    "bytes": 146,
-   "seconds": 1.33
+   "seconds": 1.64
   },
   "impersonate": {
    "ok": true,
@@ -3151,8 +3133,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 66196,
-   "seconds": 1.2
+   "bytes": 65249,
+   "seconds": 1.23
   }
  },
  {
@@ -3167,8 +3149,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 524238,
-   "seconds": 1.72
+   "bytes": 524208,
+   "seconds": 2.32
   },
   "impersonate": {
    "ok": true,
@@ -3178,8 +3160,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 530931,
-   "seconds": 0.68
+   "bytes": 530901,
+   "seconds": 2.03
   }
  },
  {
@@ -3195,7 +3177,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1030,
-   "seconds": 2.02
+   "seconds": 1.95
   },
   "impersonate": {
    "ok": true,
@@ -3206,7 +3188,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1080,
-   "seconds": 1.03
+   "seconds": 1.05
   }
  },
  {
@@ -3222,7 +3204,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 0.81
+   "seconds": 1.63
   },
   "impersonate": {
    "ok": true,
@@ -3233,7 +3215,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 0.27
+   "seconds": 1.77
   }
  },
  {
@@ -3243,11 +3225,11 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='battwo.com', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.38
+   "seconds": 20.35
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20001 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -3264,7 +3246,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 0.56
+   "seconds": 1.56
   },
   "impersonate": {
    "ok": true,
@@ -3275,7 +3257,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 0.25
+   "seconds": 0.94
   }
  },
  {
@@ -3290,8 +3272,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 70056,
-   "seconds": 1.86
+   "bytes": 70061,
+   "seconds": 1.82
   },
   "impersonate": {
    "ok": true,
@@ -3301,8 +3283,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 70409,
-   "seconds": 0.84
+   "bytes": 70414,
+   "seconds": 1.77
   }
  },
  {
@@ -3312,11 +3294,11 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='dto.to', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.08
+   "seconds": 20.39
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -3333,7 +3315,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 0.45
+   "seconds": 1.17
   },
   "impersonate": {
    "ok": true,
@@ -3344,7 +3326,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 0.29
+   "seconds": 0.68
   }
  },
  {
@@ -3360,7 +3342,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 142907,
-   "seconds": 1.01
+   "seconds": 0.93
   },
   "impersonate": {
    "ok": true,
@@ -3371,7 +3353,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 142907,
-   "seconds": 0.56
+   "seconds": 0.45
   }
  },
  {
@@ -3381,7 +3363,7 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='wto.to', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.07
+   "seconds": 20.35
   },
   "impersonate": {
    "ok": false,
@@ -3401,8 +3383,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 206903,
-   "seconds": 0.56
+   "bytes": 207334,
+   "seconds": 1.41
   },
   "impersonate": {
    "ok": true,
@@ -3412,8 +3394,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 207256,
-   "seconds": 0.51
+   "bytes": 207687,
+   "seconds": 0.88
   }
  },
  {
@@ -3429,7 +3411,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5559,
-   "seconds": 0.32
+   "seconds": 0.8
   },
   "impersonate": {
    "ok": true,
@@ -3440,7 +3422,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5836,
-   "seconds": 0.3
+   "seconds": 0.42
   }
  },
  {
@@ -3456,7 +3438,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 11893,
-   "seconds": 1.88
+   "seconds": 2.22
   },
   "impersonate": {
    "ok": true,
@@ -3467,7 +3449,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 12252,
-   "seconds": 0.82
+   "seconds": 1.23
   }
  },
  {
@@ -3483,7 +3465,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1,
-   "seconds": 1.27
+   "seconds": 2.38
   },
   "impersonate": {
    "ok": true,
@@ -3493,8 +3475,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 183972,
-   "seconds": 1.43
+   "bytes": 182987,
+   "seconds": 1.75
   }
  },
  {
@@ -3510,7 +3492,7 @@
    "layer_name": "L15 Operator edge code",
    "detail": "forbidden by the origin",
    "bytes": 146,
-   "seconds": 1.59
+   "seconds": 1.73
   },
   "impersonate": {
    "ok": true,
@@ -3520,8 +3502,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 115077,
-   "seconds": 1.29
+   "bytes": 115094,
+   "seconds": 1.32
   }
  },
  {
@@ -3536,8 +3518,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 119466,
-   "seconds": 1.5
+   "bytes": 119300,
+   "seconds": 1.68
   },
   "impersonate": {
    "ok": true,
@@ -3548,7 +3530,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4478,
-   "seconds": 0.83
+   "seconds": 0.66
   }
  },
  {
@@ -3563,8 +3545,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 119466,
-   "seconds": 2.46
+   "bytes": 119300,
+   "seconds": 2.31
   },
   "impersonate": {
    "ok": true,
@@ -3575,7 +3557,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4478,
-   "seconds": 0.6
+   "seconds": 0.59
   }
  },
  {
@@ -3590,8 +3572,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 167510,
-   "seconds": 0.91
+   "bytes": 167530,
+   "seconds": 0.94
   },
   "impersonate": {
    "ok": true,
@@ -3601,8 +3583,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 167334,
-   "seconds": 0.77
+   "bytes": 167276,
+   "seconds": 0.65
   }
  },
  {
@@ -3612,11 +3594,11 @@
   "plain": {
    "ok": false,
    "error": "ConnectTimeout: HTTPSConnectionPool(host='mtlreader.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HT",
-   "seconds": 20.3
+   "seconds": 20.17
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -3632,8 +3614,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 169994,
-   "seconds": 1.19
+   "bytes": 172236,
+   "seconds": 1.46
   },
   "impersonate": {
    "ok": true,
@@ -3643,8 +3625,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 170508,
-   "seconds": 0.6
+   "bytes": 172750,
+   "seconds": 0.97
   }
  },
  {
@@ -3660,12 +3642,18 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 8.04
+   "seconds": 1.3
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 0.61
   }
  },
  {
@@ -3681,7 +3669,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 9,
-   "seconds": 2.34
+   "seconds": 2.88
   },
   "impersonate": {
    "ok": true,
@@ -3692,7 +3680,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 23844,
-   "seconds": 0.74
+   "seconds": 2.4
   }
  },
  {
@@ -3701,14 +3689,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 410,
-   "edge": "unknown",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "HTTP 410",
-   "bytes": 254,
-   "seconds": 2.75
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 476,
+   "seconds": 1.45
   },
   "impersonate": {
    "ok": true,
@@ -3719,7 +3707,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 476,
-   "seconds": 0.44
+   "seconds": 0.65
   }
  },
  {
@@ -3734,8 +3722,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 115808,
-   "seconds": 1.15
+   "bytes": 115647,
+   "seconds": 0.93
   },
   "impersonate": {
    "ok": true,
@@ -3746,7 +3734,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 115605,
-   "seconds": 0.5
+   "seconds": 0.57
   }
  },
  {
@@ -3762,7 +3750,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5445,
-   "seconds": 0.68
+   "seconds": 0.83
   },
   "impersonate": {
    "ok": true,
@@ -3773,7 +3761,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5829,
-   "seconds": 0.12
+   "seconds": 0.66
   }
  },
  {
@@ -3789,7 +3777,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 59228,
-   "seconds": 1.1
+   "seconds": 1.78
   },
   "impersonate": {
    "ok": true,
@@ -3800,7 +3788,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 59228,
-   "seconds": 0.25
+   "seconds": 1.15
   }
  },
  {
@@ -3815,8 +3803,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 238939,
-   "seconds": 1.03
+   "bytes": 238964,
+   "seconds": 0.81
   },
   "impersonate": {
    "ok": true,
@@ -3826,8 +3814,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 238845,
-   "seconds": 0.47
+   "bytes": 238947,
+   "seconds": 0.5
   }
  },
  {
@@ -3842,8 +3830,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 176194,
-   "seconds": 1.05
+   "bytes": 176231,
+   "seconds": 0.95
   },
   "impersonate": {
    "ok": true,
@@ -3853,8 +3841,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 176126,
-   "seconds": 0.55
+   "bytes": 176124,
+   "seconds": 0.48
   }
  },
  {
@@ -3870,7 +3858,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 8105,
-   "seconds": 0.69
+   "seconds": 0.9
   },
   "impersonate": {
    "ok": true,
@@ -3881,7 +3869,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 14208,
-   "seconds": 0.22
+   "seconds": 0.84
   }
  },
  {
@@ -3896,8 +3884,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 294685,
-   "seconds": 0.87
+   "bytes": 295355,
+   "seconds": 3.55
   },
   "impersonate": {
    "ok": true,
@@ -3907,8 +3895,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 295044,
-   "seconds": 0.38
+   "bytes": 295714,
+   "seconds": 1.47
   }
  },
  {
@@ -3923,8 +3911,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 244883,
-   "seconds": 1.91
+   "bytes": 245103,
+   "seconds": 1.64
   },
   "impersonate": {
    "ok": true,
@@ -3934,8 +3922,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 244881,
-   "seconds": 1.21
+   "bytes": 245101,
+   "seconds": 1.0
   }
  },
  {
@@ -3950,8 +3938,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 122687,
-   "seconds": 1.14
+   "bytes": 122081,
+   "seconds": 0.65
   },
   "impersonate": {
    "ok": true,
@@ -3961,8 +3949,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 122589,
-   "seconds": 0.45
+   "bytes": 122593,
+   "seconds": 0.44
   }
  },
  {
@@ -3977,8 +3965,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 196746,
-   "seconds": 0.86
+   "bytes": 196084,
+   "seconds": 0.71
   },
   "impersonate": {
    "ok": true,
@@ -3988,8 +3976,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 196729,
-   "seconds": 0.42
+   "bytes": 196757,
+   "seconds": 0.47
   }
  },
  {
@@ -4005,7 +3993,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5636,
-   "seconds": 0.19
+   "seconds": 0.6
   },
   "impersonate": {
    "ok": true,
@@ -4016,7 +4004,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 6020,
-   "seconds": 0.1
+   "seconds": 0.35
   }
  },
  {
@@ -4031,8 +4019,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 130653,
-   "seconds": 1.74
+   "bytes": 130593,
+   "seconds": 1.04
   },
   "impersonate": {
    "ok": true,
@@ -4043,7 +4031,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 130503,
-   "seconds": 0.5
+   "seconds": 0.42
   }
  },
  {
@@ -4059,7 +4047,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 226071,
-   "seconds": 1.22
+   "seconds": 3.31
   },
   "impersonate": {
    "ok": true,
@@ -4070,7 +4058,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 226430,
-   "seconds": 0.95
+   "seconds": 1.61
   }
  },
  {
@@ -4086,7 +4074,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 9770,
-   "seconds": 1.13
+   "seconds": 0.87
   },
   "impersonate": {
    "ok": true,
@@ -4097,7 +4085,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 9770,
-   "seconds": 0.1
+   "seconds": 0.85
   }
  },
  {
@@ -4112,8 +4100,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 208920,
-   "seconds": 2.83
+   "bytes": 208924,
+   "seconds": 2.42
   },
   "impersonate": {
    "ok": true,
@@ -4123,8 +4111,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 208903,
-   "seconds": 0.46
+   "bytes": 211457,
+   "seconds": 0.45
   }
  },
  {
@@ -4139,8 +4127,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 298605,
-   "seconds": 6.72
+   "bytes": 298761,
+   "seconds": 6.68
   },
   "impersonate": {
    "ok": true,
@@ -4150,8 +4138,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 298687,
-   "seconds": 5.73
+   "bytes": 298776,
+   "seconds": 5.55
   }
  },
  {
@@ -4167,7 +4155,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 23924,
-   "seconds": 0.65
+   "seconds": 0.64
   },
   "impersonate": {
    "ok": true,
@@ -4178,7 +4166,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 24283,
-   "seconds": 0.21
+   "seconds": 1.53
   }
  },
  {
@@ -4194,7 +4182,7 @@
    "layer_name": null,
    "detail": "origin unavailable",
    "bytes": 4476,
-   "seconds": 0.66
+   "seconds": 0.82
   },
   "impersonate": {
    "ok": true,
@@ -4205,7 +4193,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 5776,
-   "seconds": 0.2
+   "seconds": 0.53
   }
  },
  {
@@ -4220,8 +4208,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 267403,
-   "seconds": 0.73
+   "bytes": 267418,
+   "seconds": 0.86
   },
   "impersonate": {
    "ok": true,
@@ -4231,8 +4219,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 267762,
-   "seconds": 0.23
+   "bytes": 267777,
+   "seconds": 0.54
   }
  },
  {
@@ -4247,8 +4235,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 520)",
-   "bytes": 7325,
-   "seconds": 0.76
+   "bytes": 7329,
+   "seconds": 1.1
   },
   "impersonate": {
    "ok": true,
@@ -4259,7 +4247,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 2539,
-   "seconds": 0.49
+   "seconds": 1.91
   }
  },
  {
@@ -4274,8 +4262,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 694765,
-   "seconds": 0.63
+   "bytes": 652802,
+   "seconds": 1.04
   },
   "impersonate": {
    "ok": true,
@@ -4285,8 +4273,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 695118,
-   "seconds": 0.14
+   "bytes": 653155,
+   "seconds": 0.62
   }
  },
  {
@@ -4301,8 +4289,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 258851,
-   "seconds": 3.96
+   "bytes": 262475,
+   "seconds": 3.03
   },
   "impersonate": {
    "ok": true,
@@ -4312,8 +4300,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 263337,
-   "seconds": 2.26
+   "bytes": 264293,
+   "seconds": 3.71
   }
  },
  {
@@ -4321,9 +4309,15 @@
   "file": "sources/zh/ddxsss.py",
   "lang": "zh",
   "plain": {
-   "ok": false,
-   "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
-   "seconds": 4.98
+   "ok": true,
+   "status": 200,
+   "edge": "cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 28893,
+   "seconds": 1.66
   },
   "impersonate": {
    "ok": true,
@@ -4333,8 +4327,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 28809,
-   "seconds": 0.56
+   "bytes": 28893,
+   "seconds": 0.37
   }
  },
  {
@@ -4342,26 +4336,14 @@
   "file": "sources/zh/ddxsss.py",
   "lang": "zh",
   "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 975,
-   "seconds": 2.05
+   "ok": false,
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='www.ddxss.cc', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTT",
+   "seconds": 20.56
   },
   "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 1048,
-   "seconds": 0.98
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "seconds": 20.0
   }
  },
  {
@@ -4377,18 +4359,12 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1010,
-   "seconds": 2.02
+   "seconds": 1.66
   },
   "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 94105,
-   "seconds": 1.81
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "seconds": 20.0
   }
  },
  {
@@ -4403,8 +4379,8 @@
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
-   "bytes": 5428,
-   "seconds": 0.38
+   "bytes": 5449,
+   "seconds": 0.66
   },
   "impersonate": {
    "ok": true,
@@ -4415,7 +4391,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5833,
-   "seconds": 0.26
+   "seconds": 0.37
   }
  },
  {
@@ -4431,7 +4407,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 222099,
-   "seconds": 1.94
+   "seconds": 0.7
   },
   "impersonate": {
    "ok": true,
@@ -4442,7 +4418,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 222458,
-   "seconds": 0.42
+   "seconds": 0.47
   }
  },
  {
@@ -4457,19 +4433,13 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
-   "bytes": 7251,
-   "seconds": 19.73
+   "bytes": 7255,
+   "seconds": 19.92
   },
   "impersonate": {
-   "ok": true,
-   "status": 522,
-   "edge": "cloudflare",
-   "action": "retry",
-   "layer": null,
-   "layer_name": null,
-   "detail": "upstream error (HTTP 522)",
-   "bytes": 7251,
-   "seconds": 19.45
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20003 milliseconds with 0 bytes received. See https://curl.se/li",
+   "seconds": 20.0
   }
  },
  {
@@ -4484,8 +4454,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 217072,
-   "seconds": 1.01
+   "bytes": 216934,
+   "seconds": 1.88
   },
   "impersonate": {
    "ok": true,
@@ -4495,8 +4465,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 217072,
-   "seconds": 0.84
+   "bytes": 217338,
+   "seconds": 1.02
   }
  },
  {
@@ -4511,8 +4481,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118908,
-   "seconds": 0.64
+   "bytes": 118890,
+   "seconds": 0.63
   },
   "impersonate": {
    "ok": true,
@@ -4523,7 +4493,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 118862,
-   "seconds": 0.43
+   "seconds": 0.82
   }
  },
  {
@@ -4538,8 +4508,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 260402,
-   "seconds": 1.8
+   "bytes": 276136,
+   "seconds": 2.15
   },
   "impersonate": {
    "ok": true,
@@ -4549,8 +4519,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 260402,
-   "seconds": 1.25
+   "bytes": 276142,
+   "seconds": 1.16
   }
  },
  {
@@ -4565,8 +4535,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 168658,
-   "seconds": 1.2
+   "bytes": 168757,
+   "seconds": 1.91
   },
   "impersonate": {
    "ok": true,
@@ -4576,8 +4546,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 169642,
-   "seconds": 0.58
+   "bytes": 169768,
+   "seconds": 1.36
   }
  },
  {
@@ -4592,8 +4562,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 360431,
-   "seconds": 1.18
+   "bytes": 371437,
+   "seconds": 2.89
   },
   "impersonate": {
    "ok": true,
@@ -4603,8 +4573,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 431389,
-   "seconds": 0.57
+   "bytes": 429949,
+   "seconds": 1.66
   }
  },
  {
@@ -4619,8 +4589,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 346763,
-   "seconds": 1.98
+   "bytes": 343819,
+   "seconds": 1.85
   },
   "impersonate": {
    "ok": true,
@@ -4630,8 +4600,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 349103,
-   "seconds": 0.33
+   "bytes": 346159,
+   "seconds": 1.66
   }
  },
  {
@@ -4647,7 +4617,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.99
+   "seconds": 1.83
   },
   "impersonate": {
    "ok": true,
@@ -4658,7 +4628,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.65
+   "seconds": 0.64
   }
  },
  {
@@ -4674,12 +4644,18 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.24
+   "seconds": 1.44
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 0.66
   }
  },
  {
@@ -4694,8 +4670,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 240448,
-   "seconds": 2.26
+   "bytes": 240465,
+   "seconds": 2.24
   },
   "impersonate": {
    "ok": true,
@@ -4705,8 +4681,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 240448,
-   "seconds": 1.83
+   "bytes": 240465,
+   "seconds": 1.6
   }
  },
  {
@@ -4722,7 +4698,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 72254,
-   "seconds": 1.96
+   "seconds": 1.95
   },
   "impersonate": {
    "ok": true,
@@ -4733,7 +4709,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 72254,
-   "seconds": 0.89
+   "seconds": 0.88
   }
  },
  {
@@ -4748,8 +4724,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 133133,
-   "seconds": 1.19
+   "bytes": 134355,
+   "seconds": 1.96
   },
   "impersonate": {
    "ok": true,
@@ -4759,8 +4735,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 133647,
-   "seconds": 0.61
+   "bytes": 134869,
+   "seconds": 1.27
   }
  },
  {
@@ -4775,8 +4751,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 93804,
-   "seconds": 1.95
+   "bytes": 93803,
+   "seconds": 2.1
   },
   "impersonate": {
    "ok": true,
@@ -4786,8 +4762,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 93804,
-   "seconds": 1.42
+   "bytes": 93803,
+   "seconds": 1.28
   }
  },
  {
@@ -4802,8 +4778,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 6956,
-   "seconds": 0.95
+   "bytes": 6955,
+   "seconds": 1.49
   },
   "impersonate": {
    "ok": true,
@@ -4814,7 +4790,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1640,
-   "seconds": 0.47
+   "seconds": 0.51
   }
  },
  {
@@ -4830,7 +4806,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 17849,
-   "seconds": 1.36
+   "seconds": 2.98
   },
   "impersonate": {
    "ok": true,
@@ -4841,7 +4817,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 17849,
-   "seconds": 0.86
+   "seconds": 1.37
   }
  },
  {
@@ -4857,7 +4833,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1005,
-   "seconds": 2.16
+   "seconds": 1.6
   },
   "impersonate": {
    "ok": true,
@@ -4868,7 +4844,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1072,
-   "seconds": 0.99
+   "seconds": 0.87
   }
  },
  {
@@ -4883,8 +4859,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 57516,
-   "seconds": 4.71
+   "bytes": 58231,
+   "seconds": 1.08
   },
   "impersonate": {
    "ok": true,
@@ -4894,8 +4870,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 58415,
-   "seconds": 0.79
+   "bytes": 58534,
+   "seconds": 0.82
   }
  },
  {
@@ -4911,7 +4887,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 36241,
-   "seconds": 1.32
+   "seconds": 1.98
   },
   "impersonate": {
    "ok": true,
@@ -4922,7 +4898,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 36241,
-   "seconds": 0.99
+   "seconds": 1.46
   }
  },
  {
@@ -4938,7 +4914,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 36241,
-   "seconds": 1.09
+   "seconds": 1.7
   },
   "impersonate": {
    "ok": true,
@@ -4949,7 +4925,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 36241,
-   "seconds": 0.98
+   "seconds": 1.4
   }
  },
  {
@@ -4964,8 +4940,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 65306,
-   "seconds": 0.5
+   "bytes": 63035,
+   "seconds": 1.16
   },
   "impersonate": {
    "ok": true,
@@ -4975,8 +4951,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 65665,
-   "seconds": 0.42
+   "bytes": 63394,
+   "seconds": 0.54
   }
  },
  {
@@ -4992,7 +4968,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 146,
-   "seconds": 0.82
+   "seconds": 1.1
   },
   "impersonate": {
    "ok": true,
@@ -5003,7 +4979,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 907,
-   "seconds": 0.51
+   "seconds": 0.97
   }
  },
  {
@@ -5019,7 +4995,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 34828,
-   "seconds": 2.15
+   "seconds": 2.23
   },
   "impersonate": {
    "ok": true,
@@ -5030,7 +5006,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 34828,
-   "seconds": 1.58
+   "seconds": 1.7
   }
  },
  {
@@ -5039,25 +5015,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 403,
+   "status": 200,
    "edge": "cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5447,
-   "seconds": 1.0
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 302116,
+   "seconds": 1.93
   },
   "impersonate": {
    "ok": true,
-   "status": 403,
+   "status": 200,
    "edge": "cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5831,
-   "seconds": 0.24
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 302475,
+   "seconds": 1.62
   }
  },
  {
@@ -5073,7 +5049,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5447,
-   "seconds": 0.37
+   "seconds": 0.59
   },
   "impersonate": {
    "ok": true,
@@ -5084,7 +5060,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5831,
-   "seconds": 0.38
+   "seconds": 0.51
   }
  },
  {
@@ -5100,7 +5076,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 248227,
-   "seconds": 1.22
+   "seconds": 1.35
   },
   "impersonate": {
    "ok": true,
@@ -5111,7 +5087,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 248227,
-   "seconds": 0.62
+   "seconds": 0.7
   }
  },
  {
@@ -5127,7 +5103,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 20.26
+   "seconds": 1.33
   },
   "impersonate": {
    "ok": true,
@@ -5138,7 +5114,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 11.61
+   "seconds": 0.56
   }
  },
  {
@@ -5154,22 +5130,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 8.29
-  },
-  "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
-  }
- },
- {
-  "url": "https://novelmao.com/",
-  "file": "sources/en/n/novelmao.py",
-  "lang": "en",
-  "plain": {
-   "ok": false,
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='novelmao.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTT",
-   "seconds": 20.44
+   "seconds": 1.25
   },
   "impersonate": {
    "ok": true,
@@ -5180,7 +5141,34 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 11.54
+   "seconds": 0.53
+  }
+ },
+ {
+  "url": "https://novelmao.com/",
+  "file": "sources/en/n/novelmao.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 1.73
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 0.85
   }
  },
  {
@@ -5188,14 +5176,26 @@
   "file": "sources/en/s/supernovel.py",
   "lang": "en",
   "plain": {
-   "ok": false,
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='supernovel.net', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<H",
-   "seconds": 20.44
+   "ok": true,
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 2.75
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 1.04
   }
  },
  {
@@ -5211,7 +5211,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4357,
-   "seconds": 1.23
+   "seconds": 0.7
   },
   "impersonate": {
    "ok": true,
@@ -5222,7 +5222,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4357,
-   "seconds": 0.21
+   "seconds": 0.56
   }
  },
  {
@@ -5231,25 +5231,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 403,
+   "status": 200,
    "edge": "cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5442,
-   "seconds": 0.65
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 61731,
+   "seconds": 1.52
   },
   "impersonate": {
    "ok": true,
-   "status": 403,
+   "status": 200,
    "edge": "cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5826,
-   "seconds": 0.37
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 62090,
+   "seconds": 1.06
   }
  },
  {
@@ -5258,25 +5258,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 403,
+   "status": 200,
    "edge": "cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5442,
-   "seconds": 0.6
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 61731,
+   "seconds": 1.04
   },
   "impersonate": {
    "ok": true,
-   "status": 403,
+   "status": 200,
    "edge": "cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5826,
-   "seconds": 0.2
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 62090,
+   "seconds": 0.78
   }
  },
  {
@@ -5285,25 +5285,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 403,
+   "status": 200,
    "edge": "cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5442,
-   "seconds": 1.04
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 61731,
+   "seconds": 1.48
   },
   "impersonate": {
    "ok": true,
-   "status": 403,
+   "status": 200,
    "edge": "cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5848,
-   "seconds": 0.38
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 62090,
+   "seconds": 1.71
   }
  },
  {
@@ -5311,26 +5311,14 @@
   "file": "sources/en/l/lightnovelworld.py",
   "lang": "en",
   "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 1015,
-   "seconds": 1.87
+   "ok": false,
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='lightnovel.world', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(",
+   "seconds": 20.75
   },
   "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 1068,
-   "seconds": 0.91
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "seconds": 20.0
   }
  },
  {
@@ -5345,8 +5333,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 405281,
-   "seconds": 2.16
+   "bytes": 405161,
+   "seconds": 0.99
   },
   "impersonate": {
    "ok": true,
@@ -5356,8 +5344,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 405233,
-   "seconds": 2.6
+   "bytes": 405282,
+   "seconds": 0.51
   }
  },
  {
@@ -5373,7 +5361,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5578,
-   "seconds": 0.67
+   "seconds": 0.84
   },
   "impersonate": {
    "ok": true,
@@ -5384,7 +5372,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5941,
-   "seconds": 0.1
+   "seconds": 0.38
   }
  },
  {
@@ -5399,8 +5387,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 495356,
-   "seconds": 1.38
+   "bytes": 495286,
+   "seconds": 2.01
   },
   "impersonate": {
    "ok": true,
@@ -5410,8 +5398,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 495715,
-   "seconds": 0.75
+   "bytes": 495645,
+   "seconds": 1.71
   }
  },
  {
@@ -5419,14 +5407,26 @@
   "file": "sources/en/w/wuxiablog.py",
   "lang": "en",
   "plain": {
-   "ok": false,
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='www.wuxia.blog', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<H",
-   "seconds": 20.67
+   "ok": true,
+   "status": 200,
+   "edge": "apache",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 985,
+   "seconds": 1.89
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 200,
+   "edge": "apache",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 1056,
+   "seconds": 1.04
   }
  },
  {
@@ -5442,7 +5442,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 69244,
-   "seconds": 1.38
+   "seconds": 1.85
   },
   "impersonate": {
    "ok": true,
@@ -5453,7 +5453,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 69603,
-   "seconds": 0.57
+   "seconds": 1.21
   }
  },
  {
@@ -5469,7 +5469,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 69244,
-   "seconds": 0.99
+   "seconds": 1.01
   },
   "impersonate": {
    "ok": true,
@@ -5480,7 +5480,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 69603,
-   "seconds": 0.2
+   "seconds": 0.71
   }
  },
  {
@@ -5496,7 +5496,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 19345,
-   "seconds": 0.67
+   "seconds": 1.66
   },
   "impersonate": {
    "ok": true,
@@ -5507,7 +5507,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 19704,
-   "seconds": 0.62
+   "seconds": 1.16
   }
  },
  {
@@ -5523,7 +5523,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5551,
-   "seconds": 0.44
+   "seconds": 0.77
   },
   "impersonate": {
    "ok": true,
@@ -5534,7 +5534,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 49139,
-   "seconds": 0.4
+   "seconds": 0.65
   }
  },
  {
@@ -5542,14 +5542,26 @@
   "file": "sources/en/f/faqwiki.py",
   "lang": "en",
   "plain": {
-   "ok": false,
-   "error": "ReadTimeout: HTTPSConnectionPool(host='www.faqwiki.us', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.28
+   "ok": true,
+   "status": 200,
+   "edge": "cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 173571,
+   "seconds": 1.8
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
-   "seconds": 20.0
+   "ok": true,
+   "status": 200,
+   "edge": "cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 173930,
+   "seconds": 2.46
   }
  },
  {
@@ -5557,14 +5569,26 @@
   "file": "sources/en/f/faqwiki.py",
   "lang": "en",
   "plain": {
-   "ok": false,
-   "error": "ReadTimeout: HTTPSConnectionPool(host='faqwiki.us', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.14
+   "ok": true,
+   "status": 200,
+   "edge": "cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 173571,
+   "seconds": 1.96
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
-   "seconds": 20.0
+   "ok": true,
+   "status": 200,
+   "edge": "cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 173930,
+   "seconds": 2.38
   }
  },
  {
@@ -5580,7 +5604,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 62353,
-   "seconds": 0.83
+   "seconds": 0.95
   },
   "impersonate": {
    "ok": true,
@@ -5590,8 +5614,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62247,
-   "seconds": 0.46
+   "bytes": 62712,
+   "seconds": 0.43
   }
  },
  {
@@ -5607,7 +5631,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 112840,
-   "seconds": 1.59
+   "seconds": 1.54
   },
   "impersonate": {
    "ok": true,
@@ -5618,7 +5642,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 112840,
-   "seconds": 1.22
+   "seconds": 1.26
   }
  },
  {
@@ -5634,7 +5658,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 0,
-   "seconds": 1.89
+   "seconds": 2.07
   },
   "impersonate": {
    "ok": true,
@@ -5645,7 +5669,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4622,
-   "seconds": 0.58
+   "seconds": 0.9
   }
  },
  {
@@ -5661,12 +5685,18 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 3.6
+   "seconds": 1.19
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 0.56
   }
  },
  {
@@ -5681,8 +5711,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 138550,
-   "seconds": 1.87
+   "bytes": 154586,
+   "seconds": 2.67
   },
   "impersonate": {
    "ok": true,
@@ -5692,8 +5722,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 138550,
-   "seconds": 0.72
+   "bytes": 154586,
+   "seconds": 1.72
   }
  },
  {
@@ -5708,8 +5738,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 63233,
-   "seconds": 0.52
+   "bytes": 63954,
+   "seconds": 1.01
   },
   "impersonate": {
    "ok": true,
@@ -5719,8 +5749,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 63592,
-   "seconds": 0.29
+   "bytes": 64313,
+   "seconds": 0.59
   }
  },
  {
@@ -5730,7 +5760,7 @@
   "plain": {
    "ok": false,
    "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
-   "seconds": 3.92
+   "seconds": 5.46
   },
   "impersonate": {
    "ok": true,
@@ -5740,8 +5770,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 29028,
-   "seconds": 1.29
+   "bytes": 29122,
+   "seconds": 1.13
   }
  },
  {
@@ -5751,7 +5781,7 @@
   "plain": {
    "ok": false,
    "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
-   "seconds": 4.21
+   "seconds": 5.68
   },
   "impersonate": {
    "ok": true,
@@ -5761,8 +5791,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 29003,
-   "seconds": 0.53
+   "bytes": 29119,
+   "seconds": 2.1
   }
  },
  {
@@ -5778,7 +5808,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5565,
-   "seconds": 0.68
+   "seconds": 0.76
   },
   "impersonate": {
    "ok": true,
@@ -5788,8 +5818,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 166634,
-   "seconds": 1.63
+   "bytes": 173702,
+   "seconds": 3.87
   }
  },
  {
@@ -5805,7 +5835,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 100873,
-   "seconds": 1.64
+   "seconds": 2.3
   },
   "impersonate": {
    "ok": true,
@@ -5816,7 +5846,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 101232,
-   "seconds": 1.35
+   "seconds": 1.55
   }
  },
  {
@@ -5832,7 +5862,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 187885,
-   "seconds": 1.61
+   "seconds": 1.44
   },
   "impersonate": {
    "ok": true,
@@ -5843,7 +5873,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 188244,
-   "seconds": 0.43
+   "seconds": 1.31
   }
  },
  {
@@ -5859,7 +5889,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 361,
-   "seconds": 1.44
+   "seconds": 1.48
   },
   "impersonate": {
    "ok": true,
@@ -5870,7 +5900,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 361,
-   "seconds": 0.38
+   "seconds": 1.65
   }
  },
  {
@@ -5885,8 +5915,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 57134,
-   "seconds": 1.06
+   "bytes": 57374,
+   "seconds": 0.91
   },
   "impersonate": {
    "ok": true,
@@ -5896,8 +5926,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 57493,
-   "seconds": 0.32
+   "bytes": 57733,
+   "seconds": 0.41
   }
  },
  {
@@ -5913,7 +5943,7 @@
    "layer_name": null,
    "detail": "HTTP 418",
    "bytes": 1,
-   "seconds": 1.13
+   "seconds": 1.32
   },
   "impersonate": {
    "ok": true,
@@ -5923,8 +5953,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 415696,
-   "seconds": 0.8
+   "bytes": 416191,
+   "seconds": 1.54
   }
  },
  {
@@ -5939,8 +5969,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123326,
-   "seconds": 1.54
+   "bytes": 124728,
+   "seconds": 1.21
   },
   "impersonate": {
    "ok": true,
@@ -5950,8 +5980,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123326,
-   "seconds": 1.06
+   "bytes": 124728,
+   "seconds": 0.86
   }
  },
  {
@@ -5967,7 +5997,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 6956,
-   "seconds": 1.28
+   "seconds": 1.03
   },
   "impersonate": {
    "ok": true,
@@ -5978,7 +6008,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1616,
-   "seconds": 0.61
+   "seconds": 0.48
   }
  },
  {
@@ -5993,8 +6023,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 65801,
-   "seconds": 2.25
+   "bytes": 64861,
+   "seconds": 0.85
   },
   "impersonate": {
    "ok": true,
@@ -6004,8 +6034,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 66160,
-   "seconds": 0.33
+   "bytes": 65220,
+   "seconds": 0.62
   }
  },
  {
@@ -6021,12 +6051,18 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 6.19
+   "seconds": 1.41
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.01
+   "ok": true,
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 0.67
   }
  },
  {
@@ -6041,8 +6077,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 145151,
-   "seconds": 0.8
+   "bytes": 145064,
+   "seconds": 2.16
   },
   "impersonate": {
    "ok": true,
@@ -6052,8 +6088,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 145057,
-   "seconds": 0.46
+   "bytes": 145134,
+   "seconds": 0.66
   }
  },
  {
@@ -6069,7 +6105,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 6005,
-   "seconds": 0.41
+   "seconds": 1.14
   },
   "impersonate": {
    "ok": true,
@@ -6080,7 +6116,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 6005,
-   "seconds": 0.11
+   "seconds": 1.53
   }
  },
  {
@@ -6095,8 +6131,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "origin unavailable",
-   "bytes": 19087,
-   "seconds": 1.3
+   "bytes": 19085,
+   "seconds": 1.52
   },
   "impersonate": {
    "ok": true,
@@ -6107,7 +6143,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 215809,
-   "seconds": 1.03
+   "seconds": 1.06
   }
  },
  {
@@ -6122,8 +6158,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 55778,
-   "seconds": 0.61
+   "bytes": 55784,
+   "seconds": 1.12
   },
   "impersonate": {
    "ok": true,
@@ -6133,8 +6169,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 56137,
-   "seconds": 0.39
+   "bytes": 56143,
+   "seconds": 0.86
   }
  },
  {
@@ -6149,8 +6185,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 55778,
-   "seconds": 0.92
+   "bytes": 55784,
+   "seconds": 3.41
   },
   "impersonate": {
    "ok": true,
@@ -6160,8 +6196,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 56137,
-   "seconds": 1.05
+   "bytes": 56143,
+   "seconds": 2.12
   }
  },
  {
@@ -6170,14 +6206,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 410,
+   "status": 200,
    "edge": "unknown",
    "action": "accept",
    "layer": null,
    "layer_name": null,
-   "detail": "HTTP 410",
-   "bytes": 254,
-   "seconds": 2.84
+   "detail": "",
+   "bytes": 195,
+   "seconds": 2.9
   },
   "impersonate": {
    "ok": true,
@@ -6188,7 +6224,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 475,
-   "seconds": 0.55
+   "seconds": 0.66
   }
  },
  {
@@ -6204,18 +6240,18 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2,
-   "seconds": 2.03
+   "seconds": 1.98
   },
   "impersonate": {
    "ok": true,
    "status": 200,
-   "edge": "nginx",
+   "edge": "cloudfront",
    "action": "accept",
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 13043,
-   "seconds": 3.17
+   "bytes": 42341,
+   "seconds": 2.59
   }
  },
  {
@@ -6231,7 +6267,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 19345,
-   "seconds": 0.91
+   "seconds": 1.76
   },
   "impersonate": {
    "ok": true,
@@ -6242,7 +6278,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 19704,
-   "seconds": 0.5
+   "seconds": 0.95
   }
  },
  {
@@ -6258,7 +6294,7 @@
    "layer_name": null,
    "detail": "HTTP 406",
    "bytes": 226,
-   "seconds": 1.95
+   "seconds": 1.55
   },
   "impersonate": {
    "ok": true,
@@ -6269,7 +6305,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 57395,
-   "seconds": 2.91
+   "seconds": 4.37
   }
  },
  {
@@ -6277,14 +6313,26 @@
   "file": "sources/en/n/novelhard.py",
   "lang": "en",
   "plain": {
-   "ok": false,
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='novelhard.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HT",
-   "seconds": 20.47
+   "ok": true,
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 1.11
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20001 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 1.26
   }
  },
  {
@@ -6299,8 +6347,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 140654,
-   "seconds": 1.4
+   "bytes": 140557,
+   "seconds": 1.09
   },
   "impersonate": {
    "ok": true,
@@ -6310,8 +6358,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 140398,
-   "seconds": 0.72
+   "bytes": 140347,
+   "seconds": 0.66
   }
  },
  {
@@ -6327,7 +6375,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 7037,
-   "seconds": 2.0
+   "seconds": 1.38
   },
   "impersonate": {
    "ok": true,
@@ -6338,7 +6386,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 36257,
-   "seconds": 2.84
+   "seconds": 1.84
   }
  },
  {
@@ -6354,7 +6402,7 @@
    "layer_name": "L15 Operator edge code",
    "detail": "forbidden by the origin",
    "bytes": 150,
-   "seconds": 1.06
+   "seconds": 0.46
   },
   "impersonate": {
    "ok": true,
@@ -6365,7 +6413,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 118956,
-   "seconds": 0.95
+   "seconds": 1.49
   }
  },
  {
@@ -6381,7 +6429,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 14,
-   "seconds": 0.84
+   "seconds": 1.52
   },
   "impersonate": {
    "ok": true,
@@ -6392,7 +6440,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 34206,
-   "seconds": 0.27
+   "seconds": 0.93
   }
  },
  {
@@ -6408,7 +6456,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 4546,
-   "seconds": 0.27
+   "seconds": 0.61
   },
   "impersonate": {
    "ok": true,
@@ -6419,7 +6467,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 21077,
-   "seconds": 1.78
+   "seconds": 0.84
   }
  },
  {
@@ -6435,7 +6483,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5557,
-   "seconds": 0.49
+   "seconds": 0.91
   },
   "impersonate": {
    "ok": true,
@@ -6445,8 +6493,8 @@
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
-   "bytes": 5963,
-   "seconds": 0.43
+   "bytes": 5941,
+   "seconds": 0.38
   }
  },
  {
@@ -6462,7 +6510,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 5300,
-   "seconds": 2.09
+   "seconds": 1.85
   },
   "impersonate": {
    "ok": true,
@@ -6473,7 +6521,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 5300,
-   "seconds": 1.09
+   "seconds": 1.05
   }
  },
  {
@@ -6488,7 +6536,7 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59756,
+   "bytes": 59284,
    "seconds": 4.04
   },
   "impersonate": {
@@ -6499,8 +6547,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59756,
-   "seconds": 2.35
+   "bytes": 59284,
+   "seconds": 2.23
   }
  },
  {
@@ -6515,8 +6563,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59043,
-   "seconds": 2.28
+   "bytes": 58624,
+   "seconds": 1.8
   },
   "impersonate": {
    "ok": true,
@@ -6526,8 +6574,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59096,
-   "seconds": 1.31
+   "bytes": 58624,
+   "seconds": 1.33
   }
  },
  {
@@ -6542,8 +6590,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59756,
-   "seconds": 4.32
+   "bytes": 59284,
+   "seconds": 3.31
   },
   "impersonate": {
    "ok": true,
@@ -6553,8 +6601,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59756,
-   "seconds": 2.41
+   "bytes": 59284,
+   "seconds": 2.29
   }
  },
  {
@@ -6569,8 +6617,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 41451,
-   "seconds": 2.17
+   "bytes": 40281,
+   "seconds": 1.8
   },
   "impersonate": {
    "ok": true,
@@ -6580,8 +6628,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 41451,
-   "seconds": 1.04
+   "bytes": 40281,
+   "seconds": 1.06
   }
  },
  {
@@ -6596,8 +6644,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 46303,
-   "seconds": 1.02
+   "bytes": 46552,
+   "seconds": 0.75
   },
   "impersonate": {
    "ok": true,
@@ -6607,8 +6655,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 46662,
-   "seconds": 0.41
+   "bytes": 46911,
+   "seconds": 0.85
   }
  },
  {
@@ -6624,7 +6672,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 5491,
-   "seconds": 0.72
+   "seconds": 1.06
   },
   "impersonate": {
    "ok": true,
@@ -6635,7 +6683,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 172297,
-   "seconds": 1.42
+   "seconds": 1.88
   }
  },
  {
@@ -6651,7 +6699,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2,
-   "seconds": 2.82
+   "seconds": 1.15
   },
   "impersonate": {
    "ok": true,
@@ -6661,8 +6709,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 13042,
-   "seconds": 2.62
+   "bytes": 13049,
+   "seconds": 2.58
   }
  },
  {
@@ -6677,8 +6725,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 63015,
-   "seconds": 1.8
+   "bytes": 63064,
+   "seconds": 1.98
   },
   "impersonate": {
    "ok": true,
@@ -6688,8 +6736,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 63002,
-   "seconds": 1.55
+   "bytes": 62748,
+   "seconds": 1.39
   }
  },
  {
@@ -6704,8 +6752,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 63015,
-   "seconds": 1.66
+   "bytes": 63063,
+   "seconds": 1.33
   },
   "impersonate": {
    "ok": true,
@@ -6715,8 +6763,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62866,
-   "seconds": 0.89
+   "bytes": 63070,
+   "seconds": 0.83
   }
  },
  {
@@ -6732,7 +6780,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5558,
-   "seconds": 0.39
+   "seconds": 0.7
   },
   "impersonate": {
    "ok": true,
@@ -6743,7 +6791,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5942,
-   "seconds": 0.1
+   "seconds": 0.78
   }
  },
  {
@@ -6758,8 +6806,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118773,
-   "seconds": 1.07
+   "bytes": 118357,
+   "seconds": 1.62
   },
   "impersonate": {
    "ok": true,
@@ -6769,8 +6817,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 119132,
-   "seconds": 0.29
+   "bytes": 118716,
+   "seconds": 0.4
   }
  },
  {
@@ -6786,7 +6834,7 @@
    "layer_name": null,
    "detail": "HTTP 406",
    "bytes": 1164,
-   "seconds": 1.03
+   "seconds": 1.61
   },
   "impersonate": {
    "ok": true,
@@ -6797,7 +6845,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 350212,
-   "seconds": 1.13
+   "seconds": 1.96
   }
  },
  {
@@ -6812,8 +6860,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 196748,
-   "seconds": 7.95
+   "bytes": 196714,
+   "seconds": 6.4
   },
   "impersonate": {
    "ok": true,
@@ -6823,8 +6871,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 196748,
-   "seconds": 5.52
+   "bytes": 196714,
+   "seconds": 8.03
   }
  },
  {
@@ -6840,7 +6888,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 114027,
-   "seconds": 2.16
+   "seconds": 1.57
   },
   "impersonate": {
    "ok": true,
@@ -6850,8 +6898,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 113933,
-   "seconds": 1.65
+   "bytes": 113929,
+   "seconds": 1.43
   }
  },
  {
@@ -6866,8 +6914,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 114104,
-   "seconds": 1.21
+   "bytes": 114027,
+   "seconds": 0.71
   },
   "impersonate": {
    "ok": true,
@@ -6877,8 +6925,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 114010,
-   "seconds": 0.54
+   "bytes": 113933,
+   "seconds": 0.45
   }
  },
  {
@@ -6894,7 +6942,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 313507,
-   "seconds": 0.94
+   "seconds": 1.02
   },
   "impersonate": {
    "ok": true,
@@ -6904,8 +6952,8 @@
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
-   "bytes": 313891,
-   "seconds": 0.13
+   "bytes": 313913,
+   "seconds": 0.86
   }
  },
  {
@@ -6921,7 +6969,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 184775,
-   "seconds": 1.96
+   "seconds": 1.73
   },
   "impersonate": {
    "ok": true,
@@ -6931,8 +6979,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 184681,
-   "seconds": 1.44
+   "bytes": 184758,
+   "seconds": 1.81
   }
  },
  {
@@ -6947,8 +6995,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 184775,
-   "seconds": 1.17
+   "bytes": 184766,
+   "seconds": 0.7
   },
   "impersonate": {
    "ok": true,
@@ -6958,8 +7006,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 184681,
-   "seconds": 2.48
+   "bytes": 184758,
+   "seconds": 0.58
   }
  },
  {
@@ -6967,26 +7015,14 @@
   "file": "sources/en/l/lightnovelreader.py",
   "lang": "en",
   "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 995,
-   "seconds": 1.88
+   "ok": false,
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='www.lnreader.org', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(",
+   "seconds": 20.51
   },
   "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 1064,
-   "seconds": 1.1
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "seconds": 20.0
   }
  },
  {
@@ -6994,26 +7030,14 @@
   "file": "sources/en/l/lightnovelreader.py",
   "lang": "en",
   "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 995,
-   "seconds": 2.18
+   "ok": false,
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='lnreader.org', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTT",
+   "seconds": 20.13
   },
   "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 1052,
-   "seconds": 0.94
+   "ok": false,
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "seconds": 20.0
   }
  },
  {
@@ -7029,7 +7053,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1030,
-   "seconds": 2.03
+   "seconds": 1.77
   },
   "impersonate": {
    "ok": true,
@@ -7040,7 +7064,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1080,
-   "seconds": 0.9
+   "seconds": 0.93
   }
  },
  {
@@ -7056,7 +7080,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 4554,
-   "seconds": 0.31
+   "seconds": 0.52
   },
   "impersonate": {
    "ok": true,
@@ -7067,7 +7091,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 4913,
-   "seconds": 0.21
+   "seconds": 0.34
   }
  },
  {
@@ -7083,7 +7107,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1030,
-   "seconds": 1.81
+   "seconds": 2.49
   },
   "impersonate": {
    "ok": true,
@@ -7094,7 +7118,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1092,
-   "seconds": 1.08
+   "seconds": 0.92
   }
  },
  {
@@ -7110,7 +7134,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5554,
-   "seconds": 0.39
+   "seconds": 0.76
   },
   "impersonate": {
    "ok": true,
@@ -7120,8 +7144,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 66715,
-   "seconds": 0.88
+   "bytes": 64524,
+   "seconds": 1.55
   }
  },
  {
@@ -7136,8 +7160,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 143569,
-   "seconds": 1.13
+   "bytes": 146639,
+   "seconds": 0.93
   },
   "impersonate": {
    "ok": true,
@@ -7147,8 +7171,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 146652,
-   "seconds": 0.68
+   "bytes": 146653,
+   "seconds": 0.5
   }
  },
  {
@@ -7163,8 +7187,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 526)",
-   "bytes": 7243,
-   "seconds": 1.47
+   "bytes": 7247,
+   "seconds": 1.93
   },
   "impersonate": {
    "ok": true,
@@ -7174,8 +7198,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 526)",
-   "bytes": 7243,
-   "seconds": 0.6
+   "bytes": 7247,
+   "seconds": 0.95
   }
  },
  {
@@ -7190,8 +7214,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 32508,
-   "seconds": 1.71
+   "bytes": 32367,
+   "seconds": 1.86
   },
   "impersonate": {
    "ok": true,
@@ -7201,8 +7225,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 32508,
-   "seconds": 0.89
+   "bytes": 32367,
+   "seconds": 0.63
   }
  },
  {
@@ -7212,12 +7236,12 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='superchat.live', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.99
+   "seconds": 22.32
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 19378 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.65
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 19198 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "seconds": 20.85
   }
  },
  {
@@ -7232,8 +7256,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 14634,
-   "seconds": 3.77
+   "bytes": 14338,
+   "seconds": 2.52
   },
   "impersonate": {
    "ok": true,
@@ -7243,8 +7267,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 14634,
-   "seconds": 1.03
+   "bytes": 14338,
+   "seconds": 1.71
   }
  },
  {
@@ -7254,11 +7278,11 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='www.literotica.com', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.34
+   "seconds": 20.33
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20001 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -7275,7 +7299,7 @@
    "layer_name": "L15 Operator edge code",
    "detail": "forbidden by the origin",
    "bytes": 0,
-   "seconds": 1.42
+   "seconds": 1.49
   },
   "impersonate": {
    "ok": true,
@@ -7285,8 +7309,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 300388,
-   "seconds": 1.76
+   "bytes": 299780,
+   "seconds": 2.11
   }
  },
  {
@@ -7302,7 +7326,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 295220,
-   "seconds": 1.05
+   "seconds": 1.02
   },
   "impersonate": {
    "ok": true,
@@ -7313,7 +7337,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 295612,
-   "seconds": 0.41
+   "seconds": 0.55
   }
  },
  {
@@ -7328,8 +7352,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 168539,
-   "seconds": 7.95
+   "bytes": 168537,
+   "seconds": 8.18
   },
   "impersonate": {
    "ok": true,
@@ -7340,7 +7364,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 168898,
-   "seconds": 1.37
+   "seconds": 2.11
   }
  },
  {
@@ -7356,7 +7380,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 33493,
-   "seconds": 1.82
+   "seconds": 1.54
   },
   "impersonate": {
    "ok": true,
@@ -7367,7 +7391,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 33852,
-   "seconds": 0.49
+   "seconds": 0.97
   }
  },
  {
@@ -7376,14 +7400,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 200,
-   "edge": "cowboy",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 478,
-   "seconds": 1.25
+   "status": 401,
+   "edge": "unknown",
+   "action": "refuse",
+   "layer": 19,
+   "layer_name": "L19 Identity-provider gate",
+   "detail": "authentication required (HTTP 401)",
+   "bytes": 9,
+   "seconds": 2.61
   },
   "impersonate": {
    "ok": true,
@@ -7394,7 +7418,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 478,
-   "seconds": 0.65
+   "seconds": 0.46
   }
  },
  {
@@ -7410,7 +7434,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4513,
-   "seconds": 3.15
+   "seconds": 2.51
   },
   "impersonate": {
    "ok": true,
@@ -7421,7 +7445,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4513,
-   "seconds": 3.88
+   "seconds": 1.81
   }
  },
  {
@@ -7437,7 +7461,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5555,
-   "seconds": 1.29
+   "seconds": 1.86
   },
   "impersonate": {
    "ok": true,
@@ -7447,8 +7471,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 42653,
-   "seconds": 1.04
+   "bytes": 42389,
+   "seconds": 1.32
   }
  },
  {
@@ -7464,7 +7488,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5534,
-   "seconds": 0.79
+   "seconds": 0.71
   },
   "impersonate": {
    "ok": true,
@@ -7474,8 +7498,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 42653,
-   "seconds": 0.7
+   "bytes": 42389,
+   "seconds": 0.78
   }
  },
  {
@@ -7491,7 +7515,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5537,
-   "seconds": 0.57
+   "seconds": 0.93
   },
   "impersonate": {
    "ok": true,
@@ -7501,8 +7525,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 685853,
-   "seconds": 1.08
+   "bytes": 711309,
+   "seconds": 1.29
   }
  },
  {
@@ -7517,8 +7541,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 100649,
-   "seconds": 1.66
+   "bytes": 100698,
+   "seconds": 1.34
   },
   "impersonate": {
    "ok": true,
@@ -7528,8 +7552,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 100697,
-   "seconds": 0.93
+   "bytes": 100649,
+   "seconds": 0.82
   }
  },
  {
@@ -7545,7 +7569,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 0,
-   "seconds": 1.9
+   "seconds": 2.5
   },
   "impersonate": {
    "ok": true,
@@ -7556,7 +7580,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 16769,
-   "seconds": 1.27
+   "seconds": 1.3
   }
  },
  {
@@ -7572,7 +7596,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 0,
-   "seconds": 1.84
+   "seconds": 1.5
   },
   "impersonate": {
    "ok": true,
@@ -7599,7 +7623,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 227227,
-   "seconds": 0.65
+   "seconds": 1.07
   },
   "impersonate": {
    "ok": true,
@@ -7610,7 +7634,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 227586,
-   "seconds": 0.23
+   "seconds": 0.49
   }
  },
  {
@@ -7626,7 +7650,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 5485,
-   "seconds": 0.38
+   "seconds": 1.23
   },
   "impersonate": {
    "ok": true,
@@ -7637,7 +7661,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 20,
-   "seconds": 0.33
+   "seconds": 0.57
   }
  },
  {
@@ -7653,7 +7677,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 5485,
-   "seconds": 0.38
+   "seconds": 0.71
   },
   "impersonate": {
    "ok": true,
@@ -7663,8 +7687,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 501323,
-   "seconds": 2.72
+   "bytes": 501315,
+   "seconds": 3.1
   }
  },
  {
@@ -7679,12 +7703,12 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
-   "bytes": 7277,
-   "seconds": 20.16
+   "bytes": 7281,
+   "seconds": 20.36
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
+   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20003 milliseconds with 0 bytes received. See https://curl.se/li",
    "seconds": 20.0
   }
  },
@@ -7701,12 +7725,18 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 11.92
+   "seconds": 0.74
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 429,
+   "edge": "nginx",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 0.32
   }
  },
  {
@@ -7722,7 +7752,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5560,
-   "seconds": 0.41
+   "seconds": 1.86
   },
   "impersonate": {
    "ok": true,
@@ -7733,7 +7763,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 19117,
-   "seconds": 0.59
+   "seconds": 0.47
   }
  },
  {
@@ -7749,7 +7779,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 121525,
-   "seconds": 0.8
+   "seconds": 1.27
   },
   "impersonate": {
    "ok": true,
@@ -7760,7 +7790,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 121431,
-   "seconds": 0.59
+   "seconds": 0.6
   }
  },
  {
@@ -7775,8 +7805,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 270543,
-   "seconds": 2.92
+   "bytes": 278797,
+   "seconds": 2.43
   },
   "impersonate": {
    "ok": true,
@@ -7786,8 +7816,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 267384,
-   "seconds": 0.8
+   "bytes": 273414,
+   "seconds": 1.29
   }
  },
  {
@@ -7802,8 +7832,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 117737,
-   "seconds": 1.7
+   "bytes": 117612,
+   "seconds": 1.97
   },
   "impersonate": {
    "ok": true,
@@ -7813,8 +7843,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118096,
-   "seconds": 0.84
+   "bytes": 117971,
+   "seconds": 1.26
   }
  },
  {
@@ -7830,7 +7860,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 484,
-   "seconds": 1.14
+   "seconds": 1.18
   },
   "impersonate": {
    "ok": true,
@@ -7841,7 +7871,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 484,
-   "seconds": 0.45
+   "seconds": 0.54
   }
  },
  {
@@ -7856,8 +7886,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 66356,
-   "seconds": 0.4
+   "bytes": 64165,
+   "seconds": 1.34
   },
   "impersonate": {
    "ok": true,
@@ -7867,8 +7897,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 66715,
-   "seconds": 0.43
+   "bytes": 64524,
+   "seconds": 0.58
   }
  },
  {
@@ -7878,13 +7908,13 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cowboy",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 475,
-   "seconds": 1.08
+   "edge": "unknown",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 195,
+   "seconds": 2.53
   },
   "impersonate": {
    "ok": true,
@@ -7895,7 +7925,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 475,
-   "seconds": 0.5
+   "seconds": 0.54
   }
  },
  {
@@ -7910,8 +7940,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 166520,
-   "seconds": 0.87
+   "bytes": 167892,
+   "seconds": 1.71
   },
   "impersonate": {
    "ok": true,
@@ -7921,8 +7951,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 165816,
-   "seconds": 0.51
+   "bytes": 166861,
+   "seconds": 2.54
   }
  },
  {
@@ -7937,8 +7967,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 47060,
-   "seconds": 0.39
+   "bytes": 47132,
+   "seconds": 0.86
   },
   "impersonate": {
    "ok": true,
@@ -7948,8 +7978,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 47419,
-   "seconds": 0.27
+   "bytes": 47491,
+   "seconds": 0.77
   }
  },
  {
@@ -7958,35 +7988,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 200,
+   "status": 429,
    "edge": "cowboy",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 479,
-   "seconds": 1.8
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "cowboy",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 479,
-   "seconds": 0.81
-  }
- },
- {
-  "url": "https://whitemoonlightnovels.com/",
-  "file": "sources/en/w/whitemoonlightnovels.py",
-  "lang": "en",
-  "plain": {
-   "ok": false,
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='whitemoonlightnovels.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeo",
-   "seconds": 20.39
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 1.25
   },
   "impersonate": {
    "ok": true,
@@ -7997,7 +8006,34 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 2.46
+   "seconds": 0.65
+  }
+ },
+ {
+  "url": "https://whitemoonlightnovels.com/",
+  "file": "sources/en/w/whitemoonlightnovels.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 2.2
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 429,
+   "edge": "cowboy",
+   "action": "backoff",
+   "layer": 8,
+   "layer_name": "L8 Per-zone behavioural model",
+   "detail": "rate limited",
+   "bytes": 17,
+   "seconds": 0.6
   }
  },
  {
@@ -8013,7 +8049,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2,
-   "seconds": 1.12
+   "seconds": 1.27
   },
   "impersonate": {
    "ok": true,
@@ -8023,8 +8059,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 13044,
-   "seconds": 2.46
+   "bytes": 13042,
+   "seconds": 2.71
   }
  },
  {
@@ -8039,8 +8075,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 233315,
-   "seconds": 0.73
+   "bytes": 233316,
+   "seconds": 1.47
   },
   "impersonate": {
    "ok": true,
@@ -8050,8 +8086,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 233315,
-   "seconds": 0.47
+   "bytes": 233316,
+   "seconds": 0.52
   }
  },
  {
@@ -8066,8 +8102,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 116426,
-   "seconds": 1.72
+   "bytes": 116447,
+   "seconds": 2.89
   },
   "impersonate": {
    "ok": true,
@@ -8077,8 +8113,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 116332,
-   "seconds": 0.99
+   "bytes": 116409,
+   "seconds": 1.3
   }
  },
  {
@@ -8094,7 +8130,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 1.05
+   "seconds": 1.55
   },
   "impersonate": {
    "ok": true,
@@ -8105,7 +8141,7 @@
    "layer_name": "L8 Per-zone behavioural model",
    "detail": "rate limited",
    "bytes": 17,
-   "seconds": 0.5
+   "seconds": 0.66
   }
  },
  {
@@ -8115,11 +8151,11 @@
   "plain": {
    "ok": false,
    "error": "ConnectTimeout: HTTPSConnectionPool(host='pianmanga.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HT",
-   "seconds": 20.67
+   "seconds": 20.71
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20001 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20003 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -8135,8 +8171,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123836,
-   "seconds": 0.92
+   "bytes": 122370,
+   "seconds": 1.26
   },
   "impersonate": {
    "ok": true,
@@ -8146,8 +8182,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123836,
-   "seconds": 0.52
+   "bytes": 121833,
+   "seconds": 1.0
   }
  },
  {
@@ -8162,8 +8198,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123836,
-   "seconds": 1.0
+   "bytes": 121833,
+   "seconds": 1.85
   },
   "impersonate": {
    "ok": true,
@@ -8173,8 +8209,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123836,
-   "seconds": 0.73
+   "bytes": 122080,
+   "seconds": 1.63
   }
  },
  {
@@ -8190,7 +8226,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5550,
-   "seconds": 0.22
+   "seconds": 0.96
   },
   "impersonate": {
    "ok": true,
@@ -8201,7 +8237,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5934,
-   "seconds": 1.25
+   "seconds": 0.53
   }
  },
  {
@@ -8216,8 +8252,8 @@
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
-   "bytes": 5528,
-   "seconds": 0.42
+   "bytes": 5549,
+   "seconds": 0.76
   },
   "impersonate": {
    "ok": true,
@@ -8228,7 +8264,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5933,
-   "seconds": 0.11
+   "seconds": 0.74
   }
  },
  {
@@ -8244,12 +8280,18 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 149,
-   "seconds": 1.53
+   "seconds": 0.6
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20001 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 200,
+   "edge": "unknown",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 149,
+   "seconds": 0.33
   }
  }
 ]

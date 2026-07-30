@@ -4,7 +4,7 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.0] - 2026-07-30
 
 ### Added
 
@@ -34,6 +34,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   another. It does mean **every clearance already in `origins.json` stops matching once, on
   upgrade**. Self-healing: the next solve replaces it. A first run after upgrading will
   look colder than it is.
+
+  The browser profile directory is deliberately *not* per origin. `profile_dir_for` keys
+  on the address, because a Chrome profile is tens of megabytes and a consumer with a few
+  hundred sources would otherwise keep one for each.
 
 - **A transport failure through a proxy no longer claims layer 1.** `diagnose_transport`
   attributed `IP_REPUTATION` to any connection error through an exit. The address is still
@@ -88,6 +92,16 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   lease, whose session key means the id can never be asked for again. `ClearanceTier._held`
   was keyed by origin and never evicted, holding cookies long past their expiry; expired
   entries are dropped on each solve, with a cap as a backstop.
+
+  Browser profile directories were the third and largest of these, at tens of megabytes
+  each. A proxied exit id carries a session key, so every rotation that reached a solve
+  left another one behind and nothing ever removed it. `profile_dir_for` now prunes the
+  least recently used beyond `MAX_PROFILES`, skipping anything touched in the last few
+  minutes — two scrapers can share a data dir, and each solver only serialises against
+  itself, so the directory being removed must not be one another process has a browser in.
+  Keying them coarsely was not the alternative: for a pool endpoint the URL is constant
+  while the exit IP is not, so one shared profile would hand a fresh session the
+  accumulated history of a burnt exit.
 
 - **Success is recorded only for a response that succeeded.** Any status without a
   matching diagnosis is reported as `ACCEPT` — correctly, since nothing about it says a
@@ -517,6 +531,7 @@ Initial public release of `lncrawl-scraper`, extracted from
   rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[1.1.0]: https://github.com/lncrawl/scraper/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/lncrawl/scraper/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/lncrawl/scraper/compare/v0.2.6...v1.0.0
 [0.2.6]: https://github.com/lncrawl/scraper/compare/v0.2.5...v0.2.6
