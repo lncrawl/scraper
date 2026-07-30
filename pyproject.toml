@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "lncrawl-scraper"
-version = "1.0.1"
+version = "1.1.0"
 description = "A scraper that diagnoses which detection layer is blocking it and escalates only as far as that layer requires."
 readme = "README.md"
 license = { file = "LICENSE" }
