@@ -1,12 +1,14 @@
 """Tests for internal utilities (URL helpers, atomic writes, exceptions)."""
 
 import os
+import threading
 
 import pytest
 
 from scraper import Aborted, Blocked, Exhausted, Impassable, ScraperError
 from scraper.layers import Layer
 from scraper.utils.file_tools import atomic_write
+from scraper.utils.signals import AnySignal, combine
 from scraper.utils.url_tools import extract_base, extract_host, validate_url
 
 # --- url_tools ------------------------------------------------------------
@@ -156,3 +158,28 @@ def test_an_impassable_failure_always_carries_the_legitimate_route():
     error = Impassable(Layer.ACCESS, "authentication required (HTTP 401)")
     assert "account" in str(error)
     assert "401" in str(error)
+
+
+# --- signals --------------------------------------------------------------
+
+
+def test_combining_one_signal_hands_it_back_unchanged():
+    # The common case is no per-request signal, and it should cost nothing.
+    event = threading.Event()
+    assert combine(event) is event
+    assert combine(None, event) is event
+
+
+def test_a_combination_is_set_when_either_half_is():
+    shared, mine = threading.Event(), threading.Event()
+    both = combine(shared, mine)
+    assert not both.is_set()
+    mine.set()
+    assert both.is_set()
+    mine.clear()
+    shared.set()
+    assert both.is_set()
+
+
+def test_a_combination_of_nothing_is_never_set():
+    assert not AnySignal().is_set()

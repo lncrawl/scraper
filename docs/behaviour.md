@@ -161,3 +161,26 @@ Building a `Memory` per state instead is a silent way to lose everything learned
 holds every origin *it* knows and `flush()` writes the whole file, so two stores on one path do
 not merge — the later write is the complete file, and whatever the other one had accumulated is
 gone. Sharing the store is what makes per-site state safe.
+
+### Cancelling one caller
+
+Sharing has one cost, and this is the answer to it. `abort()` stops everything the scraper is
+doing, which is what shutdown wants and not what one job among several wants. So a retrieval can
+carry its own switch:
+
+```python
+job = threading.Event()
+
+scraper.get(url, signal=job)          # cancelled by job, or by abort()
+job.set()                             # stops that retrieval, nothing else
+```
+
+Anything with `is_set()` works. It is *combined* with the scraper's own signal rather than
+replacing it, so `abort()` keeps its meaning. The signal reaches the two places a cancelled
+retrieval actually spends its time — the pacing wait, whose tail is measured in tens of seconds,
+and the download loop, which checks between chunks — as well as the pre-send check, so a
+cancelled request never reaches the network at all.
+
+Without this the only lever was the shared attribute, so cancelling one job cancelled every job
+on the origin — which pushed consumers into a scraper per thread, losing exactly the per-origin
+state that sharing exists for.

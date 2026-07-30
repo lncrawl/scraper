@@ -54,6 +54,7 @@ from .state import SharedState
 from .tiers import ArchiveTier, Call, ClearanceTier, DirectTier, ManagedTier, Tier
 from .transport import TRANSPORT_ERRORS, ImpersonateTransport, Transport
 from .utils.file_tools import atomic_write
+from .utils.signals import AbortSignal, combine
 from .utils.url_tools import extract_base
 
 logger = logging.getLogger(__name__)
@@ -176,6 +177,7 @@ class Scraper:
         timeout: Any = None,
         navigation: bool = True,
         stream_to: Optional[Path] = None,
+        signal: Optional[AbortSignal] = None,
         **options: Any,
     ) -> requests.Response:
         """Retrieve *url*, escalating until it works or the model says stop.
@@ -187,8 +189,15 @@ class Scraper:
                 chain that threads through every image is not one a browser
                 produces.
             stream_to: Write the body to this path instead of buffering it.
+            signal: Cancel this retrieval alone. A ``threading.Event``, or anything
+                with ``is_set()``. Combined with the scraper's own signal rather
+                than replacing it, so :meth:`abort` still stops everything: one
+                scraper is meant to be shared by an origin's callers, and until this
+                existed the only way to cancel one caller's work was an attribute
+                that cancelled all of it.
         """
-        self._check_signal()
+        abort = combine(self.signal, signal)
+        self._check_signal(abort)
         key = self.memory.key(url)
         profile = self.memory.profile(url)
         self.pacer.learn(key, profile.interval)
@@ -219,11 +228,12 @@ class Scraper:
                 timeout=timeout,
                 navigation=navigation,
                 options=options,
+                signal=abort,
             )
 
             response: Optional[requests.Response] = None
             try:
-                response, diagnosis = self._attempt(tier, call, key, stream_to)
+                response, diagnosis = self._attempt(tier, call, key, stream_to, abort)
             except Aborted:
                 raise
             except TierUnavailable as exc:
@@ -284,7 +294,7 @@ class Scraper:
             if decision.move is Move.STOP:
                 raise self._stop(url, decision, attempt)
 
-            self._apply(decision, diagnosis, key, url, attempt)
+            self._apply(decision, diagnosis, key, url, attempt, abort)
             attempt.number += 1
 
     def _attempt(
@@ -293,18 +303,19 @@ class Scraper:
         call: Call,
         key: str,
         stream_to: Optional[Path],
+        abort: AbortSignal,
     ) -> Tuple[requests.Response, Diagnosis]:
         """Send once, under the address's concurrency gate and the origin's clock."""
         gate = self.exits.slot(self.exits.lease(key))
         while not gate.acquire(timeout=0.25):
-            self._check_signal()
+            self._check_signal(abort)
         try:
             # Paced inside the gate on purpose: waiting outside it lets several
             # threads finish their waits together and then arrive as a burst, which
             # is the arrival pattern the pacing exists to avoid.
-            self.pacer.wait(key, self.signal)
+            self.pacer.wait(key, abort)
             if stream_to is not None:
-                response = self._download(tier, call, stream_to)
+                response = self._download(tier, call, stream_to, abort)
             else:
                 response = tier.send(call)
         finally:
@@ -321,7 +332,9 @@ class Scraper:
             user_agent=self._sent_user_agent(response, call),
         )
 
-    def _download(self, tier: Tier, call: Call, target: Path) -> requests.Response:
+    def _download(
+        self, tier: Tier, call: Call, target: Path, abort: AbortSignal
+    ) -> requests.Response:
         """Stream a body to *target*, checking the abort signal between chunks."""
         with tier.stream(call) as (response, chunks):
             if response.status_code >= 400:
@@ -339,7 +352,7 @@ class Scraper:
             head: List[bytes] = []
             buffered = 0
             for chunk in chunks:
-                if self.signal.is_set():
+                if abort.is_set():
                     raise Aborted("aborted during download")
                 head.append(chunk)
                 buffered += len(chunk)
@@ -351,7 +364,7 @@ class Scraper:
                     for chunk in head:
                         handle.write(chunk)
                     for chunk in chunks:
-                        if self.signal.is_set():
+                        if abort.is_set():
                             raise Aborted("aborted during download")
                         handle.write(chunk)
         return response
@@ -378,10 +391,11 @@ class Scraper:
         key: str,
         url: str,
         attempt: Attempt,
+        abort: AbortSignal,
     ) -> None:
         """Carry out everything but ``PROCEED`` and ``STOP``."""
         if decision.move is Move.WARM:
-            self._warmup(url)
+            self._warmup(url, abort)
             return
 
         if decision.move in (Move.BACKOFF, Move.ACCUMULATE):
@@ -391,7 +405,7 @@ class Scraper:
             # is" — a throttle that never widens anything.
             widened = self.pacer.throttled(key, diagnosis.retry_after)
             self.memory.record_failure(url, decision.layer, interval=widened)
-            self._sleep(decision.wait or widened)
+            self._sleep(decision.wait or widened, abort)
             return
 
         if decision.move is Move.ROTATE:
@@ -409,7 +423,7 @@ class Scraper:
             return
 
         if decision.wait:
-            self._sleep(decision.wait)
+            self._sleep(decision.wait, abort)
 
     def _stop(self, url: str, decision: Decision, attempt: Attempt) -> Blocked:
         layer = decision.layer
@@ -531,6 +545,7 @@ class Scraper:
         timeout: Any,
         navigation: bool,
         options: Dict[str, Any],
+        signal: AbortSignal,
     ) -> Call:
         merged: Dict[str, str] = {}
         merged.update({key.lower(): value for key, value in self.headers.items()})
@@ -555,7 +570,7 @@ class Scraper:
             clearance=clearance,
             timeout=timeout if timeout is not None else self.config.timeout,
             options=options,
-            signal=self.signal,
+            signal=signal,
         )
 
     def _context(self, key: str, profile: OriginProfile, attempt: Attempt, url: str) -> Context:
@@ -570,12 +585,12 @@ class Scraper:
             can_rotate=self.exits.rotatable,
         )
 
-    def _warmup(self, url: str) -> None:
+    def _warmup(self, url: str, abort: Optional[AbortSignal] = None) -> None:
         """Visit the origin's homepage, the way a visitor would have arrived."""
         home = warmup_url(url)
         logger.debug("warming up %s before %s", home, url)
         try:
-            self.fetch("GET", home, navigation=True)
+            self.fetch("GET", home, navigation=True, signal=abort)
         except (Blocked, Poisoned, requests.HTTPError) as exc:
             # A homepage that will not load is worth knowing about but is not
             # itself the failure: the deep page may still work, and refusing to
@@ -585,16 +600,16 @@ class Scraper:
 
     # -- helpers ------------------------------------------------------------------------
 
-    def _sleep(self, seconds: float) -> None:
+    def _sleep(self, seconds: float, abort: Optional[AbortSignal] = None) -> None:
         remaining = max(0.0, seconds)
         while remaining > 0:
-            self._check_signal()
+            self._check_signal(abort)
             step = min(0.25, remaining)
             time.sleep(step)
             remaining -= step
 
-    def _check_signal(self) -> None:
-        if self.signal.is_set():
+    def _check_signal(self, abort: Optional[AbortSignal] = None) -> None:
+        if (abort or self.signal).is_set():
             raise Aborted("aborted by signal")
 
     @staticmethod

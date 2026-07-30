@@ -36,7 +36,7 @@ All of these derive from `scraper.ScraperError`.
 | `Blocked` | Base class for both, carrying `.layer`. | Branch on the layer, not the status. |
 | `Poisoned` | Content looks like decoy material. | See [decoy-content.md](decoy-content.md). |
 | `TierUnavailable` | A tier cannot serve this call at all. | Internal; escalates without blaming a layer. |
-| `Aborted` | `abort()` was called. | Expected on cancellation. |
+| `Aborted` | `abort()` was called, or a per-request `signal` was set. | Expected on cancellation. |
 | `ConfigError` / `MissingDependency` | Setup problem. | The message says which extra or field. |
 
 ```python

@@ -573,6 +573,67 @@ class TestControl:
         # The partial file was never left behind: the write is atomic.
         assert not (tmp_path / "big.bin").exists()
 
+    def test_one_request_can_be_cancelled_without_stopping_the_others(self):
+        # The scraper is meant to be shared by an origin's callers, so cancelling one
+        # job through the shared attribute cancelled all of them — which is what made
+        # a consumer keep a scraper per thread and lose the per-origin state that
+        # sharing exists for.
+        transport = FakeTransport([make_response(body=PAGE, url=URL)])
+        with scraper_for(transport) as scraper:
+            cancelled = threading.Event()
+            cancelled.set()
+            with pytest.raises(Aborted):
+                scraper.get(URL, signal=cancelled)
+            assert transport.calls == []
+            assert scraper.get(URL).status_code == 200
+
+    def test_an_abort_still_stops_a_request_carrying_its_own_signal(self):
+        # Combined, not substituted: abort() is the one lever that has to stop
+        # everything, including work that brought its own switch.
+        transport = FakeTransport([make_response(body=PAGE, url=URL)])
+        with scraper_for(transport) as scraper:
+            scraper.abort()
+            with pytest.raises(Aborted):
+                scraper.get(URL, signal=threading.Event())
+        assert transport.calls == []
+
+    def test_a_per_request_signal_stops_a_download_mid_stream(self, tmp_path: Path):
+        holder: Dict[str, threading.Event] = {"signal": threading.Event()}
+
+        class Chunked(FakeTransport):
+            @contextmanager
+            def stream(self, method: str, url: str, **kwargs: Any):
+                response = make_response(body="", url=url)
+
+                def chunks():
+                    yield b"\x89PNG\r\n\x1a\n"
+                    holder["signal"].set()
+                    for _ in range(1000):
+                        yield b"more"
+
+                yield response, chunks()
+
+        with scraper_for(Chunked()) as scraper:
+            with pytest.raises(Aborted):
+                scraper.get_file(URL, tmp_path / "big.bin", signal=holder["signal"])
+        assert not (tmp_path / "big.bin").exists()
+
+    def test_a_per_request_signal_interrupts_the_pacing_wait(self):
+        # The wait is where a cancelled job spends most of its life: the interval is
+        # drawn from a distribution with a tail measured in tens of seconds.
+        from scraper import PacingPolicy
+
+        slow = PacingPolicy(interval=30.0, floor=30.0, warmup=False, pause_chance=0.0)
+        transport = FakeTransport([make_response(body=PAGE, url=URL)])
+        with scraper_for(transport, pacing=slow) as scraper:
+            scraper.get(URL)  # first request is unpaced; the next one waits
+            cancelled = threading.Event()
+            cancelled.set()
+            started = time.monotonic()
+            with pytest.raises(Aborted):
+                scraper.get(URL, signal=cancelled)
+            assert time.monotonic() - started < 1.0
+
     def test_a_challenge_is_never_written_to_the_download_target(self, tmp_path: Path):
         """A challenge answers 200, so the status cannot be what decides this.
 

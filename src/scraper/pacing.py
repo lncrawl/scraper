@@ -38,6 +38,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 
 from .exceptions import Aborted
+from .utils.signals import AbortSignal
 from .utils.url_tools import extract_base, extract_host
 
 
@@ -176,7 +177,7 @@ class Pacer:
             since = time.monotonic() - self._last.get(origin, float("-inf"))
         return max(0.0, gap - since)
 
-    def wait(self, origin: str, signal: Optional[threading.Event] = None) -> float:
+    def wait(self, origin: str, signal: Optional[AbortSignal] = None) -> float:
         """Sleep until the next request to *origin* is due. Returns seconds slept.
 
         Sliced so an abort is honoured promptly: the tail of the distribution can

@@ -9,7 +9,6 @@ them as interchangeable and pick by cost.
 
 from __future__ import annotations
 
-import threading
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Any, Dict, Iterator, Optional, Tuple
@@ -17,6 +16,7 @@ from typing import Any, Dict, Iterator, Optional, Tuple
 import requests
 
 from ..identity import Clearance, Identity
+from ..utils.signals import AbortSignal
 
 
 @dataclass
@@ -44,7 +44,7 @@ class Call:
     clearance: Optional[Clearance] = None
     timeout: Any = None
     options: Dict[str, Any] = field(default_factory=dict)
-    signal: Optional[threading.Event] = None
+    signal: Optional[AbortSignal] = None
 
     @property
     def through_proxy(self) -> bool:
