@@ -94,7 +94,8 @@ A process that forgets everything on exit can never accumulate anything, which i
 - the learned interval;
 - JSON endpoints seen behind the HTML;
 - URLs that behaved like decoys, which is the only durable defence against a trap that
-  returns no error.
+  returns no error;
+- the `ETag`/`Last-Modified` pair each parsed page answered with, for `unchanged()` below.
 
 One JSON file per data directory, written atomically, created `0600` because the clearance
 cookies in it are credentials. Location is `ScraperConfig.data_dir`, defaulting to
@@ -120,6 +121,31 @@ from scraper import Memory
 
 memory = Memory(path, max_origins=4096, forget_after=7 * 86400)
 ```
+
+## Asking whether a page has moved
+
+```python
+if scraper.unchanged(toc_url):
+    return                      # nothing to do; skip the whole job
+```
+
+Every parsed response's `ETag` and `Last-Modified` are recorded per endpoint. **Sending them
+is only ever this call**, and that asymmetry is the design rather than an omission.
+
+A `304` carries no body, and this library keeps no response cache to replay one from. So a
+revalidation applied underneath `get_soup()` would hand the caller an empty page, every
+selector would find nothing, and nothing would raise — strictly worse than the download it
+saved. Which means the saving on offer is **skipping the work**, not making a retrieval
+cheaper, and the question has to be asked before the work starts. A crawler that parses
+whatever `get_soup` returns cannot use this from the inside; its caller can.
+
+`False` means "do the work": either nothing has been recorded for that URL yet, or the site
+answered with a body. A revalidation is a real request, so it is paced like one and a failure
+raises rather than reading as changed — the work that would have followed faces the same site.
+
+The store is bounded per origin (`scraper.memory.MAX_VALIDATORS`), least recently recorded
+evicted first, and it deliberately skips non-textual responses: one page can be twenty images,
+and recording those would evict the pages that are what anyone revalidates.
 
 ## Two scrapers, one site
 

@@ -470,11 +470,39 @@ class Scraper:
         if navigation:
             self.trail.record(response.url or url)
             self.last_url = response.url or url
+        self._note_validators(url, profile, response)
         if response.status_code == 200:
             self._inspect_content(url, key, profile, response)
         if self.config.raise_for_status:
             response.raise_for_status()
         return response
+
+    def _note_validators(
+        self,
+        url: str,
+        profile: OriginProfile,
+        response: requests.Response,
+    ) -> None:
+        """Keep what would let this endpoint answer 304, for a caller that asks.
+
+        Only for responses this library parses. A download's validators are just as
+        valid, but the store is bounded per origin and one page can be twenty images —
+        so recording those would evict the pages, which are what a caller revalidates.
+        A 304 carries no content type and is kept regardless: it is the answer to a
+        revalidation, and its headers refresh the pair that produced it.
+        """
+        if response.status_code not in (200, 304):
+            return
+        content_type = response.headers.get("content-type", "").lower()
+        if content_type and not any(token in content_type for token in _TEXTUAL):
+            return
+        changed = profile.note_validators(
+            url,
+            etag=response.headers.get("etag", ""),
+            last_modified=response.headers.get("last-modified", ""),
+        )
+        if changed:
+            self.memory.touch()
 
     def _inspect_content(
         self,
@@ -709,6 +737,39 @@ class Scraper:
     ) -> PageSoup:
         response = self.post(url, data=data, **kwargs)
         return self.make_soup(response, encoding)
+
+    def unchanged(self, url: str, *, signal: Optional[AbortSignal] = None) -> bool:
+        """Whether *url* still answers with exactly what was seen last time.
+
+        Sends the stored ``ETag``/``Last-Modified`` as validators and reports whether
+        the site answered ``304``. Recording them happens on every parsed response;
+        *sending* them is only ever this call.
+
+        That asymmetry is the whole design. A ``304`` carries no body and this library
+        holds no response cache to replay one from, so revalidating underneath
+        :meth:`get_soup` would hand a caller an empty page and a report of nothing
+        found — worse than the re-download it saved. The saving here is skipping the
+        *work*, not making a retrieval cheaper, so the question has to be asked before
+        the work starts.
+
+        ``False`` when nothing has been recorded for *url*, and when the site answered
+        with a body: both mean "do the work". A revalidation is a real request to the
+        origin, so it is paced like one, and a failure raises rather than reading as
+        changed — the crawl that would have followed faces the same site.
+        """
+        stored = self.memory.profile(url).validators_for(url)
+        headers: Dict[str, str] = {}
+        if stored.get("etag"):
+            headers["if-none-match"] = stored["etag"]
+        if stored.get("last_modified"):
+            headers["if-modified-since"] = stored["last_modified"]
+        if not headers:
+            return False
+        # Navigation metadata kept: a conditional GET on a page is what a reload
+        # sends, and announcing a document fetch as a CORS one is a mismatch for the
+        # sake of a referrer entry that costs nothing.
+        response = self.fetch("GET", url, headers=headers, signal=signal)
+        return response.status_code == 304
 
     def render(
         self,

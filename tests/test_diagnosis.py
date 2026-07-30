@@ -272,6 +272,15 @@ class TestNotAboutTheClient:
         assert result.action is Action.RETRY
         assert result.layer is None
 
+    def test_a_not_modified_is_an_answer_not_a_block(self):
+        # What `unchanged()` relies on. A 304 has no body, so any classifier that
+        # reasons from body markers has to reach "accept" on an empty one — and a
+        # layer attributed here would be written to the profile of a site whose only
+        # offence is that its page is current.
+        result = diagnose(status=304, headers={"etag": 'W/"abc"'}, body="")
+        assert result.action is Action.ACCEPT
+        assert result.layer is None
+
 
 class TestTransportFailures:
     def test_through_a_proxy_the_exit_is_the_suspect(self):

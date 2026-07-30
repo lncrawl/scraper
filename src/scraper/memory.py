@@ -50,6 +50,13 @@ SCHEMA = 1
 MAX_ENDPOINTS = 32
 MAX_DECOYS = 256
 
+MAX_VALIDATORS = 64
+"""Endpoints per origin to keep an ``ETag``/``Last-Modified`` pair for.
+
+Least recently recorded go first. Sized for the shape that uses them: a caller asking
+"has this table of contents moved?" across the novels it follows on one site, which is
+tens of endpoints per origin rather than one or thousands."""
+
 MAX_ORIGINS = 512
 """How many origins a store keeps. A long-running process crawling a wide frontier
 otherwise grows one profile per host it ever touched, and every flush rewrites all of
@@ -93,6 +100,7 @@ class OriginProfile:
     endpoints: List[str] = field(default_factory=list)
     decoys: List[str] = field(default_factory=list)
     clearance: Optional[Dict[str, Any]] = None
+    validators: Dict[str, Dict[str, str]] = field(default_factory=dict)
 
     @property
     def binding(self) -> Optional[Layer]:
@@ -138,6 +146,28 @@ class OriginProfile:
         self.endpoints.append(url)
         del self.endpoints[:-MAX_ENDPOINTS]
         return True
+
+    def note_validators(self, url: str, *, etag: str = "", last_modified: str = "") -> bool:
+        """Remember what would let *url* answer ``304`` next time. True if new.
+
+        Recording is automatic and sending is not: a validator in the store costs
+        nothing, while sending one turns a response into a ``304`` with no body, which
+        only a caller who asked for that can handle.
+        """
+        if not (etag or last_modified):
+            return False
+        found = {"etag": etag, "last_modified": last_modified}
+        known = self.validators.pop(url, None)
+        # Re-inserted either way, because insertion order is the recency the cap
+        # evicts by: refreshing an endpoint has to move it to the back.
+        self.validators[url] = found
+        while len(self.validators) > MAX_VALIDATORS:
+            self.validators.pop(next(iter(self.validators)))
+        return known != found
+
+    def validators_for(self, url: str) -> Dict[str, str]:
+        """The stored ``ETag``/``Last-Modified`` pair for *url*, or an empty mapping."""
+        return dict(self.validators.get(url) or {})
 
     def note_decoy(self, url: str) -> None:
         if url not in self.decoys:

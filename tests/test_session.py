@@ -1378,3 +1378,123 @@ class TestRenderingWhatHttpCannotReach:
             solver.html = off_topic
             with pytest.raises(Poisoned):
                 scraper.render("https://example.com/maze/1")
+
+
+class TestRevalidation:
+    """Conditional requests, and why they are opt-in.
+
+    A 304 carries no body and this library keeps no response cache, so applying this
+    underneath `get_soup` would hand a caller an empty page and a report of nothing
+    found — a worse outcome than the download it saved. Recording the validators is
+    automatic; sending them is one explicit call.
+    """
+
+    HEADERS = {
+        "content-type": "text/html",
+        "etag": 'W/"abc123"',
+        "last-modified": "Wed, 21 Oct 2026 07:28:00 GMT",
+    }
+
+    def test_nothing_recorded_means_do_the_work_without_asking(self):
+        transport = FakeTransport([make_response(body=PAGE, url=URL)])
+        with scraper_for(transport) as scraper:
+            assert scraper.unchanged(URL) is False
+        assert transport.calls == [], "an origin with no validator costs no request"
+
+    def test_a_recorded_page_is_revalidated_with_both_validators(self):
+        transport = FakeTransport(
+            [
+                make_response(body=PAGE, url=URL, headers=self.HEADERS),
+                make_response(304, "", url=URL, headers={"etag": 'W/"abc123"'}),
+            ]
+        )
+        with scraper_for(transport) as scraper:
+            scraper.get_soup(URL)
+            assert scraper.unchanged(URL) is True
+        sent = transport.headers_of(1)
+        assert sent["if-none-match"] == 'W/"abc123"'
+        assert sent["if-modified-since"] == "Wed, 21 Oct 2026 07:28:00 GMT"
+
+    def test_a_body_in_reply_means_it_moved(self):
+        moved = dict(self.HEADERS)
+        moved["etag"] = 'W/"def456"'
+        transport = FakeTransport(
+            [
+                make_response(body=PAGE, url=URL, headers=self.HEADERS),
+                make_response(body=PAGE + "<p>more</p>", url=URL, headers=moved),
+            ]
+        )
+        with scraper_for(transport) as scraper:
+            scraper.get_soup(URL)
+            assert scraper.unchanged(URL) is False
+            # The new validator replaces the old one, or the next check asks about a
+            # version of the page that is already gone.
+            assert scraper.knows(URL).validators_for(URL)["etag"] == 'W/"def456"'
+
+    def test_a_soup_request_never_sends_a_validator_of_its_own(self):
+        # The trap: transparent revalidation returns a 304 with no body, and every
+        # selector on the resulting soup finds nothing while nothing raises.
+        transport = FakeTransport(
+            handler=lambda m, u, k: make_response(body=PAGE, url=u, headers=self.HEADERS)
+        )
+        with scraper_for(transport) as scraper:
+            scraper.get_soup(URL)
+            soup = scraper.get_soup(URL)
+        assert soup.select_one("h1").text == "Chapter One"
+        assert "if-none-match" not in transport.headers_of(1)
+        assert "if-modified-since" not in transport.headers_of(1)
+
+    def test_a_304_is_not_read_as_a_block(self):
+        # It is a successful answer through the tier, and reading it as a detection
+        # event would write a layer to the profile for a page that is simply current.
+        transport = FakeTransport(
+            [
+                make_response(body=PAGE, url=URL, headers=self.HEADERS),
+                make_response(304, "", url=URL),
+            ]
+        )
+        with scraper_for(transport) as scraper:
+            scraper.get_soup(URL)
+            assert scraper.unchanged(URL) is True
+            profile = scraper.knows(URL)
+        assert profile.binding is None
+        assert profile.consecutive_failures == 0
+
+    def test_a_304_does_not_erase_the_validators_that_produced_it(self):
+        transport = FakeTransport(
+            [
+                make_response(body=PAGE, url=URL, headers=self.HEADERS),
+                make_response(304, "", url=URL),
+            ]
+        )
+        with scraper_for(transport) as scraper:
+            scraper.get_soup(URL)
+            scraper.unchanged(URL)
+            stored = scraper.knows(URL).validators_for(URL)
+        assert stored["etag"] == 'W/"abc123"'
+        assert stored["last_modified"] == "Wed, 21 Oct 2026 07:28:00 GMT"
+
+    def test_an_image_does_not_evict_the_pages(self):
+        # The store is bounded per origin and one manga chapter is twenty images. The
+        # pages are what a caller revalidates.
+        image = {"content-type": "image/jpeg", "etag": 'W/"img"'}
+        transport = FakeTransport(
+            handler=lambda m, u, k: make_response(
+                body=PAGE, url=u, headers=image if "cover" in u else self.HEADERS
+            )
+        )
+        with scraper_for(transport) as scraper:
+            scraper.get_soup(URL)
+            scraper.get("https://example.com/cover.jpg")
+            stored = scraper.knows(URL)
+        assert URL in stored.validators
+        assert "https://example.com/cover.jpg" not in stored.validators
+
+    def test_validators_survive_the_process(self, tmp_path: Path):
+        transport = FakeTransport(
+            handler=lambda m, u, k: make_response(body=PAGE, url=u, headers=self.HEADERS)
+        )
+        with scraper_for(transport, remember=True, data_dir=tmp_path) as scraper:
+            scraper.get_soup(URL)
+        with scraper_for(transport, remember=True, data_dir=tmp_path) as scraper:
+            assert scraper.knows(URL).validators_for(URL)["etag"] == 'W/"abc123"'

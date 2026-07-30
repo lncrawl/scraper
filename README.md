@@ -83,6 +83,7 @@ Its Circumvention_, included as
 | **Avoids the trap with no error response** | `safe_links` enumerates only anchors a person could click; `TopicGuard` notices content that stopped being about the site.                                                                                                                               |
 | **Signs requests, to be welcome**          | RFC 9421 / Ed25519 Web Bot Auth. A valid signature skips the challenge machinery entirely, making it the cheapest tier there is.                                                                                                                         |
 | **Tells you why**                          | `scraper.explain(url)` names the binding layer, the working tier, the learned pacing and the ladder available. Exceptions carry `.layer`, not just a status code.                                                                                        |
+| **Asks before doing the work**             | `scraper.unchanged(url)` revalidates against the stored `ETag`, so a caller can skip a whole job. Opt-in only: a `304` has no body, so doing it underneath `get_soup` would return an empty page and no error.                                            |
 | **`PageSoup`**                             | Null-safe BeautifulSoup wrapper; selectors never return `None`.                                                                                                                                                                                          |
 
 ## The ladder

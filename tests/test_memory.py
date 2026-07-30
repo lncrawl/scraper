@@ -145,6 +145,44 @@ class TestEndpointsAndDecoys:
         assert profile.decoys == ["https://example.com/maze/1"]
 
 
+class TestValidators:
+    def test_a_pair_round_trips_per_endpoint(self):
+        profile = OriginProfile(origin="example.com")
+        assert profile.note_validators("https://example.com/a", etag='W/"1"')
+        assert profile.note_validators("https://example.com/b", last_modified="Mon, 01 Jan 2026")
+        assert profile.validators_for("https://example.com/a") == {
+            "etag": 'W/"1"',
+            "last_modified": "",
+        }
+        assert profile.validators_for("https://example.com/c") == {}
+
+    def test_recording_the_same_pair_twice_is_not_a_change(self):
+        # The caller uses the return value to decide whether the store needs writing,
+        # and a table of contents that has not moved is the common case.
+        profile = OriginProfile(origin="example.com")
+        assert profile.note_validators("https://example.com/a", etag='W/"1"')
+        assert not profile.note_validators("https://example.com/a", etag='W/"1"')
+        assert profile.note_validators("https://example.com/a", etag='W/"2"')
+
+    def test_a_response_with_neither_validator_records_nothing(self):
+        profile = OriginProfile(origin="example.com")
+        assert not profile.note_validators("https://example.com/a")
+        assert profile.validators == {}
+
+    def test_the_store_is_bounded_and_refreshing_keeps_an_endpoint_alive(self):
+        from scraper.memory import MAX_VALIDATORS
+
+        profile = OriginProfile(origin="example.com")
+        profile.note_validators("https://example.com/first", etag='W/"first"')
+        for index in range(MAX_VALIDATORS):
+            profile.note_validators(f"https://example.com/{index}", etag=f'W/"{index}"')
+            # Recording it again has to move it to the back, or the endpoint being
+            # polled most often is the one evicted.
+            profile.note_validators("https://example.com/first", etag='W/"first"')
+        assert len(profile.validators) == MAX_VALIDATORS
+        assert "https://example.com/first" in profile.validators
+
+
 class TestTheBound:
     def test_an_origin_unseen_for_too_long_is_dropped(self, tmp_path: Path):
         # A stored profile is a conclusion about a site's current configuration. A
