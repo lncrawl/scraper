@@ -201,13 +201,14 @@ class NoDriverSolver(BrowserSolver):
     ) -> SolveResult:
         try:
             import nodriver
-        except (ImportError, TypeError) as exc:
-            # TypeError as well as ImportError: nodriver's own module body evaluates
-            # `str | Path` at import time, which is a runtime error before Python 3.10.
-            # Left uncaught it surfaces as an unrelated TypeError from inside a
-            # dependency, with nothing pointing at the version floor.
+        except (ImportError, SyntaxError, TypeError) as exc:
+            # Neither failure is an ImportError. Before 3.10 nodriver's module body
+            # evaluates `str | Path`, a TypeError; from 3.14 its generated
+            # cdp/network.py fails to tokenize on a stray non-UTF-8 byte, a
+            # SyntaxError. Uncaught, both surface from inside a dependency with
+            # nothing naming the supported range.
             raise MissingDependency(
-                "browser", "solving a challenge with nodriver (needs Python 3.10 or newer)"
+                "browser", "solving a challenge with nodriver (needs Python 3.10 to 3.13)"
             ) from exc
 
         flags = [

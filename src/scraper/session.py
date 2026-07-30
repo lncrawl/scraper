@@ -38,6 +38,7 @@ from .exceptions import (
     Blocked,
     Exhausted,
     Impassable,
+    MissingDependency,
     Poisoned,
     TierUnavailable,
 )
@@ -132,6 +133,8 @@ class Scraper:
             max_rotations=self.config.max_rotations,
             promote_after=self.config.promote_after,
             allow_rotation=self.config.allow_rotation,
+            retry_backoff=self.config.retry_backoff,
+            max_retry_wait=self.config.max_retry_wait,
         )
 
         self._identities: Dict[str, Identity] = self.state.identities
@@ -141,7 +144,11 @@ class Scraper:
     # -- construction ----------------------------------------------------------------
 
     def _build_tiers(self) -> Dict[str, Tier]:
-        direct = DirectTier(self.transport, botauth=self.config.botauth)
+        direct = DirectTier(
+            self.transport,
+            botauth=self.config.botauth,
+            owns_transport=self.config.transport is None,
+        )
         tiers: Dict[str, Tier] = {direct.name: direct}
         if self.config.archive:
             tiers["archive"] = ArchiveTier(self.transport, max_age=self.config.archive_max_age)
@@ -679,7 +686,10 @@ class Scraper:
 
     def get_image(self, url: str, **kwargs: Any) -> Any:
         """Download *url* and return a PIL image. Needs the ``image`` extra."""
-        from PIL import Image
+        try:
+            from PIL import Image
+        except ImportError as exc:
+            raise MissingDependency("image", "decoding an image") from exc
 
         if url.startswith("data:"):
             return Image.open(BytesIO(base64.b64decode(url.split("base64,")[-1])))

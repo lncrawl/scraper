@@ -403,3 +403,43 @@ class TestReasoningAboutWhatIsLeft:
         assert decision.move is Move.STOP
         assert "handled by managed" in decision.reason
         assert "the solver timed out" in decision.reason
+
+
+class TestRetriesBackOff:
+    """408, 502, 504 and the 52x family carry no `Retry-After`, so without a backoff
+    a retry on one of those is issued back-to-back against a struggling site.
+    """
+
+    def _planner(self, **kw):
+        from scraper.planner import Planner, default_capabilities
+
+        return Planner(default_capabilities(), **kw)
+
+    def _wait(self, planner, attempt):
+        from scraper.diagnosis import Action, Diagnosis
+        from scraper.planner import Context
+
+        decision = planner.react(
+            Diagnosis(Action.RETRY, None, "upstream error (HTTP 502)"),
+            Context(tier="direct", attempt=attempt),
+        )
+        return decision.wait
+
+    def test_the_wait_doubles_per_attempt(self):
+        planner = self._planner(max_attempts=6, retry_backoff=1.0, max_retry_wait=30.0)
+        assert [self._wait(planner, n) for n in (1, 2, 3, 4)] == [1.0, 2.0, 4.0, 8.0]
+
+    def test_the_wait_is_capped(self):
+        planner = self._planner(max_attempts=20, retry_backoff=1.0, max_retry_wait=5.0)
+        assert self._wait(planner, 10) == 5.0
+
+    def test_a_server_named_delay_wins(self):
+        from scraper.diagnosis import Action, Diagnosis
+        from scraper.planner import Context
+
+        planner = self._planner(retry_backoff=8.0)
+        decision = planner.react(
+            Diagnosis(Action.RETRY, None, "origin unavailable", retry_after=0.5),
+            Context(tier="direct", attempt=3),
+        )
+        assert decision.wait == 0.5

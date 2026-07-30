@@ -151,6 +151,8 @@ class Planner:
         max_rotations: int = 2,
         promote_after: int = 3,
         allow_rotation: bool = True,
+        retry_backoff: float = 1.0,
+        max_retry_wait: float = 30.0,
     ) -> None:
         if not capabilities:
             raise ValueError("a planner needs at least one capability")
@@ -160,10 +162,21 @@ class Planner:
         self.max_rotations = max(0, max_rotations)
         self.promote_after = max(1, promote_after)
         self.allow_rotation = allow_rotation
+        self.retry_backoff = max(0.0, retry_backoff)
+        self.max_retry_wait = max(self.retry_backoff, max_retry_wait)
 
     @property
     def capabilities(self) -> List[Capability]:
         return list(self._by_cost)
+
+    def _backoff(self, attempt: int) -> float:
+        """Seconds to wait before retry *attempt*, when the server named no delay.
+
+        408, 502, 504 and the 52x family carry no ``Retry-After``, so a retry on one
+        of those used to be sent back-to-back — a tight loop aimed at a site that is
+        already struggling.
+        """
+        return min(self.max_retry_wait, self.retry_backoff * (2 ** max(0, attempt - 1)))
 
     def cheapest(self) -> Capability:
         return self._by_cost[0]
@@ -234,7 +247,7 @@ class Planner:
             return Decision(
                 Move.RETRY,
                 tier=context.tier,
-                wait=diagnosis.retry_after or 0.0,
+                wait=diagnosis.retry_after or self._backoff(context.attempt),
                 layer=layer,
                 reason=diagnosis.detail,
             )

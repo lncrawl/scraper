@@ -456,3 +456,32 @@ class TestDrivingNoDriver:
 
 def test_solve_errors_are_distinguishable():
     assert issubclass(SolveError, Exception)
+
+
+def test_a_nodriver_that_cannot_be_imported_names_the_supported_range(monkeypatch):
+    """Neither failure is an ImportError.
+
+    Below 3.10 nodriver's module body evaluates `str | Path`; from 3.14 its generated
+    cdp/network.py fails to tokenize on a stray non-UTF-8 byte. Both used to surface
+    raw from inside a dependency.
+    """
+    import builtins
+
+    from scraper.browser import NoDriverSolver
+    from scraper.exceptions import MissingDependency
+
+    real_import = builtins.__import__
+    for error in (
+        ImportError("no nodriver"),
+        SyntaxError("Non-UTF-8 code"),
+        TypeError("str | Path"),
+    ):
+
+        def broken(name, *args, _error=error, **kwargs):
+            if name == "nodriver":
+                raise _error
+            return real_import(name, *args, **kwargs)
+
+        monkeypatch.setattr(builtins, "__import__", broken)
+        with pytest.raises(MissingDependency, match="3.10 to 3.13"):
+            NoDriverSolver().solve("https://example.com/")

@@ -42,10 +42,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# nodriver evaluates PEP 604 unions at import time, so it cannot load before 3.10.
-# Marked rather than left to fail: without this the extra installs on 3.9 and the
-# failure surfaces as a TypeError from inside a dependency.
-browser = ["nodriver>=0.50; python_version >= '3.10'"]
+# nodriver cannot be imported outside 3.10-3.13: it evaluates PEP 604 unions at
+# import time below 3.10, and from 3.14 its generated cdp/network.py fails to
+# tokenize on a stray non-UTF-8 byte. Marked rather than left to fail, so the
+# extra is simply absent instead of erroring from inside a dependency.
+browser = ["nodriver>=0.50; python_version >= '3.10' and python_version < '3.14'"]
 botauth = ["cryptography>=44.0"]
 image = ["Pillow>=10.0"]
 all = ["lncrawl-scraper[browser,botauth,image]"]
@@ -72,7 +73,7 @@ dev = [
     "lxml-stubs>=0.5.1",
     "curl-cffi>=0.7",
     "cryptography>=47.0.0",
-    "nodriver>=0.50.3",
+    "nodriver>=0.50.3; python_version >= '3.10' and python_version < '3.14'",
 ]
 docs = [
     "mkdocs-material>=9.7.0",

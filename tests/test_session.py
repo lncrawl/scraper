@@ -589,10 +589,24 @@ class TestControl:
             assert scraper.get_file(URL, target) == target
         assert target.read_bytes() == b"\x89PNG\r\n\x1a\npayload"
 
-    def test_closing_closes_the_transport(self):
+    def test_a_transport_the_tier_owns_is_closed(self):
+        from scraper.tiers.direct import DirectTier
+
         transport = FakeTransport()
-        scraper_for(transport).close()
+        DirectTier(transport).close()
         assert transport.closed
+
+    def test_an_injected_transport_is_left_open(self):
+        # Two scrapers over one ScraperConfig(transport=...) is a supported shape, and
+        # the first close() used to take the transport out from under the second.
+        transport = FakeTransport()
+        one = scraper_for(transport)
+        two = scraper_for(transport)
+        one.close()
+        assert not transport.closed
+        assert two.get(URL).status_code == 200
+        two.close()
+        assert not transport.closed, "the injector owns it, and closes it itself"
 
     def test_explain_names_the_binding_layer_and_the_ladder(self):
         transport = FakeTransport(
@@ -1129,3 +1143,22 @@ class TestRotationIsReachable:
             with pytest.raises(Blocked) as caught:
                 scraper.get(URL)
         assert "reputation" in str(caught.value) or caught.value.layer is not None
+
+
+class TestAnOptionalExtraNamesItself:
+    def test_get_image_without_pillow_names_the_extra(self, monkeypatch: Any):
+        import builtins
+
+        from scraper.exceptions import MissingDependency
+
+        real_import = builtins.__import__
+
+        def no_pillow(name: str, *args: Any, **kwargs: Any):
+            if name == "PIL":
+                raise ImportError("No module named 'PIL'")
+            return real_import(name, *args, **kwargs)
+
+        monkeypatch.setattr(builtins, "__import__", no_pillow)
+        with scraper_for(FakeTransport()) as scraper:
+            with pytest.raises(MissingDependency, match=r"lncrawl-scraper\[image\]"):
+                scraper.get_image("https://example.com/cover.jpg")

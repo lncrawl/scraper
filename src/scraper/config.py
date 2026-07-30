@@ -82,6 +82,9 @@ class ScraperConfig:
         max_attempts: Attempts for one retrieval across all tiers.
         max_rotations: Addresses to spend on one retrieval. Deliberately small —
             burning a pool one request at a time is a misdiagnosis, not bad luck.
+        retry_backoff: Base seconds before a retry, doubled per attempt and capped
+            at *max_retry_wait*. Only used when the response named no delay; a
+            ``Retry-After`` header always wins.
         guard_topic: Watch for decoy content. The only defence against the layer
             that returns no error.
         on_decoy: ``"warn"``, ``"raise"`` or ``"ignore"``. Warning is the default
@@ -124,6 +127,8 @@ class ScraperConfig:
     max_rotations: int = 2
     promote_after: int = 3
     solve_timeout: float = 90.0
+    retry_backoff: float = 1.0
+    max_retry_wait: float = 30.0
 
     # -- content safety --------------------------------------------------------------
     guard_topic: bool = True

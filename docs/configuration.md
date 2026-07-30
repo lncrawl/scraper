@@ -97,9 +97,15 @@ See [tiers.md](tiers.md).
 | `max_rotations` | Addresses to spend on one retrieval. Deliberately small. |
 | `promote_after` | Failures at a covered emit layer before re-attributing to the composite. |
 | `solve_timeout` | How long a browser may work. |
+| `retry_backoff` | Base seconds for the retry wait, doubled per attempt. |
+| `max_retry_wait` | Ceiling on that wait. |
 
 `max_rotations` being small is a design position, not caution: burning through a pool one
 request at a time is the signature of a misdiagnosis, not of an unlucky exit.
+
+`retry_backoff` only applies when the server named no delay. A `Retry-After` header always
+wins, and 408, 502, 504 and the 52x family never send one — so those retries were
+previously issued back-to-back against a site already in trouble.
 
 ## Content safety
 

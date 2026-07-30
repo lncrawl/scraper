@@ -6,7 +6,22 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **`retry_backoff` and `max_retry_wait`.** Base seconds before a retry, doubled per
+  attempt and capped. Only consulted when the response named no delay — a `Retry-After`
+  header always wins.
+
 ### Changed
+
+- **The `browser` extra is marked for 3.10 to 3.13.** nodriver cannot be imported outside
+  that range: below 3.10 its module body evaluates a PEP 604 union, and from 3.14 its
+  generated `cdp/network.py` fails to tokenize on a stray non-UTF-8 byte. Only the first
+  was handled, and only in the exception clause — so on 3.14, which is what a modern
+  Docker image and release build use, the extra installed and then raised a bare
+  `SyntaxError` from inside a dependency. `NoDriverSolver` now raises `MissingDependency`
+  naming the supported range for either failure, and the marker keeps the extra out of an
+  environment that cannot use it.
 
 - **A concurrency gate is keyed per address *and* origin.** With no proxy configured every
   origin shared the literal exit id `direct`, so `max_sessions_per_exit` — clamped to the
@@ -54,6 +69,18 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `explain()` while every packet left from the local address. It raises `ValueError` now.
   `ExitSpec(kind=ExitKind.DIRECT)` is still valid — that is what a fallback-to-direct
   entry looks like.
+
+- **Retries back off.** `Action.RETRY` waited `retry_after or 0.0`, and 408, 502, 504 and
+  the 52x family never parse a `Retry-After` — so a retry on any of those was sent
+  back-to-back, a tight loop aimed at a site already struggling.
+
+- **`get_image` raises `MissingDependency` when Pillow is absent**, naming the `image`
+  extra, instead of a bare `ModuleNotFoundError` from the middle of the call. Every cover
+  and inline image goes through it.
+
+- **A tier closes only a transport it owns.** `DirectTier.close()` closed whatever
+  transport it held, including one handed in through `ScraperConfig.transport`. Two
+  scrapers sharing an injected transport broke each other on the first `close()`.
 
 - **Retired addresses no longer leak their gates and clearances.** `ExitPool._slots` held
   a semaphore per exit id and every rotation minted a new id, so a long-running process

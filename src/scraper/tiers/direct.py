@@ -31,8 +31,10 @@ class DirectTier(Tier):
     """Sends *call* through an impersonating transport.
 
     Args:
-        transport: Where the bytes go. Owned by the scraper, shared with every
-            tier that delegates here.
+        transport: Where the bytes go. Shared with every tier that delegates here.
+        owns_transport: Whether closing this tier closes the transport. False for a
+            transport handed in through :attr:`ScraperConfig.transport`, which may be
+            shared between scrapers.
         botauth: When configured, every request is signed. A signature is a
             positive identification that skips the challenge machinery entirely,
             which makes this tier cheaper still — and it is the only route through
@@ -41,9 +43,16 @@ class DirectTier(Tier):
 
     name = "direct"
 
-    def __init__(self, transport: Transport, *, botauth: Optional[BotAuthConfig] = None) -> None:
+    def __init__(
+        self,
+        transport: Transport,
+        *,
+        botauth: Optional[BotAuthConfig] = None,
+        owns_transport: bool = True,
+    ) -> None:
         self.transport = transport
         self.botauth = botauth
+        self.owns_transport = owns_transport
 
     def _prepare(self, call: Call) -> Dict[str, Any]:
         if call.signal is not None and call.signal.is_set():
@@ -78,4 +87,6 @@ class DirectTier(Tier):
             yield pair
 
     def close(self) -> None:
-        self.transport.close()
+        """Close the transport, unless it was injected and someone else owns it."""
+        if self.owns_transport:
+            self.transport.close()
