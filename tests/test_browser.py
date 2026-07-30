@@ -19,7 +19,6 @@ from typing import Any, Dict, List, Optional
 import pytest
 
 from scraper.browser import (
-    _STILL_CHALLENGED,
     CLEARANCE_FALLBACK_TTL,
     BrowserSolver,
     CallableSolver,
@@ -31,6 +30,7 @@ from scraper.browser import (
     _run_async,
     profile_dir_for,
 )
+from scraper.diagnosis import is_still_challenged
 from scraper.exceptions import MissingDependency, TierUnavailable
 from scraper.identity import Identity
 
@@ -266,8 +266,19 @@ class TestRunningTheSolverSynchronously:
 
 
 class TestReadingTheInterstitial:
+    """The solver waits on `diagnose.is_challenge`, not on a copy of the markers.
+
+    It used to keep its own pattern, and the copy never gained the Turnstile markers —
+    so a browser watching a Turnstile page concluded on its first poll that it had
+    cleared, harvested no clearance cookie, and the tier reported itself unavailable on
+    the one layer it exists for.
+    """
+
     def test_a_challenge_page_reads_as_still_challenged(self):
-        assert _STILL_CHALLENGED.search(CHALLENGE_BODY)
+        assert is_still_challenged(CHALLENGE_BODY)
+
+    def test_a_turnstile_page_does_too(self):
+        assert is_still_challenged('<html><div class="cf-turnstile" data-sitekey="x"></div></html>')
 
     def test_the_injected_detections_script_does_not(self):
         """The `/h/` in the pattern is what separates these two bodies.
@@ -277,7 +288,10 @@ class TestReadingTheInterstitial:
         means the loop never reports "cleared" and burns the entire timeout on every
         solve, including the successful ones.
         """
-        assert not _STILL_CHALLENGED.search(SERVED_WITH_JSD)
+        assert not is_still_challenged(SERVED_WITH_JSD)
+
+    def test_a_plain_page_is_not_a_challenge(self):
+        assert not is_still_challenged(CLEARED_PAGE)
 
 
 class TestHarvestingCookies:

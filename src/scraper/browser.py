@@ -47,6 +47,7 @@ import time
 from pathlib import Path
 from typing import Any, Callable, Dict, List, NamedTuple, Optional, Type, TypeVar
 
+from .diagnosis import is_still_challenged
 from .exceptions import MissingDependency, ScraperError, TierUnavailable
 from .identity import Clearance, Identity
 
@@ -86,18 +87,6 @@ the directory being deleted must not be one another process has a browser in.
 """
 
 _SOLVED_COOKIES = ("cf_clearance", "__cf_bm", "cf_chl_rc_ni")
-
-_STILL_CHALLENGED = re.compile(
-    r"__cf_chl_|cf_chl_opt|challenge-platform/h/|just a moment|checking your browser",
-    re.IGNORECASE,
-)
-"""Whether the page in the browser is still an interstitial.
-
-The `/h/` matters here for a second reason beyond correctness. Cloudflare injects a
-JavaScript-Detections script from `challenge-platform/scripts/…` into ordinary pages,
-so matching the bare path means this never reports "cleared" — and the solve loop then
-burns the entire timeout on every single solve, including the successful ones.
-"""
 
 
 class SolveResult(NamedTuple):
@@ -330,7 +319,7 @@ class NoDriverSolver(BrowserSolver):
             content = ""
             while True:
                 content = str(await page.get_content() or "")
-                if not _STILL_CHALLENGED.search(content):
+                if not is_still_challenged(content):
                     if wait_for is None:
                         return content
                     found = await page.evaluate(f"!!document.querySelector({json.dumps(wait_for)})")
@@ -367,7 +356,7 @@ class NoDriverSolver(BrowserSolver):
             while time.monotonic() < deadline:
                 await page.sleep(self._settle)
                 content = await page.get_content()
-                if not _STILL_CHALLENGED.search(content or ""):
+                if not is_still_challenged(content or ""):
                     break
             user_agent = str(await page.evaluate("navigator.userAgent") or "")
             cookies, expires_at = await _harvest_cookies(browser)

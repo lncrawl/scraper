@@ -34,6 +34,14 @@ one-paragraph summary per layer. Print it with
 `refuse`: layers 18 and 19 read a secret the caller either holds or does not, so grinding
 against them is an infinite retry loop against a wall.
 
+**Not every layer is nameable from a response.** `diagnose` produces thirteen of these
+nineteen, and the gap is not an omission. Layers 2–5 are indistinguishable from outside — a
+403 does not say which part of the handshake it disliked, and it does not matter, because the
+remedy is the same for all four (that is what makes them one barrier). Layer 14 is reached by
+*promotion* rather than diagnosis: it is what repeated failure after the emit remedy means,
+and that judgement needs history, so it belongs to `Planner`. Layer 17 announces nothing at
+all — it is found by `TopicGuard` reading content, not by reading a status.
+
 ## Layers 2–5 are one barrier
 
 They read different parts of the request, but a client built to reproduce one browser's

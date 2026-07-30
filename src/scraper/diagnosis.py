@@ -74,6 +74,32 @@ _CF_CODES: Dict[int, Layer] = {
     1020: Layer.IP_REPUTATION,
 }
 
+# Codes that are not about the visitor at all. The zone or its origin is
+# misconfigured, or the request never reached a policy decision — so there is no layer
+# to attribute and nothing a stronger tier or a new address would change. Read as a
+# block, each of these retires a healthy exit and writes a verdict to the origin's
+# profile that outlives the misconfiguration behind it.
+_CF_ZONE_CODES: Dict[int, str] = {
+    1000: "the zone's DNS points at a prohibited address",
+    1001: "the zone's DNS did not resolve",
+    1002: "the zone's DNS points at a restricted address",
+    1003: "direct access by IP address is not allowed",
+    1004: "the host is not configured to serve web traffic",
+    1013: "the Host header and the TLS SNI name disagree",
+    1016: "the origin's DNS did not resolve",
+    1018: "the zone could not be found",
+    1023: "the zone could not be found",
+}
+
+# The operator's own edge code failing, which is the only honest signal for layer 15
+# there is: everything else that reaches it does so by elimination. A crash is not a
+# refusal, so this retries rather than escalating — no browser and no address changes
+# the outcome of a script that threw.
+_CF_WORKER_CODES: Dict[int, str] = {
+    1101: "the site's edge code threw an exception",
+    1102: "the site's edge code exceeded its resource limits",
+}
+
 # User-Agent tokens that declare a crawler. The blocker that reads them acts on
 # the declaration alone, so a 403 while presenting one of these is a diagnosis
 # about the User-Agent and nothing else.
@@ -89,6 +115,11 @@ _DECLARED_CRAWLERS = (
     "applebot-extended",
     "meta-externalagent",
 )
+
+_BROWSER_ENGINES = ("gecko", "webkit", "chrome", "safari", "firefox", "edg", "trident")
+"""Engine tokens a real browser's User-Agent carries alongside the ``Mozilla/5.0``
+prefix. Every automation library that impersonates one copies these; the ones that do
+not impersonate anything carry none of them."""
 
 _BODY_PEEK = 64 * 1024
 
@@ -202,12 +233,41 @@ def js_redirect(body: str) -> str:
     return found.group(1)
 
 
+def is_challenge(body: str) -> bool:
+    """Whether *body* is an interstitial rather than the page that was asked for.
+
+    Used to decide whether to *start* a solve, so it is deliberately the narrower of
+    the two questions this module answers about a challenge page. A false positive here
+    costs a browser launch on a page that had already arrived.
+    """
+    return bool(_has((body or "")[:_BODY_PEEK].lower(), _CHALLENGE_MARKERS))
+
+
+def is_still_challenged(body: str) -> bool:
+    """Whether a page in a browser has not cleared yet.
+
+    Wider than :func:`is_challenge`, because the two questions have opposite costs.
+    Deciding to solve too eagerly wastes a browser; deciding a solve has *finished*
+    too eagerly abandons it — the browser stops watching, no clearance cookie is
+    harvested, and the tier reports itself unavailable on the very layer it exists for.
+
+    A Turnstile widget is the case that separates them. On its own it is not enough to
+    call a page an interstitial, since ordinary login and comment forms carry one, but
+    it is more than enough to say a page being solved is not finished.
+    """
+    peek = (body or "")[:_BODY_PEEK].lower()
+    return bool(_has(peek, _CHALLENGE_MARKERS) or _has(peek, _TURNSTILE_MARKERS))
+
+
 def _cf_code(body: str) -> Optional[int]:
+    """The Cloudflare error code in *body*, whatever it means.
+
+    Not filtered to the codes that map to a layer: a code this module has no opinion
+    on is still worth knowing, because "Cloudflare error 1024" in a message beats
+    "forbidden by the origin" for anyone who has to act on it.
+    """
     match = _ERROR_CODE.search(body)
-    if not match:
-        return None
-    code = int(match.group(1))
-    return code if code in _CF_CODES else None
+    return int(match.group(1)) if match else None
 
 
 def _retry_after(headers: Mapping[str, str]) -> Optional[float]:
@@ -256,7 +316,7 @@ def diagnose(
     peek = (body or "")[:_BODY_PEEK].lower()
 
     mitigated = head.get("cf-mitigated", "")
-    challenged = bool(mitigated == "challenge") or bool(_has(peek, _CHALLENGE_MARKERS))
+    challenged = mitigated == "challenge" or bool(_has(peek, _CHALLENGE_MARKERS))
     turnstile = _has(peek, _TURNSTILE_MARKERS)
     code = _cf_code(peek)
 
@@ -303,6 +363,25 @@ def diagnose(
             retry_after=_retry_after(head),
         )
 
+    if code in _CF_ZONE_CODES:
+        return Diagnosis(Action.REFUSE, None, f"{_CF_ZONE_CODES[code]} (Cloudflare {code})")
+
+    if code in _CF_WORKER_CODES:
+        return Diagnosis(
+            Action.RETRY, Layer.WORKERS, f"{_CF_WORKER_CODES[code]} (Cloudflare {code})"
+        )
+
+    if code == 1200:
+        return Diagnosis(Action.RETRY, None, "the edge cache failed (Cloudflare 1200)")
+
+    if code == 1011:
+        # Hotlink protection reads the Referer, and this library already sends one on
+        # every request. Nothing left to try: a stronger tier and a new address both
+        # arrive with the same referrer chain.
+        return Diagnosis(
+            Action.REFUSE, Layer.WORKERS, "hotlink protection refused the request (Cloudflare 1011)"
+        )
+
     if status == 503:
         if challenged:
             return Diagnosis(Action.SOLVE, Layer.UNDER_ATTACK, "every visitor is being challenged")
@@ -315,7 +394,7 @@ def diagnose(
                 Layer.TURNSTILE if turnstile else Layer.MANAGED_CHALLENGE,
                 "challenge served with 403",
             )
-        if code is not None:
+        if code in _CF_CODES:
             layer = _CF_CODES[code]
             action = Action.ROTATE if layer is Layer.IP_REPUTATION else Action.ESCALATE
             return Diagnosis(action, layer, f"Cloudflare error {code}")
@@ -327,12 +406,25 @@ def diagnose(
                 f"the User-Agent declares a crawler ({declared})",
             )
         if head.get("cf-ray") or "cloudflare" in head.get("server", ""):
+            # Only when a User-Agent was supplied and is not a browser's. An absent one
+            # is the caller not saying, and reading silence as "not a browser" would
+            # relabel every diagnosis made from a recorded page.
+            if user_agent and not _claims_a_browser(user_agent):
+                # The coarse layer is the one that fires on a client which never
+                # claimed to be a browser, and naming it names the remedy: a faithful
+                # transport profile, not a browser launch. Reported as the scoring
+                # layer instead, the ladder answers a missing profile by escalating
+                # past the tier that would have supplied one.
+                return Diagnosis(
+                    Action.ESCALATE, Layer.BOT_FIGHT, "refused a client that is not a browser"
+                )
             # Nothing distinguishes the scoring tiers from outside, so the
             # diagnosis names the strictest emit-only one. Recurrence after the
             # emit remedy is what promotes it to the composite model, and that
             # decision needs history, so it belongs to the planner.
             return Diagnosis(Action.ESCALATE, Layer.SUPER_BOT_FIGHT, "scored as automated")
-        return Diagnosis(Action.ESCALATE, Layer.WORKERS, "forbidden by the origin")
+        detail = "forbidden by the origin" if code is None else f"Cloudflare error {code}"
+        return Diagnosis(Action.ESCALATE, Layer.WORKERS, detail)
 
     if status in (408, 502, 504, 520, 521, 522, 523, 524, 525, 526, 530):
         return Diagnosis(Action.RETRY, None, f"upstream error (HTTP {status})")
@@ -352,6 +444,20 @@ def _declared_crawler(user_agent: str) -> str:
         if token in lowered:
             return token
     return ""
+
+
+def _claims_a_browser(user_agent: str) -> bool:
+    """Whether the client at least claims to be a browser.
+
+    Not a fidelity check — the transport decides that, and this module never sees the
+    handshake. It answers one narrower question: was there any browser claim to
+    disbelieve? A client sending ``python-requests/2.32`` is refused by the coarsest
+    heuristic there is, and that is a different conclusion from being scored.
+    """
+    lowered = (user_agent or "").lower()
+    if not lowered.startswith("mozilla/"):
+        return False
+    return any(token in lowered for token in _BROWSER_ENGINES)
 
 
 def _proxy_fault(error: BaseException) -> str:

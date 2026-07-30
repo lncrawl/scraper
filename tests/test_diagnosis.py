@@ -207,6 +207,36 @@ class TestBlocks:
         result = diagnose(status=403, body="denied")
         assert result.layer is Layer.WORKERS
 
+    def test_a_client_that_never_claimed_to_be_a_browser_meets_the_coarse_layer(self):
+        # L11 was unreachable: a 403 behind the edge always read as the scoring layer,
+        # whatever the client had sent. Naming the coarse one names the remedy — a
+        # faithful transport profile rather than a browser launch.
+        result = diagnose(
+            status=403,
+            headers={"cf-ray": "abc123"},
+            body="denied",
+            user_agent="python-requests/2.32.3",
+        )
+        assert result.action is Action.ESCALATE
+        assert result.layer is Layer.BOT_FIGHT
+
+    def test_a_browser_claim_is_taken_at_face_value_here(self):
+        # Whether the claim is *true* is the transport's business; this module never
+        # sees a handshake. It only asks whether there was a claim to disbelieve.
+        result = diagnose(
+            status=403,
+            headers={"cf-ray": "abc123"},
+            body="denied",
+            user_agent="Mozilla/5.0 (Macintosh) AppleWebKit/537.36 Chrome/141.0 Safari/537.36",
+        )
+        assert result.layer is Layer.SUPER_BOT_FIGHT
+
+    def test_an_absent_user_agent_is_not_read_as_a_missing_browser(self):
+        # `diagnose` is pure and often called on a recorded page with no User-Agent to
+        # hand. Reading silence as "not a browser" would relabel every one of those.
+        result = diagnose(status=403, headers={"cf-ray": "abc123"}, body="denied")
+        assert result.layer is Layer.SUPER_BOT_FIGHT
+
     def test_declaring_a_crawler_is_diagnosed_as_such(self):
         # This layer acts on the declaration alone, so the answer is about the
         # User-Agent rather than about anything on the wire.
@@ -360,3 +390,50 @@ def test_a_diagnosis_renders_readably():
     assert "managed" in str(diagnose(status=200, body=CHALLENGE_BODY)).lower() or str(
         diagnose(status=200, body=CHALLENGE_BODY)
     ).startswith("solve")
+
+
+class TestCloudflaresOwnCodes:
+    """Codes the classifier used to ignore, and what each of them is really about.
+
+    An unrecognised code fell through to "forbidden by the origin" at layer 15, whose
+    stance is *avoid* — no remedy, so the ladder exhausted itself over a zone whose DNS
+    was misconfigured, and wrote a detection verdict to its profile on the way out.
+    """
+
+    @pytest.mark.parametrize("code", [1000, 1001, 1002, 1003, 1004, 1013, 1016, 1018, 1023])
+    def test_a_misconfigured_zone_is_nobodys_detection_layer(self, code: int):
+        result = diagnose(status=403, headers={"cf-ray": "x"}, body=f"<p>Error {code}</p>")
+        assert result.action is Action.REFUSE
+        assert result.layer is None, "attributing this retires a healthy exit"
+        assert str(code) in result.detail
+
+    @pytest.mark.parametrize("code", [1101, 1102])
+    def test_edge_code_that_crashed_is_the_one_honest_layer_15(self, code: int):
+        # Every other route to layer 15 is by elimination. A crash is not a refusal, so
+        # this retries: no browser and no address changes what a thrown script returns.
+        result = diagnose(status=500, body=f"<p>Error {code}</p>")
+        assert result.action is Action.RETRY
+        assert result.layer is Layer.WORKERS
+
+    def test_a_cache_failure_is_transient_and_not_about_us(self):
+        result = diagnose(status=500, body="<p>Error 1200</p>")
+        assert result.action is Action.RETRY
+        assert result.layer is None
+
+    def test_hotlink_protection_has_nothing_left_to_try(self):
+        # It reads the Referer, and this library already sends one on every request.
+        result = diagnose(status=403, body="<p>Error 1011</p>")
+        assert result.action is Action.REFUSE
+        assert result.layer is Layer.WORKERS
+
+    def test_an_unmapped_code_still_reaches_the_message(self):
+        # "Cloudflare error 1024" is actionable for whoever reads the log;
+        # "forbidden by the origin" is not.
+        result = diagnose(status=403, body="<p>Error 1024</p>")
+        assert result.layer is Layer.WORKERS
+        assert "1024" in result.detail
+
+    def test_a_rate_limit_code_still_backs_off_at_any_status(self):
+        result = diagnose(status=403, body="<p>Error 1015</p>")
+        assert result.action is Action.BACKOFF
+        assert result.layer is Layer.BEHAVIOURAL
