@@ -47,17 +47,28 @@ class SharedState:
     lock: threading.RLock = field(default_factory=threading.RLock)
 
     @classmethod
-    def create(cls, config: Optional[ScraperConfig] = None) -> "SharedState":
+    def create(
+        cls,
+        config: Optional[ScraperConfig] = None,
+        *,
+        memory: Optional[Memory] = None,
+    ) -> "SharedState":
         """Build shared state from *config*.
 
         Only the settings that describe the site are read — addresses, pacing,
         persistence. Transport and tier choices stay with the scraper, so two
         scrapers can share a zone's standing while impersonating different browsers
         if there is a reason to.
+
+        Pass *memory* when a process builds more than one state over the same file.
+        Each store holds every origin it knows and :meth:`Memory.flush` writes all of
+        them, so two stores on one path do not merge — the later write is the whole
+        file, and whatever the other one had learned is gone. A caller that wants
+        state per site and persistence for the process wants one ``Memory`` here.
         """
         cfg = config or ScraperConfig()
         return cls(
-            memory=Memory(cfg.memory_path),
+            memory=memory if memory is not None else Memory(cfg.memory_path),
             exits=ExitPool(
                 cfg.exits,
                 max_sessions_per_exit=cfg.max_sessions_per_exit,

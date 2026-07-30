@@ -108,6 +108,19 @@ themselves what this layer counts.
 A file written by a newer schema is discarded rather than interpreted, and an unknown layer
 number degrades to "no knowledge". A cold start is slow but correct; guessing is not.
 
+The store is bounded, by age first and size second. An origin unseen for `FORGET_AFTER` is
+dropped, and beyond `MAX_ORIGINS` the least recently seen go. Age comes first because the two
+answer different questions: what is stored is a conclusion about a site's *current*
+configuration, so an old one is worth less than the cold start that replaces it, and a small
+cap should not keep a stale binding layer alive just because the store was quiet. Both are
+`Memory` arguments if the defaults do not suit the deployment.
+
+```python
+from scraper import Memory
+
+memory = Memory(path, max_origins=4096, forget_after=7 * 86400)
+```
+
 ## Two scrapers, one site
 
 Two scrapers pointed at the same host, each with its own address, clock and cookie history, do
@@ -131,3 +144,20 @@ two = Scraper(origin="https://example.com", config=config, state=state)
 
 What stays per-scraper is what genuinely differs: the origin it points at, its abort signal,
 its default headers, its parser.
+
+### One state per site, one store for the process
+
+A consumer that crawls many sites at once may want state per site — a separate address, clock
+and referrer chain per zone — while still persisting everything to one file. Pass the store:
+
+```python
+from scraper import Memory, SharedState
+
+memory = Memory(config.memory_path)
+per_site = {host: SharedState.create(config, memory=memory) for host in hosts}
+```
+
+Building a `Memory` per state instead is a silent way to lose everything learned. Each store
+holds every origin *it* knows and `flush()` writes the whole file, so two stores on one path do
+not merge — the later write is the complete file, and whatever the other one had accumulated is
+gone. Sharing the store is what makes per-site state safe.

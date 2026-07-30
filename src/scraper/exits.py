@@ -131,6 +131,26 @@ class TorPoolSpec(ExitSpec):
     report_failures: bool = True
 
 
+@dataclass(frozen=True)
+class ExitStatus:
+    """What one configured exit is doing right now.
+
+    Args:
+        name: The spec's label, or its host. Deliberately not the URL — a proxy URL
+            carries its credential, and this is written for a status page.
+        retired: Whether it was blamed for a failure and is being rested.
+        returns_in: Seconds until a retired exit is usable again. ``0`` when it is
+            available now.
+        origins: How many origins currently hold a lease on it.
+    """
+
+    name: str
+    kind: ExitKind
+    retired: bool = False
+    returns_in: float = 0.0
+    origins: int = 0
+
+
 @dataclass
 class ExitLease:
     """A held address. Stable for as long as it keeps working."""
@@ -243,6 +263,36 @@ class ExitPool:
         if not self.configured:
             return frozenset()
         return expand(self.best_kind.reach)
+
+    def status(self) -> List[ExitStatus]:
+        """Every configured exit, best kind first, with what it is doing.
+
+        The counterpart to ``explain()`` for the address half: an operator whose scrape
+        has slowed down needs to know whether the pool has retired most of it and when
+        those addresses come back, which is otherwise only visible in debug logs.
+        """
+        with self._lock:
+            self._restore_locked()
+            now = time.monotonic()
+            held: Dict[str, int] = {}
+            for lease in self._leases.values():
+                held[lease.spec.name] = held.get(lease.spec.name, 0) + 1
+
+            out: List[ExitStatus] = []
+            for spec in self._specs:
+                retired_at = self._retired.get(spec.name)
+                out.append(
+                    ExitStatus(
+                        name=spec.name,
+                        kind=spec.kind,
+                        retired=retired_at is not None,
+                        returns_in=0.0
+                        if retired_at is None
+                        else max(0.0, self._retire_for - (now - retired_at)),
+                        origins=held.get(spec.name, 0),
+                    )
+                )
+            return out
 
     def lease(self, origin: str) -> ExitLease:
         """The address for *origin*, creating and pinning one on first use."""

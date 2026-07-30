@@ -84,6 +84,46 @@ wrong:
 - **A `404` is not a layer.** It is the site's answer about a path, and attributing it to one
   would retire a healthy address over a typo in a URL.
 
+## Taking inventory
+
+`explain()` answers for one origin. A long-running process needs the other question — what has
+this thing learned overall, and what is it doing with the addresses it was given — so `Memory`
+and `ExitPool` both enumerate.
+
+```python
+scraper.memory.count                     # how many origins are known
+scraper.memory.origins()                 # keys, most recently seen first
+scraper.memory.profiles()                # copies of every OriginProfile
+scraper.memory.export()                  # the same, JSON-safe, no clearance cookies
+scraper.memory.forget("https://example.com/")   # drop one conclusion
+```
+
+`profiles()` hands back copies, so a status page iterating the store cannot edit what the
+retrieval loop is reading. `export()` reduces a stored clearance to its expiry and the
+User-Agent it belongs to: the cookies are the one secret in the file, and the question a status
+page asks is whether a clearance is held and for how long.
+
+`forget()` is the escape hatch for a conclusion that has gone stale in a way the store's TTL
+will not catch — a site that dropped its edge, or a profile written while a proxy was
+misconfigured. The binding layer is the field that misleads longest, because a wrong one sends
+every later run up the ladder for nothing.
+
+```python
+for exit in scraper.exits.status():
+    print(exit.name, exit.kind.value, exit.origins, exit.retired, exit.returns_in)
+```
+
+```
+mobile-eu    mobile        3  False  0.0
+dc-pool-1    datacenter    0  True   418.7
+```
+
+`origins` is how many origins currently hold a lease on that address, and `returns_in` is when a
+retired one becomes usable again. A scrape that has slowed down for no visible reason is usually
+a pool with most of itself resting, and that is otherwise only visible in debug logs. The URL is
+deliberately absent — a proxy URL carries its credential, and this view is written to be
+displayed.
+
 ## Logging
 
 `DEBUG` on the `scraper` logger prints one line per attempt with the decision and its

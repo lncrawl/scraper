@@ -64,7 +64,7 @@ from .exceptions import (
     ScraperError,
     TierUnavailable,
 )
-from .exits import ExitKind, ExitPool, ExitSpec, TorPoolSpec
+from .exits import ExitKind, ExitPool, ExitSpec, ExitStatus, TorPoolSpec
 from .identity import Clearance, Identity
 from .layers import LAYERS, Layer, LayerInfo, Stance, Trait, weakest
 from .links import Link, TopicGuard, safe_links
@@ -106,6 +106,7 @@ __all__ = [
     "ExitKind",
     "ExitPool",
     "ExitSpec",
+    "ExitStatus",
     "Identity",
     "TorPoolSpec",
     # behaviour

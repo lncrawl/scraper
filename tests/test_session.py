@@ -511,6 +511,32 @@ class TestLearning:
             two.close()
             state.close()
 
+    def test_two_stores_on_one_path_do_not_merge(self, tmp_path: Path):
+        # Found while auditing a consumer that built one state per domain: each store
+        # holds every origin it knows and flush() writes the whole file, so the second
+        # flush deletes what the first had learned. The remedy is one Memory, not one
+        # state — hence the memory= argument below.
+        from scraper.memory import Memory
+
+        path = tmp_path / "origins.json"
+        first = Memory(path, flush_every=0.0)
+        second = Memory(path, flush_every=0.0)
+        first.record_success("https://a.test/", tier="direct")
+        second.record_success("https://b.test/", tier="direct")
+        assert Memory(path).origins() == ["b.test"]
+
+    def test_one_memory_can_back_several_states(self, tmp_path: Path):
+        from scraper.memory import Memory
+
+        path = tmp_path / "origins.json"
+        config = ScraperConfig(data_dir=tmp_path)
+        memory = Memory(path, flush_every=0.0)
+        one = SharedState.create(config, memory=memory)
+        two = SharedState.create(config, memory=memory)
+        one.memory.record_success("https://a.test/", tier="direct")
+        two.memory.record_success("https://b.test/", tier="direct")
+        assert set(Memory(path).origins()) == {"a.test", "b.test"}
+
 
 class TestControl:
     def test_an_abort_stops_the_next_request(self):

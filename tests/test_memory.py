@@ -145,6 +145,105 @@ class TestEndpointsAndDecoys:
         assert profile.decoys == ["https://example.com/maze/1"]
 
 
+class TestTheBound:
+    def test_an_origin_unseen_for_too_long_is_dropped(self, tmp_path: Path):
+        # A stored profile is a conclusion about a site's current configuration. A
+        # month-old one is worth less than the cold start that replaces it, and an
+        # edge that has been turned off would otherwise keep sending every later run
+        # up the ladder.
+        path = tmp_path / "origins.json"
+        with Memory(path, flush_every=0.0) as memory:
+            memory.record_failure("https://old.test/", Layer.TURNSTILE)
+            memory.record_failure("https://fresh.test/", Layer.TURNSTILE)
+            memory.profile("https://old.test/").last_seen = time.time() - 40 * 86400
+            memory.touch()
+
+        reloaded = Memory(path)
+        assert reloaded.origins() == ["fresh.test"]
+
+    def test_the_store_does_not_grow_past_its_cap(self):
+        memory = Memory(max_origins=3)
+        for index in range(10):
+            memory.record_success(f"https://host{index}.test/", tier="direct")
+        assert memory.count == 3
+
+    def test_the_least_recently_seen_go_first(self):
+        memory = Memory(max_origins=2)
+        memory.record_success("https://a.test/", tier="direct")
+        memory.record_success("https://b.test/", tier="direct")
+        memory.profile("https://a.test/").last_seen = time.time() - 60
+        memory.record_success("https://c.test/", tier="direct")
+        assert set(memory.origins()) == {"b.test", "c.test"}
+
+    def test_the_origin_being_asked_for_is_never_the_one_evicted(self):
+        # profile() hands back a live object the retrieval loop then mutates. Evicting
+        # the entry it just created would silently discard everything that retrieval
+        # learns, including the clearance a browser was launched for.
+        memory = Memory(max_origins=1)
+        memory.record_success("https://first.test/", tier="direct")
+        profile = memory.profile("https://second.test/")
+        assert memory.origins() == ["second.test"]
+        assert memory.profile("https://second.test/") is profile
+
+    def test_forgetting_everything_keeps_the_store_usable(self):
+        memory = Memory()
+        memory.record_success("https://example.com/", tier="direct")
+        memory.clear()
+        assert memory.count == 0
+        assert memory.profile("https://example.com/").successes == 0
+
+
+class TestInventory:
+    def test_origins_come_back_most_recently_seen_first(self):
+        memory = Memory()
+        memory.record_success("https://old.test/", tier="direct")
+        memory.record_success("https://new.test/", tier="direct")
+        memory.profile("https://old.test/").last_seen = time.time() - 600
+        assert memory.origins() == ["new.test", "old.test"]
+
+    def test_a_caller_cannot_edit_the_store_through_the_snapshot(self):
+        memory = Memory()
+        memory.profile("https://example.com/").note_decoy("https://example.com/maze")
+        snapshot = memory.profiles()
+        snapshot[0].decoys.clear()
+        snapshot[0].successes = 99
+        assert memory.profile("https://example.com/").is_decoy("https://example.com/maze")
+        assert memory.profile("https://example.com/").successes == 0
+
+    def test_an_export_carries_the_clearance_window_but_not_the_cookies(self):
+        # The cookies are the one secret in the store, and a status page asks whether a
+        # clearance is held and for how long — not what it is.
+        memory = Memory()
+        memory.profile("https://example.com/").remember_clearance(
+            Clearance(
+                origin="https://example.com/",
+                cookies={"cf_clearance": "secret-value"},
+                identity_token="t",
+                user_agent="UA/1",
+                expires_at=1234.0,
+            )
+        )
+        exported = memory.export()
+        assert json.dumps(exported)
+        assert exported["example.com"]["clearance"] == {
+            "expires_at": 1234.0,
+            "user_agent": "UA/1",
+        }
+        assert "secret-value" not in json.dumps(exported)
+
+    def test_an_origin_with_no_clearance_exports_none(self):
+        memory = Memory()
+        memory.record_success("https://example.com/", tier="direct")
+        assert memory.export()["example.com"]["clearance"] is None
+
+    def test_forgetting_one_origin_reports_whether_there_was_anything(self, tmp_path: Path):
+        memory = Memory(tmp_path / "origins.json", flush_every=0.0)
+        memory.record_failure("https://example.com/", Layer.IP_REPUTATION)
+        assert memory.forget("https://example.com/page")
+        assert not memory.forget("https://example.com/page")
+        assert memory.count == 0
+
+
 class TestTheFile:
     def test_it_is_written_owner_only(self, tmp_path: Path):
         path = tmp_path / "origins.json"

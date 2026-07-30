@@ -35,7 +35,7 @@ import threading
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from .identity import Clearance
 from .layers import Layer
@@ -49,6 +49,17 @@ SCHEMA = 1
 
 MAX_ENDPOINTS = 32
 MAX_DECOYS = 256
+
+MAX_ORIGINS = 512
+"""How many origins a store keeps. A long-running process crawling a wide frontier
+otherwise grows one profile per host it ever touched, and every flush rewrites all of
+them."""
+
+FORGET_AFTER = 30 * 86400.0
+"""Seconds of silence after which an origin is dropped. What is stored is a conclusion
+about a site's current configuration, and a month-old conclusion is worth less than the
+cold start that replaces it — edges get reconfigured, and a stale binding layer sends the
+next run up the ladder for a site that has stopped challenging anyone."""
 
 
 @dataclass
@@ -146,11 +157,24 @@ class Memory:
             faces a behavioural model, since forgetting is the failure mode.
         flush_every: Seconds between writes. Mutations are frequent and small, so
             they coalesce; a write also happens on :meth:`close`.
+        max_origins: How many origins to keep. When the store is over this, the
+            least recently seen are dropped.
+        forget_after: Seconds of silence before an origin is dropped regardless of
+            the cap. ``0`` keeps everything until the cap bites.
     """
 
-    def __init__(self, path: Optional[Path] = None, *, flush_every: float = 15.0) -> None:
+    def __init__(
+        self,
+        path: Optional[Path] = None,
+        *,
+        flush_every: float = 15.0,
+        max_origins: int = MAX_ORIGINS,
+        forget_after: float = FORGET_AFTER,
+    ) -> None:
         self.path = Path(path) if path else None
         self._flush_every = flush_every
+        self._max_origins = max(1, max_origins)
+        self._forget_after = max(0.0, forget_after)
         self._lock = threading.RLock()
         self._profiles: Dict[str, OriginProfile] = {}
         self._dirty = False
@@ -174,6 +198,7 @@ class Memory:
                 found = OriginProfile(origin=key)
                 self._profiles[key] = found
                 self._dirty = True
+                self._evict_locked(protect=key)
             return found
 
     def record_success(self, url: str, *, tier: str, interval: float = 0.0) -> None:
@@ -216,6 +241,74 @@ class Memory:
             self._dirty = True
             self._maybe_flush()
 
+    # -- inventory ----------------------------------------------------------------
+
+    @property
+    def count(self) -> int:
+        """How many origins are known."""
+        with self._lock:
+            return len(self._profiles)
+
+    def origins(self) -> List[str]:
+        """Every origin known, most recently seen first."""
+        with self._lock:
+            return [key for key, _ in self._by_age_locked(newest_first=True)]
+
+    def profiles(self) -> List[OriginProfile]:
+        """A copy of every profile, most recently seen first.
+
+        Copies rather than the live objects: a caller enumerating the store for a
+        status page must not be able to edit what the retrieval loop is reading, and
+        the endpoint and decoy lists make that easy to do by accident.
+        """
+        with self._lock:
+            return [_copy(profile) for _, profile in self._by_age_locked(newest_first=True)]
+
+    def export(self) -> Dict[str, Dict[str, Any]]:
+        """A JSON-safe view of the store, without the clearance cookies.
+
+        The cookies are the one secret in here, and the question a status page asks is
+        whether a clearance is held and for how long — so that is what this reports.
+        """
+        out: Dict[str, Dict[str, Any]] = {}
+        for profile in self.profiles():
+            fields = asdict(profile)
+            clearance = profile.clearance
+            fields["clearance"] = (
+                None
+                if not clearance
+                else {
+                    "expires_at": float(clearance.get("expires_at") or 0.0),
+                    "user_agent": str(clearance.get("user_agent") or ""),
+                }
+            )
+            out[profile.origin] = fields
+        return out
+
+    def forget(self, url: str) -> bool:
+        """Drop everything learned about *url*'s origin. True if there was anything.
+
+        The escape hatch for a conclusion that has gone stale in a way the TTL will not
+        catch — a site that dropped its edge, or an origin whose profile was written
+        while a proxy was misconfigured.
+        """
+        key = self.key(url)
+        with self._lock:
+            if self._profiles.pop(key, None) is None:
+                return False
+            self._dirty = True
+            self._maybe_flush()
+            return True
+
+    def clear(self) -> None:
+        """Forget every origin."""
+        with self._lock:
+            if not self._profiles:
+                return
+            self._profiles.clear()
+            self._dirty = True
+            self._maybe_flush()
+
     def flush(self) -> None:
         """Write now, if there is anything to write."""
         with self._lock:
@@ -254,6 +347,43 @@ class Memory:
         if time.monotonic() - self._flushed_at >= self._flush_every:
             self.flush()
 
+    def _by_age_locked(self, *, newest_first: bool) -> List[Tuple[str, OriginProfile]]:
+        items = sorted(self._profiles.items(), key=lambda item: item[1].last_seen)
+        return list(reversed(items)) if newest_first else items
+
+    def _evict_locked(self, *, protect: str = "") -> int:
+        """Drop stale origins, then the least recently seen ones over the cap.
+
+        Age first and the cap second, because they answer different questions: the TTL
+        removes conclusions that have gone stale, and the cap removes the tail of a
+        frontier wider than the store is meant to hold. Doing it the other way round
+        would keep a month-old profile alive purely because the store was small.
+
+        *protect* is never dropped — it is the origin the caller is asking for, and
+        handing back a profile that is no longer in the store loses whatever the
+        retrieval about to happen learns.
+        """
+        dropped = 0
+        if self._forget_after > 0:
+            cutoff = time.time() - self._forget_after
+            for key in [
+                key
+                for key, profile in self._profiles.items()
+                if profile.last_seen < cutoff and key != protect
+            ]:
+                del self._profiles[key]
+                dropped += 1
+        for key, _ in self._by_age_locked(newest_first=False):
+            if len(self._profiles) <= self._max_origins:
+                break
+            if key == protect:
+                continue
+            del self._profiles[key]
+            dropped += 1
+        if dropped:
+            self._dirty = True
+        return dropped
+
     def _load(self) -> None:
         assert self.path is not None
         if not self.path.exists():
@@ -279,3 +409,10 @@ class Memory:
                 self._profiles[str(key)] = OriginProfile(**fields)
             except TypeError as exc:
                 logger.debug("skipping malformed profile for %s: %s", key, exc)
+        dropped = self._evict_locked()
+        if dropped:
+            logger.debug("dropped %d stale origins from %s", dropped, self.path)
+
+
+def _copy(profile: OriginProfile) -> OriginProfile:
+    return OriginProfile(**asdict(profile))

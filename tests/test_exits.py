@@ -189,6 +189,45 @@ class TestRetiring:
         assert pool.rotate("example.com", Layer.IP_REPUTATION).spec.url == "http://a.test:1"
 
 
+class TestStatus:
+    def test_it_reports_what_is_retired_and_when_it_returns(self):
+        pool = ExitPool(
+            [
+                ExitSpec(url="http://a.test:1", kind=ExitKind.RESIDENTIAL),
+                ExitSpec(url="http://b.test:1", kind=ExitKind.DATACENTER),
+            ],
+            retire_for=600.0,
+        )
+        pool.lease("example.com")
+        pool.rotate("example.com", Layer.IP_REPUTATION)
+
+        rows = {row.name: row for row in pool.status()}
+        assert rows["a.test:1"].retired
+        assert 0 < rows["a.test:1"].returns_in <= 600.0
+        assert rows["a.test:1"].origins == 0
+        assert not rows["b.test:1"].retired
+        assert rows["b.test:1"].returns_in == 0.0
+        assert rows["b.test:1"].origins == 1
+
+    def test_it_lists_the_best_kind_first(self):
+        pool = ExitPool(
+            [
+                ExitSpec(url="http://dc.test:1", kind=ExitKind.DATACENTER),
+                ExitSpec(url="http://mob.test:1", kind=ExitKind.MOBILE),
+            ]
+        )
+        assert [row.kind for row in pool.status()] == [ExitKind.MOBILE, ExitKind.DATACENTER]
+
+    def test_a_credential_never_reaches_the_status_view(self):
+        # Written for a status page, and a proxy URL carries its password.
+        pool = ExitPool([ExitSpec(url="http://user:hunter2@a.test:1", kind=ExitKind.ISP)])
+        pool.lease("example.com")
+        assert "hunter2" not in json.dumps([row.name for row in pool.status()])
+
+    def test_nothing_configured_is_an_empty_view(self):
+        assert ExitPool().status() == []
+
+
 class TestFailureKinds:
     @pytest.mark.parametrize(
         ("layer", "expected"),
