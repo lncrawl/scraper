@@ -289,6 +289,34 @@ class TestWsClient:
         with pytest.raises(CdpError, match="No target with given id found"):
             client.send("Page.navigate")
 
+    def test_the_other_protocols_error_shape_is_understood_too(
+        self, monkeypatch: pytest.MonkeyPatch
+    ):
+        # CDP puts an object under `error`; BiDi puts a code string there and the
+        # detail in a sibling `message`. Reading one as the other raises an
+        # AttributeError from inside the transport and buries the real failure.
+        captured = install_cdp(monkeypatch, scripted([CLEARED_PAGE]))
+        client = _WsClient("ws://127.0.0.1:9333/x")
+        sock: FakeSocket = captured["sockets"][0]
+
+        original = sock.send
+
+        def bidi_error(raw: str) -> None:
+            original(raw)
+            sock._inbox.clear()
+            sock.emit(
+                {
+                    "type": "error",
+                    "id": json.loads(raw)["id"],
+                    "error": "invalid argument",
+                    "message": "no such context",
+                }
+            )
+
+        monkeypatch.setattr(sock, "send", bidi_error)
+        with pytest.raises(CdpError, match="invalid argument: no such context"):
+            client.send("browsingContext.navigate")
+
     def test_a_browser_that_never_answers_times_out_rather_than_hanging(
         self, monkeypatch: pytest.MonkeyPatch
     ):

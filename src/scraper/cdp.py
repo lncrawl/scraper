@@ -89,12 +89,28 @@ class CdpError(SolveError):
     """The browser answered a command with an error, or stopped answering."""
 
 
+def _describe_error(reply: Dict[str, Any]) -> str:
+    """What went wrong, in whichever way this protocol says it.
+
+    The one place the two vocabularies are not the same shape. CDP puts an object
+    under ``error`` with the text in ``message``; BiDi puts a code *string* there and
+    the detail in a sibling ``message``. Reading either shape as the other raises an
+    ``AttributeError`` from inside the transport, which buries the actual failure.
+    """
+    error = reply.get("error")
+    if isinstance(error, dict):
+        return str(error.get("message") or error)
+    detail = reply.get("message")
+    return f"{error}: {detail}" if detail else str(error)
+
+
 class _WsClient:
     """A WebSocket JSON-RPC channel: send a command, get the matching reply.
 
     Backend-agnostic on purpose — CDP and WebDriver BiDi are the same shape on the
     wire, an object with an ``id`` going out and an object carrying that ``id`` coming
-    back, interleaved with events that carry none.
+    back, interleaved with events that carry none. They differ on how an error is
+    spelled, which :func:`_describe_error` absorbs.
 
     Synchronous, and single-caller by construction: the solver holds its lock for the
     whole of a solve, so there is never a second command in flight and correlation
@@ -140,9 +156,8 @@ class _WsClient:
                 continue
             if reply.get("id") != request_id:
                 continue  # an event, or a reply to something already abandoned
-            if "error" in reply:
-                detail = reply["error"].get("message", reply["error"])
-                raise CdpError(f"{method}: {detail}")
+            if "error" in reply or reply.get("type") == "error":
+                raise CdpError(f"{method}: {_describe_error(reply)}")
             return reply.get("result") or {}
 
     def close(self) -> None:
