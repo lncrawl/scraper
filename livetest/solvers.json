@@ -1,0 +1,325 @@
+{
+ "headless": true,
+ "rows": [
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 210406,
+   "solver": "cdp",
+   "url": "https://centralnovel.com/",
+   "seconds": 8.8
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 210406,
+   "solver": "nodriver",
+   "url": "https://centralnovel.com/",
+   "seconds": 11.0
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 108570,
+   "solver": "cdp",
+   "url": "https://www.chereads.com/",
+   "seconds": 9.0
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 109588,
+   "solver": "nodriver",
+   "url": "https://www.chereads.com/",
+   "seconds": 8.4
+  },
+  {
+   "cleared": false,
+   "status": 200,
+   "action": "solve",
+   "layer": "L9 Managed JavaScript challenge",
+   "bytes": 40865,
+   "solver": "cdp",
+   "url": "https://ranobes.net/",
+   "seconds": 63.0
+  },
+  {
+   "cleared": false,
+   "status": 200,
+   "action": "solve",
+   "layer": "L9 Managed JavaScript challenge",
+   "bytes": 37506,
+   "solver": "nodriver",
+   "url": "https://ranobes.net/",
+   "seconds": 62.3
+  },
+  {
+   "cleared": false,
+   "status": 200,
+   "action": "solve",
+   "layer": "L10 Turnstile",
+   "bytes": 15137,
+   "solver": "cdp",
+   "url": "https://ranobes.top/",
+   "seconds": 63.9
+  },
+  {
+   "cleared": false,
+   "status": 200,
+   "action": "solve",
+   "layer": "L10 Turnstile",
+   "bytes": 15137,
+   "solver": "nodriver",
+   "url": "https://ranobes.top/",
+   "seconds": 62.1
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 98791,
+   "solver": "cdp",
+   "url": "https://www.novelupdates.com/",
+   "seconds": 7.9
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 98791,
+   "solver": "nodriver",
+   "url": "https://www.novelupdates.com/",
+   "seconds": 9.0
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 144124,
+   "solver": "cdp",
+   "url": "https://novelgo.id/",
+   "seconds": 8.4
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 144124,
+   "solver": "nodriver",
+   "url": "https://novelgo.id/",
+   "seconds": 8.0
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 202997,
+   "solver": "cdp",
+   "url": "https://dragontea.ink/",
+   "seconds": 7.9
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 202997,
+   "solver": "nodriver",
+   "url": "https://dragontea.ink/",
+   "seconds": 7.2
+  },
+  {
+   "cleared": false,
+   "status": 403,
+   "action": "solve",
+   "layer": "L9 Managed JavaScript challenge",
+   "bytes": 5813,
+   "solver": "cdp",
+   "url": "https://foxaholic.com/",
+   "seconds": 11.6
+  },
+  {
+   "cleared": false,
+   "status": 403,
+   "action": "solve",
+   "layer": "L9 Managed JavaScript challenge",
+   "bytes": 5813,
+   "solver": "nodriver",
+   "url": "https://foxaholic.com/",
+   "seconds": 9.4
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 1530804,
+   "solver": "cdp",
+   "url": "https://arcanetranslations.com/",
+   "seconds": 7.0
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 1530847,
+   "solver": "nodriver",
+   "url": "https://arcanetranslations.com/",
+   "seconds": 8.3
+  },
+  {
+   "cleared": false,
+   "status": 403,
+   "action": "solve",
+   "layer": "L9 Managed JavaScript challenge",
+   "bytes": 5920,
+   "solver": "cdp",
+   "url": "https://www.f-w-o.com/",
+   "seconds": 12.9
+  },
+  {
+   "cleared": false,
+   "status": 403,
+   "action": "solve",
+   "layer": "L9 Managed JavaScript challenge",
+   "bytes": 5920,
+   "solver": "nodriver",
+   "url": "https://www.f-w-o.com/",
+   "seconds": 10.6
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 73418,
+   "solver": "cdp",
+   "url": "https://www.scribblehub.com/",
+   "seconds": 9.3
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 73418,
+   "solver": "nodriver",
+   "url": "https://www.scribblehub.com/",
+   "seconds": 11.5
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 203128,
+   "solver": "cdp",
+   "url": "https://kissmanga.in/",
+   "seconds": 8.9
+  },
+  {
+   "cleared": false,
+   "status": 403,
+   "action": "solve",
+   "layer": "L9 Managed JavaScript challenge",
+   "bytes": 5808,
+   "solver": "nodriver",
+   "url": "https://kissmanga.in/",
+   "seconds": 61.4
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 64204,
+   "solver": "cdp",
+   "url": "https://syosetu.org/",
+   "seconds": 7.6
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 64204,
+   "solver": "nodriver",
+   "url": "https://syosetu.org/",
+   "seconds": 8.0
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 380746,
+   "solver": "cdp",
+   "url": "https://daotranslate.com/",
+   "seconds": 8.0
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 380746,
+   "solver": "nodriver",
+   "url": "https://daotranslate.com/",
+   "seconds": 9.1
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 254376,
+   "solver": "cdp",
+   "url": "https://aquareader.org/",
+   "seconds": 8.6
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 254376,
+   "solver": "nodriver",
+   "url": "https://aquareader.org/",
+   "seconds": 7.5
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 149038,
+   "solver": "cdp",
+   "url": "https://www.foxteller.com/",
+   "seconds": 8.0
+  },
+  {
+   "cleared": true,
+   "status": 200,
+   "action": "accept",
+   "layer": null,
+   "bytes": 149038,
+   "solver": "nodriver",
+   "url": "https://www.foxteller.com/",
+   "seconds": 7.6
+  }
+ ]
+}
