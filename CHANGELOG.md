@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.4.0] - 2026-08-01
 
 ### Added
 
@@ -289,6 +289,7 @@ Initial public release of `lncrawl-scraper`, extracted from [lightnovel-crawler]
 - Stealth mode, proxy rotation with Tor identity refresh, TLS cipher rotation, rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[1.4.0]: https://github.com/lncrawl/scraper/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/lncrawl/scraper/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/lncrawl/scraper/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/lncrawl/scraper/compare/v1.0.1...v1.1.0
