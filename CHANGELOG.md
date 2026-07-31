@@ -6,11 +6,11 @@ All notable changes to this project are documented here. The format is based on 
 
 ### Added
 
-- **`BidiSolver` — Firefox, over WebDriver BiDi.** Not a second way to do the same thing: `ScraperConfig.profile()` makes every request present the fingerprint its clearance was earned under, so a Chrome-only solver forced chrome impersonation everywhere one was configured — and over a 150-host sweep firefox won four hosts against chrome and lost none. This declares `impersonation = "firefox"` and the trade disappears. Measured over the same 46 challenged hosts it also clears slightly more: 29 against Chrome's 28, and faster.
+- **`BidiSolver` — Firefox, over WebDriver BiDi.** Not a second way to do the same thing: `ScraperConfig.profile()` makes every request present the fingerprint its clearance was earned under, so a Chrome-only solver forced chrome impersonation everywhere one was configured — and over a 150-host sweep firefox won four hosts against chrome and lost none. This declares `impersonation = "firefox"` and the trade disappears. It also clears marginally more over the same 46 challenged hosts — 29 against Chrome's 28, and faster — though that is a tie rather than a win: they disagree on seven hosts, four to Firefox and three to Chrome. The impersonation is the reason to prefer it, not the clearance.
 
   The transport moved to `scraper.wire` and both backends share it unchanged, which was the bet the original three-layer split made. Firefox is a second vocabulary, not a second client.
 
-  **One cost, stated rather than buried.** A WebDriver session sets `navigator.webdriver` to true by spec, and no preference overrides it while the session is open — measured both ways. Chrome has a launch flag that stops Blink emitting the property; Firefox has no equivalent, so this deletes it with a preload script. That is patching a surface value rather than not emitting one, and a site reading the prototype descriptor would see through it. With the property visible this cleared none of six hosts; with it hidden, all six.
+  **One cost, stated rather than buried.** A WebDriver session sets `navigator.webdriver` to true by spec, and no preference overrides it while the session is open — measured both ways. Chrome has a launch flag that stops Blink emitting the property; Firefox has no equivalent, so this deletes it with a preload script. That is patching a surface value rather than not emitting one, and a site reading the prototype descriptor would see through it. Over the 46 hosts it is worth nineteen of them: 10 cleared with the property visible and 29 with it hidden, so ten sites challenge without ever reading it.
 
 ### Removed
 

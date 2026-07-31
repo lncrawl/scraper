@@ -6,8 +6,10 @@ Chrome-only solver forces chrome impersonation everywhere the moment one is conf
 — and over a 150-host sweep firefox won four hosts against chrome and lost none. A
 Firefox solver declares ``impersonation = "firefox"`` and the trade disappears.
 
-It also clears slightly more: measured over the same 46 challenged hosts, 29 against
-Chrome's 28, and faster.
+It also clears marginally more: over the same 46 challenged hosts, 29 against Chrome's
+28, and faster. Read that as a tie rather than a win — the two disagree on seven hosts,
+four to Firefox and three to Chrome, so neither backend dominates and the union clears
+more than either. The impersonation above is the reason to prefer this one.
 
 **Firefox does not speak CDP as a supported path.** Mozilla's implementation was always
 a partial Puppeteer-targeted subset and is deprecated in favour of WebDriver BiDi, the
@@ -23,9 +25,11 @@ transport in :mod:`scraper.wire` is shared with :mod:`scraper.cdp` unchanged.
 
 **One cost is real and worth stating plainly.** A WebDriver session sets
 ``navigator.webdriver`` to true — the spec requires it, and ``dom.webdriver.enabled =
-false`` does not override it while a session is open. Measured both ways: with the
-property visible this cleared **none** of six challenged hosts, and with it hidden, all
-six. Chrome has a launch flag that stops Blink emitting the property at all; Firefox has
+false`` does not override it while a session is open. Measured both ways over the 46
+challenged hosts: **10 cleared with the property visible, 29 with it hidden.** So it is
+worth nineteen hosts rather than all of them — ten sites challenge without reading it,
+and none cleared only when it was visible. Chrome has a launch flag that stops Blink
+emitting the property at all; Firefox has
 no equivalent, so the only lever is a preload script deleting it before page scripts
 run. That is patching a surface value rather than not emitting one, which is a weaker
 footing than the Chrome backend's — a site reading the prototype descriptor rather than

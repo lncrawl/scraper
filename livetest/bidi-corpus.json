@@ -1,0 +1,575 @@
+{
+ "what": "Does hiding navigator.webdriver decide whether a BiDi-driven Firefox clears?",
+ "answer": "It is decisive but not universal: 29/46 with the property hidden, 10/46 with it visible. Ten challenged hosts do not read it at all, and none of the 46 cleared only when it was visible.",
+ "how": "livetest/solvers.py against the same 46-host challenged corpus as headless.json, both arms in one run, 60s deadline each.",
+ "browser": "Firefox 153.0, headless, macOS",
+ "measured": "2026-08-01",
+ "supersedes": "bidi-gate.json, whose six-host sample read 0/6 vs 6/6 and made the property look like the whole answer. On the full corpus it is worth 19 hosts, not all of them.",
+ "note": "Chrome over CDP clears 28 of the same 46 (headless.json), so the Firefox backend is worth keeping on clearance alone, before impersonation is considered.",
+ "totals": {
+  "hosts": 46,
+  "hidden_cleared": 29,
+  "as_is_cleared": 10,
+  "cleared_only_when_hidden": 19,
+  "cleared_only_when_visible": 0,
+  "cleared_by_either_arm": 29
+ },
+ "arms": {
+  "hidden": [
+   {
+    "url": "https://centralnovel.com/",
+    "cleared": true,
+    "seconds": 5.1,
+    "layer": null
+   },
+   {
+    "url": "https://www.chereads.com/",
+    "cleared": false,
+    "seconds": 8.3,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://ranobes.net/",
+    "cleared": false,
+    "seconds": 64.0,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://ranobes.top/",
+    "cleared": false,
+    "seconds": 66.2,
+    "layer": "L10 Turnstile"
+   },
+   {
+    "url": "https://www.novelupdates.com/",
+    "cleared": true,
+    "seconds": 5.5,
+    "layer": null
+   },
+   {
+    "url": "https://novelgo.id/",
+    "cleared": false,
+    "seconds": 64.3,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://dragontea.ink/",
+    "cleared": true,
+    "seconds": 4.9,
+    "layer": null
+   },
+   {
+    "url": "https://foxaholic.com/",
+    "cleared": false,
+    "seconds": 11.0,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://arcanetranslations.com/",
+    "cleared": true,
+    "seconds": 10.0,
+    "layer": null
+   },
+   {
+    "url": "https://www.f-w-o.com/",
+    "cleared": false,
+    "seconds": 13.9,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://www.scribblehub.com/",
+    "cleared": true,
+    "seconds": 8.5,
+    "layer": null
+   },
+   {
+    "url": "https://kissmanga.in/",
+    "cleared": true,
+    "seconds": 10.8,
+    "layer": null
+   },
+   {
+    "url": "https://syosetu.org/",
+    "cleared": true,
+    "seconds": 8.0,
+    "layer": null
+   },
+   {
+    "url": "https://daotranslate.com/",
+    "cleared": true,
+    "seconds": 4.9,
+    "layer": null
+   },
+   {
+    "url": "https://aquareader.org/",
+    "cleared": true,
+    "seconds": 7.9,
+    "layer": null
+   },
+   {
+    "url": "https://www.foxteller.com/",
+    "cleared": false,
+    "seconds": 61.9,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://skydemonorder.com/",
+    "cleared": true,
+    "seconds": 5.4,
+    "layer": null
+   },
+   {
+    "url": "https://katreadingcafe.com/",
+    "cleared": true,
+    "seconds": 5.2,
+    "layer": null
+   },
+   {
+    "url": "https://novelasligeras.net/",
+    "cleared": true,
+    "seconds": 8.3,
+    "layer": null
+   },
+   {
+    "url": "https://ln.hako.vn/",
+    "cleared": true,
+    "seconds": 8.3,
+    "layer": null
+   },
+   {
+    "url": "https://docln.net/",
+    "cleared": true,
+    "seconds": 8.2,
+    "layer": null
+   },
+   {
+    "url": "https://novelmania.com.br/",
+    "cleared": false,
+    "seconds": 5.1,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://novelfrance.fr/",
+    "cleared": false,
+    "seconds": 5.6,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://smnovels.com/",
+    "cleared": true,
+    "seconds": 8.2,
+    "layer": null
+   },
+   {
+    "url": "https://librarynovel.com/",
+    "cleared": false,
+    "seconds": 7.1,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://novelnext.com/",
+    "cleared": false,
+    "seconds": 64.6,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "http://readlightnovel.online/",
+    "cleared": false,
+    "seconds": 4.6,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://world-novel.fr/",
+    "cleared": true,
+    "seconds": 7.8,
+    "layer": null
+   },
+   {
+    "url": "https://massnovel.fr/",
+    "cleared": false,
+    "seconds": 7.1,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://archiveofourown.org/",
+    "cleared": false,
+    "seconds": 4.9,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://manga-tr.com/",
+    "cleared": true,
+    "seconds": 10.1,
+    "layer": null
+   },
+   {
+    "url": "https://housesaikai.net/",
+    "cleared": false,
+    "seconds": 5.1,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://readnovelmtl.com/",
+    "cleared": true,
+    "seconds": 5.4,
+    "layer": null
+   },
+   {
+    "url": "https://tunovelaligera.com/",
+    "cleared": true,
+    "seconds": 8.2,
+    "layer": null
+   },
+   {
+    "url": "https://uukanshu.cc/",
+    "cleared": true,
+    "seconds": 4.7,
+    "layer": null
+   },
+   {
+    "url": "https://lnkuro.top/",
+    "cleared": false,
+    "seconds": 5.1,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://noveldex.io/",
+    "cleared": true,
+    "seconds": 6.5,
+    "layer": null
+   },
+   {
+    "url": "https://dumahstranslations.wordpress.com/",
+    "cleared": true,
+    "seconds": 6.1,
+    "layer": null
+   },
+   {
+    "url": "https://maplesantl.com/",
+    "cleared": true,
+    "seconds": 6.9,
+    "layer": null
+   },
+   {
+    "url": "https://karistudio.com/",
+    "cleared": true,
+    "seconds": 17.6,
+    "layer": null
+   },
+   {
+    "url": "https://sakuranovel.id/",
+    "cleared": true,
+    "seconds": 9.8,
+    "layer": null
+   },
+   {
+    "url": "https://mmxianxia.com/",
+    "cleared": true,
+    "seconds": 4.9,
+    "layer": null
+   },
+   {
+    "url": "https://kinkytranslations.com/",
+    "cleared": true,
+    "seconds": 6.7,
+    "layer": null
+   },
+   {
+    "url": "https://98novels.com/",
+    "cleared": true,
+    "seconds": 11.7,
+    "layer": null
+   },
+   {
+    "url": "https://www.novelfull.in/",
+    "cleared": true,
+    "seconds": 10.5,
+    "layer": null
+   },
+   {
+    "url": "https://cyborg-tl.com/",
+    "cleared": false,
+    "seconds": 61.9,
+    "layer": "L9 Managed JavaScript challenge"
+   }
+  ],
+  "as_is": [
+   {
+    "url": "https://centralnovel.com/",
+    "cleared": false,
+    "seconds": 62.1,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://www.chereads.com/",
+    "cleared": false,
+    "seconds": 6.3,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://ranobes.net/",
+    "cleared": false,
+    "seconds": 63.5,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://ranobes.top/",
+    "cleared": false,
+    "seconds": 65.5,
+    "layer": "L10 Turnstile"
+   },
+   {
+    "url": "https://www.novelupdates.com/",
+    "cleared": false,
+    "seconds": 61.9,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://novelgo.id/",
+    "cleared": false,
+    "seconds": 61.8,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://dragontea.ink/",
+    "cleared": false,
+    "seconds": 61.9,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://foxaholic.com/",
+    "cleared": false,
+    "seconds": 61.6,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://arcanetranslations.com/",
+    "cleared": true,
+    "seconds": 7.6,
+    "layer": null
+   },
+   {
+    "url": "https://www.f-w-o.com/",
+    "cleared": false,
+    "seconds": 61.7,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://www.scribblehub.com/",
+    "cleared": false,
+    "seconds": 61.9,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://kissmanga.in/",
+    "cleared": false,
+    "seconds": 61.7,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://syosetu.org/",
+    "cleared": false,
+    "seconds": 61.8,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://daotranslate.com/",
+    "cleared": false,
+    "seconds": 62.2,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://aquareader.org/",
+    "cleared": false,
+    "seconds": 62.1,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://www.foxteller.com/",
+    "cleared": false,
+    "seconds": 62.0,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://skydemonorder.com/",
+    "cleared": false,
+    "seconds": 62.3,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://katreadingcafe.com/",
+    "cleared": false,
+    "seconds": 61.8,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://novelasligeras.net/",
+    "cleared": false,
+    "seconds": 62.5,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://ln.hako.vn/",
+    "cleared": false,
+    "seconds": 61.8,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://docln.net/",
+    "cleared": false,
+    "seconds": 62.1,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://novelmania.com.br/",
+    "cleared": false,
+    "seconds": 5.3,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://novelfrance.fr/",
+    "cleared": false,
+    "seconds": 5.1,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://smnovels.com/",
+    "cleared": true,
+    "seconds": 8.2,
+    "layer": null
+   },
+   {
+    "url": "https://librarynovel.com/",
+    "cleared": false,
+    "seconds": 5.3,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://novelnext.com/",
+    "cleared": false,
+    "seconds": 64.5,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "http://readlightnovel.online/",
+    "cleared": false,
+    "seconds": 4.9,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://world-novel.fr/",
+    "cleared": false,
+    "seconds": 61.9,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://massnovel.fr/",
+    "cleared": false,
+    "seconds": 6.4,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://archiveofourown.org/",
+    "cleared": false,
+    "seconds": 4.9,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://manga-tr.com/",
+    "cleared": true,
+    "seconds": 11.5,
+    "layer": null
+   },
+   {
+    "url": "https://housesaikai.net/",
+    "cleared": false,
+    "seconds": 5.0,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://readnovelmtl.com/",
+    "cleared": false,
+    "seconds": 62.1,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://tunovelaligera.com/",
+    "cleared": false,
+    "seconds": 62.1,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://uukanshu.cc/",
+    "cleared": false,
+    "seconds": 62.1,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://lnkuro.top/",
+    "cleared": false,
+    "seconds": 5.2,
+    "layer": "L12 Super Bot Fight Mode"
+   },
+   {
+    "url": "https://noveldex.io/",
+    "cleared": true,
+    "seconds": 6.4,
+    "layer": null
+   },
+   {
+    "url": "https://dumahstranslations.wordpress.com/",
+    "cleared": true,
+    "seconds": 6.1,
+    "layer": null
+   },
+   {
+    "url": "https://maplesantl.com/",
+    "cleared": true,
+    "seconds": 6.3,
+    "layer": null
+   },
+   {
+    "url": "https://karistudio.com/",
+    "cleared": true,
+    "seconds": 21.3,
+    "layer": null
+   },
+   {
+    "url": "https://sakuranovel.id/",
+    "cleared": false,
+    "seconds": 62.0,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://mmxianxia.com/",
+    "cleared": false,
+    "seconds": 62.0,
+    "layer": "L9 Managed JavaScript challenge"
+   },
+   {
+    "url": "https://kinkytranslations.com/",
+    "cleared": true,
+    "seconds": 6.8,
+    "layer": null
+   },
+   {
+    "url": "https://98novels.com/",
+    "cleared": true,
+    "seconds": 9.9,
+    "layer": null
+   },
+   {
+    "url": "https://www.novelfull.in/",
+    "cleared": true,
+    "seconds": 10.1,
+    "layer": null
+   },
+   {
+    "url": "https://cyborg-tl.com/",
+    "cleared": false,
+    "seconds": 62.1,
+    "layer": "L9 Managed JavaScript challenge"
+   }
+  ]
+ }
+}
