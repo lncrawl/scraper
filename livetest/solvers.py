@@ -9,9 +9,8 @@ seconds of each other: challenge deployments change during a day, and a host tha
 switched from scoring to Turnstile between two runs an hour apart makes the earlier arm
 look better for a reason that has nothing to do with the solver.
 
-Only `cdp` is bundled today, so this is a one-armed run until a second backend lands
-— which is the point of keeping it: whatever comes next gets compared against what
-already works, on the same hosts, before it replaces anything.
+Needs a real Chrome and a real Firefox to run both arms; `--solvers cdp` needs only
+the first.
 
     uv run python livetest/solvers.py
     uv run python livetest/solvers.py --report    # offline
@@ -34,6 +33,7 @@ sys.path.insert(0, str(HERE))
 
 from headless import CORPUS, verify  # noqa: E402 - a sibling file, not an installed module
 
+from scraper.bidi import BidiSolver  # noqa: E402
 from scraper.browser import BrowserSolver  # noqa: E402
 from scraper.cdp import CdpSolver  # noqa: E402
 
@@ -41,6 +41,7 @@ OUT = HERE / "solvers.json"
 
 BUILDERS: Dict[str, Callable[[bool], BrowserSolver]] = {
     "cdp": lambda headless: CdpSolver(headless=headless, settle=3.0),
+    "bidi": lambda headless: BidiSolver(headless=headless, settle=3.0),
 }
 
 
@@ -101,7 +102,7 @@ def report(rows: List[Dict[str, Any]]) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--report", action="store_true", help="re-read the JSON, no network")
-    ap.add_argument("--solvers", default="cdp")
+    ap.add_argument("--solvers", default="cdp,bidi")
     ap.add_argument("--headless", action="store_true")
     ap.add_argument("--timeout", type=float, default=60.0)
     ap.add_argument("--hosts", default="", help="comma-separated, overrides the corpus")

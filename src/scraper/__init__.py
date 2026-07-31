@@ -49,6 +49,7 @@ See :mod:`scraper.layers` for the model, and ``docs/`` for the guides.
 
 from importlib.metadata import PackageNotFoundError, version
 
+from .bidi import BidiSolver
 from .botauth import BotAuthConfig, BotAuthKey
 from .browser import (
     BrowserSolver,
@@ -126,6 +127,7 @@ __all__ = [
     # capabilities
     "BotAuthConfig",
     "BotAuthKey",
+    "BidiSolver",
     "BrowserSolver",
     "CallableSolver",
     "CdpSolver",

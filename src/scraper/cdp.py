@@ -24,10 +24,9 @@ gives that control away.
 **What this does not do** is synthesise mouse, scroll or keystroke dynamics. Behaviour
 is :mod:`scraper.pacing`'s job and stays there.
 
-The split into a transport, a backend and a solver is deliberate and not premature:
-:class:`_WsClient` is a WebSocket JSON-RPC channel with a request id, which is equally
-what WebDriver BiDi is. A Firefox backend reuses it unchanged and only has to speak a
-second vocabulary.
+The split into a transport, a backend and a solver was not premature: the transport is
+:mod:`scraper.wire`, and :mod:`scraper.bidi` drives Firefox over it without changing a
+line of it — a second vocabulary rather than a second client.
 """
 
 from __future__ import annotations
@@ -53,7 +52,7 @@ from .browser import (
     launch_flags,
 )
 from .diagnosis import is_still_challenged
-from .exceptions import MissingDependency
+from .wire import ProtocolError, WsClient
 
 logger = logging.getLogger(__name__)
 
@@ -70,102 +69,6 @@ the first thing that happens on a new machine and the worst case there is."""
 
 _CLOSE_WAIT = 5.0
 """How long a browser gets to exit on its own before it is signalled."""
-
-_MAX_FRAME = 64 * 1024 * 1024
-"""Cap on one protocol message.
-
-The library default is 1 MiB, which a page's own HTML clears without difficulty — and
-the failure is a closed connection mid-solve rather than anything naming a size."""
-
-
-def _connect() -> Any:
-    try:
-        from websockets.sync.client import connect
-    except ImportError as exc:
-        raise MissingDependency("cdp", "driving a browser over CDP") from exc
-    return connect
-
-
-class CdpError(SolveError):
-    """The browser answered a command with an error, or stopped answering."""
-
-
-def _describe_error(reply: Dict[str, Any]) -> str:
-    """What went wrong, in whichever way this protocol says it.
-
-    The one place the two vocabularies are not the same shape. CDP puts an object
-    under ``error`` with the text in ``message``; BiDi puts a code *string* there and
-    the detail in a sibling ``message``. Reading either shape as the other raises an
-    ``AttributeError`` from inside the transport, which buries the actual failure.
-    """
-    error = reply.get("error")
-    if isinstance(error, dict):
-        return str(error.get("message") or error)
-    detail = reply.get("message")
-    return f"{error}: {detail}" if detail else str(error)
-
-
-class _WsClient:
-    """A WebSocket JSON-RPC channel: send a command, get the matching reply.
-
-    Backend-agnostic on purpose — CDP and WebDriver BiDi are the same shape on the
-    wire, an object with an ``id`` going out and an object carrying that ``id`` coming
-    back, interleaved with events that carry none. They differ on how an error is
-    spelled, which :func:`_describe_error` absorbs.
-
-    Synchronous, and single-caller by construction: the solver holds its lock for the
-    whole of a solve, so there is never a second command in flight and correlation
-    needs no more than reading until the id matches. Events arriving in between are
-    dropped rather than queued, because nothing here subscribes to any.
-    """
-
-    def __init__(self, url: str, *, open_timeout: float = 10.0) -> None:
-        self._sock = _connect()(url, open_timeout=open_timeout, max_size=_MAX_FRAME)
-        self._next_id = 0
-
-    def send(
-        self,
-        method: str,
-        params: Optional[Dict[str, Any]] = None,
-        *,
-        session: str = "",
-        timeout: float = 30.0,
-    ) -> Dict[str, Any]:
-        self._next_id += 1
-        request_id = self._next_id
-        message: Dict[str, Any] = {"id": request_id, "method": method}
-        if params:
-            message["params"] = params
-        if session:
-            message["sessionId"] = session
-        self._sock.send(json.dumps(message))
-
-        deadline = time.monotonic() + timeout
-        while True:
-            remaining = deadline - time.monotonic()
-            if remaining <= 0:
-                raise CdpError(f"{method} did not answer within {timeout:.0f}s")
-            try:
-                raw = self._sock.recv(timeout=remaining)
-            except TimeoutError as exc:
-                raise CdpError(f"{method} did not answer within {timeout:.0f}s") from exc
-            except Exception as exc:  # noqa: BLE001 - a dropped socket is a solve failure
-                raise CdpError(f"the browser stopped answering during {method}") from exc
-            try:
-                reply = json.loads(raw)
-            except ValueError:
-                continue
-            if reply.get("id") != request_id:
-                continue  # an event, or a reply to something already abandoned
-            if "error" in reply or reply.get("type") == "error":
-                raise CdpError(f"{method}: {_describe_error(reply)}")
-            return reply.get("result") or {}
-
-    def close(self) -> None:
-        try:
-            self._sock.close()
-        except Exception:  # noqa: BLE001 - closing a dead socket is not a failure
-            logger.debug("the protocol socket did not close cleanly", exc_info=True)
 
 
 class ChromeBackend:
@@ -184,7 +87,7 @@ class ChromeBackend:
         profile_dir: Path,
         flags: List[str],
     ) -> None:
-        self._client: Optional[_WsClient] = None
+        self._client: Optional[WsClient] = None
         self._session = ""
 
         argv = [executable, f"--user-data-dir={profile_dir}", "--remote-debugging-port=0"]
@@ -210,7 +113,7 @@ class ChromeBackend:
             stdin=subprocess.DEVNULL,
         )
         try:
-            self._client = _WsClient(self._await_endpoint(port_file))
+            self._client = WsClient(self._await_endpoint(port_file))
         except BaseException:
             self.close()
             raise
@@ -225,7 +128,9 @@ class ChromeBackend:
         deadline = time.monotonic() + _PORT_WAIT
         while time.monotonic() < deadline:
             if self._proc.poll() is not None:
-                raise CdpError(f"the browser exited immediately (status {self._proc.returncode})")
+                raise ProtocolError(
+                    f"the browser exited immediately (status {self._proc.returncode})"
+                )
             try:
                 lines = port_file.read_text(encoding="utf-8").split("\n")
             except OSError:
@@ -234,12 +139,12 @@ class ChromeBackend:
                 port, path = lines[0].strip(), lines[1].strip()
                 return f"ws://127.0.0.1:{port}{path}"
             time.sleep(0.05)
-        raise CdpError(f"the browser did not report a debugging port within {_PORT_WAIT:.0f}s")
+        raise ProtocolError(f"the browser did not report a debugging port within {_PORT_WAIT:.0f}s")
 
     @property
-    def _rpc(self) -> _WsClient:
+    def _rpc(self) -> WsClient:
         if self._client is None:
-            raise CdpError("the browser connection is closed")
+            raise ProtocolError("the browser connection is closed")
         return self._client
 
     def version(self) -> Dict[str, Any]:
@@ -261,13 +166,13 @@ class ChromeBackend:
                 "targetId"
             )
         if not target_id:
-            raise CdpError("the browser opened no page to attach to")
+            raise ProtocolError("the browser opened no page to attach to")
         # `flatten` puts session-scoped messages on this same socket, keyed by
         # sessionId, instead of wrapping them in Target.sendMessageToTarget.
         result = self._rpc.send("Target.attachToTarget", {"targetId": target_id, "flatten": True})
         self._session = str(result.get("sessionId") or "")
         if not self._session:
-            raise CdpError("the browser did not open a session on the page")
+            raise ProtocolError("the browser did not open a session on the page")
 
     def navigate(self, url: str, *, timeout: float) -> None:
         result = self._rpc.send(
@@ -276,7 +181,7 @@ class ChromeBackend:
         # Page.navigate answers with the failure in the result rather than as a
         # protocol error, so a DNS miss or a refused connection is silent unless read.
         if result.get("errorText"):
-            raise CdpError(f"{url} could not be loaded: {result['errorText']}")
+            raise ProtocolError(f"{url} could not be loaded: {result['errorText']}")
 
     def evaluate(self, expression: str, *, timeout: float = 30.0) -> Any:
         result = self._rpc.send(

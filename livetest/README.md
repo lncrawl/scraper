@@ -90,7 +90,8 @@ open pool accepts the wrong token and the scenario would report the inverse of w
 measures. It reports `inconclusive` with that reason instead; run it with
 `AUTH_DISABLED=false`.
 
-**A real Chrome**, for `clearance.py`, `render.py`, `headless.py` and `solvers.py`.
+**A real Chrome**, for `clearance.py`, `render.py`, `headless.py` and `solvers.py` —
+and a real Firefox for `solvers.py`'s second arm.
 No separate interpreter any more — the solver runs on every Python this package
 supports, which is why it replaced the driver library that did not:
 

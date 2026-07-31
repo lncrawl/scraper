@@ -27,8 +27,9 @@ from scraper.browser import (
     honest_user_agent,
     launch_flags,
 )
-from scraper.cdp import CdpError, CdpSolver, _WsClient
+from scraper.cdp import CdpSolver
 from scraper.exceptions import MissingDependency, TierUnavailable
+from scraper.wire import ProtocolError, WsClient
 
 CLEARED_PAGE = "<!doctype html><html><body><h1>Chapter 12</h1></body></html>"
 SHELL = '<!doctype html><html><body><div id="app"></div></body></html>'
@@ -142,7 +143,7 @@ def install_cdp(
         return factory
 
     monkeypatch.setattr("scraper.cdp.subprocess.Popen", popen)
-    monkeypatch.setattr("scraper.cdp._connect", connect)
+    monkeypatch.setattr("scraper.wire.connect", connect)
     return captured
 
 
@@ -266,14 +267,14 @@ class TestSharedHelpers:
 class TestWsClient:
     def test_a_reply_is_matched_to_its_request(self, monkeypatch: pytest.MonkeyPatch):
         install_cdp(monkeypatch, scripted([CLEARED_PAGE]))
-        client = _WsClient("ws://127.0.0.1:9333/x")
+        client = WsClient("ws://127.0.0.1:9333/x")
         assert client.send("Target.attachToTarget") == {"sessionId": "S1"}
 
     def test_events_arriving_first_are_skipped(self, monkeypatch: pytest.MonkeyPatch):
         # Attaching to a target emits Target.attachedToTarget, so an event landing
         # before the reply is the normal case rather than an edge one.
         captured = install_cdp(monkeypatch, scripted([CLEARED_PAGE]))
-        client = _WsClient("ws://127.0.0.1:9333/x")
+        client = WsClient("ws://127.0.0.1:9333/x")
         sock: FakeSocket = captured["sockets"][0]
         sock.emit({"method": "Target.attachedToTarget", "params": {}})
         sock.emit({"method": "Inspector.targetCrashed", "params": {}})
@@ -287,8 +288,8 @@ class TestWsClient:
             raise RuntimeError("No target with given id found")
 
         install_cdp(monkeypatch, handler)
-        client = _WsClient("ws://127.0.0.1:9333/x")
-        with pytest.raises(CdpError, match="No target with given id found"):
+        client = WsClient("ws://127.0.0.1:9333/x")
+        with pytest.raises(ProtocolError, match="No target with given id found"):
             client.send("Page.navigate")
 
     def test_the_other_protocols_error_shape_is_understood_too(
@@ -298,7 +299,7 @@ class TestWsClient:
         # detail in a sibling `message`. Reading one as the other raises an
         # AttributeError from inside the transport and buries the real failure.
         captured = install_cdp(monkeypatch, scripted([CLEARED_PAGE]))
-        client = _WsClient("ws://127.0.0.1:9333/x")
+        client = WsClient("ws://127.0.0.1:9333/x")
         sock: FakeSocket = captured["sockets"][0]
 
         original = sock.send
@@ -316,15 +317,15 @@ class TestWsClient:
             )
 
         monkeypatch.setattr(sock, "send", bidi_error)
-        with pytest.raises(CdpError, match="invalid argument: no such context"):
+        with pytest.raises(ProtocolError, match="invalid argument: no such context"):
             client.send("browsingContext.navigate")
 
     def test_a_browser_that_never_answers_times_out_rather_than_hanging(
         self, monkeypatch: pytest.MonkeyPatch
     ):
         install_cdp(monkeypatch, lambda _: None)
-        client = _WsClient("ws://127.0.0.1:9333/x")
-        with pytest.raises(CdpError, match="did not answer"):
+        client = WsClient("ws://127.0.0.1:9333/x")
+        with pytest.raises(ProtocolError, match="did not answer"):
             client.send("Page.navigate", timeout=0.05)
 
 
@@ -345,7 +346,7 @@ class TestLaunch:
     ):
         monkeypatch.setattr("scraper.cdp._PORT_WAIT", 0.1)
         install_cdp(monkeypatch, scripted([CLEARED_PAGE]), port_file=False)
-        with pytest.raises(CdpError, match="debugging port"):
+        with pytest.raises(ProtocolError, match="debugging port"):
             CdpSolver(executable="/usr/bin/chrome", settle=0.0).solve(
                 "https://site.test/", profile_dir=tmp_path
             )
@@ -404,7 +405,7 @@ class TestLaunch:
             return scripted([CLEARED_PAGE])(message)
 
         captured = install_cdp(monkeypatch, handler)
-        with pytest.raises(CdpError):
+        with pytest.raises(ProtocolError):
             CdpSolver(executable="/usr/bin/chrome", settle=0.0).solve(
                 "https://site.test/", profile_dir=tmp_path
             )
@@ -570,14 +571,14 @@ class TestTheDependency:
     def test_a_missing_websockets_names_the_extra(self, monkeypatch: pytest.MonkeyPatch):
         # Unmarked in pyproject, unlike the browser extra, because this is the driver
         # that has to work on every Python this package supports.
-        import scraper.cdp as cdp
+        import scraper.wire as wire
 
         def no_websockets() -> Any:
             raise MissingDependency("cdp", "driving a browser over CDP")
 
-        monkeypatch.setattr(cdp, "_connect", no_websockets)
+        monkeypatch.setattr(wire, "connect", no_websockets)
         with pytest.raises(MissingDependency, match=r"lncrawl-scraper\[cdp\]"):
-            _WsClient("ws://127.0.0.1:9333/x")
+            WsClient("ws://127.0.0.1:9333/x")
 
     def test_no_executable_anywhere_says_what_to_pass(self, monkeypatch: pytest.MonkeyPatch):
         monkeypatch.setattr("scraper.cdp.shutil.which", lambda _: None)

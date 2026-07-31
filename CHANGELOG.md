@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format is based on 
 
 ## [Unreleased]
 
+### Added
+
+- **`BidiSolver` — Firefox, over WebDriver BiDi.** Not a second way to do the same thing: `ScraperConfig.profile()` makes every request present the fingerprint its clearance was earned under, so a Chrome-only solver forced chrome impersonation everywhere one was configured — and over a 150-host sweep firefox won four hosts against chrome and lost none. This declares `impersonation = "firefox"` and the trade disappears. Measured over the same 46 challenged hosts it also clears slightly more: 29 against Chrome's 28, and faster.
+
+  The transport moved to `scraper.wire` and both backends share it unchanged, which was the bet the original three-layer split made. Firefox is a second vocabulary, not a second client.
+
+  **One cost, stated rather than buried.** A WebDriver session sets `navigator.webdriver` to true by spec, and no preference overrides it while the session is open — measured both ways. Chrome has a launch flag that stops Blink emitting the property; Firefox has no equivalent, so this deletes it with a preload script. That is patching a surface value rather than not emitting one, and a site reading the prototype descriptor would see through it. With the property visible this cleared none of six hosts; with it hidden, all six.
+
 ### Removed
 
 - **`NoDriverSolver` and the nodriver dependency are gone.** `CdpSolver` does the same job on every Python this package supports, and head to head over the challenged corpus it was not worse — 12 hosts cleared to 11, at the same median. Keeping a second solver meant keeping fifty thousand lines of dependency, a marker excluding two interpreters, and two code paths that could quietly disagree about the launch flags. **This is a breaking change**: `scraper.NoDriverSolver` no longer exists. Replace it with `scraper.CdpSolver`. The `[browser]` extra is kept as an alias for `[cdp]` so existing installs still resolve.
