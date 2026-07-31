@@ -383,9 +383,12 @@ class CdpSolver(BrowserSolver):
         # it, and that profile is what carries the accumulated history a solve rests on.
         with self._lock:
             with self._browser(proxy, profile_dir) as browser:
+                # Started before the navigation, so *timeout* bounds the whole call.
+                # Two budgets in sequence would let a slow load double what the caller
+                # asked for, and the interactive budget makes that ten minutes.
+                deadline = time.monotonic() + timeout
                 browser.attach()
                 browser.navigate(url, timeout=timeout)
-                deadline = time.monotonic() + timeout
                 while time.monotonic() < deadline:
                     time.sleep(self._settle)
                     if not is_still_challenged(browser.content()):
@@ -411,6 +414,7 @@ class CdpSolver(BrowserSolver):
     ) -> str:
         with self._lock:
             with self._browser(proxy, profile_dir) as browser:
+                deadline = time.monotonic() + timeout  # the whole call, as in solve
                 browser.attach()
                 browser.navigate(url, timeout=timeout)
                 if wait_for is None:
@@ -418,7 +422,6 @@ class CdpSolver(BrowserSolver):
                     # "the page has run" is time. With one, the wait ends on evidence
                     # and this delay would be dead time.
                     time.sleep(self._settle)
-                deadline = time.monotonic() + timeout
                 while True:
                     content = browser.content()
                     if not is_still_challenged(content):
