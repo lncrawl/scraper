@@ -4,6 +4,20 @@ All notable changes to this project are documented here. The format is based on 
 
 ## [Unreleased]
 
+### Added
+
+- **`CdpSolver` — drive Chrome without nodriver, on every Python this package supports.** nodriver cannot be imported below 3.10 or from 3.14, so on both ends of the range there was no solver at all and a challenged origin failed honestly instead of being solved. This speaks CDP over a WebSocket directly: the seven calls a solve actually needs, against forty thousand lines of generated bindings for the rest of the protocol. Needs the new `cdp` extra, which is deliberately unmarked — a marker would reintroduce the gap it exists to close.
+
+  **It never enables a CDP domain**, which is the reason to own the wire rather than wrap a driver. Eagerly-enabled domains are a known tell and a general-purpose driver has to enable them, because it cannot know what its caller will ask for next; `Runtime.evaluate` and `Page.navigate` are commands, not subscriptions.
+
+  Split into a transport, a backend and a solver because the transport is not Chrome-specific: WebDriver BiDi is the same WebSocket JSON-RPC shape, so a Firefox backend reuses it and only has to speak a second vocabulary.
+
+- **`--disable-blink-features=AutomationControlled`, on every solver.** Blink otherwise sets `navigator.webdriver` to true — one boolean saying "automated" that every detector reads. Found by measuring rather than by reasoning: the new solver cleared **none** of six challenged hosts and spent the full 60s on each, and cleared **all six in under ten seconds** with the flag. A driver library may set this for you; relying on that is how a solve fails slowly for a reason nothing reports.
+
+- **`BrowserSolver.impersonation` — a solver says what its clearance binds to.** `ScraperConfig.profile()` forced chrome on every request to every origin the moment any solver was configured, which is right only for solvers that drive Chrome. A Firefox-based one was overridden into contradicting itself: clearance earned under a Firefox User-Agent, replayed over a Chrome handshake. Defaults to `chrome`, so nothing bundled changes behaviour.
+
+- **`interactive_solve_timeout` — wait for a person when the window is visible.** The solve loop detects success by polling and does not care who cleared the page, so a human needs no protocol of their own, only enough time. A solver setting `interactive` gets this budget (300s) instead of `solve_timeout` (90s), and the origin is named in a log line — a browser window appearing with nothing said about it reads as the app misbehaving. Separate from `solve_timeout` rather than a larger value of it, because raising the one number would make every *unattended* failure four times slower. Both bundled solvers set it from whether they run headed.
+
 ### Fixed
 
 - **A headless browser could not clear a challenge, and the cause was one substring.** Headless Chrome writes `HeadlessChrome` into its User-Agent, and that was the whole of the penalty. `NoDriverSolver` now reads its own User-Agent once per process and launches headless under the corrected one, as a launch flag — not `Network.setUserAgentOverride`, which looks equivalent but suppresses the `Sec-CH-UA` header, trading a browser that admits to being headless for one that claims to be Chrome and sends no brands.

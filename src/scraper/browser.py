@@ -14,7 +14,7 @@ fingerprint that earned it, so what comes back from a solve is not just cookies
 but the identity they belong to. Everything after the solve is ordinary cheap
 requests on that same identity until the cookie expires.
 
-Three details are load-bearing and easy to get wrong:
+Four details are load-bearing and easy to get wrong:
 
 **Headless costs nothing once the browser stops announcing it.** This used to say a
 headless build gives itself away through a software WebGL renderer, and to run a
@@ -36,6 +36,14 @@ would run; reaching for Xvfb to fix this is answering the wrong question.
 when every HTTP request goes through the proxy — which unbinds the identity by
 leaking past it, silently.
 
+**So does the automation flag.** Blink otherwise sets ``navigator.webdriver`` to
+true, which is one boolean saying "this is automated" that every detector reads and
+nothing else on the page can argue with. Measured while building the CDP solver:
+without ``--disable-blink-features=AutomationControlled`` it cleared none of six
+challenged hosts, spending the full 60s on each; with it, the first two cleared in
+under nine seconds. A driver library may set this for you — this library does not
+rely on that, since the cost of it being absent is every solve failing slowly.
+
 The solver a site needs is not always the one bundled here, so
 :class:`BrowserSolver` is a small protocol and anything satisfying it plugs in: a
 patched Chromium driver, a Firefox build that drives over a non-CDP protocol, or a
@@ -56,7 +64,7 @@ import shutil
 import threading
 import time
 from pathlib import Path
-from typing import Any, Callable, Dict, List, NamedTuple, Optional, Type, TypeVar
+from typing import Any, Callable, Dict, List, NamedTuple, Optional, Sequence, Type, TypeVar
 
 from .diagnosis import is_still_challenged
 from .exceptions import MissingDependency, ScraperError, TierUnavailable
@@ -98,6 +106,70 @@ the directory being deleted must not be one another process has a browser in.
 """
 
 _SOLVED_COOKIES = ("cf_clearance", "__cf_bm", "cf_chl_rc_ni")
+
+HEADLESS_TOKEN = "HeadlessChrome/"
+"""The substring a headless Chrome puts in its own User-Agent.
+
+The entire headless penalty, measured: with it present none of a corpus of
+challenged hosts cleared, and with it gone all of them did. See the module docstring.
+"""
+
+
+def launch_flags(
+    proxy: Optional[str] = None,
+    *,
+    user_agent: str = "",
+    extra: Optional[Sequence[str]] = None,
+) -> List[str]:
+    """The command line every bundled solver starts Chrome with.
+
+    Shared rather than copied per solver because the WebRTC pair is load-bearing and
+    omitting it fails silently: nothing errors, no request is refused, the address
+    simply stops being the one the identity was built on.
+    """
+    flags = [
+        # A STUN request reaches the network directly and reports the host's
+        # real address, which unbinds the identity without any request failing.
+        "--disable-webrtc",
+        "--disable-features=WebRtcHideLocalIpsWithMdns",
+        # Without this Blink sets `navigator.webdriver` to true, which is a single
+        # boolean saying "automated" that every detector reads. Measured: a browser
+        # driven over CDP without it cleared none of three challenged hosts in 60s
+        # each, and all three with it.
+        "--disable-blink-features=AutomationControlled",
+    ]
+    if user_agent:
+        flags.append(f"--user-agent={user_agent}")
+    if proxy:
+        flags.append(f"--proxy-server={proxy}")
+    flags.extend(extra or ())
+    return flags
+
+
+def honest_user_agent(reported: str) -> str:
+    """*reported* with the headless giveaway taken out.
+
+    Applied as a launch flag by every solver here, never through
+    ``Network.setUserAgentOverride`` — the override looks equivalent and is not, since
+    it suppresses ``Sec-CH-UA`` outright and trades a browser that admits to being
+    headless for one that claims to be Chrome and sends no brands at all.
+    """
+    return reported.replace(HEADLESS_TOKEN, "Chrome/")
+
+
+def clearance_deadline(expiries: Dict[str, float]) -> float:
+    """The soonest expiry among the cookies a clearance actually rests on, or ``0``.
+
+    Shared between solvers because disagreeing here gives the clearance the wrong
+    lifetime, and the expensive direction is quiet: too long, and every request after
+    the real expiry goes out with a dead cookie, so the challenge that comes back
+    reads as the solver having failed rather than as the clock having run out.
+    """
+    soonest = 0.0
+    for name, expires in expiries.items():
+        if name in _SOLVED_COOKIES and expires > 0:
+            soonest = expires if soonest == 0.0 else min(soonest, expires)
+    return soonest
 
 
 class SolveResult(NamedTuple):
@@ -147,6 +219,26 @@ class BrowserSolver:
     """
 
     name = "browser"
+
+    interactive = False
+    """Whether a person can reach this browser and finish a challenge by hand.
+
+    The solve loop already detects success by polling, and does not care who cleared
+    the page — so a human needs no protocol of their own, only enough time. What this
+    buys is :attr:`ScraperConfig.interactive_solve_timeout` instead of the unattended
+    budget. True of a visible window on a desktop; false of a server, a container, and
+    of a solving service that has no window at all.
+    """
+
+    impersonation = "chrome"
+    """Which impersonation profile a clearance from this solver binds to.
+
+    Read by :meth:`ScraperConfig.profile` to decide what every request to every origin
+    then presents, because a clearance is bound to a TLS fingerprint as much as to a
+    User-Agent and the two have to agree. Override it in a solver driving something
+    other than Chrome; the default is what every bundled solver drives, and the
+    conservative guess for a service whose browser is not knowable from here.
+    """
 
     def solve(
         self,
@@ -269,6 +361,10 @@ class NoDriverSolver(BrowserSolver):
         self._settle = settle
         self._lock = threading.Lock()
         self._user_agent: Optional[str] = None
+        # A visible window is one somebody can solve by hand. Whether anybody is in
+        # front of it is a property of the deployment, not of any single call, which
+        # is why this is decided once here rather than passed to `solve`.
+        self.interactive = not headless
 
     def solve(
         self,
@@ -297,18 +393,7 @@ class NoDriverSolver(BrowserSolver):
             return _run_async(self._render(url, wait_for, proxy, profile_dir, timeout), str)
 
     def _flags(self, proxy: Optional[str], user_agent: str = "") -> List[str]:
-        flags = [
-            # A STUN request reaches the network directly and reports the host's
-            # real address, which unbinds the identity without any request failing.
-            "--disable-webrtc",
-            "--disable-features=WebRtcHideLocalIpsWithMdns",
-        ]
-        if user_agent:
-            flags.append(f"--user-agent={user_agent}")
-        if proxy:
-            flags.append(f"--proxy-server={proxy}")
-        flags.extend(self._extra)
-        return flags
+        return launch_flags(proxy, user_agent=user_agent, extra=self._extra)
 
     async def _honest_user_agent(self) -> str:
         """The User-Agent to launch headless under, or ``""`` when headed.
@@ -341,7 +426,7 @@ class NoDriverSolver(BrowserSolver):
                     browser.stop()
                 except Exception:  # noqa: BLE001 - see _solve
                     logger.debug("nodriver did not shut down cleanly", exc_info=True)
-            self._user_agent = reported.replace("HeadlessChrome/", "Chrome/")
+            self._user_agent = honest_user_agent(reported)
             if not reported:
                 logger.debug("could not read the browser's User-Agent; launching as-is")
         return self._user_agent
@@ -452,16 +537,14 @@ async def _harvest_cookies(browser: object) -> "tuple[Dict[str, str], float]":
         return {}, 0.0
     raw = await jar.get_all()  # pyright: ignore[reportAttributeAccessIssue] - nodriver is optional
     cookies: Dict[str, str] = {}
-    soonest = 0.0
+    expiries: Dict[str, float] = {}
     for cookie in raw or []:
         name = str(getattr(cookie, "name", "") or "")
         if not name:
             continue
         cookies[name] = str(getattr(cookie, "value", "") or "")
-        expires = float(getattr(cookie, "expires", 0) or 0)
-        if name in _SOLVED_COOKIES and expires > 0:
-            soonest = expires if soonest == 0.0 else min(soonest, expires)
-    return cookies, soonest
+        expiries[name] = float(getattr(cookie, "expires", 0) or 0)
+    return cookies, clearance_deadline(expiries)
 
 
 def _run_async(coro: object, expect: Type[_T]) -> _T:

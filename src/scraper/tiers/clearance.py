@@ -59,6 +59,8 @@ class ClearanceTier(Tier):
             directory per exit, because cookie and session age are behavioural
             signals and they belong to the address that accrued them.
         solve_timeout: How long to let a browser work before giving up.
+        interactive_solve_timeout: The budget instead of *solve_timeout* when the
+            solver says a person can reach its window.
     """
 
     name = "clearance"
@@ -71,12 +73,14 @@ class ClearanceTier(Tier):
         store: Optional[Callable[[str, Clearance], None]] = None,
         profile_root: Optional[Path] = None,
         solve_timeout: float = 90.0,
+        interactive_solve_timeout: float = 300.0,
     ) -> None:
         self.solver = solver
         self.direct = direct
         self._store = store
         self._profile_root = profile_root
         self._solve_timeout = solve_timeout
+        self._interactive_solve_timeout = interactive_solve_timeout
         self._lock = threading.Lock()
         self._held: dict = {}
 
@@ -134,11 +138,22 @@ class ClearanceTier(Tier):
                 if clearance.usable_by(pinned):
                     return clearance, pinned
 
+            interactive = bool(getattr(self.solver, "interactive", False))
+            if interactive:
+                # At info because this is the one moment the library needs a person's
+                # attention, and a window appearing with nothing said about why reads
+                # as the app having done something strange.
+                logger.info(
+                    "A browser window has opened for %s — solve the challenge in it if "
+                    "one is shown. Waiting up to %.0fs.",
+                    origin,
+                    self._interactive_solve_timeout,
+                )
             result = self.solver.solve(
                 url,
                 proxy=proxy,
                 profile_dir=profile_dir_for(self._profile_root, identity.exit_id),
-                timeout=self._solve_timeout,
+                timeout=(self._interactive_solve_timeout if interactive else self._solve_timeout),
             )
             if not result.cleared:
                 raise TierUnavailable(

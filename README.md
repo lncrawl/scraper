@@ -116,12 +116,16 @@ soup = scraper.render_soup(url, wait_for="#chapter-list")
 pip install lncrawl-scraper
 ```
 
-| Extra                      | Pulls in     | Needed for                              |
-| -------------------------- | ------------ | --------------------------------------- |
-| `lncrawl-scraper[browser]` | nodriver     | solving a challenge with a real browser |
-| `lncrawl-scraper[botauth]` | cryptography | signed requests (Web Bot Auth)          |
-| `lncrawl-scraper[image]`   | Pillow       | `get_image()`                           |
-| `lncrawl-scraper[all]`     | all three    |                                         |
+| Extra                      | Pulls in     | Needed for                                        |
+| -------------------------- | ------------ | ------------------------------------------------- |
+| `lncrawl-scraper[cdp]`     | websockets   | solving a challenge with a real browser           |
+| `lncrawl-scraper[browser]` | nodriver     | the same, through nodriver — Python 3.10–3.13 only |
+| `lncrawl-scraper[botauth]` | cryptography | signed requests (Web Bot Auth)                    |
+| `lncrawl-scraper[image]`   | Pillow       | `get_image()`                                     |
+| `lncrawl-scraper[all]`     | all four     |                                                   |
+
+Either solver needs a Chrome installed; neither downloads one. Prefer `cdp` — it works on
+every Python this package supports, and nodriver cannot be imported below 3.10 or from 3.14.
 
 Impersonation is **not** an extra. Layers 2–5 are one barrier and an ordinary Python client
 fails all four in the first round trip, so a build without it would not be a degraded scraper
@@ -132,8 +136,7 @@ but one that cannot reach a protected page.
 Two settings change what this library can _do_. The rest adjust how it does it.
 
 ```python
-from scraper import ExitKind, ExitSpec, Scraper, ScraperConfig
-from scraper.browser import NoDriverSolver
+from scraper import CdpSolver, ExitKind, ExitSpec, Scraper, ScraperConfig
 
 config = ScraperConfig(
     # The only thing that moves layer 1: reputation is not something a client emits.
@@ -141,7 +144,7 @@ config = ScraperConfig(
     # this library from telling you that layer 1 is why nothing works.
     exits=[ExitSpec(url="http://user:pw@residential.test:8000", kind=ExitKind.RESIDENTIAL)],
     # The only thing that reaches the challenge layers.
-    browser=NoDriverSolver(),
+    browser=CdpSolver(),
 )
 
 with Scraper(origin="https://site.test", config=config) as scraper:

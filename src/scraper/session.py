@@ -166,6 +166,7 @@ class Scraper:
                 store=self._remember_clearance,
                 profile_root=self.config.profile_root,
                 solve_timeout=self.config.solve_timeout,
+                interactive_solve_timeout=self.config.interactive_solve_timeout,
             )
         if self.config.managed is not None:
             tiers["managed"] = ManagedTier(self.config.managed)

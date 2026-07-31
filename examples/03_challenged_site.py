@@ -5,24 +5,23 @@ bound to the address, User-Agent and TLS fingerprint that earned it. So the brow
 runs once, its exact User-Agent is adopted, and everything after that is an ordinary
 cheap request on the same identity.
 
-Needs the `browser` extra:  pip install lncrawl-scraper[browser]
+Needs the `cdp` extra and a Chrome:  pip install lncrawl-scraper[cdp]
 
     uv run python examples/03_challenged_site.py
 """
 
 import logging
 
-from scraper import Scraper, ScraperConfig
-from scraper.browser import NoDriverSolver
+from scraper import CdpSolver, Scraper, ScraperConfig
 from scraper.exceptions import Exhausted
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
 config = ScraperConfig(
-    # headless=False is the default and it is deliberate: a headless build reports a
-    # software renderer for WebGL, which is a clear indicator on its own. On a
-    # server, run this under a virtual display rather than turning headless on.
-    browser=NoDriverSolver(),
+    # headless=False is the default, and not because headless cannot clear — it can,
+    # measured. A visible window is the one a person can reach into and solve by hand,
+    # which is worth having wherever there is a display. Set headless=True on a server.
+    browser=CdpSolver(),
 )
 
 TARGET = "https://nowsecure.nl/"

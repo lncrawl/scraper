@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import logging
 import time
 from typing import Any, Dict, List, Optional
 
@@ -432,7 +433,9 @@ def stub_solver(
 
     def solve(url: str, *, proxy=None, profile_dir=None, timeout=60.0) -> SolveResult:
         if seen is not None:
-            seen.append({"url": url, "proxy": proxy, "profile_dir": profile_dir})
+            seen.append(
+                {"url": url, "proxy": proxy, "profile_dir": profile_dir, "timeout": timeout}
+            )
         return SolveResult(cookies=cookies, user_agent=user_agent)
 
     return CallableSolver(solve, name="stub")
@@ -440,6 +443,47 @@ def stub_solver(
 
 def clearance_tier(solver: CallableSolver, transport: FakeTransport, **kwargs: Any):
     return ClearanceTier(solver, DirectTier(transport), **kwargs)
+
+
+class TestHowLongASolveGets:
+    """A visible window gets a person's patience; an unattended one does not."""
+
+    def test_an_unattended_solve_gets_the_ordinary_budget(self):
+        seen: List[Dict[str, Any]] = []
+        tier = clearance_tier(
+            stub_solver({"cf_clearance": "x"}, seen=seen),
+            FakeTransport([make_response()]),
+            solve_timeout=90.0,
+            interactive_solve_timeout=300.0,
+        )
+        tier.send(call_for())
+        assert seen[0]["timeout"] == 90.0
+
+    def test_a_solver_a_person_can_reach_gets_the_longer_one(self):
+        # The solve loop detects success by polling and does not care who cleared the
+        # page, so a human needs no protocol of their own — only enough time.
+        solver = stub_solver({"cf_clearance": "x"}, seen=(seen := []))
+        solver.interactive = True
+        tier = clearance_tier(
+            solver,
+            FakeTransport([make_response()]),
+            solve_timeout=90.0,
+            interactive_solve_timeout=300.0,
+        )
+        tier.send(call_for())
+        assert seen[0]["timeout"] == 300.0
+
+    def test_the_window_says_why_it_opened(self, caplog: pytest.LogCaptureFixture):
+        # A browser appearing with nothing said about it reads as the app misbehaving,
+        # and a person who does not know to click will not.
+        solver = stub_solver({"cf_clearance": "x"})
+        solver.interactive = True
+        tier = clearance_tier(solver, FakeTransport([make_response()]))
+        with caplog.at_level(logging.INFO):
+            tier.send(call_for())
+        assert any("browser window has opened" in r.getMessage() for r in caplog.records), (
+            caplog.text
+        )
 
 
 class TestClearanceTier:

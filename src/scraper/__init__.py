@@ -57,6 +57,7 @@ from .browser import (
     RenderError,
     SolveResult,
 )
+from .cdp import CdpSolver
 from .config import ResponseCheck, ScraperConfig, default_data_dir
 from .diagnosis import Action, Diagnosis, diagnose, edge
 from .exceptions import (
@@ -81,6 +82,7 @@ from .session import Scraper
 from .soup import PageSoup
 from .state import SharedState
 from .transport import ImpersonateTransport, PlainTransport, Transport
+from .utils.url_tools import extract_base, extract_host, validate_url
 
 try:
     __version__ = version("lncrawl-scraper")
@@ -127,6 +129,7 @@ __all__ = [
     "BotAuthKey",
     "BrowserSolver",
     "CallableSolver",
+    "CdpSolver",
     "NoDriverSolver",
     "SolveResult",
     "ImpersonateTransport",
@@ -136,6 +139,10 @@ __all__ = [
     "Link",
     "TopicGuard",
     "safe_links",
+    # reading a URL the way this library keys by
+    "extract_base",
+    "extract_host",
+    "validate_url",
     # errors
     "Aborted",
     "Blocked",

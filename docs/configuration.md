@@ -14,12 +14,11 @@ says is wasted.
 **Two settings change what this library can do; the rest adjust how it does it.**
 
 ```python
-from scraper import ExitKind, ExitSpec, Scraper, ScraperConfig
-from scraper.browser import NoDriverSolver
+from scraper import CdpSolver, ExitKind, ExitSpec, Scraper, ScraperConfig
 
 config = ScraperConfig(
     exits=[ExitSpec(url="http://user:pw@residential.test:8000", kind=ExitKind.RESIDENTIAL)],
-    browser=NoDriverSolver(),
+    browser=CdpSolver(),
 )
 scraper = Scraper(origin="https://example.com", config=config)
 ```
@@ -134,7 +133,8 @@ attributed to a layer.
 
 ```bash
 pip install lncrawl-scraper                  # the baseline: impersonated HTTP
-pip install "lncrawl-scraper[browser]"       # the clearance tier
+pip install "lncrawl-scraper[cdp]"           # the clearance tier
+pip install "lncrawl-scraper[browser]"       # the same, through nodriver (3.10-3.13)
 pip install "lncrawl-scraper[botauth]"       # signed requests
 pip install "lncrawl-scraper[image]"         # get_image
 pip install "lncrawl-scraper[all]"

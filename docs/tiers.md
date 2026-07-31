@@ -64,10 +64,25 @@ The failure this structure makes impossible is the usual way the pattern is impl
 wrong: solving on one exit and fetching from another produces a clearance rejected on first
 use, which reads as "the solver does not work" and leads to re-solving forever.
 
-Bundled solver is `scraper.browser.NoDriverSolver`. Anything satisfying the two-method
-`scraper.BrowserSolver` protocol plugs in — a patched Chromium driver, a Firefox build that
-drives over a non-CDP protocol, a paid solving service — and
+Two solvers are bundled. `scraper.CdpSolver` drives Chrome over the DevTools protocol
+directly and needs only `websockets`, so it works on **every Python this package supports**;
+`scraper.browser.NoDriverSolver` drives it through nodriver, which cannot be imported below
+3.10 or from 3.14. Prefer the first unless you have a reason not to. Anything satisfying the
+two-method `scraper.BrowserSolver` protocol plugs in besides — a patched Chromium driver, a
+Firefox build speaking a non-CDP protocol, a paid solving service — and
 `scraper.browser.CallableSolver` wraps a plain function for the one-off case.
+
+**`CdpSolver` never enables a CDP domain**, and that is the reason to own the wire rather
+than wrap a driver. Eagerly-enabled domains are a known tell, and a general-purpose driver
+has to enable them because it cannot know what its caller will ask for next. This one does:
+`Runtime.evaluate` and `Page.navigate` are commands, not subscriptions, so neither
+`Runtime.enable` nor `Page.enable` is ever sent. Going through a higher-level abstraction —
+including Chrome's own WebDriver BiDi, implemented over CDP internally — gives that away.
+
+A solver declares two things about itself. `impersonation` is the profile its clearance
+binds to, which `ScraperConfig.profile()` then applies to every request; `interactive` says
+a person can reach the window, which buys `interactive_solve_timeout` instead of the
+unattended `solve_timeout`. Both bundled solvers set the second from whether they run headed.
 
 Two defaults are deliberate and worth not changing:
 
@@ -90,8 +105,8 @@ One browser profile directory per address
 profile reused across a run accumulates the history that makes the session look established
 — and sharing one between addresses is how a clean exit inherits a burnt one's session.
 
-`NoDriverSolver` does not synthesise mouse, scroll or keystroke dynamics, so it clears the
-control-channel layer and leaves the behavioural one entirely to `scraper.pacing`. That
+Neither bundled solver synthesises mouse, scroll or keystroke dynamics, so both clear the
+control-channel layer and leave the behavioural one entirely to `scraper.pacing`. That
 division is why they are separate modules.
 
 ### `render_soup()` — a browser, but not a tier

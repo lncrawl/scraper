@@ -109,6 +109,12 @@ class ScraperConfig:
         max_attempts: Attempts for one retrieval across all tiers.
         max_rotations: Addresses to spend on one retrieval. Deliberately small —
             burning a pool one request at a time is a misdiagnosis, not bad luck.
+        solve_timeout: How long a browser gets to answer a challenge by itself.
+        interactive_solve_timeout: How long it gets when a person can see the window
+            and finish it by hand. Separate from *solve_timeout* rather than a larger
+            value of it, because raising the one number would make every unattended
+            failure take this long too. The cost is real and worth stating: a visible
+            window with nobody in front of it now waits this long before giving up.
         retry_backoff: Base seconds before a retry, doubled per attempt and capped
             at *max_retry_wait*. Only used when the response named no delay; a
             ``Retry-After`` header always wins.
@@ -155,6 +161,7 @@ class ScraperConfig:
     max_rotations: int = 2
     promote_after: int = 3
     solve_timeout: float = 90.0
+    interactive_solve_timeout: float = 300.0
     retry_backoff: float = 1.0
     max_retry_wait: float = 30.0
 
@@ -207,19 +214,27 @@ class ScraperConfig:
         lost none. Chrome being the most common real browser is a reason to expect it
         to be unremarkable, not evidence that it is the least remarkable.
 
-        Chrome when a browser solver is configured, and that override is the whole
-        reason this is a method. A clearance is bound to a User-Agent *and* a TLS
-        fingerprint together. The bundled solver drives Chrome, so it earns a
-        clearance under a Chrome User-Agent — and replaying that over a Firefox
-        handshake presents a contradiction the binding exists to catch. Four hosts is
+        Whatever the solver impersonates when one is configured, and that override is
+        the whole reason this is a method. A clearance is bound to a User-Agent *and*
+        a TLS fingerprint together, so a solver driving Chrome earns its clearance
+        under a Chrome User-Agent — and replaying that over a Firefox handshake
+        presents exactly the contradiction the binding exists to catch. Four hosts is
         not worth breaking the tier that answers challenges.
+
+        Read from the solver rather than assumed to be chrome, so a Firefox-based
+        solver keeps the default it measured its way to instead of being overridden
+        into contradicting itself. A solver that declares nothing is taken as chrome:
+        that is what every bundled one drives, and it is the conservative guess for a
+        paid service whose binding is not knowable from here.
 
         Set ``impersonate`` explicitly to override either way; nothing here second
         guesses a caller who named a profile.
         """
         if self.impersonate:
             return self.impersonate
-        return "chrome" if self.browser is not None else "firefox"
+        if self.browser is None:
+            return "firefox"
+        return str(getattr(self.browser, "impersonation", "") or "chrome")
 
     def capabilities_enabled(self) -> Tuple[bool, bool, bool]:
         """``(archive, browser, managed)`` — which optional tiers are available."""

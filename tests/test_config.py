@@ -63,6 +63,25 @@ class TestWhichProfileIsUsed:
         assert ScraperConfig(impersonate="safari").profile() == "safari"
         assert ScraperConfig(impersonate="safari", browser=solver).profile() == "safari"
 
+    def test_a_solver_that_drives_something_else_says_so(self):
+        # Otherwise a Firefox-based solver is overridden into contradicting itself:
+        # its clearance is earned under a Firefox User-Agent and replayed over a
+        # Chrome handshake, which is the mismatch the binding exists to catch.
+        solver = CallableSolver(lambda *a, **k: SolveResult(cookies={}, user_agent="x"))
+        solver.impersonation = "firefox"
+        assert ScraperConfig(browser=solver).profile() == "firefox"
+
+    def test_a_solver_declaring_nothing_is_taken_as_chrome(self):
+        # A duck-typed solver from outside this package predates the attribute, and
+        # chrome is what every bundled one drives.
+        class Bare:
+            name = "bare"
+
+            def solve(self, *a: object, **k: object) -> SolveResult:
+                return SolveResult(cookies={}, user_agent="x")
+
+        assert ScraperConfig(browser=Bare()).profile() == "chrome"  # pyright: ignore[reportArgumentType]
+
 
 def test_only_configured_capabilities_are_offered():
     assert ScraperConfig().capabilities_enabled() == (False, False, False)

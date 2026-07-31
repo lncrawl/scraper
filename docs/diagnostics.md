@@ -193,7 +193,7 @@ the same reason as the original — the library says so rather than proving it o
 time. Configure a residential or mobile exit.
 
 **`Exhausted` at L9/L10/L13 with "needs clearance, which is not enabled".** The site serves a
-challenge and there is no solver. `ScraperConfig.browser=NoDriverSolver()`.
+challenge and there is no solver. `ScraperConfig.browser=CdpSolver()`.
 
 **`Exhausted` at L14.** The zone is running the per-zone composite, reached by promotion after
 repeated failures. Results against it are inconsistent by nature; a managed provider is the
