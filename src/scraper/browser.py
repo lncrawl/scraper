@@ -63,6 +63,7 @@ import re
 import shutil
 import threading
 import time
+import urllib.parse
 from pathlib import Path
 from typing import Any, Callable, Dict, List, NamedTuple, Optional, Sequence, Type, TypeVar
 
@@ -115,6 +116,38 @@ challenged hosts cleared, and with it gone all of them did. See the module docst
 """
 
 
+def chrome_proxy(url: str) -> str:
+    """*url* in the form Chrome's ``--proxy-server`` accepts, or refuse to guess.
+
+    Two ways a perfectly good proxy URL is not one Chrome can use, and neither says so:
+
+    **``socks5h`` is not a scheme it knows.** The flag is rejected whole and every
+    navigation then fails with ``ERR_NO_SUPPORTED_PROXIES``. Safe to translate, because
+    Chrome's ``socks5`` already resolves names at the proxy — which is all the ``h``
+    ever asked for.
+
+    **Credentials cannot travel at all.** Chrome implements no SOCKS5
+    username/password authentication, and userinfo in the flag makes it reject the
+    whole thing regardless of scheme — measured, including for ``http://``. Dropping
+    the credentials and launching anyway would be worse than failing: for a pool
+    endpoint the username *is* the session key, so the browser would leave by a
+    different exit than the requests that go on to replay its clearance, and the
+    clearance would be dead on arrival. That reads as "the solver does not work", and
+    the retry it provokes re-solves forever.
+    """
+    if not url:
+        return ""
+    parsed = urllib.parse.urlsplit(url)
+    if parsed.username or parsed.password:
+        raise TierUnavailable(
+            "browser",
+            "this proxy needs credentials and a browser cannot send them; solve "
+            "through an address that does not, or turn the browser tier off",
+        )
+    scheme = {"socks5h": "socks5", "socks4a": "socks4"}.get(parsed.scheme, parsed.scheme)
+    return urllib.parse.urlunsplit((scheme, parsed.netloc, "", "", ""))
+
+
 def launch_flags(
     proxy: Optional[str] = None,
     *,
@@ -141,7 +174,7 @@ def launch_flags(
     if user_agent:
         flags.append(f"--user-agent={user_agent}")
     if proxy:
-        flags.append(f"--proxy-server={proxy}")
+        flags.append(f"--proxy-server={chrome_proxy(proxy)}")
     flags.extend(extra or ())
     return flags
 

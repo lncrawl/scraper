@@ -20,7 +20,13 @@ from typing import Any, Callable, Dict, List, Optional
 
 import pytest
 
-from scraper.browser import BrowserSolver, clearance_deadline, honest_user_agent, launch_flags
+from scraper.browser import (
+    BrowserSolver,
+    chrome_proxy,
+    clearance_deadline,
+    honest_user_agent,
+    launch_flags,
+)
 from scraper.cdp import CdpError, CdpSolver, _WsClient
 from scraper.exceptions import MissingDependency, TierUnavailable
 
@@ -192,6 +198,35 @@ class TestSharedHelpers:
         flags = launch_flags()
         assert "--disable-webrtc" in flags
         assert "--disable-features=WebRtcHideLocalIpsWithMdns" in flags
+
+    def test_socks5h_is_translated_because_chrome_rejects_it(self):
+        # Not a scheme Chrome knows: the flag is rejected whole and every navigation
+        # fails with ERR_NO_SUPPORTED_PROXIES. Its socks5 resolves at the proxy
+        # already, which is all the h ever asked for.
+        assert chrome_proxy("socks5h://127.0.0.1:9250") == "socks5://127.0.0.1:9250"
+        assert chrome_proxy("socks4a://127.0.0.1:9250") == "socks4://127.0.0.1:9250"
+        assert chrome_proxy("http://p.test:8080") == "http://p.test:8080"
+        assert chrome_proxy("") == ""
+
+    def test_a_proxy_needing_credentials_is_refused_rather_than_stripped(self):
+        # Measured: userinfo makes Chrome reject the flag for any scheme, so these
+        # never worked. Stripping them and launching anyway is the bad fix — for a
+        # pool the username is the session key, so the browser would leave by one
+        # exit and the requests replaying its clearance by another.
+        with pytest.raises(TierUnavailable, match="cannot send them"):
+            chrome_proxy("socks5://session-key:token@127.0.0.1:9250")
+        with pytest.raises(TierUnavailable):
+            chrome_proxy("http://user:pw@proxy.test:8080")
+
+    def test_a_refused_proxy_stops_the_launch(self, monkeypatch: pytest.MonkeyPatch):
+        # It has to fail before the browser starts, not after: a browser on the wrong
+        # address earns a clearance that is dead on arrival.
+        captured = install_cdp(monkeypatch, scripted([CLEARED_PAGE]))
+        with pytest.raises(TierUnavailable):
+            CdpSolver(executable="/usr/bin/chrome", settle=0.0).solve(
+                "https://site.test/", proxy="socks5h://key:tok@127.0.0.1:9250"
+            )
+        assert "processes" not in captured
 
     def test_the_automation_flag_is_always_off(self):
         # Without this Blink sets `navigator.webdriver` to true — one boolean saying
