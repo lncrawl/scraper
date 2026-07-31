@@ -42,12 +42,13 @@ The browser tier runs separately, under its own interpreter — see below.
 | `scenarios.py` | The scenarios. Each declares the layers it exercises and what a pass proves. |
 | `clearance.py` | The browser tier. Separate because it needs a different Python and a real Chrome. |
 | `render.py` | `render_soup()` against a real single-page application. Same requirements as `clearance.py`. |
+| `headless.py` | Headed vs headless over a corpus of hosts that actually challenge. Holds the runs that retired the WebGL and virtual-display advice; `--report` re-reads them offline. |
 | `report.py` | Renders `report.html` from whatever JSON exists. No network. |
 | `compare.py` | A/B against a previous release. Spawns `arm_v1.py` / `arm_v026.py` under each version's own interpreter, grades both with one classifier. |
 | `compare_analyze.py` | Reads `compare.json` and answers whether the new version is better, head to head. No network. |
 | `profile_sweep.py` | Which impersonation profile wins, across the corpus. How the default came to be Firefox. |
 | `referer_probe.py` | Sizes one header's effect: same transport, same profile, `Referer` the only difference. |
-| `probe.json`, `tor_probe.json`, `results.json`, `clearance.json`, `render.json` | Recorded output. Committed as a baseline — a diff after a change is the fastest way to see what moved. |
+| `probe.json`, `tor_probe.json`, `results.json`, `clearance.json`, `render.json`, `headless.json` | Recorded output. Committed as a baseline — a diff after a change is the fastest way to see what moved. |
 | `state/` | Scraper data dir for the runs (learned memory, browser profiles, downloads). Gitignored; safe to delete. |
 
 ## Requirements
@@ -95,6 +96,7 @@ uv venv --python 3.12 /tmp/scr312
 uv pip install --python /tmp/scr312/bin/python -e . nodriver cryptography
 /tmp/scr312/bin/python livetest/clearance.py
 /tmp/scr312/bin/python livetest/render.py
+/tmp/scr312/bin/python livetest/headless.py       # ~25 min; --report is offline
 ```
 
 Python **3.10–3.13**. nodriver raises `TypeError` on 3.9 (it evaluates a PEP 604 union
@@ -102,9 +104,11 @@ at import time) and `SyntaxError` on 3.14 (a generated module has a non-UTF-8 by
 no encoding declaration). The editable install matters while iterating — a built wheel
 will not pick up `src/` changes, which cost one confusing run to work out.
 
-Chrome launches **headed**, deliberately: a headless build reports a software renderer
-for WebGL, which is an indicator on its own. On a server, run it under a virtual
-display rather than turning headless on.
+Chrome launches **headed**, but not because headless cannot clear — `headless.py`
+measured that and it can. Headed is what a person can reach into and solve by hand.
+What a container needs is the browser a real visitor runs: Debian's `chromium` omits
+the `Google Chrome` brand from `Sec-CH-UA` and cleared nothing under any display
+setting, Xvfb included.
 
 ## Rules this harness follows
 

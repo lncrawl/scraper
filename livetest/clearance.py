@@ -12,8 +12,9 @@ Two environment facts learned the hard way and worth keeping here:
 - nodriver 0.50.3 does not import on Python 3.14 — one of its generated CDP modules
   contains a non-UTF-8 byte with no encoding declaration, which is a SyntaxError
   rather than something the library can catch.
-- Headless is not used. A headless build reports a software renderer for WebGL, which
-  is a clear indicator on its own, so this launches headed.
+- Headless is not used, though it would work: `headless.py` measured that and it
+  clears everything headed clears. Headed matches the shipped default, and matching
+  it is the point of a live harness.
 """
 
 from __future__ import annotations

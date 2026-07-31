@@ -1,0 +1,2489 @@
+{
+ "what": "A3b: does a headless browser clear a challenge a headed one clears?",
+ "answer": "Yes, once it stops announcing itself. See livetest/headless.py.",
+ "corpus": [
+  "https://centralnovel.com/",
+  "https://www.chereads.com/",
+  "https://ranobes.net/",
+  "https://ranobes.top/",
+  "https://www.novelupdates.com/",
+  "https://novelgo.id/",
+  "https://dragontea.ink/",
+  "https://foxaholic.com/",
+  "https://arcanetranslations.com/",
+  "https://www.f-w-o.com/",
+  "https://www.scribblehub.com/",
+  "https://kissmanga.in/",
+  "https://syosetu.org/",
+  "https://daotranslate.com/",
+  "https://aquareader.org/",
+  "https://www.foxteller.com/",
+  "https://skydemonorder.com/",
+  "https://katreadingcafe.com/",
+  "https://novelasligeras.net/",
+  "https://ln.hako.vn/",
+  "https://docln.net/",
+  "https://novelmania.com.br/",
+  "https://novelfrance.fr/",
+  "https://smnovels.com/",
+  "https://librarynovel.com/",
+  "https://novelnext.com/",
+  "http://readlightnovel.online/",
+  "https://world-novel.fr/",
+  "https://massnovel.fr/",
+  "https://archiveofourown.org/",
+  "https://manga-tr.com/",
+  "https://housesaikai.net/",
+  "https://readnovelmtl.com/",
+  "https://tunovelaligera.com/",
+  "https://uukanshu.cc/",
+  "https://lnkuro.top/",
+  "https://noveldex.io/",
+  "https://dumahstranslations.wordpress.com/",
+  "https://maplesantl.com/",
+  "https://karistudio.com/",
+  "https://sakuranovel.id/",
+  "https://mmxianxia.com/",
+  "https://kinkytranslations.com/",
+  "https://98novels.com/",
+  "https://www.novelfull.in/",
+  "https://cyborg-tl.com/"
+ ],
+ "arms": [
+  {
+   "arm": "announced",
+   "note": "macOS, real Chrome, before the fix. Headless still says HeadlessChrome in its User-Agent. Its headed rows are the control for the whole measurement.",
+   "rows": [
+    {
+     "url": "https://www.scribblehub.com/",
+     "headless": false,
+     "solve_seconds": 8.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 73610,
+     "run": 0
+    },
+    {
+     "url": "https://www.scribblehub.com/",
+     "headless": true,
+     "solve_seconds": 46.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5985,
+     "run": 0
+    },
+    {
+     "url": "https://ranobes.top/",
+     "headless": false,
+     "solve_seconds": 46.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 200,
+     "action": "solve",
+     "layer": "L10 Turnstile",
+     "bytes": 15137,
+     "run": 0
+    },
+    {
+     "url": "https://ranobes.top/",
+     "headless": true,
+     "solve_seconds": 46.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 200,
+     "action": "solve",
+     "layer": "L10 Turnstile",
+     "bytes": 15412,
+     "run": 0
+    },
+    {
+     "url": "https://ranobes.net/",
+     "headless": false,
+     "solve_seconds": 48.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "__ddg1_"
+     ],
+     "cleared": false,
+     "status": 200,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 39766,
+     "run": 0
+    },
+    {
+     "url": "https://ranobes.net/",
+     "headless": true,
+     "solve_seconds": 51.5,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "__ddg1_"
+     ],
+     "cleared": false,
+     "status": 200,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 37507,
+     "run": 0
+    },
+    {
+     "url": "https://www.novelupdates.com/",
+     "headless": false,
+     "solve_seconds": 10.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 98916,
+     "run": 0
+    },
+    {
+     "url": "https://www.novelupdates.com/",
+     "headless": true,
+     "solve_seconds": 46.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5986,
+     "run": 0
+    },
+    {
+     "url": "https://centralnovel.com/",
+     "headless": false,
+     "solve_seconds": 7.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 211344,
+     "run": 0
+    },
+    {
+     "url": "https://centralnovel.com/",
+     "headless": true,
+     "solve_seconds": 46.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5961,
+     "run": 0
+    },
+    {
+     "url": "https://dragontea.ink/",
+     "headless": false,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 203935,
+     "run": 0
+    },
+    {
+     "url": "https://dragontea.ink/",
+     "headless": true,
+     "solve_seconds": 46.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5966,
+     "run": 0
+    },
+    {
+     "url": "https://syosetu.org/",
+     "headless": false,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 65953,
+     "run": 0
+    },
+    {
+     "url": "https://syosetu.org/",
+     "headless": true,
+     "solve_seconds": 47.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 6020,
+     "run": 0
+    },
+    {
+     "url": "https://skydemonorder.com/",
+     "headless": false,
+     "solve_seconds": 7.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 330777,
+     "run": 0
+    },
+    {
+     "url": "https://skydemonorder.com/",
+     "headless": true,
+     "solve_seconds": 46.3,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5962,
+     "run": 0
+    },
+    {
+     "url": "https://www.scribblehub.com/",
+     "headless": false,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 73576,
+     "run": 1
+    },
+    {
+     "url": "https://www.scribblehub.com/",
+     "headless": true,
+     "solve_seconds": 45.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5985,
+     "run": 1
+    },
+    {
+     "url": "https://ranobes.top/",
+     "headless": false,
+     "solve_seconds": 46.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 200,
+     "action": "solve",
+     "layer": "L10 Turnstile",
+     "bytes": 15137,
+     "run": 1
+    },
+    {
+     "url": "https://ranobes.top/",
+     "headless": true,
+     "solve_seconds": 46.5,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 200,
+     "action": "solve",
+     "layer": "L10 Turnstile",
+     "bytes": 15412,
+     "run": 1
+    },
+    {
+     "url": "https://ranobes.net/",
+     "headless": false,
+     "solve_seconds": 46.7,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "__ddg1_"
+     ],
+     "cleared": false,
+     "status": 200,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 41174,
+     "run": 1
+    },
+    {
+     "url": "https://ranobes.net/",
+     "headless": true,
+     "solve_seconds": 40.6,
+     "cleared": false,
+     "why": "ConnectionClosedError: no close frame received or sent",
+     "run": 1
+    },
+    {
+     "url": "https://www.novelupdates.com/",
+     "headless": false,
+     "solve_seconds": 7.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 98568,
+     "run": 1
+    },
+    {
+     "url": "https://www.novelupdates.com/",
+     "headless": true,
+     "solve_seconds": 45.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5986,
+     "run": 1
+    },
+    {
+     "url": "https://centralnovel.com/",
+     "headless": false,
+     "solve_seconds": 6.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 211344,
+     "run": 1
+    },
+    {
+     "url": "https://centralnovel.com/",
+     "headless": true,
+     "solve_seconds": 46.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5940,
+     "run": 1
+    },
+    {
+     "url": "https://dragontea.ink/",
+     "headless": false,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 202997,
+     "run": 1
+    },
+    {
+     "url": "https://dragontea.ink/",
+     "headless": true,
+     "solve_seconds": 45.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5966,
+     "run": 1
+    },
+    {
+     "url": "https://syosetu.org/",
+     "headless": false,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 64992,
+     "run": 1
+    },
+    {
+     "url": "https://syosetu.org/",
+     "headless": true,
+     "solve_seconds": 45.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 6020,
+     "run": 1
+    },
+    {
+     "url": "https://skydemonorder.com/",
+     "headless": false,
+     "solve_seconds": 7.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 330777,
+     "run": 1
+    },
+    {
+     "url": "https://skydemonorder.com/",
+     "headless": true,
+     "solve_seconds": 46.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5962,
+     "run": 1
+    }
+   ]
+  },
+  {
+   "arm": "corrected",
+   "note": "macOS, real Chrome, after the fix. The decisive arm: same corpus, same session, headless launched under a User-Agent with the token removed.",
+   "rows": [
+    {
+     "url": "https://centralnovel.com/",
+     "headless": false,
+     "solve_seconds": 9.5,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 210406,
+     "run": 0
+    },
+    {
+     "url": "https://centralnovel.com/",
+     "headless": true,
+     "solve_seconds": 10.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 210406,
+     "run": 0
+    },
+    {
+     "url": "https://www.chereads.com/",
+     "headless": false,
+     "solve_seconds": 8.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 104700,
+     "run": 0
+    },
+    {
+     "url": "https://www.chereads.com/",
+     "headless": true,
+     "solve_seconds": 8.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 104684,
+     "run": 0
+    },
+    {
+     "url": "https://ranobes.net/",
+     "headless": false,
+     "solve_seconds": 45.7,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "__ddg1_"
+     ],
+     "cleared": false,
+     "status": 200,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 39610,
+     "run": 0
+    },
+    {
+     "url": "https://ranobes.net/",
+     "headless": true,
+     "solve_seconds": 45.7,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "__ddg1_"
+     ],
+     "cleared": false,
+     "status": 200,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 40866,
+     "run": 0
+    },
+    {
+     "url": "https://ranobes.top/",
+     "headless": false,
+     "solve_seconds": 43.7,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 200,
+     "action": "solve",
+     "layer": "L10 Turnstile",
+     "bytes": 15137,
+     "run": 0
+    },
+    {
+     "url": "https://ranobes.top/",
+     "headless": true,
+     "solve_seconds": 43.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 200,
+     "action": "solve",
+     "layer": "L10 Turnstile",
+     "bytes": 15137,
+     "run": 0
+    },
+    {
+     "url": "https://www.novelupdates.com/",
+     "headless": false,
+     "solve_seconds": 7.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 98853,
+     "run": 0
+    },
+    {
+     "url": "https://www.novelupdates.com/",
+     "headless": true,
+     "solve_seconds": 7.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 98853,
+     "run": 0
+    },
+    {
+     "url": "https://novelgo.id/",
+     "headless": false,
+     "solve_seconds": 43.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5806,
+     "run": 0
+    },
+    {
+     "url": "https://novelgo.id/",
+     "headless": true,
+     "solve_seconds": 7.5,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 144124,
+     "run": 0
+    },
+    {
+     "url": "https://dragontea.ink/",
+     "headless": false,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 202997,
+     "run": 0
+    },
+    {
+     "url": "https://dragontea.ink/",
+     "headless": true,
+     "solve_seconds": 7.7,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 202997,
+     "run": 0
+    },
+    {
+     "url": "https://foxaholic.com/",
+     "headless": false,
+     "solve_seconds": 9.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5813,
+     "run": 0
+    },
+    {
+     "url": "https://foxaholic.com/",
+     "headless": true,
+     "solve_seconds": 7.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5813,
+     "run": 0
+    },
+    {
+     "url": "https://arcanetranslations.com/",
+     "headless": false,
+     "solve_seconds": 10.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 6020,
+     "run": 0
+    },
+    {
+     "url": "https://arcanetranslations.com/",
+     "headless": true,
+     "solve_seconds": 8.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 6020,
+     "run": 0
+    },
+    {
+     "url": "https://www.f-w-o.com/",
+     "headless": false,
+     "solve_seconds": 11.5,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5920,
+     "run": 0
+    },
+    {
+     "url": "https://www.f-w-o.com/",
+     "headless": true,
+     "solve_seconds": 10.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5920,
+     "run": 0
+    },
+    {
+     "url": "https://www.scribblehub.com/",
+     "headless": false,
+     "solve_seconds": 6.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 72456,
+     "run": 0
+    },
+    {
+     "url": "https://www.scribblehub.com/",
+     "headless": true,
+     "solve_seconds": 7.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 72452,
+     "run": 0
+    },
+    {
+     "url": "https://kissmanga.in/",
+     "headless": false,
+     "solve_seconds": 13.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 202190,
+     "run": 0
+    },
+    {
+     "url": "https://kissmanga.in/",
+     "headless": true,
+     "solve_seconds": 7.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 202190,
+     "run": 0
+    },
+    {
+     "url": "https://syosetu.org/",
+     "headless": false,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 64852,
+     "run": 0
+    },
+    {
+     "url": "https://syosetu.org/",
+     "headless": true,
+     "solve_seconds": 7.8,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 64852,
+     "run": 0
+    },
+    {
+     "url": "https://daotranslate.com/",
+     "headless": false,
+     "solve_seconds": 7.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 380746,
+     "run": 0
+    },
+    {
+     "url": "https://daotranslate.com/",
+     "headless": true,
+     "solve_seconds": 7.5,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 380746,
+     "run": 0
+    },
+    {
+     "url": "https://aquareader.org/",
+     "headless": false,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 254681,
+     "run": 0
+    },
+    {
+     "url": "https://aquareader.org/",
+     "headless": true,
+     "solve_seconds": 7.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 254681,
+     "run": 0
+    },
+    {
+     "url": "https://www.foxteller.com/",
+     "headless": false,
+     "solve_seconds": 7.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 149038,
+     "run": 0
+    },
+    {
+     "url": "https://www.foxteller.com/",
+     "headless": true,
+     "solve_seconds": 10.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 149038,
+     "run": 0
+    },
+    {
+     "url": "https://skydemonorder.com/",
+     "headless": false,
+     "solve_seconds": 6.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 330696,
+     "run": 0
+    },
+    {
+     "url": "https://skydemonorder.com/",
+     "headless": true,
+     "solve_seconds": 7.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 330696,
+     "run": 0
+    },
+    {
+     "url": "https://katreadingcafe.com/",
+     "headless": false,
+     "solve_seconds": 7.3,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 321188,
+     "run": 0
+    },
+    {
+     "url": "https://katreadingcafe.com/",
+     "headless": true,
+     "solve_seconds": 11.3,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 321188,
+     "run": 0
+    },
+    {
+     "url": "https://novelasligeras.net/",
+     "headless": false,
+     "solve_seconds": 7.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 562274,
+     "run": 0
+    },
+    {
+     "url": "https://novelasligeras.net/",
+     "headless": true,
+     "solve_seconds": 8.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 562274,
+     "run": 0
+    },
+    {
+     "url": "https://ln.hako.vn/",
+     "headless": false,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 145585,
+     "run": 0
+    },
+    {
+     "url": "https://ln.hako.vn/",
+     "headless": true,
+     "solve_seconds": 7.7,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 145535,
+     "run": 0
+    },
+    {
+     "url": "https://docln.net/",
+     "headless": false,
+     "solve_seconds": 7.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 145528,
+     "run": 0
+    },
+    {
+     "url": "https://docln.net/",
+     "headless": true,
+     "solve_seconds": 8.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 145478,
+     "run": 0
+    },
+    {
+     "url": "https://novelmania.com.br/",
+     "headless": false,
+     "solve_seconds": 4.5,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 4909,
+     "run": 0
+    },
+    {
+     "url": "https://novelmania.com.br/",
+     "headless": true,
+     "solve_seconds": 4.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 4909,
+     "run": 0
+    },
+    {
+     "url": "https://novelfrance.fr/",
+     "headless": false,
+     "solve_seconds": 3.8,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 5192,
+     "run": 0
+    },
+    {
+     "url": "https://novelfrance.fr/",
+     "headless": true,
+     "solve_seconds": 4.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 5192,
+     "run": 0
+    },
+    {
+     "url": "https://smnovels.com/",
+     "headless": false,
+     "solve_seconds": 4.7,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 46945,
+     "run": 0
+    },
+    {
+     "url": "https://smnovels.com/",
+     "headless": true,
+     "solve_seconds": 4.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 46945,
+     "run": 0
+    },
+    {
+     "url": "https://librarynovel.com/",
+     "headless": false,
+     "solve_seconds": 4.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 907,
+     "run": 0
+    },
+    {
+     "url": "https://librarynovel.com/",
+     "headless": true,
+     "solve_seconds": 4.5,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 907,
+     "run": 0
+    },
+    {
+     "url": "https://novelnext.com/",
+     "headless": false,
+     "solve_seconds": 43.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 5066,
+     "run": 0
+    },
+    {
+     "url": "https://novelnext.com/",
+     "headless": true,
+     "solve_seconds": 43.8,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 5067,
+     "run": 0
+    },
+    {
+     "url": "http://readlightnovel.online/",
+     "headless": false,
+     "solve_seconds": 4.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 4913,
+     "run": 0
+    },
+    {
+     "url": "http://readlightnovel.online/",
+     "headless": true,
+     "solve_seconds": 4.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 4913,
+     "run": 0
+    },
+    {
+     "url": "https://world-novel.fr/",
+     "headless": false,
+     "solve_seconds": 12.8,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 120142,
+     "run": 0
+    },
+    {
+     "url": "https://world-novel.fr/",
+     "headless": true,
+     "solve_seconds": 7.5,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 120142,
+     "run": 0
+    },
+    {
+     "url": "https://massnovel.fr/",
+     "headless": false,
+     "solve_seconds": 4.3,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 6130,
+     "run": 0
+    },
+    {
+     "url": "https://massnovel.fr/",
+     "headless": true,
+     "solve_seconds": 4.5,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 6130,
+     "run": 0
+    },
+    {
+     "url": "https://archiveofourown.org/",
+     "headless": false,
+     "solve_seconds": 3.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 9355,
+     "run": 0
+    },
+    {
+     "url": "https://archiveofourown.org/",
+     "headless": true,
+     "solve_seconds": 6.8,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 9355,
+     "run": 0
+    },
+    {
+     "url": "https://manga-tr.com/",
+     "headless": false,
+     "solve_seconds": 12.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "__ddg1_",
+      "__ddg2_",
+      "__ddgid_"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 182348,
+     "run": 0
+    },
+    {
+     "url": "https://manga-tr.com/",
+     "headless": true,
+     "solve_seconds": 9.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "__ddg1_",
+      "__ddg2_",
+      "__ddgid_"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 182328,
+     "run": 0
+    },
+    {
+     "url": "https://housesaikai.net/",
+     "headless": false,
+     "solve_seconds": 4.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 4907,
+     "run": 0
+    },
+    {
+     "url": "https://housesaikai.net/",
+     "headless": true,
+     "solve_seconds": 4.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 4907,
+     "run": 0
+    },
+    {
+     "url": "https://readnovelmtl.com/",
+     "headless": false,
+     "solve_seconds": 41.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 453362,
+     "run": 0
+    },
+    {
+     "url": "https://readnovelmtl.com/",
+     "headless": true,
+     "solve_seconds": 42.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 453362,
+     "run": 0
+    },
+    {
+     "url": "https://tunovelaligera.com/",
+     "headless": false,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 89871,
+     "run": 0
+    },
+    {
+     "url": "https://tunovelaligera.com/",
+     "headless": true,
+     "solve_seconds": 7.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 89871,
+     "run": 0
+    },
+    {
+     "url": "https://uukanshu.cc/",
+     "headless": false,
+     "solve_seconds": 7.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 24043,
+     "run": 0
+    },
+    {
+     "url": "https://uukanshu.cc/",
+     "headless": true,
+     "solve_seconds": 43.7,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5807,
+     "run": 0
+    },
+    {
+     "url": "https://lnkuro.top/",
+     "headless": false,
+     "solve_seconds": 4.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 5188,
+     "run": 0
+    },
+    {
+     "url": "https://lnkuro.top/",
+     "headless": true,
+     "solve_seconds": 4.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 5188,
+     "run": 0
+    },
+    {
+     "url": "https://noveldex.io/",
+     "headless": false,
+     "solve_seconds": 7.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 1530108,
+     "run": 0
+    },
+    {
+     "url": "https://noveldex.io/",
+     "headless": true,
+     "solve_seconds": 7.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 1531956,
+     "run": 0
+    },
+    {
+     "url": "https://dumahstranslations.wordpress.com/",
+     "headless": false,
+     "solve_seconds": 4.3,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 4291,
+     "run": 0
+    },
+    {
+     "url": "https://dumahstranslations.wordpress.com/",
+     "headless": true,
+     "solve_seconds": 5.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 4291,
+     "run": 0
+    },
+    {
+     "url": "https://maplesantl.com/",
+     "headless": false,
+     "solve_seconds": 4.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 4291,
+     "run": 0
+    },
+    {
+     "url": "https://maplesantl.com/",
+     "headless": true,
+     "solve_seconds": 5.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 4291,
+     "run": 0
+    },
+    {
+     "url": "https://karistudio.com/",
+     "headless": false,
+     "solve_seconds": 14.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 295333,
+     "run": 0
+    },
+    {
+     "url": "https://karistudio.com/",
+     "headless": true,
+     "solve_seconds": 12.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 295333,
+     "run": 0
+    },
+    {
+     "url": "https://sakuranovel.id/",
+     "headless": false,
+     "solve_seconds": 7.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 104890,
+     "run": 0
+    },
+    {
+     "url": "https://sakuranovel.id/",
+     "headless": true,
+     "solve_seconds": 7.5,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 105111,
+     "run": 0
+    },
+    {
+     "url": "https://mmxianxia.com/",
+     "headless": false,
+     "solve_seconds": 7.3,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 514288,
+     "run": 0
+    },
+    {
+     "url": "https://mmxianxia.com/",
+     "headless": true,
+     "solve_seconds": 7.8,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 514288,
+     "run": 0
+    },
+    {
+     "url": "https://kinkytranslations.com/",
+     "headless": false,
+     "solve_seconds": 4.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 4291,
+     "run": 0
+    },
+    {
+     "url": "https://kinkytranslations.com/",
+     "headless": true,
+     "solve_seconds": 5.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 4291,
+     "run": 0
+    },
+    {
+     "url": "https://98novels.com/",
+     "headless": false,
+     "solve_seconds": 9.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 214154,
+     "run": 0
+    },
+    {
+     "url": "https://98novels.com/",
+     "headless": true,
+     "solve_seconds": 8.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 214154,
+     "run": 0
+    },
+    {
+     "url": "https://www.novelfull.in/",
+     "headless": false,
+     "solve_seconds": 8.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 114940,
+     "run": 0
+    },
+    {
+     "url": "https://www.novelfull.in/",
+     "headless": true,
+     "solve_seconds": 8.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 114077,
+     "run": 0
+    },
+    {
+     "url": "https://cyborg-tl.com/",
+     "headless": false,
+     "solve_seconds": 43.5,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5898,
+     "run": 0
+    },
+    {
+     "url": "https://cyborg-tl.com/",
+     "headless": true,
+     "solve_seconds": 43.7,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5898,
+     "run": 0
+    },
+    {
+     "url": "https://uukanshu.cc/",
+     "headless": false,
+     "solve_seconds": 7.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 24043,
+     "run": 0
+    },
+    {
+     "url": "https://uukanshu.cc/",
+     "headless": true,
+     "solve_seconds": 8.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 24043,
+     "run": 0
+    },
+    {
+     "url": "https://uukanshu.cc/",
+     "headless": false,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 24043,
+     "run": 1
+    },
+    {
+     "url": "https://uukanshu.cc/",
+     "headless": true,
+     "solve_seconds": 8.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 24043,
+     "run": 1
+    },
+    {
+     "url": "https://uukanshu.cc/",
+     "headless": false,
+     "solve_seconds": 7.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 24043,
+     "run": 2
+    },
+    {
+     "url": "https://uukanshu.cc/",
+     "headless": true,
+     "solve_seconds": 8.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 24043,
+     "run": 2
+    }
+   ]
+  },
+  {
+   "arm": "swiftshader",
+   "note": "Corrected, plus --use-gl=swiftshader to force the software WebGL renderer the old docstring blamed. Isolates the renderer from the User-Agent.",
+   "rows": [
+    {
+     "url": "https://www.scribblehub.com/",
+     "headless": true,
+     "solve_seconds": 7.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 71955,
+     "run": 0
+    },
+    {
+     "url": "https://centralnovel.com/",
+     "headless": true,
+     "solve_seconds": 8.1,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 211344,
+     "run": 0
+    },
+    {
+     "url": "https://dragontea.ink/",
+     "headless": true,
+     "solve_seconds": 7.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 202997,
+     "run": 0
+    },
+    {
+     "url": "https://syosetu.org/",
+     "headless": true,
+     "solve_seconds": 7.8,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 65900,
+     "run": 0
+    },
+    {
+     "url": "https://skydemonorder.com/",
+     "headless": true,
+     "solve_seconds": 7.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 331195,
+     "run": 0
+    },
+    {
+     "url": "https://www.novelupdates.com/",
+     "headless": true,
+     "solve_seconds": 7.8,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 99031,
+     "run": 0
+    }
+   ]
+  },
+  {
+   "arm": "ua-override",
+   "note": "Corrected, but via Network.setUserAgentOverride instead of the launch flag. Clears as well, and silently drops Sec-CH-UA \u2014 which is why it is not what shipped. Kept because the two look equivalent and are not.",
+   "rows": [
+    {
+     "url": "https://www.scribblehub.com/",
+     "headless": true,
+     "solve_seconds": 10.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 74205,
+     "run": 0
+    },
+    {
+     "url": "https://centralnovel.com/",
+     "headless": true,
+     "solve_seconds": 9.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 211344,
+     "run": 0
+    },
+    {
+     "url": "https://dragontea.ink/",
+     "headless": true,
+     "solve_seconds": 7.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 202997,
+     "run": 0
+    },
+    {
+     "url": "https://syosetu.org/",
+     "headless": true,
+     "solve_seconds": 7.7,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 64992,
+     "run": 0
+    },
+    {
+     "url": "https://skydemonorder.com/",
+     "headless": true,
+     "solve_seconds": 6.9,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 330777,
+     "run": 0
+    },
+    {
+     "url": "https://www.novelupdates.com/",
+     "headless": true,
+     "solve_seconds": 6.8,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 98610,
+     "run": 0
+    },
+    {
+     "url": "https://www.scribblehub.com/",
+     "headless": true,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 74216,
+     "run": 1
+    },
+    {
+     "url": "https://centralnovel.com/",
+     "headless": true,
+     "solve_seconds": 7.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 211344,
+     "run": 1
+    },
+    {
+     "url": "https://dragontea.ink/",
+     "headless": true,
+     "solve_seconds": 7.0,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 203935,
+     "run": 1
+    },
+    {
+     "url": "https://syosetu.org/",
+     "headless": true,
+     "solve_seconds": 7.2,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 65930,
+     "run": 1
+    },
+    {
+     "url": "https://skydemonorder.com/",
+     "headless": true,
+     "solve_seconds": 7.6,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 330925,
+     "run": 1
+    },
+    {
+     "url": "https://www.novelupdates.com/",
+     "headless": true,
+     "solve_seconds": 7.4,
+     "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": true,
+     "status": 200,
+     "action": "accept",
+     "layer": null,
+     "bytes": 99005,
+     "run": 1
+    }
+   ]
+  },
+  {
+   "arm": "container-default",
+   "note": "Debian chromium in a container, headless, before the fix.",
+   "rows": [
+    {
+     "url": "https://www.scribblehub.com/",
+     "headless": true,
+     "solve_seconds": 46.3,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5922,
+     "run": 0
+    },
+    {
+     "url": "https://centralnovel.com/",
+     "headless": true,
+     "solve_seconds": 45.8,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5898,
+     "run": 0
+    },
+    {
+     "url": "https://dragontea.ink/",
+     "headless": true,
+     "solve_seconds": 3.9,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 4546,
+     "run": 0
+    },
+    {
+     "url": "https://syosetu.org/",
+     "headless": true,
+     "solve_seconds": 45.9,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5978,
+     "run": 0
+    },
+    {
+     "url": "https://skydemonorder.com/",
+     "headless": true,
+     "solve_seconds": 45.9,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5920,
+     "run": 0
+    },
+    {
+     "url": "https://www.novelupdates.com/",
+     "headless": true,
+     "solve_seconds": 45.9,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5944,
+     "run": 0
+    }
+   ]
+  },
+  {
+   "arm": "container-corrected",
+   "note": "Debian chromium in a container, headless, User-Agent corrected. Still zero: the build omits the Google Chrome brand from Sec-CH-UA.",
+   "rows": [
+    {
+     "url": "https://www.scribblehub.com/",
+     "headless": true,
+     "solve_seconds": 46.1,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5773,
+     "run": 0
+    },
+    {
+     "url": "https://centralnovel.com/",
+     "headless": true,
+     "solve_seconds": 46.1,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5876,
+     "run": 0
+    },
+    {
+     "url": "https://dragontea.ink/",
+     "headless": true,
+     "solve_seconds": 3.7,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 4546,
+     "run": 0
+    },
+    {
+     "url": "https://syosetu.org/",
+     "headless": true,
+     "solve_seconds": 45.8,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5957,
+     "run": 0
+    },
+    {
+     "url": "https://skydemonorder.com/",
+     "headless": true,
+     "solve_seconds": 45.9,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5877,
+     "run": 0
+    },
+    {
+     "url": "https://www.novelupdates.com/",
+     "headless": true,
+     "solve_seconds": 46.0,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5774,
+     "run": 0
+    }
+   ]
+  },
+  {
+   "arm": "container-xvfb",
+   "note": "Debian chromium in a container, headed under Xvfb. Also zero, which is what retired the advice to reach for a virtual display.",
+   "rows": [
+    {
+     "url": "https://www.scribblehub.com/",
+     "headless": false,
+     "solve_seconds": 46.2,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5773,
+     "run": 0
+    },
+    {
+     "url": "https://centralnovel.com/",
+     "headless": false,
+     "solve_seconds": 45.9,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5876,
+     "run": 0
+    },
+    {
+     "url": "https://dragontea.ink/",
+     "headless": false,
+     "solve_seconds": 3.6,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [
+      "cf_clearance"
+     ],
+     "cleared": false,
+     "status": 403,
+     "action": "escalate",
+     "layer": "L12 Super Bot Fight Mode",
+     "bytes": 4546,
+     "run": 0
+    },
+    {
+     "url": "https://syosetu.org/",
+     "headless": false,
+     "solve_seconds": 45.9,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5957,
+     "run": 0
+    },
+    {
+     "url": "https://skydemonorder.com/",
+     "headless": false,
+     "solve_seconds": 46.1,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5877,
+     "run": 0
+    },
+    {
+     "url": "https://www.novelupdates.com/",
+     "headless": false,
+     "solve_seconds": 45.7,
+     "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+     "clearance_cookie": [],
+     "cleared": false,
+     "status": 403,
+     "action": "solve",
+     "layer": "L9 Managed JavaScript challenge",
+     "bytes": 5774,
+     "run": 0
+    }
+   ]
+  }
+ ]
+}

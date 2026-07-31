@@ -71,11 +71,19 @@ drives over a non-CDP protocol, a paid solving service — and
 
 Two defaults are deliberate and worth not changing:
 
-- **Headed, not headless.** A headless build reports a software renderer for WebGL, which is
-  a clear indicator on its own. On a server, run it under a virtual display.
+- **Headed, but only so a person can reach the window.** Headless is not the handicap this
+  used to say it was: measured over 46 challenged hosts, headless clears all 27 that a headed
+  browser clears. What used to give it away was one substring — `HeadlessChrome` in the
+  User-Agent — and the solver now strips that itself. The old reason given here, a software
+  WebGL renderer, was refuted directly: forcing it changed nothing.
 - **WebRTC off.** A STUN request reaches the network directly and reports the host's real
   address even when every HTTP request goes through the proxy — unbinding the identity by
   leaking past it, silently.
+
+What *does* decide it is the browser build. Debian's `chromium` omits the `Google Chrome`
+brand from `Sec-CH-UA` and cleared nothing in a container — headless, headless with the
+User-Agent fixed, or headed under Xvfb alike. Install the browser a real visitor runs; a
+virtual display cannot hide a property of the binary.
 
 One browser profile directory per address
 (`scraper.browser.profile_dir_for`). Cookie and session age are behavioural signals, so a
