@@ -1,0 +1,34 @@
+{
+ "what": "A5's merge gate: does a WebDriver BiDi-driven Firefox clear a real challenge?",
+ "answer": "Yes, 6/6 — but only with navigator.webdriver hidden. Without it, 0/6.",
+ "how": "Probed by hand against a real Firefox before any FirefoxBackend existed, so the numbers below come from a scratch harness rather than from solvers.py. Re-run through solvers.py once BidiSolver lands.",
+ "browser": "Firefox 153.0, headless, macOS",
+ "measured": "2026-08-01",
+ "note": "A BiDi session forces navigator.webdriver true — the WebDriver spec requires it, and dom.webdriver.enabled=false does not override it while a session is open (measured both ways). The only lever is script.addPreloadScript deleting the prototype property, which is patching a surface value rather than not emitting one. That distinction is the open question for A5, not whether it clears.",
+ "arms": [
+  {
+   "arm": "as-is",
+   "note": "session.new and nothing else. navigator.webdriver reads true on every host.",
+   "rows": [
+    {"url": "https://www.scribblehub.com/", "cleared": false, "seconds": 61.9, "layer": "L9 Managed JavaScript challenge", "webdriver": true},
+    {"url": "https://centralnovel.com/", "cleared": false, "seconds": 62.2, "layer": "L9 Managed JavaScript challenge", "webdriver": true},
+    {"url": "https://syosetu.org/", "cleared": false, "seconds": 62.2, "layer": "L9 Managed JavaScript challenge", "webdriver": true},
+    {"url": "https://skydemonorder.com/", "cleared": false, "seconds": 62.0, "layer": "L9 Managed JavaScript challenge", "webdriver": true},
+    {"url": "https://dragontea.ink/", "cleared": false, "seconds": 62.1, "layer": "L9 Managed JavaScript challenge", "webdriver": true},
+    {"url": "https://novelgo.id/", "cleared": false, "seconds": 61.9, "layer": "L9 Managed JavaScript challenge", "webdriver": true}
+   ]
+  },
+  {
+   "arm": "webdriver-hidden",
+   "note": "script.addPreloadScript running `delete Object.getPrototypeOf(navigator).webdriver` before page scripts. Faster than Chrome over CDP on the same hosts, which clears these in 7-9s.",
+   "rows": [
+    {"url": "https://www.scribblehub.com/", "cleared": true, "seconds": 8.8, "webdriver": null},
+    {"url": "https://centralnovel.com/", "cleared": true, "seconds": 4.7, "webdriver": null},
+    {"url": "https://syosetu.org/", "cleared": true, "seconds": 5.3, "webdriver": null},
+    {"url": "https://skydemonorder.com/", "cleared": true, "seconds": 8.3, "webdriver": null},
+    {"url": "https://dragontea.ink/", "cleared": true, "seconds": 5.0, "webdriver": null},
+    {"url": "https://novelgo.id/", "cleared": true, "seconds": 5.3, "webdriver": null}
+   ]
+  }
+ ]
+}
