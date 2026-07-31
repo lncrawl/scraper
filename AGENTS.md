@@ -111,6 +111,15 @@ layer above them.
 - **Full type annotations** on every function and method. `pyright` in `standard` mode
   over `src`, `tests` and `examples` is the hard gate.
 - **ruff**: line length and rules in [pyproject.toml](pyproject.toml).
+- **`CHANGELOG.md`: one line per paragraph, and keep entries short.** `release.yml` lifts a
+  version's section out verbatim as the GitHub Release notes, and that renderer turns a
+  single newline into a line break — so never hard-wrap, or the paragraph arrives as a
+  ragged column with its indentation showing. (Blank lines still separate paragraphs, and
+  a continuation paragraph inside a bullet still needs its indent. The line-length limit
+  above is for code.) An entry is a bold lead sentence plus the shortest *why* that would
+  stop someone undoing it — not the investigation that produced it. Reasoning at length
+  belongs in the code comment or the docstring, where the reader is already looking at the
+  thing it explains.
 - **Comments explain why, never what.** The reason a line exists — a constraint, a failure
   mode it prevents, an ordering that is load-bearing — is worth writing down. Restating
   the code is not. Most of this package's comments name the specific bug the code avoids;

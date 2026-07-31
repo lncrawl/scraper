@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Optional
 import pytest
 import requests
 
-from scraper import ExitKind, ExitSpec, Scraper, ScraperConfig, SharedState
+from scraper import Action, Diagnosis, ExitKind, ExitSpec, Scraper, ScraperConfig, SharedState
 from scraper.browser import BrowserSolver, SolveResult
 from scraper.exceptions import (
     Aborted,
@@ -1263,6 +1263,109 @@ class TestRotationIsReachable:
             with pytest.raises(Blocked) as caught:
                 scraper.get(URL)
         assert "reputation" in str(caught.value) or caught.value.layer is not None
+
+
+class TestACallerCanNameARefusalWeCannotSee:
+    """A ``200`` carrying ``{"success": false}`` is content as far as any detector goes.
+
+    The schema is the site's own, so only the caller can read it. Without a way to say
+    so, such a site is a run of unbroken successes that returns nothing: no layer is
+    attributed, no address is blamed, and the diagnosis reports perfect health while
+    every chapter comes back empty.
+    """
+
+    REFUSAL = '{"success": false, "message": "too many requests from this address"}'
+
+    @staticmethod
+    def _check(response: requests.Response, body: str) -> Optional[Diagnosis]:
+        if '"success": false' not in body:
+            return None
+        return Diagnosis(Action.ROTATE, Layer.IP_REPUTATION, "the address is over its quota")
+
+    def test_the_declared_refusal_rotates_the_address(self):
+        transport = FakeTransport(
+            [
+                make_response(body=self.REFUSAL, url=URL, headers={"content-type": "text/json"}),
+                make_response(body=PAGE, url=URL),
+            ]
+        )
+        exits = [
+            ExitSpec(url="http://a.test:1", kind=ExitKind.RESIDENTIAL, label="a"),
+            ExitSpec(url="http://b.test:1", kind=ExitKind.RESIDENTIAL, label="b"),
+        ]
+        with scraper_for(transport, exits=exits, check_response=self._check) as scraper:
+            before = scraper.exits.lease("example.com").exit_id
+            assert scraper.get(URL).text == PAGE
+            assert scraper.exits.lease("example.com").exit_id != before
+
+    def test_the_origin_is_told_it_failed(self, tmp_path: Path):
+        transport = FakeTransport(
+            [
+                make_response(body=self.REFUSAL, url=URL, headers={"content-type": "text/json"}),
+                make_response(body=PAGE, url=URL),
+            ]
+        )
+        exits = [
+            ExitSpec(url="http://a.test:1", kind=ExitKind.RESIDENTIAL, label="a"),
+            ExitSpec(url="http://b.test:1", kind=ExitKind.RESIDENTIAL, label="b"),
+        ]
+        with scraper_for(
+            transport,
+            exits=exits,
+            check_response=self._check,
+            remember=True,
+            data_dir=tmp_path,
+        ) as scraper:
+            scraper.get(URL)
+            assert scraper.knows(URL).binding is Layer.IP_REPUTATION
+
+    def test_returning_none_leaves_the_response_alone(self):
+        transport = FakeTransport([make_response(body=PAGE, url=URL)])
+        with scraper_for(transport, check_response=lambda response, body: None) as scraper:
+            assert scraper.get(URL).text == PAGE
+
+    def test_a_check_is_not_asked_about_a_response_already_diagnosed(self):
+        asked: List[str] = []
+
+        def check(response: requests.Response, body: str) -> Optional[Diagnosis]:
+            asked.append(body)
+            return None
+
+        transport = FakeTransport(
+            [make_response(403, BLOCK_BODY, url=URL), make_response(body=PAGE, url=URL)]
+        )
+        exits = [
+            ExitSpec(url="http://a.test:1", kind=ExitKind.RESIDENTIAL, label="a"),
+            ExitSpec(url="http://b.test:1", kind=ExitKind.RESIDENTIAL, label="b"),
+        ]
+        with scraper_for(transport, exits=exits, check_response=check) as scraper:
+            scraper.get(URL)
+        assert BLOCK_BODY not in asked
+
+    def test_a_check_that_raises_does_not_take_the_request_down(self):
+        def explode(response: requests.Response, body: str) -> Optional[Diagnosis]:
+            raise RuntimeError("the source's own bug")
+
+        transport = FakeTransport([make_response(body=PAGE, url=URL)])
+        with scraper_for(transport, check_response=explode) as scraper:
+            assert scraper.get(URL).text == PAGE
+
+    def test_it_can_be_attached_after_construction(self):
+        # The session is often opened by a framework and handed to the code that
+        # knows the schema, which is why this is not config-only.
+        transport = FakeTransport(
+            [
+                make_response(body=self.REFUSAL, url=URL, headers={"content-type": "text/json"}),
+                make_response(body=PAGE, url=URL),
+            ]
+        )
+        exits = [
+            ExitSpec(url="http://a.test:1", kind=ExitKind.RESIDENTIAL, label="a"),
+            ExitSpec(url="http://b.test:1", kind=ExitKind.RESIDENTIAL, label="b"),
+        ]
+        with scraper_for(transport, exits=exits) as scraper:
+            scraper.check_response = self._check
+            assert scraper.get(URL).text == PAGE
 
 
 class TestAnOptionalExtraNamesItself:

@@ -57,7 +57,7 @@ from .browser import (
     RenderError,
     SolveResult,
 )
-from .config import ScraperConfig, default_data_dir
+from .config import ResponseCheck, ScraperConfig, default_data_dir
 from .diagnosis import Action, Diagnosis, diagnose, edge
 from .exceptions import (
     Aborted,
@@ -145,6 +145,7 @@ __all__ = [
     "MissingDependency",
     "Poisoned",
     "RenderError",
+    "ResponseCheck",
     "ScraperError",
     "TierUnavailable",
     "default_data_dir",

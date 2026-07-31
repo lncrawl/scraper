@@ -110,6 +110,7 @@ class Scraper:
         self.config = config or ScraperConfig()
         self.origin = origin or ""
         self.parser = parser or self.config.parser
+        self.check_response = self.config.check_response
         self.signal = threading.Event()
         self.headers: Dict[str, str] = {}
         self.last_url = self.origin
@@ -323,13 +324,41 @@ class Scraper:
             else:
                 response = tier.send(call)
 
-        return response, diagnose(
+        body = self._peek(response)
+        diagnosis = diagnose(
             status=response.status_code,
             headers=response.headers,
-            body=self._peek(response),
+            body=body,
             url=call.url,
             user_agent=self._sent_user_agent(response, call),
         )
+        return response, self._overrule(response, body, diagnosis)
+
+    def _overrule(
+        self,
+        response: requests.Response,
+        body: str,
+        diagnosis: Diagnosis,
+    ) -> Diagnosis:
+        """Give the caller's own check a say, for what no general detector can see.
+
+        Only over a clean response. A check exists to catch a refusal this library
+        cannot recognise, not to argue with one it can — and where both have an
+        opinion, the one that read the vendor's own signalling knows more than one
+        matching a schema.
+
+        A check that raises must not take the request down with it: it is caller code
+        running inside the retry loop, and the response in hand is still perfectly
+        good evidence. So a broken check degrades to the behaviour of no check.
+        """
+        if not diagnosis.ok or self.check_response is None:
+            return diagnosis
+        try:
+            verdict = self.check_response(response, body)
+        except Exception:
+            logger.warning("The configured response check raised; ignoring it", exc_info=True)
+            return diagnosis
+        return verdict if verdict is not None else diagnosis
 
     @contextmanager
     def _paced(self, key: str, abort: AbortSignal) -> Iterator[None]:

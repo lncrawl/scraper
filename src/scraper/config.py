@@ -19,10 +19,13 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Tuple
+
+import requests
 
 from .botauth import BotAuthConfig
 from .browser import BrowserSolver
+from .diagnosis import Diagnosis
 from .exits import ExitSpec
 from .pacing import PacingPolicy
 from .tiers.managed import Provider
@@ -32,6 +35,23 @@ if TYPE_CHECKING:
     from .tiers import Tier
 
 APP_DIR_NAME = "lncrawl-scraper"
+
+ResponseCheck = Callable[[requests.Response, str], Optional[Diagnosis]]
+"""Reads a response this library found nothing wrong with, and may overrule it.
+
+Given the response and the decoded body already peeked at, so an implementation
+neither re-reads a consumed stream nor guesses an encoding. Returns ``None`` to let
+the response stand, or a :class:`~scraper.Diagnosis` to treat it as that failure
+instead — after which everything downstream behaves as though the detection were
+this library's own: the layer is attributed, the failure is recorded against the
+origin, and the planner rotates or escalates as the diagnosis directs.
+
+For refusals no general detector can see. A site that answers ``200`` with
+``{"success": false}`` is, on the wire, indistinguishable from one that answers
+``200`` with an article — the difference is in a schema only the caller knows. Such
+a site otherwise reads as a run of perfect successes while every page comes back
+empty, and the addresses being spent are never blamed, because nothing ever failed.
+"""
 
 
 def default_data_dir() -> Path:
@@ -141,6 +161,7 @@ class ScraperConfig:
     # -- content safety --------------------------------------------------------------
     guard_topic: bool = True
     on_decoy: str = "warn"
+    check_response: Optional[ResponseCheck] = None
 
     # -- request defaults ------------------------------------------------------------
     timeout: Any = (15, 120)

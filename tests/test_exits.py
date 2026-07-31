@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import threading
+import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Dict, List, Tuple
 
@@ -262,11 +263,25 @@ class TestCredentials:
             ("socks5h://[::1]:9250", "abc", "tp_tok", "socks5h://abc:tp_tok@[::1]:9250"),
             ("socks5h://host", "abc", "tp_tok", "socks5h://abc:tp_tok@host"),
             ("socks5h://host:9250", "", "tp_tok", "socks5h://host:9250"),
-            ("socks5h://host:9250", "abc", "", "socks5h://abc@host:9250"),
+            # An unset token still gets a placeholder password, because a username
+            # without one never goes on the wire at all. See below.
+            ("socks5h://host:9250", "abc", "", "socks5h://abc:-@host:9250"),
         ],
     )
     def test_userinfo_is_assembled_safely(self, url, username, password, expected):
         assert with_credentials(url, username, password) == expected
+
+    def test_session_key_survives_an_unset_token(self):
+        """A tokenless pool must still be told which session is calling.
+
+        RFC 1929 cannot express a username with no password, so a SOCKS5 client
+        handed one skips authentication and the key never arrives. The pool then
+        keys by client address and pins every session to a single instance — a pool
+        of any size serving one exit, with nothing on either side reporting a fault.
+        """
+        url = with_credentials("socks5h://host:9250", "session-key", "")
+        assert urllib.parse.urlsplit(url).username == "session-key"
+        assert urllib.parse.urlsplit(url).password
 
 
 # -- the tor-pool contract ----------------------------------------------------------

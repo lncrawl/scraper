@@ -494,6 +494,19 @@ class ExitPool:
             return None
 
 
+_NO_TOKEN = "-"
+"""Stands in for an unset token so the session key still reaches the pool.
+
+RFC 1929 offers no way to send a username without a password: a SOCKS5 client given
+an empty one skips the authentication exchange entirely, so the username never goes
+on the wire. The pool then sees an unnamed caller and falls back to keying by client
+address, which pins every session to one instance — a pool of any size behaving as a
+pool of one, with nothing on either side reporting a fault. A pool with
+authentication off ignores this; one with it on rejects it exactly as it already
+rejects an absent token.
+"""
+
+
 def with_credentials(url: str, username: str, password: str) -> str:
     """Return *url* carrying *username* and *password* as userinfo.
 
@@ -512,8 +525,7 @@ def with_credentials(url: str, username: str, password: str) -> str:
         host = f"{host}:{parsed.port}"
 
     userinfo = urllib.parse.quote(username, safe="")
-    if password:
-        userinfo = f"{userinfo}:{urllib.parse.quote(password, safe='')}"
+    secret = urllib.parse.quote(password or _NO_TOKEN, safe="")
     return urllib.parse.urlunsplit(
-        (parsed.scheme, f"{userinfo}@{host}", parsed.path, parsed.query, parsed.fragment)
+        (parsed.scheme, f"{userinfo}:{secret}@{host}", parsed.path, parsed.query, parsed.fragment)
     )
