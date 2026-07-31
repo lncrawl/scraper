@@ -64,12 +64,12 @@ The failure this structure makes impossible is the usual way the pattern is impl
 wrong: solving on one exit and fetching from another produces a clearance rejected on first
 use, which reads as "the solver does not work" and leads to re-solving forever.
 
-Two solvers are bundled. `scraper.CdpSolver` drives Chrome over the DevTools protocol
-directly and needs only `websockets`, so it works on **every Python this package supports**;
-`scraper.browser.NoDriverSolver` drives it through nodriver, which cannot be imported below
-3.10 or from 3.14. Prefer the first unless you have a reason not to. Anything satisfying the
-two-method `scraper.BrowserSolver` protocol plugs in besides — a patched Chromium driver, a
-Firefox build speaking a non-CDP protocol, a paid solving service — and
+One solver is bundled: `scraper.CdpSolver`, which drives Chrome over the DevTools protocol
+directly and needs only `websockets`, so it works on **every Python this package supports**.
+It replaced a driver library that could not be imported below 3.10 or from 3.14 and was no
+better at clearing — 12 hosts to 11 head to head, same median. Anything satisfying the
+two-method `scraper.BrowserSolver` protocol plugs in besides — a patched Chromium build, a
+Firefox speaking a non-CDP protocol, a paid solving service — and
 `scraper.browser.CallableSolver` wraps a plain function for the one-off case.
 
 **`CdpSolver` never enables a CDP domain**, and that is the reason to own the wire rather
@@ -82,15 +82,16 @@ including Chrome's own WebDriver BiDi, implemented over CDP internally — gives
 A solver declares two things about itself. `impersonation` is the profile its clearance
 binds to, which `ScraperConfig.profile()` then applies to every request; `interactive` says
 a person can reach the window, which buys `interactive_solve_timeout` instead of the
-unattended `solve_timeout`. Both bundled solvers set the second from whether they run headed.
+unattended `solve_timeout`. The bundled solver sets the second from whether it runs headed.
 
 Two defaults are deliberate and worth not changing:
 
-- **Headed, but only so a person can reach the window.** Headless is not the handicap this
-  used to say it was: measured over 46 challenged hosts, headless clears all 27 that a headed
-  browser clears. What used to give it away was one substring — `HeadlessChrome` in the
-  User-Agent — and the solver now strips that itself. The old reason given here, a software
-  WebGL renderer, was refuted directly: forcing it changed nothing.
+- **Headless, and it costs nothing.** Measured over 46 challenged hosts, headless clears all
+  27 that a headed browser clears. What used to give it away was one substring —
+  `HeadlessChrome` in the User-Agent — and the solver strips that itself. The old reason
+  given here, a software WebGL renderer, was refuted directly: forcing it changed nothing.
+  Pass `headless=False` where a person can reach the window, which also buys the interactive
+  solve budget.
 - **WebRTC off.** A STUN request reaches the network directly and reports the host's real
   address even when every HTTP request goes through the proxy — unbinding the identity by
   leaking past it, silently.
@@ -105,8 +106,8 @@ One browser profile directory per address
 profile reused across a run accumulates the history that makes the session look established
 — and sharing one between addresses is how a clean exit inherits a burnt one's session.
 
-Neither bundled solver synthesises mouse, scroll or keystroke dynamics, so both clear the
-control-channel layer and leave the behavioural one entirely to `scraper.pacing`. That
+The bundled solver does not synthesise mouse, scroll or keystroke dynamics, so both clear the
+control-channel layer and leaves the behavioural one entirely to `scraper.pacing`. That
 division is why they are separate modules.
 
 ### `render_soup()` — a browser, but not a tier

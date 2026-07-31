@@ -77,11 +77,12 @@ def extract_host(url: str) -> str:
 
 
 def validate_url(url: str, allowed_schemes: Sequence[str] = DEFAULT_SCHEMES) -> bool:
-    """Whether *url* is worth trying to fetch at all.
+    """Whether *url* is a full URL this library is willing to fetch.
 
-    A scheme-less string passes, since it is read as a host and the ladder would give
-    it a scheme. What fails is input with no host, or a scheme this library does not
-    speak.
+    Stricter than the other two, deliberately. They repair what a person typed, so
+    ``example.com/a`` gets an origin; this one answers whether the string as given
+    names a scheme it speaks, and a scheme-less string does not. Use it to check
+    input, and :func:`extract_base` to make sense of input already accepted.
     """
     parsed = _format_and_parse(url)
     return all([parsed.scheme, parsed.netloc, parsed.scheme in allowed_schemes])

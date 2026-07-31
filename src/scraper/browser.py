@@ -23,7 +23,10 @@ were wrong. What gives headless away is one substring: its User-Agent says
 ``HeadlessChrome``. With the token left in, none of the six cleared; with it removed,
 all six cleared, as fast as headed. Forcing the software renderer on a machine that
 has a GPU changed nothing — all six still cleared — so the renderer was never the
-tell. The solver now strips the token itself, and headless is a fair choice.
+tell. The solver now strips the token itself, and **headless is the default** — most
+places this runs have no display to put a window on, and the ones that do get one by
+asking. A visible window is worth opening only where somebody can reach into it, which
+is why asking for it also buys the interactive solve budget.
 
 **The browser build shows through, and a virtual display does not hide it.** In a
 container running Debian's ``chromium``, nothing cleared: not headless, not headless
@@ -44,10 +47,10 @@ challenged hosts, spending the full 60s on each; with it, the first two cleared 
 under nine seconds. A driver library may set this for you — this library does not
 rely on that, since the cost of it being absent is every solve failing slowly.
 
-The solver a site needs is not always the one bundled here, so
-:class:`BrowserSolver` is a small protocol and anything satisfying it plugs in: a
-patched Chromium driver, a Firefox build that drives over a non-CDP protocol, or a
-paid solving service.
+This module defines the contract and the parts every solver shares; the bundled
+implementation that speaks to a browser is :mod:`scraper.cdp`. :class:`BrowserSolver`
+is a small protocol and anything satisfying it plugs in — a patched Chromium build, a
+Firefox driven over a non-CDP protocol, or a paid solving service.
 
 A browser has a second use, and it is not escalation. When a page's HTML is a shell
 that JavaScript fills in, nothing is blocking and no layer is binding — a clearance
@@ -57,23 +60,18 @@ is what :meth:`BrowserSolver.render` is for, and why it is not a tier.
 
 from __future__ import annotations
 
-import json
 import logging
 import re
 import shutil
-import threading
 import time
 import urllib.parse
 from pathlib import Path
-from typing import Any, Callable, Dict, List, NamedTuple, Optional, Sequence, Type, TypeVar
+from typing import Callable, Dict, List, NamedTuple, Optional, Sequence
 
-from .diagnosis import is_still_challenged
-from .exceptions import MissingDependency, ScraperError, TierUnavailable
+from .exceptions import ScraperError, TierUnavailable
 from .identity import Clearance, Identity
 
 logger = logging.getLogger(__name__)
-
-_T = TypeVar("_T")
 
 _RENDER_POLL = 0.25
 """How often to ask whether a rendering page is done.
@@ -360,257 +358,6 @@ class CallableSolver(BrowserSolver):
         return self._renderer(
             url, wait_for=wait_for, proxy=proxy, profile_dir=profile_dir, timeout=timeout
         )
-
-
-class NoDriverSolver(BrowserSolver):
-    """Solves with `nodriver <https://github.com/ultrafunkamsterdam/nodriver>`_.
-
-    Chosen as the bundled default because it drives a real Chrome over its own
-    interface rather than through the standard automation path that detectors
-    target directly. What it does *not* do is synthesise mouse, scroll or
-    keystroke dynamics — so it clears the control-channel layer and leaves the
-    behavioural one entirely to :mod:`scraper.pacing`. That division is why the
-    two are separate modules.
-
-    Args:
-        headless: Still ``False`` by default, but no longer because headless cannot
-            clear — see the module docstring. A headed window is the one a person can
-            reach in and solve, which is worth keeping as the default where there is
-            a display; on a server there is nobody to reach in and headless is right.
-        args: Extra command-line flags, appended after the defaults.
-    """
-
-    name = "nodriver"
-
-    def __init__(
-        self,
-        *,
-        headless: bool = False,
-        args: Optional[List[str]] = None,
-        settle: float = 3.0,
-    ) -> None:
-        self._headless = headless
-        self._extra = list(args or [])
-        self._settle = settle
-        self._lock = threading.Lock()
-        self._user_agent: Optional[str] = None
-        # A visible window is one somebody can solve by hand. Whether anybody is in
-        # front of it is a property of the deployment, not of any single call, which
-        # is why this is decided once here rather than passed to `solve`.
-        self.interactive = not headless
-
-    def solve(
-        self,
-        url: str,
-        *,
-        proxy: Optional[str] = None,
-        profile_dir: Optional[Path] = None,
-        timeout: float = 60.0,
-    ) -> SolveResult:
-        # One browser at a time per solver: two headed Chromes racing for the same
-        # profile directory corrupt it, and the profile is what carries the
-        # accumulated history forward.
-        with self._lock:
-            return _run_async(self._solve(url, proxy, profile_dir, timeout), SolveResult)
-
-    def render(
-        self,
-        url: str,
-        *,
-        wait_for: Optional[str] = None,
-        proxy: Optional[str] = None,
-        profile_dir: Optional[Path] = None,
-        timeout: float = 60.0,
-    ) -> str:
-        with self._lock:
-            return _run_async(self._render(url, wait_for, proxy, profile_dir, timeout), str)
-
-    def _flags(self, proxy: Optional[str], user_agent: str = "") -> List[str]:
-        return launch_flags(proxy, user_agent=user_agent, extra=self._extra)
-
-    async def _honest_user_agent(self) -> str:
-        """The User-Agent to launch headless under, or ``""`` when headed.
-
-        A headless Chrome announces itself: its User-Agent says ``HeadlessChrome``,
-        and that one substring is the whole of the headless penalty. Measured over
-        six challenged hosts on a desktop, twice each: headless cleared none of them
-        and cleared all of them once the token was gone, at the same speed as headed.
-
-        Applied as a launch flag rather than through ``Network.setUserAgentOverride``,
-        which looks equivalent and is not — the override suppresses the ``Sec-CH-UA``
-        request header outright, so it trades a browser that admits to being headless
-        for one that claims to be Chrome and sends no brands at all.
-
-        Learned by launching once and reading it, because the flag has to be set
-        before the browser exists and the string is specific to this build and
-        platform. Cached for the life of the solver, so the extra launch is paid once
-        per process, and never when running headed.
-        """
-        if not self._headless:
-            return ""
-        if self._user_agent is None:
-            nodriver = _import_nodriver()
-            browser = await nodriver.start(headless=True, browser_args=self._flags(None))
-            try:
-                page = await browser.get("about:blank")
-                reported = str(await page.evaluate("navigator.userAgent") or "")
-            finally:
-                try:
-                    browser.stop()
-                except Exception:  # noqa: BLE001 - see _solve
-                    logger.debug("nodriver did not shut down cleanly", exc_info=True)
-            self._user_agent = honest_user_agent(reported)
-            if not reported:
-                logger.debug("could not read the browser's User-Agent; launching as-is")
-        return self._user_agent
-
-    async def _render(
-        self,
-        url: str,
-        wait_for: Optional[str],
-        proxy: Optional[str],
-        profile_dir: Optional[Path],
-        timeout: float,
-    ) -> str:
-        nodriver = _import_nodriver()
-        user_agent = await self._honest_user_agent()
-        browser = await nodriver.start(
-            headless=self._headless,
-            browser_args=self._flags(proxy, user_agent),
-            user_data_dir=str(profile_dir) if profile_dir else None,
-        )
-        try:
-            page = await browser.get(url)
-            if wait_for is None:
-                # Nothing to poll for, so the only thing standing in for "the page
-                # has run" is time. With a selector the wait is evidence-based and
-                # this delay is dead time.
-                await page.sleep(self._settle)
-
-            deadline = time.monotonic() + timeout
-            content = ""
-            while True:
-                content = str(await page.get_content() or "")
-                if not is_still_challenged(content):
-                    if wait_for is None:
-                        return content
-                    found = await page.evaluate(f"!!document.querySelector({json.dumps(wait_for)})")
-                    if found:
-                        return content
-                if time.monotonic() >= deadline:
-                    break
-                await page.sleep(_RENDER_POLL)
-        finally:
-            try:
-                browser.stop()
-            except Exception:  # noqa: BLE001 - a browser that will not close must not mask the result
-                logger.debug("nodriver did not shut down cleanly", exc_info=True)
-
-        missing = f"{wait_for} never appeared" if wait_for else "it was still a challenge"
-        raise RenderError(f"{url} did not render after {timeout:.0f}s: {missing}")
-
-    async def _solve(
-        self,
-        url: str,
-        proxy: Optional[str],
-        profile_dir: Optional[Path],
-        timeout: float,
-    ) -> SolveResult:
-        nodriver = _import_nodriver()
-        user_agent = await self._honest_user_agent()
-        browser = await nodriver.start(
-            headless=self._headless,
-            browser_args=self._flags(proxy, user_agent),
-            user_data_dir=str(profile_dir) if profile_dir else None,
-        )
-        try:
-            page = await browser.get(url)
-            deadline = time.monotonic() + timeout
-            while time.monotonic() < deadline:
-                await page.sleep(self._settle)
-                content = await page.get_content()
-                if not is_still_challenged(content or ""):
-                    break
-            user_agent = str(await page.evaluate("navigator.userAgent") or "")
-            cookies, expires_at = await _harvest_cookies(browser)
-        finally:
-            try:
-                browser.stop()
-            except Exception:  # noqa: BLE001 - a browser that will not close must not mask the result
-                logger.debug("nodriver did not shut down cleanly", exc_info=True)
-
-        result = SolveResult(cookies=cookies, user_agent=user_agent, expires_at=expires_at)
-        if not user_agent:
-            raise SolveError(
-                "the browser did not report a User-Agent; the clearance is bound to it "
-                "and cannot be replayed without it"
-            )
-        return result
-
-
-def _import_nodriver() -> Any:
-    try:
-        import nodriver  # pyright: ignore[reportMissingImports] - absent outside 3.10-3.13
-    except (ImportError, SyntaxError, TypeError) as exc:
-        # Neither failure is an ImportError. Before 3.10 nodriver's module body
-        # evaluates `str | Path`, a TypeError; from 3.14 its generated
-        # cdp/network.py fails to tokenize on a stray non-UTF-8 byte, a
-        # SyntaxError. Uncaught, both surface from inside a dependency with
-        # nothing naming the supported range.
-        raise MissingDependency(
-            "browser", "driving a browser with nodriver (needs Python 3.10 to 3.13)"
-        ) from exc
-    return nodriver
-
-
-async def _harvest_cookies(browser: object) -> "tuple[Dict[str, str], float]":
-    """Collect cookies and the earliest expiry among the clearance ones."""
-    jar = getattr(browser, "cookies", None)
-    if jar is None:
-        return {}, 0.0
-    raw = await jar.get_all()  # pyright: ignore[reportAttributeAccessIssue] - nodriver is optional
-    cookies: Dict[str, str] = {}
-    expiries: Dict[str, float] = {}
-    for cookie in raw or []:
-        name = str(getattr(cookie, "name", "") or "")
-        if not name:
-            continue
-        cookies[name] = str(getattr(cookie, "value", "") or "")
-        expiries[name] = float(getattr(cookie, "expires", 0) or 0)
-    return cookies, clearance_deadline(expiries)
-
-
-def _run_async(coro: object, expect: Type[_T]) -> _T:
-    """Run *coro* to completion from synchronous code.
-
-    Always on a private thread with a private loop. A caller may already be inside
-    an event loop — a scraper driven from an async server, for instance — and
-    ``asyncio.run`` on the current thread would raise there.
-    """
-    import asyncio
-
-    box: Dict[str, object] = {}
-
-    def target() -> None:
-        loop = asyncio.new_event_loop()
-        try:
-            box["value"] = loop.run_until_complete(coro)  # pyright: ignore[reportArgumentType]
-        except BaseException as exc:  # noqa: BLE001 - re-raised on the calling thread
-            box["error"] = exc
-        finally:
-            loop.close()
-
-    thread = threading.Thread(target=target, name="scraper-solve", daemon=True)
-    thread.start()
-    thread.join()
-
-    error = box.get("error")
-    if isinstance(error, BaseException):
-        raise error
-    value = box.get("value")
-    if not isinstance(value, expect):
-        raise SolveError("the browser returned no result")
-    return value
 
 
 def profile_dir_for(root: Optional[Path], exit_id: str) -> Optional[Path]:

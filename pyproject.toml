@@ -42,19 +42,16 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# nodriver cannot be imported outside 3.10-3.13: it evaluates PEP 604 unions at
-# import time below 3.10, and from 3.14 its generated cdp/network.py fails to
-# tokenize on a stray non-UTF-8 byte. Marked rather than left to fail, so the
-# extra is simply absent instead of erroring from inside a dependency.
-browser = ["nodriver>=0.50; python_version >= '3.10' and python_version < '3.14'"]
-# Deliberately unmarked, unlike `browser` above. This is the driver that works on
-# every Python this package supports, which is the whole reason it exists — a marker
-# would reintroduce the gap it was written to close. websockets ships
-# `websockets.sync.client` from 13, so the solver needs no event loop.
+# Unmarked, and that is the point: this solver runs on every Python this package
+# supports. It replaced a driver library that could not be imported below 3.10 or
+# from 3.14, which left both ends of the range with no solver at all. websockets
+# ships `websockets.sync.client` from 13, so the solver needs no event loop.
 cdp = ["websockets>=13"]
+# Kept as an alias so `[browser]` in an existing install still resolves.
+browser = ["lncrawl-scraper[cdp]"]
 botauth = ["cryptography>=44.0"]
 image = ["Pillow>=10.0"]
-all = ["lncrawl-scraper[browser,cdp,botauth,image]"]
+all = ["lncrawl-scraper[cdp,botauth,image]"]
 
 [project.urls]
 Homepage = "https://lncrawl.github.io/scraper/"
@@ -78,7 +75,6 @@ dev = [
     "lxml-stubs>=0.5.1",
     "curl-cffi>=0.7",
     "cryptography>=47.0.0",
-    "nodriver>=0.50.3; python_version >= '3.10' and python_version < '3.14'",
     "websockets>=13",
 ]
 docs = [

@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Removed
+
+- **`NoDriverSolver` and the nodriver dependency are gone.** `CdpSolver` does the same job on every Python this package supports, and head to head over the challenged corpus it was not worse — 12 hosts cleared to 11, at the same median. Keeping a second solver meant keeping fifty thousand lines of dependency, a marker excluding two interpreters, and two code paths that could quietly disagree about the launch flags. **This is a breaking change**: `scraper.NoDriverSolver` no longer exists. Replace it with `scraper.CdpSolver`. The `[browser]` extra is kept as an alias for `[cdp]` so existing installs still resolve.
+
+### Changed
+
+- **Headless is the default.** Both solvers used to launch headed, originally because headless was believed to cost a solve; it does not, measured over 46 hosts. Most places this runs have no display to put a window on. Pass `headless=False` to get one, which also buys `interactive_solve_timeout` — a window is worth opening only where somebody can reach into it.
+- **A solve timeout now bounds the whole solve.** The deadline used to start after the navigation, so a slow load could double the budget the caller asked for.
+
+### Fixed
+
+- **`validate_url`'s docstring described it backwards.** It said a scheme-less string passes; it does not, and that strictness is the point — the other two helpers repair what a person typed, this one checks it. Pinned by a test rather than only corrected in prose.
+
 ## [1.4.0] - 2026-08-01
 
 ### Added

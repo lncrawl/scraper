@@ -116,16 +116,15 @@ soup = scraper.render_soup(url, wait_for="#chapter-list")
 pip install lncrawl-scraper
 ```
 
-| Extra                      | Pulls in     | Needed for                                        |
-| -------------------------- | ------------ | ------------------------------------------------- |
-| `lncrawl-scraper[cdp]`     | websockets   | solving a challenge with a real browser           |
-| `lncrawl-scraper[browser]` | nodriver     | the same, through nodriver — Python 3.10–3.13 only |
-| `lncrawl-scraper[botauth]` | cryptography | signed requests (Web Bot Auth)                    |
-| `lncrawl-scraper[image]`   | Pillow       | `get_image()`                                     |
-| `lncrawl-scraper[all]`     | all four     |                                                   |
+| Extra                      | Pulls in     | Needed for                              |
+| -------------------------- | ------------ | --------------------------------------- |
+| `lncrawl-scraper[cdp]`     | websockets   | solving a challenge with a real browser |
+| `lncrawl-scraper[botauth]` | cryptography | signed requests (Web Bot Auth)          |
+| `lncrawl-scraper[image]`   | Pillow       | `get_image()`                           |
+| `lncrawl-scraper[all]`     | all three    |                                         |
 
-Either solver needs a Chrome installed; neither downloads one. Prefer `cdp` — it works on
-every Python this package supports, and nodriver cannot be imported below 3.10 or from 3.14.
+The solver needs a Chrome installed; it does not download one. `[browser]` is kept as an
+alias for `[cdp]` so an existing install keeps resolving.
 
 Impersonation is **not** an extra. Layers 2–5 are one barrier and an ordinary Python client
 fails all four in the first round trip, so a build without it would not be a degraded scraper

@@ -1,16 +1,16 @@
 """Driving Chrome directly, over the protocol it already speaks.
 
-The bundled :class:`~scraper.browser.NoDriverSolver` cannot run everywhere this
-library does. nodriver evaluates a PEP 604 union at import time below Python 3.10 and
-its generated ``cdp/network.py`` fails to tokenize from 3.14, so on both ends of the
-supported range there is simply no solver — and a challenged origin fails honestly
-rather than being solved. This module closes that gap with the seven calls a solve
-actually needs, spoken straight to the browser.
+The only solver bundled here, and it depends on nothing but a WebSocket. It replaced
+a driver library that could not be imported below Python 3.10 or from 3.14, which left
+both ends of the supported range with no solver at all — a challenged origin failing
+honestly rather than being solved, on exactly the interpreters the frozen builds and
+the server image run.
 
-Seven, measured rather than guessed: start a browser, open a page, wait, read the
-HTML, evaluate an expression, read the cookies, stop. Every one is a single CDP
-command. For scale, nodriver is fifty thousand lines of which forty thousand are
-generated bindings for the rest of the protocol.
+A solve needs seven calls, counted rather than guessed: start a browser, open a page,
+wait, read the HTML, evaluate an expression, read the cookies, stop. Every one is a
+single CDP command. The library this replaced was fifty thousand lines, forty thousand
+of them generated bindings for the rest of the protocol. Head to head over the
+challenged corpus it was no better: 12 hosts cleared to 11, at the same median.
 
 **Owning the wire buys a detection property, and it is the reason to do this rather
 than wrap something.** Eagerly-enabled CDP domains are a known tell, and a
@@ -21,8 +21,8 @@ sent and no domain is ever turned on. Going through a higher-level abstraction �
 including Chrome's own WebDriver BiDi, which is implemented over CDP internally —
 gives that control away.
 
-**What this does not do** is synthesise mouse, scroll or keystroke dynamics, exactly
-as nodriver does not. Behaviour is :mod:`scraper.pacing`'s job and stays there.
+**What this does not do** is synthesise mouse, scroll or keystroke dynamics. Behaviour
+is :mod:`scraper.pacing`'s job and stays there.
 
 The split into a transport, a backend and a solver is deliberate and not premature:
 :class:`_WsClient` is a WebSocket JSON-RPC channel with a request id, which is equally
@@ -47,6 +47,7 @@ from .browser import (
     RenderError,
     SolveError,
     SolveResult,
+    chrome_proxy,
     clearance_deadline,
     honest_user_agent,
     launch_flags,
@@ -338,17 +339,18 @@ class ChromeBackend:
 class CdpSolver(BrowserSolver):
     """Solves by driving Chrome over CDP, with no driver library in between.
 
-    Works on every Python this package supports, which is the point: the nodriver
-    solver is absent below 3.10 and from 3.14, and those are the interpreters the
-    frozen builds and the server image actually run.
+    Works on every Python this package supports, which is the point: the driver
+    library this replaced was absent below 3.10 and from 3.14, and those are the
+    interpreters the frozen builds and the server image actually run.
 
     Args:
         executable: Path to the browser. Looked up on ``PATH`` when omitted, which
             finds a Linux install and generally not a macOS or Windows one — a
             caller that already knows where the browser is should say so.
-        headless: ``False`` by default, matching the nodriver solver, and for the
-            same reason: headless clears just as well, but a visible window is the
-            one a person can reach into. On a server there is nobody to reach in.
+        headless: ``True`` by default. Headless clears
+            exactly what headed clears, and most deployments have no display to put a
+            window on. Pass ``False`` to get one, which also buys the interactive
+            budget.
         args: Extra command-line flags, appended after the defaults.
         settle: Seconds to let a page run before first reading it.
     """
@@ -359,7 +361,7 @@ class CdpSolver(BrowserSolver):
         self,
         *,
         executable: Optional[str] = None,
-        headless: bool = False,
+        headless: bool = True,
         args: Optional[List[str]] = None,
         settle: float = 3.0,
     ) -> None:
@@ -440,11 +442,16 @@ class CdpSolver(BrowserSolver):
     # --------------------------------------------------------------------- #
 
     def _browser(self, proxy: Optional[str], profile_dir: Optional[Path]) -> "_Session":
+        executable = self._resolve_executable()
+        # Settled before any browser starts, the User-Agent probe included. A proxy
+        # this browser cannot use is not worth launching one to find out about, and
+        # running headless there is a whole browser start spent on a refusal.
+        usable = chrome_proxy(proxy or "")
         return _Session(
-            executable=self._resolve_executable(),
+            executable=executable,
             headless=self._headless,
             profile_dir=profile_dir,
-            flags=launch_flags(proxy, user_agent=self._honest_user_agent(), extra=self._extra),
+            flags=launch_flags(usable, user_agent=self._honest_user_agent(), extra=self._extra),
         )
 
     def _resolve_executable(self) -> str:
@@ -465,8 +472,8 @@ class CdpSolver(BrowserSolver):
         before the browser that reports it exists. Hence one throwaway launch, cached
         for the life of the solver and never paid at all when running headed.
 
-        Cheaper here than under nodriver: ``Browser.getVersion`` answers without a
-        page, a session or a navigation.
+        Cheap, at least: ``Browser.getVersion`` answers without a page, a session or
+        a navigation.
         """
         if not self._headless:
             return ""

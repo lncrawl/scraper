@@ -27,8 +27,8 @@ uv run poe build        # lint + test + uv build
 
 Always run `uv run poe lint` before considering a change done. CI runs `lint`, then a
 matrix across every supported Python version that **tests and builds** on each, then
-`coverage`. The two ends of the matrix are the ones worth watching: 3.9 and 3.14 resolve
-without nodriver, since the browser extra is marked for 3.10 to 3.13.
+`coverage`. Nothing is marked out of the matrix any more — the solver runs on 3.9 and
+3.14 alike, which is why it replaced the driver library that could not.
 
 ## Architecture
 
@@ -43,7 +43,8 @@ src/scraper/
 ├── memory.py       # per-origin state that survives the process
 ├── state.py        # SharedState: what belongs to a site, not to a scraper object
 ├── transport.py    # Transport seam + curl_cffi impersonation + plain requests
-├── browser.py      # BrowserSolver protocol + nodriver adapter
+├── browser.py      # BrowserSolver protocol + what every solver shares
+├── cdp.py          # the bundled solver: Chrome over CDP, no driver library
 ├── botauth.py      # RFC 9421 Ed25519 signing (layer 18)
 ├── links.py        # safe link extraction + TopicGuard (layer 17)
 ├── tiers/          # archive, direct, clearance, managed
@@ -147,7 +148,7 @@ layer above them.
 - **Name the failure mode.** These tests are documentation; a test called
   `test_a_throttle_slows_down_and_keeps_the_address` says why it exists in its name, and
   a comment explaining what breaks without it is worth more than an assertion count.
-- `cryptography` / `nodriver` tests use `pytest.importorskip`.
+- `cryptography` tests use `pytest.importorskip`.
 
 ### The live harness
 

@@ -265,7 +265,7 @@ class TestStopping:
             Diagnosis(
                 Action.ESCALATE,
                 Layer.MANAGED_CHALLENGE,
-                "nodriver finished without a clearance cookie",
+                "cdp finished without a clearance cookie",
             ),
             Context(tier="clearance", attempt=2),
         )

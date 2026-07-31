@@ -37,6 +37,23 @@ def test_extract_host_without_scheme_uses_path_fallback():
     assert extract_host("example.com") == "example.com"  # bare host, no colon
 
 
+def test_validate_url_is_stricter_than_the_other_two():
+    # The three do not agree, and the difference is the point. extract_base and
+    # extract_host repair what a person typed; validate_url answers whether the string
+    # as given names a scheme this library speaks. I described this backwards in a
+    # docstring once, which is why it is pinned here rather than only written down.
+    assert validate_url("https://example.com/a")
+    assert not validate_url("example.com/a")
+    assert extract_base("example.com/a") == "http://example.com/"
+    assert not validate_url("ftp://example.com/a"), "a scheme we do not speak"
+    assert not validate_url("")
+
+
+def test_validate_url_accepts_a_caller_widening_the_schemes():
+    assert validate_url("ftp://example.com/a", ["ftp"])
+    assert validate_url("ftp://example.com/a", ("http", "https", "ftp"))
+
+
 def test_extract_host_empty_returns_empty():
     assert extract_host("") == ""
     assert extract_host("/just/a/path") == ""

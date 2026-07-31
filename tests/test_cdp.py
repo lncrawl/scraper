@@ -226,6 +226,8 @@ class TestSharedHelpers:
             CdpSolver(executable="/usr/bin/chrome", settle=0.0).solve(
                 "https://site.test/", proxy="socks5h://key:tok@127.0.0.1:9250"
             )
+        # Not one browser, and that includes the headless User-Agent probe — which
+        # runs before the flags are built unless the proxy is settled first.
         assert "processes" not in captured
 
     def test_the_automation_flag_is_always_off(self):
@@ -388,7 +390,7 @@ class TestLaunch:
 
     def test_headed_does_not(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
         captured = install_cdp(monkeypatch, scripted([CLEARED_PAGE]))
-        CdpSolver(executable="/usr/bin/chrome", settle=0.0).solve(
+        CdpSolver(executable="/usr/bin/chrome", headless=False, settle=0.0).solve(
             "https://site.test/", profile_dir=tmp_path
         )
         assert not any("headless" in a for a in captured["argv"])
@@ -445,7 +447,7 @@ class TestSolve:
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ):
         captured = install_cdp(monkeypatch, scripted([CHALLENGE, CHALLENGE, CLEARED_PAGE]))
-        CdpSolver(executable="/usr/bin/chrome", settle=0.0).solve(
+        CdpSolver(executable="/usr/bin/chrome", headless=False, settle=0.0).solve(
             "https://site.test/", profile_dir=tmp_path
         )
         reads = [
@@ -539,7 +541,7 @@ class TestTheHonestUserAgent:
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ):
         captured = install_cdp(monkeypatch, scripted([CLEARED_PAGE]))
-        CdpSolver(executable="/usr/bin/chrome", settle=0.0).solve(
+        CdpSolver(executable="/usr/bin/chrome", headless=False, settle=0.0).solve(
             "https://site.test/", profile_dir=tmp_path
         )
         assert len(captured["processes"]) == 1
@@ -547,9 +549,11 @@ class TestTheHonestUserAgent:
 
 
 class TestWhatTheSolverDeclares:
-    def test_a_headed_solver_says_a_person_can_reach_it(self):
-        assert CdpSolver(executable="/x").interactive
-        assert not CdpSolver(executable="/x", headless=True).interactive
+    def test_only_a_headed_solver_says_a_person_can_reach_it(self):
+        # Headless is the default, so the interactive budget is opt-in: it is bought
+        # by asking for a window, which is the only thing a person can reach into.
+        assert not CdpSolver(executable="/x").interactive
+        assert CdpSolver(executable="/x", headless=False).interactive
 
     def test_the_clearance_binds_to_chrome(self):
         # Both bundled solvers drive Chrome, so replaying their cookies over anything
@@ -565,7 +569,7 @@ class TestWhatTheSolverDeclares:
 class TestTheDependency:
     def test_a_missing_websockets_names_the_extra(self, monkeypatch: pytest.MonkeyPatch):
         # Unmarked in pyproject, unlike the browser extra, because this is the driver
-        # that has to work on the Pythons nodriver cannot be imported on.
+        # that has to work on every Python this package supports.
         import scraper.cdp as cdp
 
         def no_websockets() -> Any:

@@ -261,7 +261,7 @@ def environment(version: str) -> str:
     rows = [
         ("scraper", version),
         ("Python (harness)", sh("uv run python -V")),
-        ("Python (browser tier)", sh("/tmp/scr312/bin/python -V") or "3.12 (separate venv)"),
+        ("Python (browser tier)", sh("python -V") or "same interpreter"),
         ("curl_cffi", sh('uv run python -c "import curl_cffi; print(curl_cffi.__version__)"')),
         (
             "impersonation profile",
@@ -271,8 +271,8 @@ def environment(version: str) -> str:
             ),
         ),
         (
-            "nodriver",
-            sh('/tmp/scr312/bin/python -c "import nodriver; print(nodriver.__version__)"'),
+            "websockets",
+            sh('python -c "import websockets; print(websockets.__version__)"'),
         ),
         ("browser", "Google Chrome (headed)"),
         ("tor-pool", sh("docker inspect tor-pool --format '{{.Config.Image}}' 2>/dev/null")),
@@ -468,8 +468,8 @@ uv run poe live-tor      # classify Cloudflare hosts through tor-pool
 uv run poe live          # run every scenario
 uv run poe live-report   # rebuild this page
 
-# the clearance tier needs its own interpreter (nodriver: Python 3.10-3.13) and Chrome
-/tmp/scr312/bin/python livetest/clearance.py</pre>
+# the clearance tier needs a real Chrome
+uv run python livetest/clearance.py</pre>
 <p>Requirements and the politeness rules are in
 <code>livetest/README.md</code>. Targets are looked up from the probe rather than
 hardcoded, because site configuration moves: one host in this corpus switched from

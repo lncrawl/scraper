@@ -134,7 +134,6 @@ attributed to a layer.
 ```bash
 pip install lncrawl-scraper                  # the baseline: impersonated HTTP
 pip install "lncrawl-scraper[cdp]"           # the clearance tier
-pip install "lncrawl-scraper[browser]"       # the same, through nodriver (3.10-3.13)
 pip install "lncrawl-scraper[botauth]"       # signed requests
 pip install "lncrawl-scraper[image]"         # get_image
 pip install "lncrawl-scraper[all]"

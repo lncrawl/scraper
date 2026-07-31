@@ -28,9 +28,9 @@ Quick start::
 Add reach rather than settings. A challenged site needs a solver::
 
     from scraper import Scraper, ScraperConfig
-    from scraper.browser import NoDriverSolver
+    from scraper import CdpSolver
 
-    config = ScraperConfig(browser=NoDriverSolver())
+    config = ScraperConfig(browser=CdpSolver())
 
 A scored site needs a better address::
 
@@ -53,7 +53,6 @@ from .botauth import BotAuthConfig, BotAuthKey
 from .browser import (
     BrowserSolver,
     CallableSolver,
-    NoDriverSolver,
     RenderError,
     SolveResult,
 )
@@ -130,7 +129,6 @@ __all__ = [
     "BrowserSolver",
     "CallableSolver",
     "CdpSolver",
-    "NoDriverSolver",
     "SolveResult",
     "ImpersonateTransport",
     "PlainTransport",

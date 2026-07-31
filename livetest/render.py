@@ -1,9 +1,9 @@
 """Rendering, live: a real browser on a page whose HTML is not its content.
 
-Run under a Python that can import nodriver (3.10-3.13), with a real Chrome installed
+Needs a real Chrome. Runs on any Python this package supports
 and a display available — same requirement as `clearance.py`, and for the same reason:
 
-    /tmp/scr312/bin/python livetest/render.py
+    uv run python livetest/render.py
 
 Writes livetest/render.json, which the report merges with the main results.
 
@@ -31,7 +31,8 @@ from typing import Any, Dict, List, Optional, Tuple
 HERE = pathlib.Path(__file__).parent
 
 from scraper import PacingPolicy, Scraper, ScraperConfig  # noqa: E402
-from scraper.browser import NoDriverSolver, RenderError  # noqa: E402
+from scraper.browser import RenderError  # noqa: E402
+from scraper.cdp import CdpSolver  # noqa: E402
 from scraper.exceptions import ScraperError  # noqa: E402
 from scraper.transport import ImpersonateTransport  # noqa: E402
 
@@ -125,7 +126,7 @@ def main() -> None:
         return
 
     config = ScraperConfig(
-        browser=NoDriverSolver(settle=SETTLE),
+        browser=CdpSolver(settle=SETTLE),
         pacing=PacingPolicy(interval=1.5, warmup=False, pause_chance=0.0),
         data_dir=WORKDIR,
         raise_for_status=False,

@@ -1,20 +1,13 @@
 """The clearance tier, live: a real browser solving a real challenge.
 
-Run under a Python that can import nodriver (3.10-3.13; see the notes below), with a
-real Chrome installed and a display available:
+Needs a real Chrome, and runs on any Python this package supports:
 
-    /tmp/scr312/bin/python livetest/clearance.py
+    uv run python livetest/clearance.py
 
 Writes livetest/clearance.json, which the report merges with the main results.
 
-Two environment facts learned the hard way and worth keeping here:
-
-- nodriver 0.50.3 does not import on Python 3.14 — one of its generated CDP modules
-  contains a non-UTF-8 byte with no encoding declaration, which is a SyntaxError
-  rather than something the library can catch.
-- Headless is not used, though it would work: `headless.py` measured that and it
-  clears everything headed clears. Headed matches the shipped default, and matching
-  it is the point of a live harness.
+Headless, matching the shipped default — matching it is the point of a live harness,
+and `headless.py` measured that it costs nothing.
 """
 
 from __future__ import annotations
@@ -27,7 +20,7 @@ from typing import Any, Dict, List
 HERE = pathlib.Path(__file__).parent
 
 from scraper import PacingPolicy, Scraper, ScraperConfig  # noqa: E402
-from scraper.browser import NoDriverSolver  # noqa: E402
+from scraper.cdp import CdpSolver  # noqa: E402
 from scraper.diagnosis import diagnose  # noqa: E402
 from scraper.exceptions import Exhausted, Impassable  # noqa: E402
 from scraper.transport import ImpersonateTransport  # noqa: E402
@@ -116,11 +109,8 @@ def main() -> None:
         print("inconclusive: nothing was challenging right now")
         return
 
-    solver = NoDriverSolver(settle=4.0)
+    solver = CdpSolver(settle=4.0)
     solves: List[str] = []
-
-    class Counting(NoDriverSolver):
-        pass
 
     config = ScraperConfig(
         browser=solver,

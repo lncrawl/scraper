@@ -7,15 +7,15 @@ and the two reasons previously given for headed-only both turned out to be wrong
 recorded arms in ``headless.json`` are what retired them; keep them, because "we tried
 that and it did not work" is only worth anything with the run attached.
 
-Run under a Python that can import nodriver (3.10-3.13), with a real Chrome installed:
+Needs a real Chrome. Runs on any Python this package supports:
 
-    /tmp/scr312/bin/python livetest/headless.py             # the A/B, ~25 min
-    /tmp/scr312/bin/python livetest/headless.py --report    # re-read the JSON, no network
+    uv run python livetest/headless.py             # the A/B, ~25 min
+    uv run python livetest/headless.py --report    # re-read the JSON, no network
 
 Two things this has to get right or the numbers mean nothing:
 
-1. **A returned ``SolveResult`` is not a cleared challenge.** ``NoDriverSolver._solve``
-   polls until ``is_still_challenged`` goes false *or the deadline passes*, and returns
+1. **A returned ``SolveResult`` is not a cleared challenge.** The solve loop polls
+   until ``is_still_challenged`` goes false *or the deadline passes*, and returns
    either way. Clearance is therefore verified separately, by replaying the harvested
    cookies and User-Agent over an impersonating transport and diagnosing what comes
    back — which is the thing a clearance exists to do.
@@ -40,7 +40,7 @@ import time
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple
 
-from scraper.browser import NoDriverSolver
+from scraper.cdp import CdpSolver
 from scraper.diagnosis import Action, diagnose
 from scraper.transport import ImpersonateTransport
 
@@ -140,7 +140,7 @@ def verify(url: str, cookies: Dict[str, str], user_agent: str) -> Dict[str, Any]
 
 def one(url: str, headless: bool, timeout: float, extra: List[str]) -> Dict[str, Any]:
     profile = pathlib.Path(tempfile.mkdtemp(prefix="headless-ab-"))
-    solver = NoDriverSolver(headless=headless, args=list(extra))
+    solver = CdpSolver(headless=headless, args=list(extra))
     started = time.monotonic()
     row: Dict[str, Any] = {"url": url, "headless": headless}
     try:
