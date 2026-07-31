@@ -14,12 +14,23 @@ fingerprint that earned it, so what comes back from a solve is not just cookies
 but the identity they belong to. Everything after the solve is ordinary cheap
 requests on that same identity until the cookie expires.
 
-Two details are load-bearing and easy to get wrong:
+Three details are load-bearing and easy to get wrong:
 
-**Headless is the wrong default.** A headless build reports a software renderer
-for WebGL, which is a clear indicator on its own. The default here launches
-headed; on a server, run it under a virtual display rather than turning headless
-back on.
+**Headless costs nothing once the browser stops announcing it.** This used to say a
+headless build gives itself away through a software WebGL renderer, and to run a
+virtual display on a server instead. Measured over six challenged hosts, both claims
+were wrong. What gives headless away is one substring: its User-Agent says
+``HeadlessChrome``. With the token left in, none of the six cleared; with it removed,
+all six cleared, as fast as headed. Forcing the software renderer on a machine that
+has a GPU changed nothing — all six still cleared — so the renderer was never the
+tell. The solver now strips the token itself, and headless is a fair choice.
+
+**The browser build shows through, and a virtual display does not hide it.** In a
+container running Debian's ``chromium``, nothing cleared: not headless, not headless
+with the User-Agent fixed, and not headed under Xvfb. That build omits the ``Google
+Chrome`` brand from ``Sec-CH-UA``, which every request carries, so it is a property
+of the binary rather than of how it is displayed. Install the browser a real visitor
+would run; reaching for Xvfb to fix this is answering the wrong question.
 
 **WebRTC has to be off.** A STUN request can expose the host's real address even
 when every HTTP request goes through the proxy — which unbinds the identity by
@@ -237,7 +248,10 @@ class NoDriverSolver(BrowserSolver):
     two are separate modules.
 
     Args:
-        headless: Left ``False`` on purpose. See the module docstring.
+        headless: Still ``False`` by default, but no longer because headless cannot
+            clear — see the module docstring. A headed window is the one a person can
+            reach in and solve, which is worth keeping as the default where there is
+            a display; on a server there is nobody to reach in and headless is right.
         args: Extra command-line flags, appended after the defaults.
     """
 
@@ -254,6 +268,7 @@ class NoDriverSolver(BrowserSolver):
         self._extra = list(args or [])
         self._settle = settle
         self._lock = threading.Lock()
+        self._user_agent: Optional[str] = None
 
     def solve(
         self,
@@ -281,17 +296,55 @@ class NoDriverSolver(BrowserSolver):
         with self._lock:
             return _run_async(self._render(url, wait_for, proxy, profile_dir, timeout), str)
 
-    def _flags(self, proxy: Optional[str]) -> List[str]:
+    def _flags(self, proxy: Optional[str], user_agent: str = "") -> List[str]:
         flags = [
             # A STUN request reaches the network directly and reports the host's
             # real address, which unbinds the identity without any request failing.
             "--disable-webrtc",
             "--disable-features=WebRtcHideLocalIpsWithMdns",
         ]
+        if user_agent:
+            flags.append(f"--user-agent={user_agent}")
         if proxy:
             flags.append(f"--proxy-server={proxy}")
         flags.extend(self._extra)
         return flags
+
+    async def _honest_user_agent(self) -> str:
+        """The User-Agent to launch headless under, or ``""`` when headed.
+
+        A headless Chrome announces itself: its User-Agent says ``HeadlessChrome``,
+        and that one substring is the whole of the headless penalty. Measured over
+        six challenged hosts on a desktop, twice each: headless cleared none of them
+        and cleared all of them once the token was gone, at the same speed as headed.
+
+        Applied as a launch flag rather than through ``Network.setUserAgentOverride``,
+        which looks equivalent and is not — the override suppresses the ``Sec-CH-UA``
+        request header outright, so it trades a browser that admits to being headless
+        for one that claims to be Chrome and sends no brands at all.
+
+        Learned by launching once and reading it, because the flag has to be set
+        before the browser exists and the string is specific to this build and
+        platform. Cached for the life of the solver, so the extra launch is paid once
+        per process, and never when running headed.
+        """
+        if not self._headless:
+            return ""
+        if self._user_agent is None:
+            nodriver = _import_nodriver()
+            browser = await nodriver.start(headless=True, browser_args=self._flags(None))
+            try:
+                page = await browser.get("about:blank")
+                reported = str(await page.evaluate("navigator.userAgent") or "")
+            finally:
+                try:
+                    browser.stop()
+                except Exception:  # noqa: BLE001 - see _solve
+                    logger.debug("nodriver did not shut down cleanly", exc_info=True)
+            self._user_agent = reported.replace("HeadlessChrome/", "Chrome/")
+            if not reported:
+                logger.debug("could not read the browser's User-Agent; launching as-is")
+        return self._user_agent
 
     async def _render(
         self,
@@ -302,9 +355,10 @@ class NoDriverSolver(BrowserSolver):
         timeout: float,
     ) -> str:
         nodriver = _import_nodriver()
+        user_agent = await self._honest_user_agent()
         browser = await nodriver.start(
             headless=self._headless,
-            browser_args=self._flags(proxy),
+            browser_args=self._flags(proxy, user_agent),
             user_data_dir=str(profile_dir) if profile_dir else None,
         )
         try:
@@ -345,9 +399,10 @@ class NoDriverSolver(BrowserSolver):
         timeout: float,
     ) -> SolveResult:
         nodriver = _import_nodriver()
+        user_agent = await self._honest_user_agent()
         browser = await nodriver.start(
             headless=self._headless,
-            browser_args=self._flags(proxy),
+            browser_args=self._flags(proxy, user_agent),
             user_data_dir=str(profile_dir) if profile_dir else None,
         )
         try:

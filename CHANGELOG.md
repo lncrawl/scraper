@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **A headless browser could not clear a challenge, and the cause was one substring.** Headless Chrome writes `HeadlessChrome` into its User-Agent, and that was the whole of the penalty. `NoDriverSolver` now reads its own User-Agent once per process and launches headless under the corrected one, as a launch flag — not `Network.setUserAgentOverride`, which looks equivalent but suppresses the `Sec-CH-UA` header, trading a browser that admits to being headless for one that claims to be Chrome and sends no brands.
+
+  Measured over 46 challenged sites, 166 solves: headless cleared nothing before the fix and clears **27 of the 27** hosts a headed browser clears after it, at the same speed, plus one that headed does not.
+
+- **The advice to run a virtual display on a server was wrong, and so was its reasoning.** Headless was said to give itself away through a software WebGL renderer; forcing that renderer on a machine with a GPU changed nothing and every host still cleared. In a container nothing cleared at all — not headless, not headless with the User-Agent corrected, not headed under Xvfb — because Debian's `chromium` omits the `Google Chrome` brand from `Sec-CH-UA`, which every request carries. That is the browser build showing through, and no display setting hides it. **Install the browser a real visitor runs.**
+
 ## [1.3.0] - 2026-07-31
 
 ### Added

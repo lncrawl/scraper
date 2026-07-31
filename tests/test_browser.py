@@ -192,6 +192,73 @@ class TestCallableSolver:
         BrowserSolver().close()
 
 
+class TestHeadlessDoesNotAnnounceItself:
+    """The whole of the headless penalty was one substring in the User-Agent.
+
+    Measured over six challenged hosts, twice each: with ``HeadlessChrome`` left in,
+    none cleared; with it replaced, all six did, at the same speed as headed. Forcing
+    a software WebGL renderer on a GPU machine changed nothing, so the renderer — the
+    reason this module used to give for avoiding headless — was never the tell.
+    """
+
+    HEADLESS_UA = (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+    )
+
+    def test_a_headless_solve_launches_under_a_corrected_user_agent(
+        self, monkeypatch: pytest.MonkeyPatch
+    ):
+        page = FakePage([CLEARED_PAGE], user_agent=self.HEADLESS_UA)
+        browser = FakeBrowser(page, [FakeCookie("cf_clearance", "x")])
+        captured = install_nodriver(monkeypatch, browser)
+
+        NoDriverSolver(headless=True, settle=0.0).solve("https://site.test/")
+
+        flags = captured["browser_args"]
+        assert f"--user-agent={self.HEADLESS_UA.replace('HeadlessChrome/', 'Chrome/')}" in flags
+        assert "Headless" not in " ".join(flags)
+
+    def test_a_headed_solve_leaves_the_user_agent_alone(self, monkeypatch: pytest.MonkeyPatch):
+        # Nothing to correct, and imposing one would pin every headed solve to a
+        # string that goes stale the next time the browser updates.
+        browser = FakeBrowser(FakePage([CLEARED_PAGE]), [FakeCookie("cf_clearance", "x")])
+        captured = install_nodriver(monkeypatch, browser)
+
+        NoDriverSolver(headless=False, settle=0.0).solve("https://site.test/")
+
+        assert not any(f.startswith("--user-agent=") for f in captured["browser_args"])
+
+    def test_the_user_agent_is_learned_once_and_reused(self, monkeypatch: pytest.MonkeyPatch):
+        """The probe costs a browser launch, so it must not happen per solve."""
+        launches: List[Dict[str, Any]] = []
+        module = types.ModuleType("nodriver")
+
+        async def start(**kwargs: Any) -> FakeBrowser:
+            launches.append(kwargs)
+            return FakeBrowser(
+                FakePage([CLEARED_PAGE], user_agent=self.HEADLESS_UA),
+                [FakeCookie("cf_clearance", "x")],
+            )
+
+        setattr(module, "start", start)
+        monkeypatch.setitem(sys.modules, "nodriver", module)
+
+        solver = NoDriverSolver(headless=True, settle=0.0)
+        solver.solve("https://site.test/")
+        after_first = len(launches)
+        solver.solve("https://site.test/")
+
+        assert after_first == 2, "the first solve pays for the probe launch"
+        assert len(launches) == 3, "the second solve reuses what the probe learned"
+
+    def test_the_proxy_flag_still_arrives_alongside_the_user_agent(self):
+        solver = NoDriverSolver(headless=True)
+        flags = solver._flags("socks5://127.0.0.1:9050", "Chrome/150.0.0.0")
+        assert "--proxy-server=socks5://127.0.0.1:9050" in flags
+        assert "--user-agent=Chrome/150.0.0.0" in flags
+
+
 class TestProfileDirectories:
     def test_one_directory_per_address(self, tmp_path: Path):
         # Cookie and session age are behavioural signals and they belong to the address
@@ -363,8 +430,9 @@ class TestDrivingNoDriver:
         assert "--disable-features=WebRtcHideLocalIpsWithMdns" in flags
         assert "--proxy-server=http://p.test:1" in flags
         assert flags[-1] == "--extra-flag", "caller flags come after the defaults"
-        # Headless reports a software renderer for WebGL, which is a clear indicator on
-        # its own, so the default has to be headed.
+        # Still headed by default, but not for the reason this used to give: headless
+        # clears fine once its User-Agent stops announcing it. What a window buys is a
+        # person able to reach in and solve one by hand.
         assert captured["headless"] is False
 
     def test_no_proxy_means_no_proxy_flag(self, monkeypatch: pytest.MonkeyPatch):
