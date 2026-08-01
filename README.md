@@ -7,12 +7,11 @@
 and escalates only as far as that layer requires.**
 
 [![PyPI](https://img.shields.io/pypi/v/lncrawl-scraper.svg?logo=pypi&logoColor=white)](https://pypi.org/project/lncrawl-scraper/)
-[![PyPI Wheel](https://img.shields.io/pypi/wheel/lncrawl-scraper)](https://pypi.org/project/lncrawl-scraper/)
+[![Python](https://img.shields.io/pypi/pyversions/lncrawl-scraper.svg?logo=python&logoColor=white)](https://pypi.org/project/lncrawl-scraper/)
 [![CI](https://github.com/lncrawl/scraper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lncrawl/scraper/actions/workflows/ci.yml)
-[![Docs](https://img.shields.io/badge/docs-lncrawl.github.io-0b0b0b)](https://lncrawl.github.io/scraper/)
 [![codecov](https://codecov.io/gh/lncrawl/scraper/branch/main/graph/badge.svg)](https://codecov.io/gh/lncrawl/scraper)
-[![CodeQL](https://github.com/lncrawl/scraper/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/lncrawl/scraper/actions/workflows/github-code-scanning/codeql)
 [![License](https://img.shields.io/pypi/l/lncrawl-scraper.svg)](https://github.com/lncrawl/scraper/blob/main/LICENSE)
+[![Docs](https://img.shields.io/badge/docs-lncrawl.github.io-0b0b0b)](https://lncrawl.github.io/scraper/)
 
 [**The model**](https://lncrawl.github.io/scraper/model/) ·
 [**Documentation**](https://lncrawl.github.io/scraper/) ·
@@ -65,27 +64,41 @@ binding layer reads a possessed property, it does not rotate.** Rotating discard
 history the detector is measuring, so it holds the address still and slows down. And two
 layers raise instead of retrying, because they read a secret you either hold or do not.
 
-Full treatment: [the model](https://lncrawl.github.io/scraper/model/). The
-layer model, the emit/possess distinction and the reference patterns come from the paper this
-library implements — _A Layered Model of Modern Web Bot Protection and the Structural Limits of
-Its Circumvention_, included as
+Full treatment: [the model](https://lncrawl.github.io/scraper/model/). It comes from the paper
+this library implements — _A Layered Model of Modern Web Bot Protection and the Structural
+Limits of Its Circumvention_, included as
 [a PDF](https://lncrawl.github.io/scraper/whitepaper/Cloudflare_Bypass.pdf).
 
 ## What it does
 
-|                                            |                                                                                                                                                                                                                                                          |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Diagnoses instead of reacting**          | `scraper.diagnose` maps a response onto the nineteen-layer model — thirteen of them are distinguishable from a response alone. A `200` carrying a challenge is a failure; a `429` is a pacing problem, not a bad address; a `403` with error 1010 is about the automation channel, and rotating the exit changes nothing. |
+|                                            |                                                                                                                                                                                                                                                                              |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Diagnoses instead of reacting**          | A response is mapped onto the nineteen-layer model, not onto its status code. A `200` carrying a challenge is a failure; a `429` is a pacing problem, not a bad address; a `403` with error 1010 is about the automation channel, and rotating the exit changes nothing.     |
 | **Names the vendor, not just the status**  | DataDome, Kasada, PerimeterX, Akamai, Imperva, DDoS-Guard, Sucuri, AWS WAF and F5 are recognised from their own headers and cookies, and each refusal maps to what it really means. A CDN is named without being blamed: a CloudFront header is on every response it serves. |
-| **Escalates on evidence**                  | Four tiers, ordered by real cost. The cheapest one whose reach covers the binding layer is chosen, so a site needing only a header profile never pays for a browser launch.                                                                              |
-| **Treats identity as indivisible**         | A clearance is bound to the address, User-Agent and TLS fingerprint that earned it, and `Clearance.usable_by()` refuses to replay it under any other — which makes the classic rotating-proxy failure structurally impossible.                           |
-| **Solves once and reuses**                 | A browser runs for the challenge, its exact User-Agent is adopted, and everything after is a cheap request on the same identity until the cookie expires.                                                                                                |
-| **Accumulates rather than fakes**          | Gamma-distributed pacing, homepage warm-up, real referrer chains, one address per origin, capped concurrency — and it all persists between runs, because a process that forgets cannot accumulate.                                                       |
-| **Avoids the trap with no error response** | `safe_links` enumerates only anchors a person could click; `TopicGuard` notices content that stopped being about the site.                                                                                                                               |
-| **Signs requests, to be welcome**          | RFC 9421 / Ed25519 Web Bot Auth. A valid signature skips the challenge machinery entirely, making it the cheapest tier there is.                                                                                                                         |
-| **Tells you why**                          | `scraper.explain(url)` names the binding layer, the working tier, the learned pacing and the ladder available. Exceptions carry `.layer`, not just a status code.                                                                                        |
-| **Asks before doing the work**             | `scraper.unchanged(url)` revalidates against the stored `ETag`, so a caller can skip a whole job. Opt-in only: a `304` has no body, so doing it underneath `get_soup` would return an empty page and no error.                                            |
-| **`PageSoup`**                             | Null-safe BeautifulSoup wrapper; selectors never return `None`.                                                                                                                                                                                          |
+| **Escalates on evidence**                  | Four tiers, ordered by real cost. The cheapest one whose reach covers the binding layer is chosen, so a site needing only a header profile never pays for a browser launch.                                                                                                  |
+| **Treats identity as indivisible**         | A clearance is bound to the address, User-Agent and TLS fingerprint that earned it, and `Clearance.usable_by()` refuses to replay it under any other — which makes the classic rotating-proxy failure structurally impossible.                                               |
+| **Solves once and reuses**                 | A browser runs for the challenge, its exact User-Agent is adopted, and everything after is a cheap request on the same identity until the cookie expires.                                                                                                                    |
+| **Accumulates rather than fakes**          | Gamma-distributed pacing, homepage warm-up, real referrer chains, one address per origin, capped concurrency — persisted between runs and shareable across scrapers through `SharedState`, because a process that forgets cannot accumulate.                                 |
+| **Avoids the trap with no error response** | `safe_links` enumerates only anchors a person could click; `TopicGuard` notices content that stopped being about the site.                                                                                                                                                   |
+| **Signs requests, to be welcome**          | RFC 9421 / Ed25519 Web Bot Auth. A valid signature skips the challenge machinery entirely, making it the cheapest tier there is.                                                                                                                                             |
+| **Takes your word for the rest**           | `check_response` faults a `200` whose body says otherwise — the difference lives in a schema only the caller knows, and the loop then treats that verdict as its own.                                                                                                        |
+| **Tells you why**                          | `scraper.explain(url)` names the binding layer, the working tier, the learned pacing and the ladder available. Exceptions carry `.layer`, not just a status code.                                                                                                            |
+
+## What you call
+
+Every one of these goes through the ladder, the pacing and the memory described above.
+
+| Method                                   |                                                                                                                                                                   |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `get` `post` `head` `ping` `submit_form` | a `requests.Response`                                                                                                                                             |
+| `get_soup` `post_soup` `make_soup`       | a `PageSoup` — null-safe BeautifulSoup, selectors never return `None`                                                                                             |
+| `get_json` `post_json`                   | parsed JSON                                                                                                                                                       |
+| `render` `render_soup`                   | a browser renders the page. For HTML that is a shell JavaScript fills in — not a tier                                                                             |
+| `get_file` `get_image`                   | download to disk; `get_image` needs the `[image]` extra                                                                                                           |
+| `unchanged`                              | revalidate against the stored `ETag` and skip a whole job. Opt-in: a `304` has no body, so doing it underneath `get_soup` would return an empty page and no error |
+| `links`                                  | `safe_links` over a page — the anchors a person could click                                                                                                       |
+| `explain` `knows`                        | what has been learned about this origin                                                                                                                           |
+| `abort` `close`                          | cancel everything in flight; release exits and browsers. Any call also takes `signal=` to cancel just itself                                                      |
 
 ## The ladder
 
@@ -102,29 +115,26 @@ The planner picks the cheapest rung that covers the binding layer, and stops wit
 explanation when no configured rung does. Writing your own rung:
 [tiers](https://lncrawl.github.io/scraper/tiers/).
 
-A browser is also useful when nothing is blocking at all — a page whose HTML is a shell that
-JavaScript fills in. That is deliberately not a rung, because no layer is binding and a
-clearance would change nothing:
-
-```python
-soup = scraper.render_soup(url, wait_for="#chapter-list")
-```
-
 ## Installation
 
 ```bash
 pip install lncrawl-scraper
 ```
 
-| Extra                      | Pulls in     | Needed for                              |
-| -------------------------- | ------------ | --------------------------------------- |
-| `lncrawl-scraper[cdp]`     | websockets   | solving a challenge with a real browser |
-| `lncrawl-scraper[botauth]` | cryptography | signed requests (Web Bot Auth)          |
-| `lncrawl-scraper[image]`   | Pillow       | `get_image()`                           |
-| `lncrawl-scraper[all]`     | all three    |                                         |
+Python 3.9 and up; CI tests and builds on every version in that range.
 
-The solver needs a Chrome installed; it does not download one. `[browser]` is kept as an
-alias for `[cdp]` so an existing install keeps resolving.
+| Extra                      | Pulls in     | Needed for                                            |
+| -------------------------- | ------------ | ----------------------------------------------------- |
+| `lncrawl-scraper[cdp]`     | websockets   | either bundled solver — both speak over one WebSocket |
+| `lncrawl-scraper[botauth]` | cryptography | signed requests (Web Bot Auth)                        |
+| `lncrawl-scraper[image]`   | Pillow       | `get_image()`                                         |
+| `lncrawl-scraper[all]`     | all three    |                                                       |
+
+A solver drives a browser you already have and never downloads one. Finding it is the
+library's job: `find_firefox()` and `find_chromium()` look inside macOS application bundles,
+the Windows program directories, and distribution and flatpak paths — not a `PATH` scan, which
+answers for Linux and only Linux. `[browser]` is kept as an alias for `[cdp]` so an existing
+install keeps resolving.
 
 Impersonation is **not** an extra. Layers 2–5 are one barrier and an ordinary Python client
 fails all four in the first round trip, so a build without it would not be a degraded scraper
@@ -135,7 +145,7 @@ but one that cannot reach a protected page.
 Two settings change what this library can _do_. The rest adjust how it does it.
 
 ```python
-from scraper import CdpSolver, ExitKind, ExitSpec, Scraper, ScraperConfig
+from scraper import BidiSolver, ExitKind, ExitSpec, Scraper, ScraperConfig
 
 config = ScraperConfig(
     # The only thing that moves layer 1: reputation is not something a client emits.
@@ -143,7 +153,7 @@ config = ScraperConfig(
     # this library from telling you that layer 1 is why nothing works.
     exits=[ExitSpec(url="http://user:pw@residential.test:8000", kind=ExitKind.RESIDENTIAL)],
     # The only thing that reaches the challenge layers.
-    browser=CdpSolver(),
+    browser=BidiSolver(),
 )
 
 with Scraper(origin="https://site.test", config=config) as scraper:
@@ -161,6 +171,12 @@ site.test
   ladder        : direct(10) clearance(100)
   exits         : residential
 ```
+
+Two solvers ship: `BidiSolver` drives **Firefox** over WebDriver BiDi, `CdpSolver` drives
+**Chrome** over the DevTools protocol. They clear a comparable share of challenged hosts and
+disagree on which ones, so neither dominates — prefer `BidiSolver`, because a clearance binds
+to the fingerprint that earned it and firefox is the impersonation profile that reaches the
+most hosts. A tor-pool is configured the same way, with `TorPoolSpec`.
 
 ## When it stops
 
@@ -189,7 +205,7 @@ except Exhausted as exc:
 | Page                                                              |                                                       |
 | ----------------------------------------------------------------- | ----------------------------------------------------- |
 | [The model](https://lncrawl.github.io/scraper/model/)             | The bound, and emit vs. possess. **Start here.**      |
-| [Layers](https://lncrawl.github.io/scraper/layers/)               | The nineteen layers and what moves each.              |
+| [Layers](https://lncrawl.github.io/scraper/layers/)               | The nineteen layers, and which are diagnosable.       |
 | [Tiers](https://lncrawl.github.io/scraper/tiers/)                 | The escalation ladder; writing a tier.                |
 | [Configuration](https://lncrawl.github.io/scraper/configuration/) | Every `ScraperConfig` field.                          |
 | [Behaviour](https://lncrawl.github.io/scraper/behaviour/)         | Pacing, warm-up, persistence, shared state.           |
@@ -214,11 +230,14 @@ uv sync                 # deps + editable install
 uv run poe lint         # ruff + pyright
 uv run poe test         # pytest
 uv run poe cov          # with coverage
+uv run poe docs         # serve the documentation site
 ```
 
 Tests are offline: the pipeline talks to a two-method `Transport`, so `tests/conftest.py`'s
 `FakeTransport` covers every tier without a network. The modules that encode judgement —
 `diagnosis`, `planner`, `layers` — are pure functions over primitives and are tested as such.
+[AGENTS.md](https://github.com/lncrawl/scraper/blob/main/AGENTS.md) has the architecture and
+the invariants that break silently.
 
 <details>
 <summary><strong>Verifying against real deployments</strong></summary>
@@ -226,7 +245,8 @@ Tests are offline: the pipeline talks to a two-method `Transport`, so `tests/con
 `livetest/` runs the same paths against real Cloudflare deployments, using every host in
 [lightnovel-crawler](https://github.com/lncrawl/lightnovel-crawler)'s source index as the
 corpus. It is not part of `poe test` — it needs the network, and some scenarios need a local
-tor-pool and a real browser.
+tor-pool and a real browser. See
+[livetest/README.md](https://github.com/lncrawl/scraper/blob/main/livetest/README.md).
 
 ```bash
 uv run poe live-all
@@ -237,13 +257,14 @@ scenario results, which layer each client meets across the corpus, and what a To
 actually costs. It is a standalone page, regenerated in place at `livetest/report.html` and
 published with the docs.
 
-Nearly every defect found before 1.0 was invisible to a stubbed transport, and two
-of them made whole features silently useless while every unit test passed. Anything the
-harness finds gets a unit test whose docstring says it was found live, so those docstrings are
-the record of which assumptions turned out to be wrong.
+Nearly every defect found before 1.0 was invisible to a stubbed transport, and two of them made
+whole features silently useless while every unit test passed. Anything the harness finds gets a
+unit test whose docstring says it was found live, so those docstrings are the record of which
+assumptions turned out to be wrong.
 
 </details>
 
 ## Credits
 
-Extracted from [lightnovel-crawler](https://github.com/lncrawl/lightnovel-crawler).
+Extracted from [lightnovel-crawler](https://github.com/lncrawl/lightnovel-crawler). Apache-2.0;
+see [LICENSE](https://github.com/lncrawl/scraper/blob/main/LICENSE).
