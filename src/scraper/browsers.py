@@ -67,6 +67,16 @@ def _candidates(
     return found
 
 
+def _runnable(path: str) -> bool:
+    """Whether this path is a program that could actually be launched.
+
+    A named function rather than the expression inline because the distribution paths
+    above are absolute: nothing a test does to ``PATH`` hides them, so this is the only
+    seam at which a test can be told what filesystem to believe in.
+    """
+    return os.path.exists(path) and os.access(path, os.X_OK)
+
+
 def _executables(*args: Iterable[str]) -> List[str]:
     """The candidates that exist and can actually be run."""
     usable: List[str] = []
@@ -76,7 +86,7 @@ def _executables(*args: Iterable[str]) -> List[str]:
         if path in seen:
             continue
         seen.add(path)
-        if os.path.exists(path) and os.access(path, os.X_OK):
+        if _runnable(path):
             usable.append(path)
     return usable
 

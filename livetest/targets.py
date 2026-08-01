@@ -7,8 +7,12 @@ picked by hand, and it is the corpus this library actually has to work against.
 
     uv run poe live-targets
 
-Writes livetest/targets.json. Point `LNCRAWL_SOURCES` at the index if the sibling
-checkout is not where this expects it.
+Fetched from the lightnovel-crawler repository rather than a sibling checkout, so this
+works without one and everybody building the corpus builds the same corpus. Point
+`LNCRAWL_SOURCES` at a local `_index.json` to use a working tree instead — the only
+way to include sources that are not committed yet.
+
+Writes livetest/targets.json.
 """
 
 from __future__ import annotations
@@ -17,18 +21,34 @@ import json
 import os
 import pathlib
 import sys
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
+
+import requests
 
 HERE = pathlib.Path(__file__).parent
 
-DEFAULT_INDEX = HERE.parents[1] / "lncrawl" / "sources" / "_index.json"
+SOURCES_URL = "https://raw.githubusercontent.com/lncrawl/lightnovel-crawler/dev/sources"
 
 
 def host_of(url: str) -> str:
     return str(url).split("//")[-1].split("/")[0].lower()
 
 
-def rejected_hosts(index: pathlib.Path) -> Dict[str, str]:
+def load(name: str, local: Optional[pathlib.Path]) -> Dict[str, Any]:
+    """One of lncrawl's source files, from a working tree or from GitHub."""
+    if local is not None:
+        path = local.parent / name
+        if not path.exists():
+            print(f"{path} not found", file=sys.stderr)
+            raise SystemExit(1)
+        return json.loads(path.read_text())
+
+    response = requests.get(f"{SOURCES_URL}/{name}", timeout=60)
+    response.raise_for_status()
+    return response.json()
+
+
+def rejected_hosts(data: Dict[str, Any]) -> Dict[str, str]:
     """Hosts lncrawl has disabled, as host -> reason.
 
     `sources/_rejected.json` is lncrawl's own record of sites that are gone — expired
@@ -36,26 +56,20 @@ def rejected_hosts(index: pathlib.Path) -> Dict[str, str]:
     the corpus: a host that cannot answer is not evidence about a client, and it
     drags every arm's rate toward whatever share of the list is dead.
     """
-    path = index.parent / "_rejected.json"
-    if not path.exists():
-        return {}
-    data = json.loads(path.read_text())
     return {host_of(url): str(reason) for url, reason in data.items()}
 
 
 def main() -> None:
-    index = pathlib.Path(os.environ.get("LNCRAWL_SOURCES") or DEFAULT_INDEX)
-    if not index.exists():
-        print(
-            f"source index not found at {index}\n"
-            "Set LNCRAWL_SOURCES to lightnovel-crawler's sources/_index.json",
-            file=sys.stderr,
-        )
+    override = os.environ.get("LNCRAWL_SOURCES")
+    local = pathlib.Path(override) if override else None
+    if local is not None and not local.exists():
+        print(f"LNCRAWL_SOURCES points at {local}, which does not exist", file=sys.stderr)
         raise SystemExit(1)
+    print(f"reading {local.parent if local else SOURCES_URL}")
 
-    data = json.loads(index.read_text())
+    data = load("_index.json", local)
     crawlers = data.get("crawlers") or {}
-    rejected = rejected_hosts(index)
+    rejected = rejected_hosts(load("_rejected.json", local))
 
     # One entry per host. A crawler often lists several URLs for the same site, and
     # probing the same host repeatedly would both skew the counts and be rude.

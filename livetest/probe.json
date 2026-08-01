@@ -11,8 +11,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 261478,
-   "seconds": 2.4
+   "bytes": 261509,
+   "seconds": 1.71
   },
   "impersonate": {
    "ok": true,
@@ -22,8 +22,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 261478,
-   "seconds": 1.76
+   "bytes": 261509,
+   "seconds": 1.45
   }
  },
  {
@@ -38,8 +38,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 109096,
-   "seconds": 1.21
+   "bytes": 111094,
+   "seconds": 0.93
   },
   "impersonate": {
    "ok": true,
@@ -49,8 +49,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 107700,
-   "seconds": 1.02
+   "bytes": 111143,
+   "seconds": 0.85
   }
  },
  {
@@ -66,7 +66,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5553,
-   "seconds": 0.66
+   "seconds": 0.33
   },
   "impersonate": {
    "ok": true,
@@ -76,8 +76,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 52587,
-   "seconds": 0.84
+   "bytes": 52539,
+   "seconds": 0.58
   }
  },
  {
@@ -93,7 +93,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5553,
-   "seconds": 0.63
+   "seconds": 0.47
   },
   "impersonate": {
    "ok": true,
@@ -103,8 +103,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 103290,
-   "seconds": 0.74
+   "bytes": 103029,
+   "seconds": 0.28
   }
  },
  {
@@ -120,7 +120,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 5484,
-   "seconds": 1.1
+   "seconds": 0.2
   },
   "impersonate": {
    "ok": true,
@@ -130,8 +130,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 39160,
-   "seconds": 0.46
+   "bytes": 40061,
+   "seconds": 0.29
   }
  },
  {
@@ -146,8 +146,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 185028,
-   "seconds": 3.01
+   "bytes": 184693,
+   "seconds": 5.43
   },
   "impersonate": {
    "ok": true,
@@ -157,8 +157,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 186984,
-   "seconds": 2.61
+   "bytes": 186649,
+   "seconds": 1.82
   }
  },
  {
@@ -173,8 +173,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 110090,
-   "seconds": 3.72
+   "bytes": 109782,
+   "seconds": 2.85
   },
   "impersonate": {
    "ok": true,
@@ -184,8 +184,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 110090,
-   "seconds": 2.22
+   "bytes": 109782,
+   "seconds": 2.19
   }
  },
  {
@@ -201,7 +201,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5556,
-   "seconds": 0.83
+   "seconds": 0.14
   },
   "impersonate": {
    "ok": true,
@@ -211,8 +211,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 104249,
-   "seconds": 1.57
+   "bytes": 103285,
+   "seconds": 0.99
   }
  },
  {
@@ -227,8 +227,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 248936,
-   "seconds": 1.98
+   "bytes": 252916,
+   "seconds": 1.7
   },
   "impersonate": {
    "ok": true,
@@ -238,8 +238,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 266210,
-   "seconds": 1.7
+   "bytes": 270190,
+   "seconds": 1.51
   }
  },
  {
@@ -248,14 +248,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 200,
-   "edge": "cowboy",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 473,
-   "seconds": 2.1
+   "status": 401,
+   "edge": "unknown",
+   "action": "refuse",
+   "layer": 19,
+   "layer_name": "L19 Identity-provider gate",
+   "detail": "authentication required (HTTP 401)",
+   "bytes": 9,
+   "seconds": 2.54
   },
   "impersonate": {
    "ok": true,
@@ -266,7 +266,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 473,
-   "seconds": 0.8
+   "seconds": 0.65
   }
  },
  {
@@ -281,8 +281,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 404",
-   "bytes": 1239,
-   "seconds": 0.95
+   "bytes": 1293,
+   "seconds": 0.81
   },
   "impersonate": {
    "ok": true,
@@ -292,8 +292,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "HTTP 404",
-   "bytes": 1598,
-   "seconds": 1.13
+   "bytes": 1652,
+   "seconds": 0.32
   }
  },
  {
@@ -308,8 +308,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 317483,
-   "seconds": 1.92
+   "bytes": 317669,
+   "seconds": 1.59
   },
   "impersonate": {
    "ok": true,
@@ -319,8 +319,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 322185,
-   "seconds": 0.76
+   "bytes": 318808,
+   "seconds": 0.5
   }
  },
  {
@@ -336,7 +336,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 390237,
-   "seconds": 1.98
+   "seconds": 1.73
   },
   "impersonate": {
    "ok": true,
@@ -347,7 +347,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 390596,
-   "seconds": 1.34
+   "seconds": 2.02
   }
  },
  {
@@ -362,8 +362,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 310253,
-   "seconds": 2.54
+   "bytes": 308685,
+   "seconds": 1.84
   },
   "impersonate": {
    "ok": true,
@@ -373,8 +373,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 310253,
-   "seconds": 1.69
+   "bytes": 308685,
+   "seconds": 1.45
   }
  },
  {
@@ -389,8 +389,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 323319,
-   "seconds": 3.01
+   "bytes": 325149,
+   "seconds": 2.43
   },
   "impersonate": {
    "ok": true,
@@ -400,8 +400,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 323678,
-   "seconds": 1.9
+   "bytes": 325508,
+   "seconds": 0.7
   }
  },
  {
@@ -416,8 +416,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 323319,
-   "seconds": 1.16
+   "bytes": 325149,
+   "seconds": 0.76
   },
   "impersonate": {
    "ok": true,
@@ -427,8 +427,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 323678,
-   "seconds": 0.81
+   "bytes": 325508,
+   "seconds": 0.35
   }
  },
  {
@@ -443,8 +443,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 133858,
-   "seconds": 3.56
+   "bytes": 135451,
+   "seconds": 2.53
   },
   "impersonate": {
    "ok": true,
@@ -454,8 +454,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 134303,
-   "seconds": 3.0
+   "bytes": 135895,
+   "seconds": 0.77
   }
  },
  {
@@ -471,7 +471,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5577,
-   "seconds": 0.77
+   "seconds": 1.27
   },
   "impersonate": {
    "ok": true,
@@ -481,8 +481,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 137345,
-   "seconds": 0.81
+   "bytes": 136778,
+   "seconds": 0.39
   }
  },
  {
@@ -498,7 +498,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5575,
-   "seconds": 1.2
+   "seconds": 1.27
   },
   "impersonate": {
    "ok": true,
@@ -508,8 +508,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 137345,
-   "seconds": 1.55
+   "bytes": 136778,
+   "seconds": 0.94
   }
  },
  {
@@ -525,7 +525,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 0,
-   "seconds": 1.42
+   "seconds": 1.94
   },
   "impersonate": {
    "ok": true,
@@ -536,7 +536,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 17096,
-   "seconds": 1.3
+   "seconds": 1.38
   }
  },
  {
@@ -552,7 +552,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5556,
-   "seconds": 0.77
+   "seconds": 0.32
   },
   "impersonate": {
    "ok": true,
@@ -563,7 +563,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5940,
-   "seconds": 0.9
+   "seconds": 0.2
   }
  },
  {
@@ -572,25 +572,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.31
+   "status": 410,
+   "edge": "unknown",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "HTTP 410",
+   "bytes": 254,
+   "seconds": 3.08
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.51
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 476,
+   "seconds": 0.93
   }
  },
  {
@@ -606,7 +606,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 5488,
-   "seconds": 0.66
+   "seconds": 0.47
   },
   "impersonate": {
    "ok": true,
@@ -617,7 +617,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 5847,
-   "seconds": 0.56
+   "seconds": 0.14
   }
  },
  {
@@ -632,8 +632,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 241915,
-   "seconds": 1.55
+   "bytes": 241786,
+   "seconds": 2.0
   },
   "impersonate": {
    "ok": true,
@@ -643,8 +643,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 242627,
-   "seconds": 1.18
+   "bytes": 242038,
+   "seconds": 1.36
   }
  },
  {
@@ -659,13 +659,19 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
-   "bytes": 7255,
-   "seconds": 21.19
+   "bytes": 7251,
+   "seconds": 20.05
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
-   "seconds": 20.0
+   "ok": true,
+   "status": 522,
+   "edge": "Cloudflare",
+   "action": "retry",
+   "layer": null,
+   "layer_name": null,
+   "detail": "upstream error (HTTP 522)",
+   "bytes": 7251,
+   "seconds": 19.98
   }
  },
  {
@@ -681,7 +687,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1035,
-   "seconds": 1.93
+   "seconds": 1.82
   },
   "impersonate": {
    "ok": true,
@@ -719,7 +725,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1096,
-   "seconds": 0.99
+   "seconds": 0.96
   }
  },
  {
@@ -734,8 +740,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
-   "bytes": 7275,
-   "seconds": 20.3
+   "bytes": 7271,
+   "seconds": 19.66
   },
   "impersonate": {
    "ok": true,
@@ -745,8 +751,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 522)",
-   "bytes": 7275,
-   "seconds": 19.65
+   "bytes": 7271,
+   "seconds": 19.75
   }
  },
  {
@@ -762,7 +768,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 93,
-   "seconds": 1.09
+   "seconds": 0.68
   },
   "impersonate": {
    "ok": true,
@@ -772,8 +778,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 4737,
-   "seconds": 1.0
+   "bytes": 4712,
+   "seconds": 0.5
   }
  },
  {
@@ -789,7 +795,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1030,
-   "seconds": 1.93
+   "seconds": 1.85
   },
   "impersonate": {
    "ok": true,
@@ -800,7 +806,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1080,
-   "seconds": 0.98
+   "seconds": 0.97
   }
  },
  {
@@ -816,7 +822,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5558,
-   "seconds": 1.73
+   "seconds": 0.32
   },
   "impersonate": {
    "ok": true,
@@ -827,7 +833,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 21936,
-   "seconds": 0.6
+   "seconds": 0.53
   }
  },
  {
@@ -842,8 +848,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 961971,
-   "seconds": 2.2
+   "bytes": 966332,
+   "seconds": 1.42
   },
   "impersonate": {
    "ok": true,
@@ -853,8 +859,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 962174,
-   "seconds": 1.01
+   "bytes": 966578,
+   "seconds": 1.33
   }
  },
  {
@@ -869,8 +875,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 231343,
-   "seconds": 2.59
+   "bytes": 231143,
+   "seconds": 2.32
   },
   "impersonate": {
    "ok": true,
@@ -880,8 +886,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 254418,
-   "seconds": 2.16
+   "bytes": 254309,
+   "seconds": 1.94
   }
  },
  {
@@ -891,7 +897,7 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='toonily.com', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.41
+   "seconds": 20.19
   },
   "impersonate": {
    "ok": false,
@@ -911,8 +917,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 103345,
-   "seconds": 0.87
+   "bytes": 103555,
+   "seconds": 0.98
   },
   "impersonate": {
    "ok": true,
@@ -922,8 +928,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 103370,
-   "seconds": 0.64
+   "bytes": 103472,
+   "seconds": 1.49
   }
  },
  {
@@ -938,8 +944,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 233312,
-   "seconds": 4.03
+   "bytes": 233310,
+   "seconds": 3.06
   },
   "impersonate": {
    "ok": true,
@@ -949,8 +955,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 233671,
-   "seconds": 3.68
+   "bytes": 233669,
+   "seconds": 1.75
   }
  },
  {
@@ -965,8 +971,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 233312,
-   "seconds": 2.07
+   "bytes": 233310,
+   "seconds": 1.72
   },
   "impersonate": {
    "ok": true,
@@ -976,8 +982,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 233671,
-   "seconds": 2.25
+   "bytes": 233669,
+   "seconds": 1.33
   }
  },
  {
@@ -993,7 +999,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 0,
-   "seconds": 3.79
+   "seconds": 4.22
   },
   "impersonate": {
    "ok": true,
@@ -1004,7 +1010,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 17003,
-   "seconds": 1.25
+   "seconds": 1.21
   }
  },
  {
@@ -1020,7 +1026,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 146,
-   "seconds": 1.41
+   "seconds": 1.24
   },
   "impersonate": {
    "ok": true,
@@ -1031,7 +1037,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 548,
-   "seconds": 0.67
+   "seconds": 0.59
   }
  },
  {
@@ -1047,7 +1053,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 147110,
-   "seconds": 0.92
+   "seconds": 0.77
   },
   "impersonate": {
    "ok": true,
@@ -1058,7 +1064,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 147469,
-   "seconds": 0.57
+   "seconds": 0.26
   }
  },
  {
@@ -1074,7 +1080,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5599,
-   "seconds": 0.84
+   "seconds": 0.18
   },
   "impersonate": {
    "ok": true,
@@ -1085,7 +1091,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5961,
-   "seconds": 0.42
+   "seconds": 0.12
   }
  },
  {
@@ -1101,7 +1107,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 671074,
-   "seconds": 1.82
+   "seconds": 0.78
   },
   "impersonate": {
    "ok": true,
@@ -1112,7 +1118,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 671433,
-   "seconds": 0.9
+   "seconds": 0.42
   }
  },
  {
@@ -1128,7 +1134,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5605,
-   "seconds": 0.79
+   "seconds": 0.27
   },
   "impersonate": {
    "ok": true,
@@ -1139,7 +1145,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4370,
-   "seconds": 0.61
+   "seconds": 0.88
   }
  },
  {
@@ -1154,8 +1160,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 117345,
-   "seconds": 2.27
+   "bytes": 120249,
+   "seconds": 1.85
   },
   "impersonate": {
    "ok": true,
@@ -1165,8 +1171,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 117345,
-   "seconds": 1.53
+   "bytes": 120249,
+   "seconds": 0.81
   }
  },
  {
@@ -1182,7 +1188,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 48431,
-   "seconds": 2.33
+   "seconds": 1.58
   },
   "impersonate": {
    "ok": true,
@@ -1193,7 +1199,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 48790,
-   "seconds": 1.41
+   "seconds": 0.51
   }
  },
  {
@@ -1209,7 +1215,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 159278,
-   "seconds": 6.25
+   "seconds": 1.59
   },
   "impersonate": {
    "ok": true,
@@ -1220,7 +1226,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 159637,
-   "seconds": 2.09
+   "seconds": 0.64
   }
  },
  {
@@ -1236,7 +1242,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 477,
-   "seconds": 1.38
+   "seconds": 1.09
   },
   "impersonate": {
    "ok": true,
@@ -1247,7 +1253,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 477,
-   "seconds": 0.48
+   "seconds": 0.45
   }
  },
  {
@@ -1262,8 +1268,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 114322,
-   "seconds": 1.82
+   "bytes": 114424,
+   "seconds": 2.16
   },
   "impersonate": {
    "ok": true,
@@ -1273,8 +1279,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 114322,
-   "seconds": 2.29
+   "bytes": 114424,
+   "seconds": 0.56
   }
  },
  {
@@ -1289,8 +1295,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 114322,
-   "seconds": 2.91
+   "bytes": 114424,
+   "seconds": 2.46
   },
   "impersonate": {
    "ok": true,
@@ -1300,8 +1306,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 114322,
-   "seconds": 2.87
+   "bytes": 114424,
+   "seconds": 0.83
   }
  },
  {
@@ -1317,7 +1323,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "DDoS-Guard refused the request",
    "bytes": 146,
-   "seconds": 0.93
+   "seconds": 0.78
   },
   "impersonate": {
    "ok": true,
@@ -1327,8 +1333,8 @@
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "DDoS-Guard challenge served with a success status",
-   "bytes": 39768,
-   "seconds": 0.72
+   "bytes": 41175,
+   "seconds": 0.71
   }
  },
  {
@@ -1344,7 +1350,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 1359,
-   "seconds": 1.49
+   "seconds": 0.61
   },
   "impersonate": {
    "ok": true,
@@ -1355,7 +1361,7 @@
    "layer_name": "L10 Turnstile",
    "detail": "challenge served with a success status",
    "bytes": 16075,
-   "seconds": 0.8
+   "seconds": 0.33
   }
  },
  {
@@ -1370,8 +1376,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 162299,
-   "seconds": 2.85
+   "bytes": 162572,
+   "seconds": 1.99
   },
   "impersonate": {
    "ok": true,
@@ -1381,8 +1387,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 167572,
-   "seconds": 2.48
+   "bytes": 188186,
+   "seconds": 1.51
   }
  },
  {
@@ -1398,7 +1404,7 @@
    "layer_name": null,
    "detail": "HTTP 406",
    "bytes": 226,
-   "seconds": 1.55
+   "seconds": 1.92
   },
   "impersonate": {
    "ok": true,
@@ -1409,7 +1415,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 135002,
-   "seconds": 1.5
+   "seconds": 2.58
   }
  },
  {
@@ -1418,14 +1424,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 200,
-   "edge": "cowboy",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 478,
-   "seconds": 1.07
+   "status": 410,
+   "edge": "unknown",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "HTTP 410",
+   "bytes": 254,
+   "seconds": 2.86
   },
   "impersonate": {
    "ok": true,
@@ -1436,7 +1442,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 478,
-   "seconds": 0.51
+   "seconds": 0.56
   }
  },
  {
@@ -1452,7 +1458,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 12314,
-   "seconds": 2.84
+   "seconds": 1.49
   },
   "impersonate": {
    "ok": true,
@@ -1463,7 +1469,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 12314,
-   "seconds": 0.86
+   "seconds": 0.8
   }
  },
  {
@@ -1473,11 +1479,11 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='blnovels.net', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 21.44
+   "seconds": 20.2
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20001 milliseconds with 0 bytes received. See https://curl.se/li",
+   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
    "seconds": 20.0
   }
  },
@@ -1493,8 +1499,8 @@
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
-   "bytes": 5585,
-   "seconds": 0.59
+   "bytes": 5606,
+   "seconds": 0.22
   },
   "impersonate": {
    "ok": true,
@@ -1505,7 +1511,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5859,
-   "seconds": 0.43
+   "seconds": 0.09
   }
  },
  {
@@ -1520,8 +1526,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 86112,
-   "seconds": 0.72
+   "bytes": 86106,
+   "seconds": 0.75
   },
   "impersonate": {
    "ok": true,
@@ -1531,8 +1537,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 86018,
-   "seconds": 0.48
+   "bytes": 86012,
+   "seconds": 0.41
   }
  },
  {
@@ -1548,7 +1554,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 73292,
-   "seconds": 1.53
+   "seconds": 1.06
   },
   "impersonate": {
    "ok": true,
@@ -1559,7 +1565,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 73651,
-   "seconds": 0.42
+   "seconds": 0.13
   }
  },
  {
@@ -1574,8 +1580,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 51068,
-   "seconds": 1.65
+   "bytes": 51066,
+   "seconds": 0.72
   },
   "impersonate": {
    "ok": true,
@@ -1586,7 +1592,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 50781,
-   "seconds": 0.39
+   "seconds": 0.21
   }
  },
  {
@@ -1601,8 +1607,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 101665,
-   "seconds": 0.85
+   "bytes": 101666,
+   "seconds": 1.01
   },
   "impersonate": {
    "ok": true,
@@ -1612,8 +1618,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 102026,
-   "seconds": 0.47
+   "bytes": 102029,
+   "seconds": 0.37
   }
  },
  {
@@ -1629,7 +1635,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 5485,
-   "seconds": 0.73
+   "seconds": 0.61
   },
   "impersonate": {
    "ok": true,
@@ -1639,8 +1645,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 297156,
-   "seconds": 1.79
+   "bytes": 294618,
+   "seconds": 1.51
   }
  },
  {
@@ -1656,7 +1662,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5533,
-   "seconds": 0.67
+   "seconds": 0.52
   },
   "impersonate": {
    "ok": true,
@@ -1666,8 +1672,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 277409,
-   "seconds": 0.69
+   "bytes": 277261,
+   "seconds": 0.24
   }
  },
  {
@@ -1683,7 +1689,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2909,
-   "seconds": 0.4
+   "seconds": 0.29
   },
   "impersonate": {
    "ok": true,
@@ -1694,7 +1700,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2909,
-   "seconds": 0.18
+   "seconds": 0.17
   }
  },
  {
@@ -1710,7 +1716,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 244577,
-   "seconds": 1.51
+   "seconds": 1.57
   },
   "impersonate": {
    "ok": true,
@@ -1721,7 +1727,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 244577,
-   "seconds": 0.79
+   "seconds": 1.01
   }
  },
  {
@@ -1737,7 +1743,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5531,
-   "seconds": 0.86
+   "seconds": 0.39
   },
   "impersonate": {
    "ok": true,
@@ -1748,7 +1754,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 24094,
-   "seconds": 0.46
+   "seconds": 0.31
   }
  },
  {
@@ -1757,14 +1763,14 @@
   "lang": "ar",
   "plain": {
    "ok": true,
-   "status": 200,
+   "status": 401,
    "edge": "unknown",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 195,
-   "seconds": 3.42
+   "action": "refuse",
+   "layer": 19,
+   "layer_name": "L19 Identity-provider gate",
+   "detail": "authentication required (HTTP 401)",
+   "bytes": 9,
+   "seconds": 1.87
   },
   "impersonate": {
    "ok": true,
@@ -1775,7 +1781,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 472,
-   "seconds": 0.58
+   "seconds": 0.6
   }
  },
  {
@@ -1791,7 +1797,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 49265,
-   "seconds": 0.95
+   "seconds": 0.41
   },
   "impersonate": {
    "ok": true,
@@ -1802,1210 +1808,13 @@
    "layer_name": null,
    "detail": "",
    "bytes": 49624,
-   "seconds": 3.51
+   "seconds": 0.37
   }
  },
  {
   "url": "https://www.novelpub.com/",
   "file": "sources/en/n/novelpub.py",
   "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.13
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.47
-  }
- },
- {
-  "url": "https://wuxiaworldsite.co/",
-  "file": "sources/en/w/wuxiaworldsite_co.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 1530996,
-   "seconds": 2.78
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 1531355,
-   "seconds": 2.75
-  }
- },
- {
-  "url": "https://novelgo.id/",
-  "file": "sources/id/novelgo.py",
-  "lang": "id",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5443,
-   "seconds": 0.77
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5827,
-   "seconds": 0.37
-  }
- },
- {
-  "url": "https://mangabuddy.com/",
-  "file": "sources/en/m/mangabuddy.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 20297,
-   "seconds": 1.55
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 20656,
-   "seconds": 1.13
-  }
- },
- {
-  "url": "https://dragontea.ink/",
-  "file": "sources/en/d/dragon_tea.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5561,
-   "seconds": 0.71
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5945,
-   "seconds": 0.36
-  }
- },
- {
-  "url": "https://www.69shu.pro/",
-  "file": "sources/zh/69shuba.py",
-  "lang": "zh",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 980,
-   "seconds": 1.68
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 1052,
-   "seconds": 1.01
-  }
- },
- {
-  "url": "https://www.69shuba.com/",
-  "file": "sources/zh/69shuba.py",
-  "lang": "zh",
-  "plain": {
-   "ok": true,
-   "status": 404,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "HTTP 404",
-   "bytes": 14,
-   "seconds": 0.65
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 34206,
-   "seconds": 0.36
-  }
- },
- {
-  "url": "https://www.69shu.com/",
-  "file": "sources/zh/69shuba.py",
-  "lang": "zh",
-  "plain": {
-   "ok": true,
-   "status": 404,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "HTTP 404",
-   "bytes": 14,
-   "seconds": 1.26
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 34206,
-   "seconds": 0.89
-  }
- },
- {
-  "url": "https://mangatoon.mobi/",
-  "file": "sources/en/m/mangatoon.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "unknown",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 53053,
-   "seconds": 0.68
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "unknown",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 53052,
-   "seconds": 0.48
-  }
- },
- {
-  "url": "https://www.webnovelpub.com/",
-  "file": "sources/en/w/webnovelpub.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.76
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 4.16
-  }
- },
- {
-  "url": "https://genesistls.com/",
-  "file": "sources/en/g/genesistls.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 6143,
-   "seconds": 0.93
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 6787,
-   "seconds": 0.72
-  }
- },
- {
-  "url": "https://www.wuxialeague.com/",
-  "file": "sources/en/w/wuxialeague.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 522,
-   "edge": "Cloudflare",
-   "action": "retry",
-   "layer": null,
-   "layer_name": null,
-   "detail": "upstream error (HTTP 522)",
-   "bytes": 7263,
-   "seconds": 21.33
-  },
-  "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
-   "seconds": 20.0
-  }
- },
- {
-  "url": "https://dobytranslations.com/",
-  "file": "sources/en/d/dobytranslations.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 440395,
-   "seconds": 1.99
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 440521,
-   "seconds": 1.82
-  }
- },
- {
-  "url": "https://readmtl.com/",
-  "file": "sources/en/r/readmtl.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "escalate",
-   "layer": 11,
-   "layer_name": "L11 Bot Fight Mode",
-   "detail": "refused a client that is not a browser",
-   "bytes": 4544,
-   "seconds": 0.71
-  },
-  "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
-   "seconds": 20.0
-  }
- },
- {
-  "url": "https://king-manga.com/",
-  "file": "sources/en/k/kingmanga.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "cowboy",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 476,
-   "seconds": 1.65
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "cowboy",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 476,
-   "seconds": 0.98
-  }
- },
- {
-  "url": "https://novel-bin.net/",
-  "file": "sources/en/n/novel-bin.net.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 118183,
-   "seconds": 0.82
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 118542,
-   "seconds": 0.39
-  }
- },
- {
-  "url": "https://novelfrance.fr/",
-  "file": "sources/fr/novelfrance.py",
-  "lang": "fr",
-  "plain": {
-   "ok": false,
-   "error": "SSLError: HTTPSConnectionPool(host='novelfrance.fr', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '",
-   "seconds": 0.36
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "escalate",
-   "layer": 12,
-   "layer_name": "L12 Super Bot Fight Mode",
-   "detail": "scored as automated",
-   "bytes": 6130,
-   "seconds": 0.48
-  }
- },
- {
-  "url": "https://yonglibrary.com/",
-  "file": "sources/en/y/yonglibrary.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "nginx",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 692,
-   "seconds": 1.36
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "nginx",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 692,
-   "seconds": 1.0
-  }
- },
- {
-  "url": "https://truyenfull.vn/",
-  "file": "sources/vi/truenfull.py",
-  "lang": "vi",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "escalate",
-   "layer": 11,
-   "layer_name": "L11 Bot Fight Mode",
-   "detail": "refused a client that is not a browser",
-   "bytes": 4549,
-   "seconds": 4.28
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 117741,
-   "seconds": 4.69
-  }
- },
- {
-  "url": "https://truyenfull.today/",
-  "file": "sources/vi/truenfull.py",
-  "lang": "vi",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "escalate",
-   "layer": 11,
-   "layer_name": "L11 Bot Fight Mode",
-   "detail": "refused a client that is not a browser",
-   "bytes": 4549,
-   "seconds": 0.66
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 117741,
-   "seconds": 1.2
-  }
- },
- {
-  "url": "https://tl.rulate.ru/",
-  "file": "sources/ru/rulate.py",
-  "lang": "ru",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "DDoS-Guard",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 2760576,
-   "seconds": 2.97
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "DDoS-Guard",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 2745811,
-   "seconds": 1.7
-  }
- },
- {
-  "url": "https://home.novel-gate.com/",
-  "file": "sources/en/n/novelgate.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.88
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.54
-  }
- },
- {
-  "url": "https://novelgate.net/",
-  "file": "sources/en/n/novelgate.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 9.59
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 3.94
-  }
- },
- {
-  "url": "https://lightnovelstranslations.com/",
-  "file": "sources/en/l/lightnovetrans.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 153443,
-   "seconds": 2.33
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 153802,
-   "seconds": 1.95
-  }
- },
- {
-  "url": "https://foxaholic.com/",
-  "file": "sources/multi/foxaholic.py",
-  "lang": "multi",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5446,
-   "seconds": 0.66
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5830,
-   "seconds": 0.54
-  }
- },
- {
-  "url": "https://www.foxaholic.com/",
-  "file": "sources/multi/foxaholic.py",
-  "lang": "multi",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5450,
-   "seconds": 0.78
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5834,
-   "seconds": 0.53
-  }
- },
- {
-  "url": "https://global.foxaholic.com/",
-  "file": "sources/multi/foxaholic.py",
-  "lang": "multi",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5474,
-   "seconds": 0.82
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5859,
-   "seconds": 0.48
-  }
- },
- {
-  "url": "https://18.foxaholic.com/",
-  "file": "sources/multi/foxaholic.py",
-  "lang": "multi",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5449,
-   "seconds": 0.89
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5833,
-   "seconds": 0.56
-  }
- },
- {
-  "url": "https://ranobelib.me/",
-  "file": "sources/ru/ranobelib.py",
-  "lang": "ru",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "DDoS-Guard",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 7830,
-   "seconds": 1.27
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "DDoS-Guard",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 7830,
-   "seconds": 0.71
-  }
- },
- {
-  "url": "https://dobelyuwai.wordpress.com/",
-  "file": "sources/en/d/dobelyuwai.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "nginx",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 121152,
-   "seconds": 1.4
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "nginx",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 121182,
-   "seconds": 0.65
-  }
- },
- {
-  "url": "https://labnovel.ru/",
-  "file": "sources/ru/labnovel.py",
-  "lang": "ru",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "nginx",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 80864,
-   "seconds": 1.65
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "nginx",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 80864,
-   "seconds": 1.05
-  }
- },
- {
-  "url": "https://shanghaifantasy.com/",
-  "file": "sources/en/s/shanghaifantasy.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5559,
-   "seconds": 1.02
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 157364,
-   "seconds": 0.81
-  }
- },
- {
-  "url": "https://crescentmoon.blog/",
-  "file": "sources/en/c/crescentmoon.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "nginx",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 123424,
-   "seconds": 1.68
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "nginx",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 123257,
-   "seconds": 1.22
-  }
- },
- {
-  "url": "https://bestlightnovel.com/",
-  "file": "sources/en/b/bestlightnovel.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "angie",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 6956,
-   "seconds": 1.19
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "angie",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 1632,
-   "seconds": 0.58
-  }
- },
- {
-  "url": "https://fenrirealm.com/",
-  "file": "sources/en/f/fenrirealm.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 926430,
-   "seconds": 2.43
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 926511,
-   "seconds": 1.81
-  }
- },
- {
-  "url": "https://novelsonline.net/",
-  "file": "sources/en/n/novelsonline.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 503,
-   "edge": "Cloudflare",
-   "action": "retry",
-   "layer": null,
-   "layer_name": null,
-   "detail": "origin unavailable",
-   "bytes": 326,
-   "seconds": 1.84
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 503,
-   "edge": "Cloudflare",
-   "action": "retry",
-   "layer": null,
-   "layer_name": null,
-   "detail": "origin unavailable",
-   "bytes": 685,
-   "seconds": 3.14
-  }
- },
- {
-  "url": "https://www.divinedaolibrary.com/",
-  "file": "sources/en/d/divinedaolibrary.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 124610,
-   "seconds": 1.95
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 125654,
-   "seconds": 0.44
-  }
- },
- {
-  "url": "https://phoenixnovels.com.br/",
-  "file": "sources/pt/phoenixnovels.py",
-  "lang": "pt",
-  "plain": {
-   "ok": true,
-   "status": 406,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "HTTP 406",
-   "bytes": 226,
-   "seconds": 2.31
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "apache",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 72208,
-   "seconds": 1.69
-  }
- },
- {
-  "url": "https://www.inkitt.com/",
-  "file": "sources/en/i/inkitt.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5554,
-   "seconds": 0.8
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 476467,
-   "seconds": 2.27
-  }
- },
- {
-  "url": "https://arcanetranslations.com/",
-  "file": "sources/en/a/arcanetranslations.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5583,
-   "seconds": 0.96
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 6063,
-   "seconds": 2.73
-  }
- },
- {
-  "url": "https://www.f-w-o.com/",
-  "file": "sources/en/f/fantasyworldonline.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5561,
-   "seconds": 1.18
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5945,
-   "seconds": 0.4
-  }
- },
- {
-  "url": "https://f-w-o.com/",
-  "file": "sources/en/f/fantasyworldonline.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5557,
-   "seconds": 0.8
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 403,
-   "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5941,
-   "seconds": 0.44
-  }
- },
- {
-  "url": "https://www.mtlnovels.com/",
-  "file": "sources/multi/mtlnovel.py",
-  "lang": "multi",
-  "plain": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.26
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.54
-  }
- },
- {
-  "url": "https://id.mtlnovels.com/",
-  "file": "sources/multi/mtlnovel.py",
-  "lang": "multi",
-  "plain": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.24
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.18
-  }
- },
- {
-  "url": "https://fr.mtlnovels.com/",
-  "file": "sources/multi/mtlnovel.py",
-  "lang": "multi",
-  "plain": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.52
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.58
-  }
- },
- {
-  "url": "https://es.mtlnovels.com/",
-  "file": "sources/multi/mtlnovel.py",
-  "lang": "multi",
   "plain": {
    "ok": true,
    "status": 200,
@@ -3026,7 +1835,1216 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 478,
-   "seconds": 0.58
+   "seconds": 0.54
+  }
+ },
+ {
+  "url": "https://wuxiaworldsite.co/",
+  "file": "sources/en/w/wuxiaworldsite_co.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 1535335,
+   "seconds": 2.21
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 1535694,
+   "seconds": 0.83
+  }
+ },
+ {
+  "url": "https://novelgo.id/",
+  "file": "sources/id/novelgo.py",
+  "lang": "id",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5443,
+   "seconds": 0.33
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5827,
+   "seconds": 0.16
+  }
+ },
+ {
+  "url": "https://mangabuddy.com/",
+  "file": "sources/en/m/mangabuddy.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 20297,
+   "seconds": 0.59
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 20656,
+   "seconds": 0.37
+  }
+ },
+ {
+  "url": "https://dragontea.ink/",
+  "file": "sources/en/d/dragon_tea.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5561,
+   "seconds": 0.21
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5945,
+   "seconds": 0.18
+  }
+ },
+ {
+  "url": "https://www.69shu.pro/",
+  "file": "sources/zh/69shuba.py",
+  "lang": "zh",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "apache",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 980,
+   "seconds": 2.33
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "apache",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 1052,
+   "seconds": 0.91
+  }
+ },
+ {
+  "url": "https://www.69shuba.com/",
+  "file": "sources/zh/69shuba.py",
+  "lang": "zh",
+  "plain": {
+   "ok": true,
+   "status": 404,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "HTTP 404",
+   "bytes": 14,
+   "seconds": 0.41
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 34206,
+   "seconds": 0.12
+  }
+ },
+ {
+  "url": "https://www.69shu.com/",
+  "file": "sources/zh/69shuba.py",
+  "lang": "zh",
+  "plain": {
+   "ok": true,
+   "status": 404,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "HTTP 404",
+   "bytes": 14,
+   "seconds": 0.4
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 34206,
+   "seconds": 0.18
+  }
+ },
+ {
+  "url": "https://mangatoon.mobi/",
+  "file": "sources/en/m/mangatoon.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "unknown",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 53279,
+   "seconds": 0.66
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "unknown",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 53278,
+   "seconds": 0.46
+  }
+ },
+ {
+  "url": "https://www.webnovelpub.com/",
+  "file": "sources/en/w/webnovelpub.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 481,
+   "seconds": 1.15
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 481,
+   "seconds": 0.53
+  }
+ },
+ {
+  "url": "https://genesistls.com/",
+  "file": "sources/en/g/genesistls.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 6143,
+   "seconds": 1.07
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 6787,
+   "seconds": 0.94
+  }
+ },
+ {
+  "url": "https://www.wuxialeague.com/",
+  "file": "sources/en/w/wuxialeague.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 522,
+   "edge": "Cloudflare",
+   "action": "retry",
+   "layer": null,
+   "layer_name": null,
+   "detail": "upstream error (HTTP 522)",
+   "bytes": 7259,
+   "seconds": 19.89
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 522,
+   "edge": "Cloudflare",
+   "action": "retry",
+   "layer": null,
+   "layer_name": null,
+   "detail": "upstream error (HTTP 522)",
+   "bytes": 7259,
+   "seconds": 19.96
+  }
+ },
+ {
+  "url": "https://dobytranslations.com/",
+  "file": "sources/en/d/dobytranslations.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 438688,
+   "seconds": 1.93
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 439842,
+   "seconds": 0.72
+  }
+ },
+ {
+  "url": "https://readmtl.com/",
+  "file": "sources/en/r/readmtl.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "escalate",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
+   "bytes": 4544,
+   "seconds": 0.44
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 522,
+   "edge": "Cloudflare",
+   "action": "retry",
+   "layer": null,
+   "layer_name": null,
+   "detail": "upstream error (HTTP 522)",
+   "bytes": 7215,
+   "seconds": 19.86
+  }
+ },
+ {
+  "url": "https://king-manga.com/",
+  "file": "sources/en/k/kingmanga.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 476,
+   "seconds": 1.14
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 476,
+   "seconds": 19.46
+  }
+ },
+ {
+  "url": "https://novel-bin.net/",
+  "file": "sources/en/n/novel-bin.net.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 118864,
+   "seconds": 0.86
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 119223,
+   "seconds": 0.25
+  }
+ },
+ {
+  "url": "https://novelfrance.fr/",
+  "file": "sources/fr/novelfrance.py",
+  "lang": "fr",
+  "plain": {
+   "ok": false,
+   "error": "SSLError: HTTPSConnectionPool(host='novelfrance.fr', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '",
+   "seconds": 0.23
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "escalate",
+   "layer": 12,
+   "layer_name": "L12 Super Bot Fight Mode",
+   "detail": "scored as automated",
+   "bytes": 6130,
+   "seconds": 0.1
+  }
+ },
+ {
+  "url": "https://yonglibrary.com/",
+  "file": "sources/en/y/yonglibrary.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "nginx",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 692,
+   "seconds": 1.86
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "nginx",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 692,
+   "seconds": 0.95
+  }
+ },
+ {
+  "url": "https://truyenfull.vn/",
+  "file": "sources/vi/truenfull.py",
+  "lang": "vi",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "escalate",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
+   "bytes": 4549,
+   "seconds": 1.51
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 126298,
+   "seconds": 1.51
+  }
+ },
+ {
+  "url": "https://truyenfull.today/",
+  "file": "sources/vi/truenfull.py",
+  "lang": "vi",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "escalate",
+   "layer": 11,
+   "layer_name": "L11 Bot Fight Mode",
+   "detail": "refused a client that is not a browser",
+   "bytes": 4549,
+   "seconds": 0.19
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 126298,
+   "seconds": 1.27
+  }
+ },
+ {
+  "url": "https://tl.rulate.ru/",
+  "file": "sources/ru/rulate.py",
+  "lang": "ru",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "DDoS-Guard",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 3039226,
+   "seconds": 1.81
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "DDoS-Guard",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 3040592,
+   "seconds": 1.89
+  }
+ },
+ {
+  "url": "https://home.novel-gate.com/",
+  "file": "sources/en/n/novelgate.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 481,
+   "seconds": 1.07
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 481,
+   "seconds": 4.47
+  }
+ },
+ {
+  "url": "https://novelgate.net/",
+  "file": "sources/en/n/novelgate.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 410,
+   "edge": "unknown",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "HTTP 410",
+   "bytes": 254,
+   "seconds": 2.57
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 475,
+   "seconds": 0.54
+  }
+ },
+ {
+  "url": "https://lightnovelstranslations.com/",
+  "file": "sources/en/l/lightnovetrans.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 154242,
+   "seconds": 2.88
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 154601,
+   "seconds": 2.07
+  }
+ },
+ {
+  "url": "https://foxaholic.com/",
+  "file": "sources/multi/foxaholic.py",
+  "lang": "multi",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5446,
+   "seconds": 0.5
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5830,
+   "seconds": 0.18
+  }
+ },
+ {
+  "url": "https://www.foxaholic.com/",
+  "file": "sources/multi/foxaholic.py",
+  "lang": "multi",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5450,
+   "seconds": 0.3
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5834,
+   "seconds": 0.09
+  }
+ },
+ {
+  "url": "https://global.foxaholic.com/",
+  "file": "sources/multi/foxaholic.py",
+  "lang": "multi",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5474,
+   "seconds": 0.3
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5859,
+   "seconds": 0.09
+  }
+ },
+ {
+  "url": "https://18.foxaholic.com/",
+  "file": "sources/multi/foxaholic.py",
+  "lang": "multi",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5449,
+   "seconds": 0.25
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5833,
+   "seconds": 0.1
+  }
+ },
+ {
+  "url": "https://ranobelib.me/",
+  "file": "sources/ru/ranobelib.py",
+  "lang": "ru",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "DDoS-Guard",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 7830,
+   "seconds": 0.75
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "DDoS-Guard",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 7830,
+   "seconds": 0.65
+  }
+ },
+ {
+  "url": "https://dobelyuwai.wordpress.com/",
+  "file": "sources/en/d/dobelyuwai.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "nginx",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 121342,
+   "seconds": 1.23
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "nginx",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 121400,
+   "seconds": 0.56
+  }
+ },
+ {
+  "url": "https://labnovel.ru/",
+  "file": "sources/ru/labnovel.py",
+  "lang": "ru",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "nginx",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 80864,
+   "seconds": 1.86
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "nginx",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 80864,
+   "seconds": 2.06
+  }
+ },
+ {
+  "url": "https://shanghaifantasy.com/",
+  "file": "sources/en/s/shanghaifantasy.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5559,
+   "seconds": 0.37
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 158064,
+   "seconds": 0.51
+  }
+ },
+ {
+  "url": "https://crescentmoon.blog/",
+  "file": "sources/en/c/crescentmoon.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "nginx",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 123516,
+   "seconds": 2.08
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "nginx",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 123423,
+   "seconds": 1.23
+  }
+ },
+ {
+  "url": "https://bestlightnovel.com/",
+  "file": "sources/en/b/bestlightnovel.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "angie",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 6955,
+   "seconds": 1.21
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "angie",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 1632,
+   "seconds": 0.54
+  }
+ },
+ {
+  "url": "https://fenrirealm.com/",
+  "file": "sources/en/f/fenrirealm.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 925565,
+   "seconds": 1.97
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 925648,
+   "seconds": 0.66
+  }
+ },
+ {
+  "url": "https://novelsonline.net/",
+  "file": "sources/en/n/novelsonline.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 503,
+   "edge": "Cloudflare",
+   "action": "retry",
+   "layer": null,
+   "layer_name": null,
+   "detail": "origin unavailable",
+   "bytes": 326,
+   "seconds": 1.56
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 503,
+   "edge": "Cloudflare",
+   "action": "retry",
+   "layer": null,
+   "layer_name": null,
+   "detail": "origin unavailable",
+   "bytes": 685,
+   "seconds": 0.48
+  }
+ },
+ {
+  "url": "https://www.divinedaolibrary.com/",
+  "file": "sources/en/d/divinedaolibrary.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 124647,
+   "seconds": 1.26
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 125691,
+   "seconds": 1.26
+  }
+ },
+ {
+  "url": "https://phoenixnovels.com.br/",
+  "file": "sources/pt/phoenixnovels.py",
+  "lang": "pt",
+  "plain": {
+   "ok": true,
+   "status": 406,
+   "edge": "apache",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "HTTP 406",
+   "bytes": 226,
+   "seconds": 2.13
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "apache",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 74303,
+   "seconds": 1.42
+  }
+ },
+ {
+  "url": "https://www.inkitt.com/",
+  "file": "sources/en/i/inkitt.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5554,
+   "seconds": 0.59
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 475070,
+   "seconds": 2.65
+  }
+ },
+ {
+  "url": "https://arcanetranslations.com/",
+  "file": "sources/en/a/arcanetranslations.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5583,
+   "seconds": 0.67
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 1528426,
+   "seconds": 1.35
+  }
+ },
+ {
+  "url": "https://www.f-w-o.com/",
+  "file": "sources/en/f/fantasyworldonline.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5561,
+   "seconds": 0.53
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5945,
+   "seconds": 0.15
+  }
+ },
+ {
+  "url": "https://f-w-o.com/",
+  "file": "sources/en/f/fantasyworldonline.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5557,
+   "seconds": 0.16
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 403,
+   "edge": "Cloudflare",
+   "action": "solve",
+   "layer": 9,
+   "layer_name": "L9 Managed JavaScript challenge",
+   "detail": "challenge served with 403",
+   "bytes": 5941,
+   "seconds": 0.18
+  }
+ },
+ {
+  "url": "https://www.mtlnovels.com/",
+  "file": "sources/multi/mtlnovel.py",
+  "lang": "multi",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 479,
+   "seconds": 0.7
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 479,
+   "seconds": 0.54
+  }
+ },
+ {
+  "url": "https://id.mtlnovels.com/",
+  "file": "sources/multi/mtlnovel.py",
+  "lang": "multi",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 478,
+   "seconds": 1.28
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 478,
+   "seconds": 0.56
+  }
+ },
+ {
+  "url": "https://fr.mtlnovels.com/",
+  "file": "sources/multi/mtlnovel.py",
+  "lang": "multi",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 478,
+   "seconds": 1.19
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 478,
+   "seconds": 0.63
+  }
+ },
+ {
+  "url": "https://es.mtlnovels.com/",
+  "file": "sources/multi/mtlnovel.py",
+  "lang": "multi",
+  "plain": {
+   "ok": true,
+   "status": 401,
+   "edge": "unknown",
+   "action": "refuse",
+   "layer": 19,
+   "layer_name": "L19 Identity-provider gate",
+   "detail": "authentication required (HTTP 401)",
+   "bytes": 9,
+   "seconds": 2.03
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 478,
+   "seconds": 0.57
   }
  },
  {
@@ -3042,7 +3060,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 5484,
-   "seconds": 0.77
+   "seconds": 0.43
   },
   "impersonate": {
    "ok": true,
@@ -3053,7 +3071,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 40587,
-   "seconds": 0.73
+   "seconds": 0.49
   }
  },
  {
@@ -3069,7 +3087,7 @@
    "layer_name": null,
    "detail": "upstream error (HTTP 502)",
    "bytes": 585,
-   "seconds": 1.38
+   "seconds": 1.5
   },
   "impersonate": {
    "ok": true,
@@ -3079,8 +3097,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 442507,
-   "seconds": 1.93
+   "bytes": 441467,
+   "seconds": 1.1
   }
  },
  {
@@ -3095,8 +3113,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 74291,
-   "seconds": 1.5
+   "bytes": 74059,
+   "seconds": 1.76
   },
   "impersonate": {
    "ok": true,
@@ -3106,8 +3124,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 74336,
-   "seconds": 0.75
+   "bytes": 73680,
+   "seconds": 0.74
   }
  },
  {
@@ -3123,7 +3141,7 @@
    "layer_name": "L15 Operator edge code",
    "detail": "forbidden by the origin",
    "bytes": 146,
-   "seconds": 1.36
+   "seconds": 1.27
   },
   "impersonate": {
    "ok": true,
@@ -3133,8 +3151,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 64833,
-   "seconds": 1.07
+   "bytes": 65461,
+   "seconds": 1.13
   }
  },
  {
@@ -3149,8 +3167,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 523600,
-   "seconds": 1.35
+   "bytes": 523363,
+   "seconds": 1.6
   },
   "impersonate": {
    "ok": true,
@@ -3160,8 +3178,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 530293,
-   "seconds": 0.93
+   "bytes": 530056,
+   "seconds": 0.43
   }
  },
  {
@@ -3177,7 +3195,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1030,
-   "seconds": 1.72
+   "seconds": 1.71
   },
   "impersonate": {
    "ok": true,
@@ -3188,7 +3206,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1080,
-   "seconds": 0.86
+   "seconds": 0.93
   }
  },
  {
@@ -3204,7 +3222,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 1.41
+   "seconds": 0.88
   },
   "impersonate": {
    "ok": true,
@@ -3215,7 +3233,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 0.67
+   "seconds": 0.27
   }
  },
  {
@@ -3246,7 +3264,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 1.77
+   "seconds": 0.7
   },
   "impersonate": {
    "ok": true,
@@ -3257,7 +3275,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 0.84
+   "seconds": 0.31
   }
  },
  {
@@ -3272,8 +3290,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 70061,
-   "seconds": 1.31
+   "bytes": 69827,
+   "seconds": 1.38
   },
   "impersonate": {
    "ok": true,
@@ -3283,8 +3301,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 70414,
-   "seconds": 1.98
+   "bytes": 70180,
+   "seconds": 0.43
   }
  },
  {
@@ -3294,7 +3312,7 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='dto.to', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.35
+   "seconds": 20.1
   },
   "impersonate": {
    "ok": false,
@@ -3315,7 +3333,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 1.18
+   "seconds": 0.58
   },
   "impersonate": {
    "ok": true,
@@ -3326,7 +3344,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 19,
-   "seconds": 0.93
+   "seconds": 0.28
   }
  },
  {
@@ -3342,7 +3360,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 142907,
-   "seconds": 0.67
+   "seconds": 0.93
   },
   "impersonate": {
    "ok": true,
@@ -3353,7 +3371,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 142907,
-   "seconds": 0.4
+   "seconds": 0.41
   }
  },
  {
@@ -3363,7 +3381,7 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='wto.to', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.25
+   "seconds": 20.09
   },
   "impersonate": {
    "ok": false,
@@ -3383,8 +3401,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 207334,
-   "seconds": 0.9
+   "bytes": 206718,
+   "seconds": 0.65
   },
   "impersonate": {
    "ok": true,
@@ -3394,8 +3412,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 207687,
-   "seconds": 0.71
+   "bytes": 207071,
+   "seconds": 1.45
   }
  },
  {
@@ -3411,7 +3429,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5559,
-   "seconds": 0.95
+   "seconds": 0.37
   },
   "impersonate": {
    "ok": true,
@@ -3421,8 +3439,8 @@
    "layer": 9,
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
-   "bytes": 5836,
-   "seconds": 0.37
+   "bytes": 5858,
+   "seconds": 0.13
   }
  },
  {
@@ -3438,7 +3456,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 11893,
-   "seconds": 1.9
+   "seconds": 1.64
   },
   "impersonate": {
    "ok": true,
@@ -3449,7 +3467,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 12252,
-   "seconds": 1.53
+   "seconds": 0.49
   }
  },
  {
@@ -3465,7 +3483,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1,
-   "seconds": 1.52
+   "seconds": 0.75
   },
   "impersonate": {
    "ok": true,
@@ -3475,8 +3493,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 183301,
-   "seconds": 1.6
+   "bytes": 183131,
+   "seconds": 0.77
   }
  },
  {
@@ -3492,7 +3510,7 @@
    "layer_name": "L15 Operator edge code",
    "detail": "forbidden by the origin",
    "bytes": 146,
-   "seconds": 1.55
+   "seconds": 1.3
   },
   "impersonate": {
    "ok": true,
@@ -3502,7 +3520,7 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 115032,
+   "bytes": 111803,
    "seconds": 1.23
   }
  },
@@ -3518,35 +3536,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 119195,
-   "seconds": 1.6
-  },
-  "impersonate": {
-   "ok": true,
-   "status": 200,
-   "edge": "nginx",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 4477,
-   "seconds": 1.82
-  }
- },
- {
-  "url": "https://novels.pl/",
-  "file": "sources/en/n/novelspl.py",
-  "lang": "en",
-  "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "nginx",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 119195,
-   "seconds": 2.06
+   "bytes": 119272,
+   "seconds": 1.36
   },
   "impersonate": {
    "ok": true,
@@ -3561,6 +3552,33 @@
   }
  },
  {
+  "url": "https://novels.pl/",
+  "file": "sources/en/n/novelspl.py",
+  "lang": "en",
+  "plain": {
+   "ok": true,
+   "status": 200,
+   "edge": "nginx",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 119272,
+   "seconds": 1.93
+  },
+  "impersonate": {
+   "ok": true,
+   "status": 200,
+   "edge": "nginx",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 4478,
+   "seconds": 0.61
+  }
+ },
+ {
   "url": "https://hui3r.wordpress.com/",
   "file": "sources/en/h/hui3r.py",
   "lang": "en",
@@ -3572,7 +3590,7 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 167138,
+   "bytes": 167474,
    "seconds": 0.69
   },
   "impersonate": {
@@ -3583,8 +3601,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 167132,
-   "seconds": 0.46
+   "bytes": 167358,
+   "seconds": 0.59
   }
  },
  {
@@ -3594,11 +3612,11 @@
   "plain": {
    "ok": false,
    "error": "ConnectTimeout: HTTPSConnectionPool(host='mtlreader.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HT",
-   "seconds": 20.13
+   "seconds": 20.25
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20001 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -3614,8 +3632,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 170815,
-   "seconds": 1.32
+   "bytes": 169973,
+   "seconds": 0.73
   },
   "impersonate": {
    "ok": true,
@@ -3625,8 +3643,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 171331,
-   "seconds": 0.98
+   "bytes": 170487,
+   "seconds": 0.61
   }
  },
  {
@@ -3635,25 +3653,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.2
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 473,
+   "seconds": 1.87
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.54
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 473,
+   "seconds": 0.86
   }
  },
  {
@@ -3669,7 +3687,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 9,
-   "seconds": 2.85
+   "seconds": 3.04
   },
   "impersonate": {
    "ok": true,
@@ -3680,7 +3698,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 23844,
-   "seconds": 1.27
+   "seconds": 0.72
   }
  },
  {
@@ -3689,14 +3707,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 401,
+   "status": 200,
    "edge": "unknown",
-   "action": "refuse",
-   "layer": 19,
-   "layer_name": "L19 Identity-provider gate",
-   "detail": "authentication required (HTTP 401)",
-   "bytes": 9,
-   "seconds": 2.28
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 195,
+   "seconds": 2.52
   },
   "impersonate": {
    "ok": true,
@@ -3707,7 +3725,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 476,
-   "seconds": 0.46
+   "seconds": 0.59
   }
  },
  {
@@ -3722,8 +3740,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 115699,
-   "seconds": 0.9
+   "bytes": 115857,
+   "seconds": 0.92
   },
   "impersonate": {
    "ok": true,
@@ -3733,8 +3751,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 115682,
-   "seconds": 0.5
+   "bytes": 115598,
+   "seconds": 0.65
   }
  },
  {
@@ -3750,7 +3768,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5445,
-   "seconds": 0.78
+   "seconds": 0.44
   },
   "impersonate": {
    "ok": true,
@@ -3761,7 +3779,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5829,
-   "seconds": 0.41
+   "seconds": 0.09
   }
  },
  {
@@ -3777,7 +3795,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 59228,
-   "seconds": 1.71
+   "seconds": 1.23
   },
   "impersonate": {
    "ok": true,
@@ -3788,7 +3806,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 59228,
-   "seconds": 0.88
+   "seconds": 0.43
   }
  },
  {
@@ -3803,8 +3821,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 238968,
-   "seconds": 0.82
+   "bytes": 238960,
+   "seconds": 1.18
   },
   "impersonate": {
    "ok": true,
@@ -3814,8 +3832,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 238922,
-   "seconds": 0.45
+   "bytes": 238866,
+   "seconds": 0.47
   }
  },
  {
@@ -3830,8 +3848,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 176213,
-   "seconds": 0.74
+   "bytes": 176338,
+   "seconds": 1.09
   },
   "impersonate": {
    "ok": true,
@@ -3841,8 +3859,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 176106,
-   "seconds": 1.28
+   "bytes": 176201,
+   "seconds": 0.46
   }
  },
  {
@@ -3857,8 +3875,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "the zone's DNS points at a prohibited address (Cloudflare 1000)",
-   "bytes": 8104,
-   "seconds": 0.78
+   "bytes": 8105,
+   "seconds": 0.94
   },
   "impersonate": {
    "ok": true,
@@ -3869,7 +3887,7 @@
    "layer_name": null,
    "detail": "the zone's DNS points at a prohibited address (Cloudflare 1000)",
    "bytes": 14208,
-   "seconds": 0.55
+   "seconds": 0.2
   }
  },
  {
@@ -3884,8 +3902,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 295355,
-   "seconds": 2.88
+   "bytes": 296291,
+   "seconds": 0.98
   },
   "impersonate": {
    "ok": true,
@@ -3895,8 +3913,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 295714,
-   "seconds": 1.56
+   "bytes": 296650,
+   "seconds": 0.31
   }
  },
  {
@@ -3911,8 +3929,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 245224,
-   "seconds": 1.44
+   "bytes": 245272,
+   "seconds": 1.6
   },
   "impersonate": {
    "ok": true,
@@ -3922,8 +3940,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 245222,
-   "seconds": 1.13
+   "bytes": 245270,
+   "seconds": 1.3
   }
  },
  {
@@ -3938,8 +3956,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 122683,
-   "seconds": 0.65
+   "bytes": 122839,
+   "seconds": 1.5
   },
   "impersonate": {
    "ok": true,
@@ -3949,8 +3967,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 122593,
-   "seconds": 0.46
+   "bytes": 122745,
+   "seconds": 1.02
   }
  },
  {
@@ -3965,8 +3983,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 196774,
-   "seconds": 0.7
+   "bytes": 196933,
+   "seconds": 0.83
   },
   "impersonate": {
    "ok": true,
@@ -3976,8 +3994,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 196680,
-   "seconds": 0.45
+   "bytes": 196839,
+   "seconds": 0.67
   }
  },
  {
@@ -3993,7 +4011,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5636,
-   "seconds": 0.6
+   "seconds": 0.16
   },
   "impersonate": {
    "ok": true,
@@ -4004,7 +4022,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 6020,
-   "seconds": 0.35
+   "seconds": 0.1
   }
  },
  {
@@ -4019,8 +4037,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 130625,
-   "seconds": 0.68
+   "bytes": 130900,
+   "seconds": 0.85
   },
   "impersonate": {
    "ok": true,
@@ -4030,8 +4048,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 130527,
-   "seconds": 0.45
+   "bytes": 130672,
+   "seconds": 0.52
   }
  },
  {
@@ -4047,7 +4065,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 226071,
-   "seconds": 1.74
+   "seconds": 1.1
   },
   "impersonate": {
    "ok": true,
@@ -4058,7 +4076,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 226430,
-   "seconds": 1.93
+   "seconds": 0.35
   }
  },
  {
@@ -4073,8 +4091,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 9770,
-   "seconds": 0.48
+   "bytes": 9691,
+   "seconds": 0.18
   },
   "impersonate": {
    "ok": true,
@@ -4084,8 +4102,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 9770,
-   "seconds": 0.38
+   "bytes": 9691,
+   "seconds": 0.12
   }
  },
  {
@@ -4100,8 +4118,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 208924,
-   "seconds": 0.78
+   "bytes": 203938,
+   "seconds": 1.12
   },
   "impersonate": {
    "ok": true,
@@ -4111,8 +4129,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 208830,
-   "seconds": 0.66
+   "bytes": 208811,
+   "seconds": 0.52
   }
  },
  {
@@ -4127,8 +4145,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 298963,
-   "seconds": 13.64
+   "bytes": 297803,
+   "seconds": 10.67
   },
   "impersonate": {
    "ok": true,
@@ -4138,8 +4156,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 298975,
-   "seconds": 8.09
+   "bytes": 297855,
+   "seconds": 7.74
   }
  },
  {
@@ -4155,7 +4173,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 23924,
-   "seconds": 0.68
+   "seconds": 0.84
   },
   "impersonate": {
    "ok": true,
@@ -4166,7 +4184,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 24283,
-   "seconds": 0.57
+   "seconds": 0.23
   }
  },
  {
@@ -4182,7 +4200,7 @@
    "layer_name": null,
    "detail": "origin unavailable",
    "bytes": 4476,
-   "seconds": 0.75
+   "seconds": 0.86
   },
   "impersonate": {
    "ok": true,
@@ -4193,7 +4211,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 5776,
-   "seconds": 1.11
+   "seconds": 0.24
   }
  },
  {
@@ -4208,8 +4226,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 267403,
-   "seconds": 0.88
+   "bytes": 267605,
+   "seconds": 0.97
   },
   "impersonate": {
    "ok": true,
@@ -4219,8 +4237,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 267762,
-   "seconds": 0.46
+   "bytes": 267964,
+   "seconds": 0.22
   }
  },
  {
@@ -4235,8 +4253,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 520)",
-   "bytes": 7329,
-   "seconds": 1.41
+   "bytes": 7325,
+   "seconds": 0.98
   },
   "impersonate": {
    "ok": true,
@@ -4247,7 +4265,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 2539,
-   "seconds": 1.12
+   "seconds": 0.46
   }
  },
  {
@@ -4262,8 +4280,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 652802,
-   "seconds": 0.93
+   "bytes": 649764,
+   "seconds": 0.74
   },
   "impersonate": {
    "ok": true,
@@ -4273,8 +4291,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 653155,
-   "seconds": 1.78
+   "bytes": 650117,
+   "seconds": 0.16
   }
  },
  {
@@ -4289,8 +4307,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 259781,
-   "seconds": 3.66
+   "bytes": 258708,
+   "seconds": 2.54
   },
   "impersonate": {
    "ok": true,
@@ -4300,8 +4318,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 262533,
-   "seconds": 3.83
+   "bytes": 260700,
+   "seconds": 4.08
   }
  },
  {
@@ -4309,15 +4327,9 @@
   "file": "sources/zh/ddxsss.py",
   "lang": "zh",
   "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 28952,
-   "seconds": 1.55
+   "ok": false,
+   "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+   "seconds": 4.14
   },
   "impersonate": {
    "ok": true,
@@ -4327,8 +4339,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 28952,
-   "seconds": 0.42
+   "bytes": 29120,
+   "seconds": 1.07
   }
  },
  {
@@ -4344,7 +4356,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 975,
-   "seconds": 1.71
+   "seconds": 1.89
   },
   "impersonate": {
    "ok": true,
@@ -4355,7 +4367,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1048,
-   "seconds": 1.08
+   "seconds": 0.98
   }
  },
  {
@@ -4371,12 +4383,18 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1010,
-   "seconds": 1.86
+   "seconds": 2.06
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 200,
+   "edge": "Cloudflare",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 94108,
+   "seconds": 1.48
   }
  },
  {
@@ -4392,7 +4410,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5449,
-   "seconds": 1.5
+   "seconds": 0.58
   },
   "impersonate": {
    "ok": true,
@@ -4403,7 +4421,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5833,
-   "seconds": 0.5
+   "seconds": 0.09
   }
  },
  {
@@ -4418,8 +4436,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 222099,
-   "seconds": 1.19
+   "bytes": 260899,
+   "seconds": 1.46
   },
   "impersonate": {
    "ok": true,
@@ -4429,8 +4447,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 222458,
-   "seconds": 0.58
+   "bytes": 261258,
+   "seconds": 0.52
   }
  },
  {
@@ -4438,20 +4456,14 @@
   "file": "sources/en/r/readmanganato.py",
   "lang": "en",
   "plain": {
-   "ok": true,
-   "status": 522,
-   "edge": "Cloudflare",
-   "action": "retry",
-   "layer": null,
-   "layer_name": null,
-   "detail": "upstream error (HTTP 522)",
-   "bytes": 7255,
-   "seconds": 20.68
+   "ok": false,
+   "error": "SSLError: HTTPSConnectionPool(host='chapmanganato.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLEOFErro",
+   "seconds": 0.9
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Operation timed out after 20002 milliseconds with 0 bytes received. See https://curl.se/li",
-   "seconds": 20.0
+   "error": "SSLError: Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0)",
+   "seconds": 0.49
   }
  },
  {
@@ -4466,8 +4478,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 218854,
-   "seconds": 1.15
+   "bytes": 219765,
+   "seconds": 0.98
   },
   "impersonate": {
    "ok": true,
@@ -4477,8 +4489,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 218854,
-   "seconds": 1.25
+   "bytes": 219765,
+   "seconds": 0.89
   }
  },
  {
@@ -4493,8 +4505,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118908,
-   "seconds": 0.88
+   "bytes": 119050,
+   "seconds": 0.71
   },
   "impersonate": {
    "ok": true,
@@ -4504,8 +4516,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118939,
-   "seconds": 0.67
+   "bytes": 118860,
+   "seconds": 0.48
   }
  },
  {
@@ -4520,8 +4532,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 260505,
-   "seconds": 1.94
+   "bytes": 260783,
+   "seconds": 1.98
   },
   "impersonate": {
    "ok": true,
@@ -4531,8 +4543,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 276284,
-   "seconds": 1.07
+   "bytes": 276553,
+   "seconds": 2.36
   }
  },
  {
@@ -4547,8 +4559,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 168784,
-   "seconds": 1.61
+   "bytes": 168656,
+   "seconds": 1.26
   },
   "impersonate": {
    "ok": true,
@@ -4558,8 +4570,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 169768,
-   "seconds": 1.29
+   "bytes": 169640,
+   "seconds": 0.52
   }
  },
  {
@@ -4574,8 +4586,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 362171,
-   "seconds": 2.75
+   "bytes": 396816,
+   "seconds": 6.22
   },
   "impersonate": {
    "ok": true,
@@ -4585,8 +4597,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 429891,
-   "seconds": 0.97
+   "bytes": 430943,
+   "seconds": 0.74
   }
  },
  {
@@ -4601,8 +4613,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 343700,
-   "seconds": 1.94
+   "bytes": 336907,
+   "seconds": 1.44
   },
   "impersonate": {
    "ok": true,
@@ -4612,8 +4624,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 346040,
-   "seconds": 1.48
+   "bytes": 339247,
+   "seconds": 0.53
   }
  },
  {
@@ -4622,25 +4634,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.31
+   "status": 410,
+   "edge": "unknown",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "HTTP 410",
+   "bytes": 254,
+   "seconds": 3.55
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 7.54
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 473,
+   "seconds": 0.67
   }
  },
  {
@@ -4648,14 +4660,26 @@
   "file": "sources/en/n/novelnextz.py",
   "lang": "en",
   "plain": {
-   "ok": false,
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='novelnextz.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<H",
-   "seconds": 20.48
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 476,
+   "seconds": 1.15
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 476,
+   "seconds": 0.5
   }
  },
  {
@@ -4671,7 +4695,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 240465,
-   "seconds": 2.33
+   "seconds": 2.09
   },
   "impersonate": {
    "ok": true,
@@ -4682,7 +4706,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 240465,
-   "seconds": 2.42
+   "seconds": 1.79
   }
  },
  {
@@ -4697,8 +4721,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 72254,
-   "seconds": 1.51
+   "bytes": 72291,
+   "seconds": 2.0
   },
   "impersonate": {
    "ok": true,
@@ -4708,8 +4732,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 72254,
-   "seconds": 1.17
+   "bytes": 72291,
+   "seconds": 1.1
   }
  },
  {
@@ -4724,8 +4748,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 135111,
-   "seconds": 1.7
+   "bytes": 133848,
+   "seconds": 0.98
   },
   "impersonate": {
    "ok": true,
@@ -4735,8 +4759,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 135624,
-   "seconds": 1.01
+   "bytes": 134361,
+   "seconds": 0.49
   }
  },
  {
@@ -4751,8 +4775,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 93803,
-   "seconds": 1.95
+   "bytes": 93461,
+   "seconds": 3.27
   },
   "impersonate": {
    "ok": true,
@@ -4762,8 +4786,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 93803,
-   "seconds": 1.23
+   "bytes": 93461,
+   "seconds": 1.53
   }
  },
  {
@@ -4779,7 +4803,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 6956,
-   "seconds": 1.25
+   "seconds": 1.08
   },
   "impersonate": {
    "ok": true,
@@ -4790,7 +4814,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1640,
-   "seconds": 0.64
+   "seconds": 0.7
   }
  },
  {
@@ -4806,7 +4830,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 17849,
-   "seconds": 1.81
+   "seconds": 2.16
   },
   "impersonate": {
    "ok": true,
@@ -4817,7 +4841,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 17849,
-   "seconds": 1.01
+   "seconds": 1.05
   }
  },
  {
@@ -4833,7 +4857,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1005,
-   "seconds": 1.93
+   "seconds": 1.95
   },
   "impersonate": {
    "ok": true,
@@ -4844,7 +4868,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1072,
-   "seconds": 0.98
+   "seconds": 1.06
   }
  },
  {
@@ -4859,8 +4883,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 58335,
-   "seconds": 2.76
+   "bytes": 57494,
+   "seconds": 1.74
   },
   "impersonate": {
    "ok": true,
@@ -4870,8 +4894,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 58277,
-   "seconds": 0.97
+   "bytes": 58583,
+   "seconds": 1.03
   }
  },
  {
@@ -4887,7 +4911,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 36241,
-   "seconds": 2.72
+   "seconds": 1.8
   },
   "impersonate": {
    "ok": true,
@@ -4898,7 +4922,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 36241,
-   "seconds": 1.42
+   "seconds": 0.67
   }
  },
  {
@@ -4914,7 +4938,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 36241,
-   "seconds": 2.18
+   "seconds": 1.72
   },
   "impersonate": {
    "ok": true,
@@ -4925,7 +4949,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 36241,
-   "seconds": 1.75
+   "seconds": 0.64
   }
  },
  {
@@ -4940,8 +4964,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 63035,
-   "seconds": 1.85
+   "bytes": 63249,
+   "seconds": 1.04
   },
   "impersonate": {
    "ok": true,
@@ -4951,8 +4975,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 63394,
-   "seconds": 0.54
+   "bytes": 63608,
+   "seconds": 0.33
   }
  },
  {
@@ -4968,7 +4992,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 146,
-   "seconds": 2.57
+   "seconds": 1.98
   },
   "impersonate": {
    "ok": true,
@@ -4979,7 +5003,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 907,
-   "seconds": 1.0
+   "seconds": 1.32
   }
  },
  {
@@ -4995,7 +5019,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 34828,
-   "seconds": 2.45
+   "seconds": 1.98
   },
   "impersonate": {
    "ok": true,
@@ -5006,7 +5030,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 34828,
-   "seconds": 2.87
+   "seconds": 0.97
   }
  },
  {
@@ -5021,8 +5045,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 302116,
-   "seconds": 1.81
+   "bytes": 303178,
+   "seconds": 1.4
   },
   "impersonate": {
    "ok": true,
@@ -5032,8 +5056,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 302475,
-   "seconds": 1.56
+   "bytes": 303537,
+   "seconds": 0.92
   }
  },
  {
@@ -5049,7 +5073,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5447,
-   "seconds": 0.84
+   "seconds": 0.15
   },
   "impersonate": {
    "ok": true,
@@ -5060,7 +5084,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5831,
-   "seconds": 0.36
+   "seconds": 0.09
   }
  },
  {
@@ -5075,8 +5099,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 248227,
-   "seconds": 1.25
+   "bytes": 249002,
+   "seconds": 1.28
   },
   "impersonate": {
    "ok": true,
@@ -5086,8 +5110,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 248227,
-   "seconds": 0.75
+   "bytes": 249002,
+   "seconds": 0.82
   }
  },
  {
@@ -5096,25 +5120,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.82
+   "status": 410,
+   "edge": "unknown",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "HTTP 410",
+   "bytes": 254,
+   "seconds": 3.13
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.91
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 481,
+   "seconds": 0.79
   }
  },
  {
@@ -5123,25 +5147,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 7.9
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 483,
+   "seconds": 2.7
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.14
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 483,
+   "seconds": 0.82
   }
  },
  {
@@ -5150,25 +5174,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.26
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 474,
+   "seconds": 1.22
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.56
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 474,
+   "seconds": 0.67
   }
  },
  {
@@ -5177,25 +5201,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 4.6
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 476,
+   "seconds": 1.22
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 4.22
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 476,
+   "seconds": 0.7
   }
  },
  {
@@ -5211,7 +5235,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4357,
-   "seconds": 1.92
+   "seconds": 1.32
   },
   "impersonate": {
    "ok": true,
@@ -5222,7 +5246,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4357,
-   "seconds": 0.66
+   "seconds": 0.11
   }
  },
  {
@@ -5237,8 +5261,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62621,
-   "seconds": 1.92
+   "bytes": 62317,
+   "seconds": 1.26
   },
   "impersonate": {
    "ok": true,
@@ -5248,8 +5272,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62980,
-   "seconds": 1.54
+   "bytes": 62676,
+   "seconds": 0.52
   }
  },
  {
@@ -5264,8 +5288,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62621,
-   "seconds": 1.51
+   "bytes": 62317,
+   "seconds": 1.5
   },
   "impersonate": {
    "ok": true,
@@ -5275,8 +5299,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62980,
-   "seconds": 2.63
+   "bytes": 62676,
+   "seconds": 0.47
   }
  },
  {
@@ -5291,8 +5315,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62621,
-   "seconds": 1.94
+   "bytes": 62317,
+   "seconds": 1.15
   },
   "impersonate": {
    "ok": true,
@@ -5302,8 +5326,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62980,
-   "seconds": 3.66
+   "bytes": 62676,
+   "seconds": 0.5
   }
  },
  {
@@ -5313,7 +5337,7 @@
   "plain": {
    "ok": false,
    "error": "ConnectTimeout: HTTPSConnectionPool(host='lightnovel.world', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(",
-   "seconds": 20.77
+   "seconds": 20.85
   },
   "impersonate": {
    "ok": false,
@@ -5333,8 +5357,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 405233,
-   "seconds": 1.13
+   "bytes": 405589,
+   "seconds": 1.05
   },
   "impersonate": {
    "ok": true,
@@ -5344,8 +5368,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 405283,
-   "seconds": 0.75
+   "bytes": 405539,
+   "seconds": 0.66
   }
  },
  {
@@ -5361,7 +5385,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5578,
-   "seconds": 1.13
+   "seconds": 0.37
   },
   "impersonate": {
    "ok": true,
@@ -5372,7 +5396,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5941,
-   "seconds": 0.69
+   "seconds": 0.28
   }
  },
  {
@@ -5387,8 +5411,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 495339,
-   "seconds": 4.4
+   "bytes": 495352,
+   "seconds": 0.96
   },
   "impersonate": {
    "ok": true,
@@ -5398,8 +5422,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 495698,
-   "seconds": 1.49
+   "bytes": 495711,
+   "seconds": 0.85
   }
  },
  {
@@ -5407,14 +5431,26 @@
   "file": "sources/en/w/wuxiablog.py",
   "lang": "en",
   "plain": {
-   "ok": false,
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='www.wuxia.blog', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<H",
-   "seconds": 20.24
+   "ok": true,
+   "status": 200,
+   "edge": "apache",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 985,
+   "seconds": 1.88
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20001 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 200,
+   "edge": "apache",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 1056,
+   "seconds": 0.99
   }
  },
  {
@@ -5430,7 +5466,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 69244,
-   "seconds": 1.64
+   "seconds": 1.44
   },
   "impersonate": {
    "ok": true,
@@ -5441,7 +5477,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 69603,
-   "seconds": 1.43
+   "seconds": 0.74
   }
  },
  {
@@ -5457,7 +5493,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 69244,
-   "seconds": 0.79
+   "seconds": 1.16
   },
   "impersonate": {
    "ok": true,
@@ -5468,7 +5504,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 69603,
-   "seconds": 0.42
+   "seconds": 0.18
   }
  },
  {
@@ -5484,7 +5520,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 19345,
-   "seconds": 2.25
+   "seconds": 1.42
   },
   "impersonate": {
    "ok": true,
@@ -5495,7 +5531,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 19704,
-   "seconds": 1.79
+   "seconds": 0.61
   }
  },
  {
@@ -5511,7 +5547,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5551,
-   "seconds": 0.98
+   "seconds": 0.48
   },
   "impersonate": {
    "ok": true,
@@ -5522,7 +5558,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 49139,
-   "seconds": 1.59
+   "seconds": 0.56
   }
  },
  {
@@ -5538,7 +5574,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 173571,
-   "seconds": 8.6
+   "seconds": 1.36
   },
   "impersonate": {
    "ok": true,
@@ -5549,7 +5585,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 173930,
-   "seconds": 1.52
+   "seconds": 0.48
   }
  },
  {
@@ -5565,7 +5601,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 173571,
-   "seconds": 9.12
+   "seconds": 1.34
   },
   "impersonate": {
    "ok": true,
@@ -5576,7 +5612,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 173930,
-   "seconds": 2.52
+   "seconds": 0.39
   }
  },
  {
@@ -5592,7 +5628,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 62353,
-   "seconds": 0.65
+   "seconds": 1.11
   },
   "impersonate": {
    "ok": true,
@@ -5602,8 +5638,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 62712,
-   "seconds": 0.6
+   "bytes": 62247,
+   "seconds": 0.65
   }
  },
  {
@@ -5619,7 +5655,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 112840,
-   "seconds": 1.62
+   "seconds": 1.49
   },
   "impersonate": {
    "ok": true,
@@ -5630,7 +5666,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 112840,
-   "seconds": 1.38
+   "seconds": 1.31
   }
  },
  {
@@ -5646,7 +5682,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 0,
-   "seconds": 1.59
+   "seconds": 2.27
   },
   "impersonate": {
    "ok": true,
@@ -5657,7 +5693,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4622,
-   "seconds": 0.92
+   "seconds": 1.15
   }
  },
  {
@@ -5673,7 +5709,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 481,
-   "seconds": 1.09
+   "seconds": 1.63
   },
   "impersonate": {
    "ok": true,
@@ -5684,7 +5720,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 481,
-   "seconds": 0.54
+   "seconds": 1.8
   }
  },
  {
@@ -5700,7 +5736,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 138550,
-   "seconds": 2.73
+   "seconds": 1.33
   },
   "impersonate": {
    "ok": true,
@@ -5711,7 +5747,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 138550,
-   "seconds": 1.86
+   "seconds": 0.66
   }
  },
  {
@@ -5726,8 +5762,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 63954,
-   "seconds": 1.08
+   "bytes": 64023,
+   "seconds": 0.67
   },
   "impersonate": {
    "ok": true,
@@ -5737,8 +5773,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 64313,
-   "seconds": 1.74
+   "bytes": 64382,
+   "seconds": 0.52
   }
  },
  {
@@ -5748,7 +5784,7 @@
   "plain": {
    "ok": false,
    "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
-   "seconds": 5.77
+   "seconds": 3.91
   },
   "impersonate": {
    "ok": true,
@@ -5758,8 +5794,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 29053,
-   "seconds": 2.14
+   "bytes": 29082,
+   "seconds": 1.15
   }
  },
  {
@@ -5769,7 +5805,7 @@
   "plain": {
    "ok": false,
    "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
-   "seconds": 5.55
+   "seconds": 3.99
   },
   "impersonate": {
    "ok": true,
@@ -5779,8 +5815,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 29050,
-   "seconds": 1.99
+   "bytes": 29094,
+   "seconds": 1.13
   }
  },
  {
@@ -5796,7 +5832,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5565,
-   "seconds": 1.35
+   "seconds": 0.64
   },
   "impersonate": {
    "ok": true,
@@ -5806,8 +5842,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 166457,
-   "seconds": 2.0
+   "bytes": 167366,
+   "seconds": 1.4
   }
  },
  {
@@ -5823,7 +5859,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 100873,
-   "seconds": 3.08
+   "seconds": 1.75
   },
   "impersonate": {
    "ok": true,
@@ -5834,7 +5870,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 101232,
-   "seconds": 1.92
+   "seconds": 0.78
   }
  },
  {
@@ -5849,8 +5885,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 187885,
-   "seconds": 1.67
+   "bytes": 188186,
+   "seconds": 1.08
   },
   "impersonate": {
    "ok": true,
@@ -5860,8 +5896,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 188244,
-   "seconds": 1.02
+   "bytes": 188545,
+   "seconds": 1.52
   }
  },
  {
@@ -5877,7 +5913,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 361,
-   "seconds": 1.61
+   "seconds": 1.45
   },
   "impersonate": {
    "ok": true,
@@ -5888,7 +5924,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 361,
-   "seconds": 1.35
+   "seconds": 0.41
   }
  },
  {
@@ -5903,8 +5939,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 58597,
-   "seconds": 0.96
+   "bytes": 57204,
+   "seconds": 1.28
   },
   "impersonate": {
    "ok": true,
@@ -5914,8 +5950,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 58956,
-   "seconds": 0.98
+   "bytes": 57563,
+   "seconds": 0.33
   }
  },
  {
@@ -5931,7 +5967,7 @@
    "layer_name": null,
    "detail": "HTTP 418",
    "bytes": 1,
-   "seconds": 13.46
+   "seconds": 1.38
   },
   "impersonate": {
    "ok": true,
@@ -5941,8 +5977,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 415802,
-   "seconds": 1.14
+   "bytes": 416233,
+   "seconds": 1.02
   }
  },
  {
@@ -5957,8 +5993,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123982,
-   "seconds": 1.55
+   "bytes": 123417,
+   "seconds": 2.64
   },
   "impersonate": {
    "ok": true,
@@ -5968,8 +6004,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123982,
-   "seconds": 1.04
+   "bytes": 123417,
+   "seconds": 1.07
   }
  },
  {
@@ -5985,7 +6021,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 6956,
-   "seconds": 1.3
+   "seconds": 1.49
   },
   "impersonate": {
    "ok": true,
@@ -5996,7 +6032,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1616,
-   "seconds": 0.8
+   "seconds": 0.68
   }
  },
  {
@@ -6004,15 +6040,9 @@
   "file": "sources/en/n/novelight.py",
   "lang": "en",
   "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "Cloudflare",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 64863,
-   "seconds": 1.14
+   "ok": false,
+   "error": "ReadTimeout: HTTPSConnectionPool(host='novelight.net', port=443): Read timed out. (read timeout=20.0)",
+   "seconds": 20.59
   },
   "impersonate": {
    "ok": true,
@@ -6022,8 +6052,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 65222,
-   "seconds": 0.93
+   "bytes": 66795,
+   "seconds": 0.35
   }
  },
  {
@@ -6032,25 +6062,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.48
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 474,
+   "seconds": 1.72
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 11.47
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 474,
+   "seconds": 0.89
   }
  },
  {
@@ -6065,8 +6095,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 145151,
-   "seconds": 0.77
+   "bytes": 145150,
+   "seconds": 2.24
   },
   "impersonate": {
    "ok": true,
@@ -6076,8 +6106,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 145057,
-   "seconds": 0.73
+   "bytes": 145056,
+   "seconds": 0.67
   }
  },
  {
@@ -6092,8 +6122,8 @@
    "layer": 11,
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
-   "bytes": 6005,
-   "seconds": 0.85
+   "bytes": 6004,
+   "seconds": 0.72
   },
   "impersonate": {
    "ok": true,
@@ -6104,7 +6134,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 6005,
-   "seconds": 0.65
+   "seconds": 0.22
   }
  },
  {
@@ -6119,8 +6149,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "origin unavailable",
-   "bytes": 19087,
-   "seconds": 2.01
+   "bytes": 19083,
+   "seconds": 2.06
   },
   "impersonate": {
    "ok": true,
@@ -6130,8 +6160,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 215751,
-   "seconds": 1.06
+   "bytes": 214411,
+   "seconds": 1.01
   }
  },
  {
@@ -6146,8 +6176,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 55786,
-   "seconds": 1.33
+   "bytes": 55801,
+   "seconds": 0.72
   },
   "impersonate": {
    "ok": true,
@@ -6157,8 +6187,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 56145,
-   "seconds": 0.9
+   "bytes": 56160,
+   "seconds": 1.37
   }
  },
  {
@@ -6173,8 +6203,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 55786,
-   "seconds": 4.42
+   "bytes": 55801,
+   "seconds": 1.75
   },
   "impersonate": {
    "ok": true,
@@ -6184,8 +6214,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 56145,
-   "seconds": 1.68
+   "bytes": 56160,
+   "seconds": 1.07
   }
  },
  {
@@ -6201,7 +6231,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 475,
-   "seconds": 1.09
+   "seconds": 2.15
   },
   "impersonate": {
    "ok": true,
@@ -6212,7 +6242,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 475,
-   "seconds": 0.67
+   "seconds": 0.55
   }
  },
  {
@@ -6228,7 +6258,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2,
-   "seconds": 1.73
+   "seconds": 1.72
   },
   "impersonate": {
    "ok": true,
@@ -6238,8 +6268,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 13044,
-   "seconds": 4.5
+   "bytes": 13042,
+   "seconds": 2.67
   }
  },
  {
@@ -6255,7 +6285,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 19345,
-   "seconds": 3.03
+   "seconds": 1.13
   },
   "impersonate": {
    "ok": true,
@@ -6266,7 +6296,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 19704,
-   "seconds": 1.28
+   "seconds": 0.52
   }
  },
  {
@@ -6282,7 +6312,7 @@
    "layer_name": null,
    "detail": "HTTP 406",
    "bytes": 226,
-   "seconds": 1.52
+   "seconds": 1.97
   },
   "impersonate": {
    "ok": true,
@@ -6292,8 +6322,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 57395,
-   "seconds": 4.41
+   "bytes": 57323,
+   "seconds": 4.54
   }
  },
  {
@@ -6302,25 +6332,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 1.11
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 475,
+   "seconds": 1.65
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 0.64
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 475,
+   "seconds": 0.76
   }
  },
  {
@@ -6335,8 +6365,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 140730,
-   "seconds": 1.09
+   "bytes": 140801,
+   "seconds": 1.35
   },
   "impersonate": {
    "ok": true,
@@ -6346,8 +6376,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 140697,
-   "seconds": 0.81
+   "bytes": 140830,
+   "seconds": 0.65
   }
  },
  {
@@ -6363,7 +6393,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 7037,
-   "seconds": 1.63
+   "seconds": 1.61
   },
   "impersonate": {
    "ok": true,
@@ -6373,8 +6403,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 36257,
-   "seconds": 1.71
+   "bytes": 36251,
+   "seconds": 1.62
   }
  },
  {
@@ -6390,7 +6420,7 @@
    "layer_name": "L15 Operator edge code",
    "detail": "CloudFront refused the request",
    "bytes": 150,
-   "seconds": 0.68
+   "seconds": 0.52
   },
   "impersonate": {
    "ok": true,
@@ -6400,8 +6430,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118956,
-   "seconds": 0.68
+   "bytes": 118950,
+   "seconds": 0.59
   }
  },
  {
@@ -6417,7 +6447,7 @@
    "layer_name": null,
    "detail": "HTTP 404",
    "bytes": 14,
-   "seconds": 2.37
+   "seconds": 0.64
   },
   "impersonate": {
    "ok": true,
@@ -6428,7 +6458,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 34206,
-   "seconds": 6.57
+   "seconds": 1.29
   }
  },
  {
@@ -6444,7 +6474,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 4546,
-   "seconds": 6.12
+   "seconds": 0.49
   },
   "impersonate": {
    "ok": true,
@@ -6455,7 +6485,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 21077,
-   "seconds": 1.52
+   "seconds": 0.43
   }
  },
  {
@@ -6471,7 +6501,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5557,
-   "seconds": 0.85
+   "seconds": 0.67
   },
   "impersonate": {
    "ok": true,
@@ -6482,7 +6512,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5963,
-   "seconds": 0.6
+   "seconds": 0.1
   }
  },
  {
@@ -6497,7 +6527,7 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 5300,
+   "bytes": 4730,
    "seconds": 1.88
   },
   "impersonate": {
@@ -6508,8 +6538,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 5300,
-   "seconds": 0.96
+   "bytes": 4730,
+   "seconds": 0.99
   }
  },
  {
@@ -6524,8 +6554,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59748,
-   "seconds": 3.5
+   "bytes": 59569,
+   "seconds": 3.79
   },
   "impersonate": {
    "ok": true,
@@ -6535,8 +6565,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59748,
-   "seconds": 2.44
+   "bytes": 59569,
+   "seconds": 2.33
   }
  },
  {
@@ -6551,8 +6581,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59088,
-   "seconds": 2.73
+   "bytes": 58909,
+   "seconds": 2.04
   },
   "impersonate": {
    "ok": true,
@@ -6562,8 +6592,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59088,
-   "seconds": 4.15
+   "bytes": 58909,
+   "seconds": 1.23
   }
  },
  {
@@ -6578,8 +6608,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59748,
-   "seconds": 3.58
+   "bytes": 59569,
+   "seconds": 3.69
   },
   "impersonate": {
    "ok": true,
@@ -6589,8 +6619,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 59748,
-   "seconds": 2.53
+   "bytes": 59569,
+   "seconds": 3.32
   }
  },
  {
@@ -6605,8 +6635,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 41643,
-   "seconds": 2.7
+   "bytes": 41250,
+   "seconds": 1.95
   },
   "impersonate": {
    "ok": true,
@@ -6616,8 +6646,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 41643,
-   "seconds": 7.88
+   "bytes": 41250,
+   "seconds": 0.98
   }
  },
  {
@@ -6632,8 +6662,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 46552,
-   "seconds": 0.88
+   "bytes": 46628,
+   "seconds": 0.52
   },
   "impersonate": {
    "ok": true,
@@ -6643,8 +6673,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 46911,
-   "seconds": 0.61
+   "bytes": 46987,
+   "seconds": 0.39
   }
  },
  {
@@ -6660,7 +6690,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 5491,
-   "seconds": 0.61
+   "seconds": 0.68
   },
   "impersonate": {
    "ok": true,
@@ -6671,7 +6701,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 172297,
-   "seconds": 3.56
+   "seconds": 1.41
   }
  },
  {
@@ -6687,7 +6717,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2,
-   "seconds": 1.08
+   "seconds": 1.2
   },
   "impersonate": {
    "ok": true,
@@ -6697,8 +6727,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 13051,
-   "seconds": 4.87
+   "bytes": 13049,
+   "seconds": 3.43
   }
  },
  {
@@ -6706,9 +6736,15 @@
   "file": "sources/en/i/isotls.py",
   "lang": "en",
   "plain": {
-   "ok": false,
-   "error": "ConnectionError: ('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))",
-   "seconds": 9.52
+   "ok": true,
+   "status": 200,
+   "edge": "netlify",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 63120,
+   "seconds": 1.47
   },
   "impersonate": {
    "ok": true,
@@ -6718,8 +6754,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 63066,
-   "seconds": 1.42
+   "bytes": 63117,
+   "seconds": 0.99
   }
  },
  {
@@ -6727,9 +6763,15 @@
   "file": "sources/en/i/isotls.py",
   "lang": "en",
   "plain": {
-   "ok": false,
-   "error": "SSLError: HTTPSConnectionPool(host='www.isotls.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '",
-   "seconds": 4.86
+   "ok": true,
+   "status": 200,
+   "edge": "netlify",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 63114,
+   "seconds": 1.18
   },
   "impersonate": {
    "ok": true,
@@ -6739,8 +6781,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 63055,
-   "seconds": 1.17
+   "bytes": 63112,
+   "seconds": 0.54
   }
  },
  {
@@ -6756,7 +6798,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5558,
-   "seconds": 0.61
+   "seconds": 0.39
   },
   "impersonate": {
    "ok": true,
@@ -6767,7 +6809,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5942,
-   "seconds": 0.35
+   "seconds": 0.13
   }
  },
  {
@@ -6782,8 +6824,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118357,
-   "seconds": 0.63
+   "bytes": 118511,
+   "seconds": 1.13
   },
   "impersonate": {
    "ok": true,
@@ -6793,8 +6835,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 118716,
-   "seconds": 0.58
+   "bytes": 118870,
+   "seconds": 0.1
   }
  },
  {
@@ -6810,7 +6852,7 @@
    "layer_name": null,
    "detail": "HTTP 406",
    "bytes": 1164,
-   "seconds": 1.51
+   "seconds": 1.17
   },
   "impersonate": {
    "ok": true,
@@ -6820,8 +6862,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 350212,
-   "seconds": 4.23
+   "bytes": 350211,
+   "seconds": 1.18
   }
  },
  {
@@ -6837,7 +6879,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 196748,
-   "seconds": 7.67
+   "seconds": 6.66
   },
   "impersonate": {
    "ok": true,
@@ -6848,7 +6890,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 196714,
-   "seconds": 7.89
+   "seconds": 7.32
   }
  },
  {
@@ -6863,8 +6905,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 114022,
-   "seconds": 2.95
+   "bytes": 114244,
+   "seconds": 1.7
   },
   "impersonate": {
    "ok": true,
@@ -6874,8 +6916,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 114009,
-   "seconds": 1.54
+   "bytes": 114077,
+   "seconds": 1.4
   }
  },
  {
@@ -6890,8 +6932,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 114103,
-   "seconds": 1.02
+   "bytes": 114171,
+   "seconds": 1.04
   },
   "impersonate": {
    "ok": true,
@@ -6901,8 +6943,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 113929,
-   "seconds": 1.62
+   "bytes": 114203,
+   "seconds": 0.44
   }
  },
  {
@@ -6918,7 +6960,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 313507,
-   "seconds": 1.39
+   "seconds": 0.8
   },
   "impersonate": {
    "ok": true,
@@ -6929,7 +6971,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 313913,
-   "seconds": 0.9
+   "seconds": 0.14
   }
  },
  {
@@ -6944,8 +6986,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 184843,
-   "seconds": 2.04
+   "bytes": 185038,
+   "seconds": 2.32
   },
   "impersonate": {
    "ok": true,
@@ -6955,8 +6997,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 184672,
-   "seconds": 1.34
+   "bytes": 184867,
+   "seconds": 1.28
   }
  },
  {
@@ -6971,8 +7013,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 184775,
-   "seconds": 0.86
+   "bytes": 185038,
+   "seconds": 1.45
   },
   "impersonate": {
    "ok": true,
@@ -6982,8 +7024,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 184672,
-   "seconds": 0.66
+   "bytes": 184867,
+   "seconds": 0.46
   }
  },
  {
@@ -6992,12 +7034,12 @@
   "lang": "en",
   "plain": {
    "ok": false,
-   "error": "ReadTimeout: HTTPSConnectionPool(host='www.lnreader.org', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.73
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='www.lnreader.org', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(",
+   "seconds": 20.6
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20001 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
    "seconds": 20.0
   }
  },
@@ -7007,8 +7049,8 @@
   "lang": "en",
   "plain": {
    "ok": false,
-   "error": "ReadTimeout: HTTPSConnectionPool(host='lnreader.org', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.57
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='lnreader.org', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTT",
+   "seconds": 20.43
   },
   "impersonate": {
    "ok": false,
@@ -7029,7 +7071,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1030,
-   "seconds": 1.72
+   "seconds": 1.8
   },
   "impersonate": {
    "ok": true,
@@ -7040,7 +7082,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1080,
-   "seconds": 0.92
+   "seconds": 0.88
   }
  },
  {
@@ -7056,7 +7098,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 4554,
-   "seconds": 0.45
+   "seconds": 0.31
   },
   "impersonate": {
    "ok": true,
@@ -7067,7 +7109,7 @@
    "layer_name": "L12 Super Bot Fight Mode",
    "detail": "scored as automated",
    "bytes": 4913,
-   "seconds": 0.26
+   "seconds": 0.11
   }
  },
  {
@@ -7083,7 +7125,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1030,
-   "seconds": 1.71
+   "seconds": 1.59
   },
   "impersonate": {
    "ok": true,
@@ -7094,7 +7136,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 1092,
-   "seconds": 0.85
+   "seconds": 0.91
   }
  },
  {
@@ -7110,7 +7152,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5554,
-   "seconds": 1.3
+   "seconds": 0.26
   },
   "impersonate": {
    "ok": true,
@@ -7120,8 +7162,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 64524,
-   "seconds": 1.46
+   "bytes": 64764,
+   "seconds": 0.75
   }
  },
  {
@@ -7136,8 +7178,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 149828,
-   "seconds": 0.89
+   "bytes": 142602,
+   "seconds": 0.81
   },
   "impersonate": {
    "ok": true,
@@ -7147,8 +7189,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 152134,
-   "seconds": 0.54
+   "bytes": 143825,
+   "seconds": 0.64
   }
  },
  {
@@ -7163,8 +7205,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 526)",
-   "bytes": 7247,
-   "seconds": 1.24
+   "bytes": 7243,
+   "seconds": 1.3
   },
   "impersonate": {
    "ok": true,
@@ -7174,8 +7216,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "upstream error (HTTP 526)",
-   "bytes": 7247,
-   "seconds": 0.75
+   "bytes": 7243,
+   "seconds": 0.58
   }
  },
  {
@@ -7190,8 +7232,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 32367,
-   "seconds": 1.0
+   "bytes": 32585,
+   "seconds": 1.49
   },
   "impersonate": {
    "ok": true,
@@ -7201,8 +7243,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 32367,
-   "seconds": 0.59
+   "bytes": 32585,
+   "seconds": 0.4
   }
  },
  {
@@ -7212,12 +7254,12 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='superchat.live', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 22.47
+   "seconds": 21.16
   },
   "impersonate": {
    "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 19145 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.88
+   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 19388 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
+   "seconds": 20.64
   }
  },
  {
@@ -7232,8 +7274,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 15240,
-   "seconds": 5.54
+   "bytes": 14637,
+   "seconds": 1.65
   },
   "impersonate": {
    "ok": true,
@@ -7243,8 +7285,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 15240,
-   "seconds": 1.18
+   "bytes": 14637,
+   "seconds": 1.29
   }
  },
  {
@@ -7254,7 +7296,7 @@
   "plain": {
    "ok": false,
    "error": "ReadTimeout: HTTPSConnectionPool(host='www.literotica.com', port=443): Read timed out. (read timeout=20.0)",
-   "seconds": 20.65
+   "seconds": 20.35
   },
   "impersonate": {
    "ok": false,
@@ -7275,7 +7317,7 @@
    "layer_name": "L15 Operator edge code",
    "detail": "forbidden by the origin",
    "bytes": 0,
-   "seconds": 1.72
+   "seconds": 1.61
   },
   "impersonate": {
    "ok": true,
@@ -7285,8 +7327,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 300808,
-   "seconds": 2.31
+   "bytes": 300019,
+   "seconds": 2.33
   }
  },
  {
@@ -7302,7 +7344,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 295220,
-   "seconds": 1.66
+   "seconds": 0.85
   },
   "impersonate": {
    "ok": true,
@@ -7313,7 +7355,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 295612,
-   "seconds": 0.95
+   "seconds": 0.21
   }
  },
  {
@@ -7329,7 +7371,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 168539,
-   "seconds": 7.85
+   "seconds": 9.82
   },
   "impersonate": {
    "ok": true,
@@ -7340,7 +7382,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 168898,
-   "seconds": 2.93
+   "seconds": 3.62
   }
  },
  {
@@ -7356,7 +7398,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 33493,
-   "seconds": 2.96
+   "seconds": 1.34
   },
   "impersonate": {
    "ok": true,
@@ -7367,7 +7409,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 33852,
-   "seconds": 0.95
+   "seconds": 0.6
   }
  },
  {
@@ -7377,13 +7419,13 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "unknown",
-   "action": "accept",
-   "layer": null,
-   "layer_name": null,
-   "detail": "",
-   "bytes": 195,
-   "seconds": 3.34
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 478,
+   "seconds": 1.22
   },
   "impersonate": {
    "ok": true,
@@ -7394,7 +7436,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 478,
-   "seconds": 0.96
+   "seconds": 0.58
   }
  },
  {
@@ -7410,7 +7452,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4513,
-   "seconds": 2.8
+   "seconds": 2.87
   },
   "impersonate": {
    "ok": true,
@@ -7421,7 +7463,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 4513,
-   "seconds": 1.77
+   "seconds": 1.91
   }
  },
  {
@@ -7437,7 +7479,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5555,
-   "seconds": 1.55
+   "seconds": 0.87
   },
   "impersonate": {
    "ok": true,
@@ -7447,8 +7489,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 42782,
-   "seconds": 2.05
+   "bytes": 42385,
+   "seconds": 1.05
   }
  },
  {
@@ -7464,7 +7506,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5534,
-   "seconds": 1.75
+   "seconds": 0.33
   },
   "impersonate": {
    "ok": true,
@@ -7474,8 +7516,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 42782,
-   "seconds": 0.89
+   "bytes": 42385,
+   "seconds": 0.83
   }
  },
  {
@@ -7484,14 +7526,14 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 403,
+   "status": 200,
    "edge": "Cloudflare",
-   "action": "solve",
-   "layer": 9,
-   "layer_name": "L9 Managed JavaScript challenge",
-   "detail": "challenge served with 403",
-   "bytes": 5537,
-   "seconds": 0.65
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 696715,
+   "seconds": 1.45
   },
   "impersonate": {
    "ok": true,
@@ -7501,8 +7543,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 709230,
-   "seconds": 1.44
+   "bytes": 696546,
+   "seconds": 1.08
   }
  },
  {
@@ -7517,8 +7559,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 100697,
-   "seconds": 1.29
+   "bytes": 100649,
+   "seconds": 1.82
   },
   "impersonate": {
    "ok": true,
@@ -7529,7 +7571,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 100699,
-   "seconds": 1.05
+   "seconds": 1.02
   }
  },
  {
@@ -7545,7 +7587,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 0,
-   "seconds": 3.43
+   "seconds": 2.02
   },
   "impersonate": {
    "ok": true,
@@ -7556,7 +7598,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 16769,
-   "seconds": 1.46
+   "seconds": 1.49
   }
  },
  {
@@ -7572,7 +7614,7 @@
    "layer_name": null,
    "detail": "HTTP 410",
    "bytes": 0,
-   "seconds": 1.75
+   "seconds": 1.7
   },
   "impersonate": {
    "ok": true,
@@ -7598,8 +7640,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 227227,
-   "seconds": 0.86
+   "bytes": 225663,
+   "seconds": 0.8
   },
   "impersonate": {
    "ok": true,
@@ -7609,8 +7651,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 227586,
-   "seconds": 0.55
+   "bytes": 226022,
+   "seconds": 0.42
   }
  },
  {
@@ -7626,7 +7668,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 5485,
-   "seconds": 0.78
+   "seconds": 0.46
   },
   "impersonate": {
    "ok": true,
@@ -7637,7 +7679,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 20,
-   "seconds": 0.77
+   "seconds": 0.36
   }
  },
  {
@@ -7653,7 +7695,7 @@
    "layer_name": "L11 Bot Fight Mode",
    "detail": "refused a client that is not a browser",
    "bytes": 5485,
-   "seconds": 0.92
+   "seconds": 0.41
   },
   "impersonate": {
    "ok": true,
@@ -7663,8 +7705,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 501300,
-   "seconds": 3.13
+   "bytes": 501184,
+   "seconds": 2.81
   }
  },
  {
@@ -7673,25 +7715,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 522,
-   "edge": "Cloudflare",
-   "action": "retry",
+   "status": 410,
+   "edge": "caddy",
+   "action": "accept",
    "layer": null,
    "layer_name": null,
-   "detail": "upstream error (HTTP 522)",
-   "bytes": 7281,
-   "seconds": 20.05
+   "detail": "HTTP 410",
+   "bytes": 0,
+   "seconds": 4.19
   },
   "impersonate": {
    "ok": true,
-   "status": 522,
-   "edge": "Cloudflare",
-   "action": "retry",
+   "status": 200,
+   "edge": "caddy",
+   "action": "accept",
    "layer": null,
    "layer_name": null,
-   "detail": "upstream error (HTTP 522)",
-   "bytes": 7281,
-   "seconds": 19.95
+   "detail": "",
+   "bytes": 16853,
+   "seconds": 1.24
   }
  },
  {
@@ -7707,7 +7749,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 481,
-   "seconds": 0.8
+   "seconds": 0.91
   },
   "impersonate": {
    "ok": true,
@@ -7718,7 +7760,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 481,
-   "seconds": 0.45
+   "seconds": 5.31
   }
  },
  {
@@ -7734,7 +7776,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5560,
-   "seconds": 0.73
+   "seconds": 0.44
   },
   "impersonate": {
    "ok": true,
@@ -7745,7 +7787,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 19117,
-   "seconds": 1.65
+   "seconds": 0.21
   }
  },
  {
@@ -7760,8 +7802,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 121525,
-   "seconds": 0.66
+   "bytes": 121514,
+   "seconds": 0.89
   },
   "impersonate": {
    "ok": true,
@@ -7771,8 +7813,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 121431,
-   "seconds": 0.65
+   "bytes": 121420,
+   "seconds": 0.61
   }
  },
  {
@@ -7787,8 +7829,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 270922,
-   "seconds": 2.41
+   "bytes": 273216,
+   "seconds": 2.44
   },
   "impersonate": {
    "ok": true,
@@ -7798,8 +7840,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 264684,
-   "seconds": 2.23
+   "bytes": 270164,
+   "seconds": 2.2
   }
  },
  {
@@ -7814,8 +7856,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 117612,
-   "seconds": 2.17
+   "bytes": 116467,
+   "seconds": 1.7
   },
   "impersonate": {
    "ok": true,
@@ -7825,8 +7867,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 117971,
-   "seconds": 1.76
+   "bytes": 116826,
+   "seconds": 1.03
   }
  },
  {
@@ -7842,7 +7884,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 484,
-   "seconds": 1.42
+   "seconds": 1.41
   },
   "impersonate": {
    "ok": true,
@@ -7853,7 +7895,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 484,
-   "seconds": 0.61
+   "seconds": 0.66
   }
  },
  {
@@ -7868,8 +7910,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 64165,
-   "seconds": 0.86
+   "bytes": 64405,
+   "seconds": 0.52
   },
   "impersonate": {
    "ok": true,
@@ -7879,8 +7921,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 64524,
-   "seconds": 1.29
+   "bytes": 64764,
+   "seconds": 0.38
   }
  },
  {
@@ -7890,13 +7932,13 @@
   "plain": {
    "ok": true,
    "status": 200,
-   "edge": "cowboy",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 475,
-   "seconds": 1.46
+   "edge": "unknown",
+   "action": "accept",
+   "layer": null,
+   "layer_name": null,
+   "detail": "",
+   "bytes": 195,
+   "seconds": 2.47
   },
   "impersonate": {
    "ok": true,
@@ -7907,7 +7949,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 475,
-   "seconds": 0.67
+   "seconds": 0.47
   }
  },
  {
@@ -7922,8 +7964,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 165677,
-   "seconds": 1.63
+   "bytes": 165205,
+   "seconds": 1.22
   },
   "impersonate": {
    "ok": true,
@@ -7933,8 +7975,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 167270,
-   "seconds": 1.28
+   "bytes": 165122,
+   "seconds": 0.73
   }
  },
  {
@@ -7949,8 +7991,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 47180,
-   "seconds": 1.41
+   "bytes": 47315,
+   "seconds": 1.15
   },
   "impersonate": {
    "ok": true,
@@ -7960,8 +8002,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 47539,
-   "seconds": 0.73
+   "bytes": 47674,
+   "seconds": 0.29
   }
  },
  {
@@ -7970,25 +8012,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 2.16
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 479,
+   "seconds": 2.18
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 7.46
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 479,
+   "seconds": 0.8
   }
  },
  {
@@ -7997,25 +8039,25 @@
   "lang": "en",
   "plain": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 20.31
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 486,
+   "seconds": 20.2
   },
   "impersonate": {
    "ok": true,
-   "status": 429,
+   "status": 200,
    "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 11.69
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 486,
+   "seconds": 7.68
   }
  },
  {
@@ -8031,7 +8073,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 2,
-   "seconds": 1.32
+   "seconds": 1.41
   },
   "impersonate": {
    "ok": true,
@@ -8042,7 +8084,7 @@
    "layer_name": null,
    "detail": "",
    "bytes": 13043,
-   "seconds": 4.77
+   "seconds": 4.24
   }
  },
  {
@@ -8057,8 +8099,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 233316,
-   "seconds": 1.03
+   "bytes": 233318,
+   "seconds": 0.72
   },
   "impersonate": {
    "ok": true,
@@ -8068,8 +8110,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 233316,
-   "seconds": 0.53
+   "bytes": 233318,
+   "seconds": 0.33
   }
  },
  {
@@ -8084,8 +8126,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 116454,
-   "seconds": 1.78
+   "bytes": 116595,
+   "seconds": 1.76
   },
   "impersonate": {
    "ok": true,
@@ -8095,8 +8137,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 116360,
-   "seconds": 1.23
+   "bytes": 116458,
+   "seconds": 0.92
   }
  },
  {
@@ -8104,20 +8146,20 @@
   "file": "sources/en/n/novel27.py",
   "lang": "en",
   "plain": {
-   "ok": true,
-   "status": 429,
-   "edge": "cowboy",
-   "action": "backoff",
-   "layer": 8,
-   "layer_name": "L8 Per-zone behavioural model",
-   "detail": "rate limited",
-   "bytes": 17,
-   "seconds": 8.85
+   "ok": false,
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='novel27.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTTP",
+   "seconds": 20.62
   },
   "impersonate": {
-   "ok": false,
-   "error": "Timeout: Failed to perform, curl: (28) Connection timed out after 20002 milliseconds. See https://curl.se/libcurl/c/libcurl-error",
-   "seconds": 20.0
+   "ok": true,
+   "status": 200,
+   "edge": "cowboy",
+   "action": "follow",
+   "layer": 6,
+   "layer_name": "L6 Browser and JavaScript fingerprint",
+   "detail": "the page is a JavaScript-only redirect",
+   "bytes": 473,
+   "seconds": 19.47
   }
  },
  {
@@ -8127,7 +8169,7 @@
   "plain": {
    "ok": false,
    "error": "ConnectTimeout: HTTPSConnectionPool(host='pianmanga.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HT",
-   "seconds": 20.6
+   "seconds": 20.78
   },
   "impersonate": {
    "ok": false,
@@ -8147,8 +8189,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123525,
-   "seconds": 0.91
+   "bytes": 124108,
+   "seconds": 0.93
   },
   "impersonate": {
    "ok": true,
@@ -8158,8 +8200,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123525,
-   "seconds": 0.7
+   "bytes": 124108,
+   "seconds": 0.52
   }
  },
  {
@@ -8174,8 +8216,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123525,
-   "seconds": 1.88
+   "bytes": 124108,
+   "seconds": 1.02
   },
   "impersonate": {
    "ok": true,
@@ -8185,8 +8227,8 @@
    "layer": null,
    "layer_name": null,
    "detail": "",
-   "bytes": 123525,
-   "seconds": 1.09
+   "bytes": 124108,
+   "seconds": 1.73
   }
  },
  {
@@ -8202,7 +8244,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5550,
-   "seconds": 0.83
+   "seconds": 0.19
   },
   "impersonate": {
    "ok": true,
@@ -8213,7 +8255,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5934,
-   "seconds": 0.53
+   "seconds": 0.09
   }
  },
  {
@@ -8229,7 +8271,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5549,
-   "seconds": 0.72
+   "seconds": 0.4
   },
   "impersonate": {
    "ok": true,
@@ -8240,7 +8282,7 @@
    "layer_name": "L9 Managed JavaScript challenge",
    "detail": "challenge served with 403",
    "bytes": 5933,
-   "seconds": 0.64
+   "seconds": 0.1
   }
  },
  {
@@ -8248,15 +8290,9 @@
   "file": "sources/en/n/newnovelorg.py",
   "lang": "en",
   "plain": {
-   "ok": true,
-   "status": 200,
-   "edge": "unknown",
-   "action": "follow",
-   "layer": 6,
-   "layer_name": "L6 Browser and JavaScript fingerprint",
-   "detail": "the page is a JavaScript-only redirect",
-   "bytes": 149,
-   "seconds": 3.74
+   "ok": false,
+   "error": "SSLError: HTTPSConnectionPool(host='newnovel.org', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLEOFError(8, ",
+   "seconds": 4.4
   },
   "impersonate": {
    "ok": true,
@@ -8267,7 +8303,7 @@
    "layer_name": "L6 Browser and JavaScript fingerprint",
    "detail": "the page is a JavaScript-only redirect",
    "bytes": 149,
-   "seconds": 0.36
+   "seconds": 3.38
   }
  }
 ]

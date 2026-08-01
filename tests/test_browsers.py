@@ -24,28 +24,39 @@ def executable(path):
     return str(path)
 
 
-@pytest.fixture
-def linux(monkeypatch):
-    monkeypatch.setattr(browsers, "_POSIX", True)
-    monkeypatch.setattr(browsers, "_LINUX", True)
-    monkeypatch.setattr(browsers, "_MAC", False)
-    monkeypatch.setattr(browsers, "_WINDOWS", False)
+def _platform(monkeypatch, tmp_path, *, posix, linux, mac, windows):
+    """Pretend to be one platform, and pretend *tmp_path* is the whole filesystem.
+
+    The confinement is not tidiness. The distribution and bundle paths are absolute, so
+    no amount of rewriting ``PATH`` hides them — without this, a machine with Firefox at
+    `/usr/lib/firefox/firefox` joins the results of every Linux test, and a Mac with
+    Chrome installed joins every macOS one. The suite then passes or fails on what the
+    developer happens to have installed, which is precisely the environment-shaped bug
+    this module exists to fix.
+    """
+    monkeypatch.setattr(browsers, "_POSIX", posix)
+    monkeypatch.setattr(browsers, "_LINUX", linux)
+    monkeypatch.setattr(browsers, "_MAC", mac)
+    monkeypatch.setattr(browsers, "_WINDOWS", windows)
+
+    root = str(tmp_path)
+    real = browsers._runnable
+    monkeypatch.setattr(browsers, "_runnable", lambda p: p.startswith(root) and real(p))
 
 
 @pytest.fixture
-def mac(monkeypatch):
-    monkeypatch.setattr(browsers, "_POSIX", True)
-    monkeypatch.setattr(browsers, "_LINUX", False)
-    monkeypatch.setattr(browsers, "_MAC", True)
-    monkeypatch.setattr(browsers, "_WINDOWS", False)
+def linux(monkeypatch, tmp_path):
+    _platform(monkeypatch, tmp_path, posix=True, linux=True, mac=False, windows=False)
 
 
 @pytest.fixture
-def windows(monkeypatch):
-    monkeypatch.setattr(browsers, "_POSIX", False)
-    monkeypatch.setattr(browsers, "_LINUX", False)
-    monkeypatch.setattr(browsers, "_MAC", False)
-    monkeypatch.setattr(browsers, "_WINDOWS", True)
+def mac(monkeypatch, tmp_path):
+    _platform(monkeypatch, tmp_path, posix=True, linux=False, mac=True, windows=False)
+
+
+@pytest.fixture
+def windows(monkeypatch, tmp_path):
+    _platform(monkeypatch, tmp_path, posix=False, linux=False, mac=False, windows=True)
 
 
 def test_finds_chrome_on_the_path(tmp_path, monkeypatch, linux):
@@ -177,3 +188,13 @@ def test_snap_firefox_is_not_offered(monkeypatch):
     # table rather than a lookup, or an empty PATH would pass it for the wrong reason.
     firefox = tables_of(monkeypatch, browsers.find_firefox)
     assert not any("snap" in path for path in firefox["linux"])
+
+
+def test_the_fake_filesystem_is_the_only_one_consulted(mac):
+    # The guard for the whole module. The bundle and distribution paths are absolute, so
+    # a finder reaches them whatever `PATH` says — and CI caught exactly that, with a
+    # real /usr/lib/firefox/firefox joining a result the test had built by hand. Bites
+    # only on a machine that has a browser at a standard location, which is the machine
+    # the isolation matters on.
+    assert browsers.find_chrome() == []
+    assert browsers.find_firefox() == []
