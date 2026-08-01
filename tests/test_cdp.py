@@ -581,6 +581,6 @@ class TestTheDependency:
             WsClient("ws://127.0.0.1:9333/x")
 
     def test_no_executable_anywhere_says_what_to_pass(self, monkeypatch: pytest.MonkeyPatch):
-        monkeypatch.setattr("scraper.cdp.shutil.which", lambda _: None)
+        monkeypatch.setattr("scraper.cdp.pick_chromium", lambda: None)
         with pytest.raises(Exception, match="executable="):
             CdpSolver().solve("https://site.test/")

@@ -387,7 +387,7 @@ class TestWhatItDeclares:
         assert BidiSolver(executable="/x", headless=False).interactive
 
     def test_no_executable_anywhere_says_what_to_pass(self, monkeypatch: pytest.MonkeyPatch):
-        monkeypatch.setattr("scraper.bidi.shutil.which", lambda _: None)
+        monkeypatch.setattr("scraper.bidi.pick_firefox", lambda: None)
         with pytest.raises(Exception, match="executable="):
             BidiSolver().solve("https://site.test/")
 

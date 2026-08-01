@@ -51,6 +51,7 @@ from .browser import (
     honest_user_agent,
     launch_flags,
 )
+from .browsers import pick_chromium
 from .diagnosis import is_still_challenged
 from .wire import ProtocolError, WsClient
 
@@ -362,12 +363,11 @@ class CdpSolver(BrowserSolver):
     def _resolve_executable(self) -> str:
         if self._executable:
             return self._executable
-        for name in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser"):
-            found = shutil.which(name)
-            if found:
-                self._executable = found
-                return found
-        raise SolveError("no browser executable was found on PATH; pass executable= to CdpSolver")
+        found = pick_chromium()
+        if found:
+            self._executable = found
+            return found
+        raise SolveError("no Chromium-family browser is installed; pass executable= to CdpSolver")
 
     def _honest_user_agent(self) -> str:
         """The User-Agent to launch headless under, or ``""`` when headed.

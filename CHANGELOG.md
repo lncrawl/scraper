@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.5.0] - 2026-08-01
 
 ### Added
 
@@ -11,6 +11,8 @@ All notable changes to this project are documented here. The format is based on 
   The transport moved to `scraper.wire` and both backends share it unchanged, which was the bet the original three-layer split made. Firefox is a second vocabulary, not a second client.
 
   **One cost, stated rather than buried.** A WebDriver session sets `navigator.webdriver` to true by spec, and no preference overrides it while the session is open — measured both ways. Chrome has a launch flag that stops Blink emitting the property; Firefox has no equivalent, so this deletes it with a preload script. That is patching a surface value rather than not emitting one, and a site reading the prototype descriptor would see through it. Over the 46 hosts it is worth nineteen of them: 10 cleared with the property visible and 29 with it hidden, so ten sites challenge without ever reading it.
+
+- **`find_chromium`, `find_firefox`, `pick_chromium`, `pick_firefox` — finding an installed browser is the library's job now.** Both solvers looked for one with a `PATH` scan, which answers for Linux and only Linux: on a Mac with Chrome and Firefox both installed, every lookup returned nothing and `CdpSolver()` raised "no browser executable was found". The same on Windows. It went unnoticed because the one consumer always passed `executable=`, so the broken finder lived in the library and the working one lived downstream. This looks inside macOS application bundles, under the four Windows program directories, and across distribution and flatpak paths on Linux — for six Chromium brands, since Brave and Edge answer CDP exactly as Chrome does, and for Firefox including ESR and LibreWolf. Snap Firefox is deliberately skipped: it cannot reach a profile directory under a dotfile path, so finding it means launching it and failing.
 
 ### Removed
 
@@ -23,6 +25,7 @@ All notable changes to this project are documented here. The format is based on 
 
 ### Fixed
 
+- **The advice for solving inside a container named the smaller of two causes.** Both `browser.py` and `docs/tiers.md` said Debian's `chromium` was why a container cleared nothing, having measured only that. Re-measured with a browser that sends no `Sec-CH-UA` at all, the dominant cause is the clock: a container runs on UTC, and a browser whose timezone contradicts where its address geolocates reads as automation. Same six hosts, same binary, same egress address — 1 of 6 under UTC, 6 of 6 with `TZ` matching the exit. The `chromium` finding survives the correction and is now second, at 1 of 6 with the clock right.
 - **`validate_url`'s docstring described it backwards.** It said a scheme-less string passes; it does not, and that strictness is the point — the other two helpers repair what a person typed, this one checks it. Pinned by a test rather than only corrected in prose.
 
 ## [1.4.0] - 2026-08-01
@@ -312,6 +315,7 @@ Initial public release of `lncrawl-scraper`, extracted from [lightnovel-crawler]
 - Stealth mode, proxy rotation with Tor identity refresh, TLS cipher rotation, rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[1.5.0]: https://github.com/lncrawl/scraper/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/lncrawl/scraper/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/lncrawl/scraper/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/lncrawl/scraper/compare/v1.1.0...v1.2.0

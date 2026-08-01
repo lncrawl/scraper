@@ -27,6 +27,13 @@ scraper = Scraper(origin="https://example.com", config=config)
 emits. `browser` is the only thing that reaches the challenge layers. Everything else is
 tuning.
 
+`CdpSolver()` takes no path above because it finds a browser itself — inside macOS
+application bundles, under the Windows program directories, and across `PATH`,
+distribution and flatpak locations on Linux. Chromium-family builds count under six
+brands, since Brave and Edge answer CDP exactly as Chrome does; `BidiSolver()` looks for
+Firefox, ESR and LibreWolf included. Pass `executable=` to name one, and use
+`find_chromium()` or `find_firefox()` to see everything installed.
+
 ## Transport
 
 | Field | Notes |

@@ -44,7 +44,10 @@ src/scraper/
 ├── state.py        # SharedState: what belongs to a site, not to a scraper object
 ├── transport.py    # Transport seam + curl_cffi impersonation + plain requests
 ├── browser.py      # BrowserSolver protocol + what every solver shares
-├── cdp.py          # the bundled solver: Chrome over CDP, no driver library
+├── browsers.py     # finding an installed browser, per platform. No PATH-only guesses.
+├── wire.py         # one WebSocket JSON-RPC channel, shared by both solvers
+├── cdp.py          # a bundled solver: Chrome over CDP, no driver library
+├── bidi.py         # a bundled solver: Firefox over WebDriver BiDi
 ├── botauth.py      # RFC 9421 Ed25519 signing (layer 18)
 ├── links.py        # safe link extraction + TopicGuard (layer 17)
 ├── tiers/          # archive, direct, clearance, managed

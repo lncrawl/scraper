@@ -57,6 +57,12 @@ from .browser import (
     RenderError,
     SolveResult,
 )
+from .browsers import (
+    find_chromium,
+    find_firefox,
+    pick_chromium,
+    pick_firefox,
+)
 from .cdp import CdpSolver
 from .config import ResponseCheck, ScraperConfig, default_data_dir
 from .diagnosis import Action, Diagnosis, diagnose, edge
@@ -132,6 +138,11 @@ __all__ = [
     "CallableSolver",
     "CdpSolver",
     "SolveResult",
+    # finding a browser to drive
+    "find_chromium",
+    "find_firefox",
+    "pick_chromium",
+    "pick_firefox",
     "ImpersonateTransport",
     "PlainTransport",
     "Transport",

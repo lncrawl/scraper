@@ -56,6 +56,7 @@ from .browser import (
     chrome_proxy,
     clearance_deadline,
 )
+from .browsers import pick_firefox
 from .diagnosis import is_still_challenged
 from .wire import ProtocolError, WsClient
 
@@ -387,12 +388,11 @@ class BidiSolver(BrowserSolver):
     def _resolve_executable(self) -> str:
         if self._executable:
             return self._executable
-        for name in ("firefox", "firefox-esr"):
-            found = shutil.which(name)
-            if found:
-                self._executable = found
-                return found
-        raise SolveError("no firefox executable was found on PATH; pass executable= to BidiSolver")
+        found = pick_firefox()
+        if found:
+            self._executable = found
+            return found
+        raise SolveError("no Firefox is installed; pass executable= to BidiSolver")
 
 
 class _Session:
