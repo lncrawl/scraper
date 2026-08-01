@@ -35,7 +35,7 @@ one is self-contained and lives in
 Three of them need an extra:
 
 ```bash
-pip install "lncrawl-scraper[browser]"   # 03
+pip install "lncrawl-scraper[cdp]"       # 03
 pip install "lncrawl-scraper[botauth]"   # 07
 pip install "lncrawl-scraper[image]"     # 10, for get_image
 ```

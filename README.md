@@ -132,9 +132,7 @@ Python 3.9 and up; CI tests and builds on every version in that range.
 
 A solver drives a browser you already have and never downloads one. Finding it is the
 library's job: `find_firefox()` and `find_chromium()` look inside macOS application bundles,
-the Windows program directories, and distribution and flatpak paths — not a `PATH` scan, which
-answers for Linux and only Linux. `[browser]` is kept as an alias for `[cdp]` so an existing
-install keeps resolving.
+the Windows program directories, and distribution and flatpak paths.
 
 Impersonation is **not** an extra. Layers 2–5 are one barrier and an ordinary Python client
 fails all four in the first round trip, so a build without it would not be a degraded scraper

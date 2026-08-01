@@ -19,7 +19,7 @@ in sequence explains the design; each one is self-contained.
 Some examples need an extra:
 
 ```bash
-pip install "lncrawl-scraper[browser]"   # 03
+pip install "lncrawl-scraper[cdp]"       # 03
 pip install "lncrawl-scraper[botauth]"   # 07
 pip install "lncrawl-scraper[image]"     # 10, for get_image
 ```

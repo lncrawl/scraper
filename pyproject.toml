@@ -42,13 +42,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Unmarked, and that is the point: this solver runs on every Python this package
-# supports. It replaced a driver library that could not be imported below 3.10 or
-# from 3.14, which left both ends of the range with no solver at all. websockets
-# ships `websockets.sync.client` from 13, so the solver needs no event loop.
 cdp = ["websockets>=13"]
-# Kept as an alias so `[browser]` in an existing install still resolves.
-browser = ["lncrawl-scraper[cdp]"]
 botauth = ["cryptography>=44.0"]
 image = ["Pillow>=10.0"]
 all = ["lncrawl-scraper[cdp,botauth,image]"]
