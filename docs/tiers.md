@@ -96,10 +96,16 @@ Two defaults are deliberate and worth not changing:
   address even when every HTTP request goes through the proxy — unbinding the identity by
   leaking past it, silently.
 
-What *does* decide it is the browser build. Debian's `chromium` omits the `Google Chrome`
-brand from `Sec-CH-UA` and cleared nothing in a container — headless, headless with the
-User-Agent fixed, or headed under Xvfb alike. Install the browser a real visitor runs; a
-virtual display cannot hide a property of the binary.
+What *does* decide it, in a container, is the clock. A container runs on UTC unless told
+otherwise, and a browser whose timezone contradicts where its address geolocates reads as
+automation: the same browser on the same six challenged hosts cleared **1 of 6 under UTC
+and 6 of 6 with `TZ` set to match the exit**. Set it to the zone the traffic appears to
+come from.
+
+The browser build matters second. Debian's `chromium` omits the `Google Chrome` brand from
+`Sec-CH-UA` and cleared 1 of those 6 even with the clock right — headless, headless with
+the User-Agent fixed, or headed under Xvfb alike. Install the browser a real visitor runs;
+a virtual display cannot hide a property of the binary.
 
 One browser profile directory per address
 (`scraper.browser.profile_dir_for`). Cookie and session age are behavioural signals, so a

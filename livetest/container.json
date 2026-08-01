@@ -1,0 +1,30 @@
+{
+ "what": "Why does a browser that clears on the desktop clear almost nothing in a container?",
+ "answer": "Two independent causes. The dominant one is the clock: a container is UTC, and a browser whose timezone disagrees with where its address geolocates is read as automation. Correcting it took Firefox from 1/6 to 6/6. The second is the one A3b found — Debian's chromium omits the `Google Chrome` brand from Sec-CH-UA — and it survives the clock fix, so both are real and neither explains the other.",
+ "how": "Six challenged hosts, the same ones headless.json used for its container arms, so every number here is comparable to those. Each arm is one container on an arm64 host, 60s deadline per host. Egress IP was confirmed identical to the host's, so the address is not a variable.",
+ "measured": "2026-08-01",
+ "corrects": "headless.json's container arms concluded the Sec-CH-UA brand gap was why nothing cleared in a container. Every one of those arms ran under the container's default UTC clock, so the brand was never isolated from the timezone — and the timezone is the larger of the two.",
+ "host_baseline": {
+  "note": "Same six hosts, same Firefox version, on the macOS host: 6/6. That is what the container arms are measured against.",
+  "source": "bidi-corpus.json, hidden arm"
+ },
+ "arms": [
+  {"browser": "Debian chromium 150", "timezone": "UTC", "fonts": false, "cleared": 0,
+   "note": "From headless.json. Also tried headed under Xvfb and with the User-Agent corrected; all zero."},
+  {"browser": "Debian chromium 150", "timezone": "Asia/Dubai", "fonts": true, "cleared": 1,
+   "note": "The clock fix does almost nothing for this build, which is what leaves the brand gap standing as a separate cause. Needs --no-sandbox to start as root at all."},
+  {"browser": "Debian firefox-esr 140", "timezone": "UTC", "fonts": false, "cleared": 1},
+  {"browser": "Mozilla Firefox 153", "timezone": "UTC", "fonts": false, "cleared": 1,
+   "note": "Same as the four-major-versions-older ESR, so the build was never the problem."},
+  {"browser": "Mozilla Firefox 153", "timezone": "UTC", "fonts": true, "cleared": 1,
+   "note": "305 fonts against the stock image's 8. No effect on its own."},
+  {"browser": "Mozilla Firefox 153", "timezone": "Asia/Dubai", "fonts": false, "cleared": 5},
+  {"browser": "Mozilla Firefox 153", "timezone": "Asia/Dubai", "fonts": true, "cleared": 6}
+ ],
+ "conclusions": [
+  "Set TZ in the container to the zone its egress address geolocates to. It is worth more than any other single change measured here.",
+  "Fonts are worth at most one host and only alongside a correct clock. Cheap enough to include, not a fix on their own.",
+  "Firefox is the browser to ship in an image: Mozilla publishes arm64 and amd64 builds, where Google Chrome is amd64 only and Debian's chromium clears almost nothing either way.",
+  "Debian's firefox-esr is not a substitute for the current build."
+ ]
+}

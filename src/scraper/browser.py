@@ -28,12 +28,18 @@ places this runs have no display to put a window on, and the ones that do get on
 asking. A visible window is worth opening only where somebody can reach into it, which
 is why asking for it also buys the interactive solve budget.
 
-**The browser build shows through, and a virtual display does not hide it.** In a
-container running Debian's ``chromium``, nothing cleared: not headless, not headless
-with the User-Agent fixed, and not headed under Xvfb. That build omits the ``Google
-Chrome`` brand from ``Sec-CH-UA``, which every request carries, so it is a property
-of the binary rather than of how it is displayed. Install the browser a real visitor
-would run; reaching for Xvfb to fix this is answering the wrong question.
+**In a container, set the clock before blaming anything else.** A container is UTC
+unless told otherwise, and a browser whose timezone disagrees with where its address
+geolocates is read as automation. Same six challenged hosts, same binary, same egress
+address: **1 of 6 under UTC and 6 of 6 with ``TZ`` matching the exit.** Nothing else
+measured came close — a full font set was worth one host, and the browser's version
+none at all.
+
+**The browser build shows through too, and a virtual display does not hide it.**
+Debian's ``chromium`` cleared 1 of the same 6 even with the clock corrected, because
+it omits the ``Google Chrome`` brand from ``Sec-CH-UA``, which every request carries.
+That is a property of the binary rather than of how it is displayed, so reaching for
+Xvfb is answering the wrong question. Install the browser a real visitor would run.
 
 **WebRTC has to be off.** A STUN request can expose the host's real address even
 when every HTTP request goes through the proxy — which unbinds the identity by

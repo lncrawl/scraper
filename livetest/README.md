@@ -46,12 +46,13 @@ The browser tier runs separately, under its own interpreter — see below.
 | `solvers.py` | Solvers against the same hosts, alternating. The merge gate for a new backend: one quietly worse at clearing is invisible from a green unit run. One-armed until a second lands. |
 | `bidi-gate.json` | Data only, no script. Whether a WebDriver BiDi Firefox clears — run by hand before any Firefox backend existed, so the question was answered before the code was written. Its six-host sample overstates one finding; `bidi-corpus.json` supersedes it. |
 | `bidi-corpus.json` | The same question over all 46 challenged hosts, through `solvers.py`. What hiding `navigator.webdriver` is actually worth, and how Firefox and Chrome split the hosts they disagree about. |
+| `container.json` | Why a browser that clears on a desktop clears almost nothing in a container. Corrects `headless.json`'s reading of its own container arms: the clock was the larger cause and was never separated from the one they blamed. |
 | `report.py` | Renders `report.html` from whatever JSON exists. No network. |
 | `compare.py` | A/B against a previous release. Spawns `arm_v1.py` / `arm_v026.py` under each version's own interpreter, grades both with one classifier. |
 | `compare_analyze.py` | Reads `compare.json` and answers whether the new version is better, head to head. No network. |
 | `profile_sweep.py` | Which impersonation profile wins, across the corpus. How the default came to be Firefox. |
 | `referer_probe.py` | Sizes one header's effect: same transport, same profile, `Referer` the only difference. |
-| `probe.json`, `tor_probe.json`, `results.json`, `clearance.json`, `render.json`, `headless.json`, `solvers.json`, `bidi-corpus.json` | Recorded output. Committed as a baseline — a diff after a change is the fastest way to see what moved. |
+| `probe.json`, `tor_probe.json`, `results.json`, `clearance.json`, `render.json`, `headless.json`, `solvers.json`, `bidi-corpus.json`, `container.json` | Recorded output. Committed as a baseline — a diff after a change is the fastest way to see what moved. |
 | `state/` | Scraper data dir for the runs (learned memory, browser profiles, downloads). Gitignored; safe to delete. |
 
 ## Requirements
