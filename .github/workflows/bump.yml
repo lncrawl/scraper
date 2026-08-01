@@ -39,12 +39,20 @@ jobs:
       - name: Set version in pyproject.toml
         run: uv version "${{ steps.changelog.outputs.value }}"
 
-      - name: Commit and tag
+      - name: Commit the bump, if the version actually moved
         uses: EndBug/add-and-commit@v10
         with:
           add: "pyproject.toml uv.lock"
-          tag: "v${{ steps.changelog.outputs.value }}"
           message: "Bump version to v${{ steps.changelog.outputs.value }}"
+
+      - name: Tag and push
+        run: |
+          version="${{ steps.changelog.outputs.value }}"
+          # HEAD is the bump commit when one was made, and otherwise the branch tip,
+          # which already carries the version. Both are the right thing to tag.
+          git tag "v$version"
+          git push origin "v$version"
+          echo "Tagged v$version at $(git rev-parse --short HEAD)"
 
       - name: Trigger release workflow
         run: |
