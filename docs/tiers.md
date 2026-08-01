@@ -79,19 +79,28 @@ has to enable them because it cannot know what its caller will ask for next. Thi
 `Runtime.enable` nor `Page.enable` is ever sent. Going through a higher-level abstraction —
 including Chrome's own WebDriver BiDi, implemented over CDP internally — gives that away.
 
-A solver declares two things about itself. `impersonation` is the profile its clearance
+A solver declares three things about itself. `impersonation` is the profile its clearance
 binds to, which `ScraperConfig.profile()` then applies to every request; `interactive` says
 a person can reach the window, which buys `interactive_solve_timeout` instead of the
-unattended `solve_timeout`. The bundled solver sets the second from whether it runs headed.
+unattended `solve_timeout`; `engine` names the browser binary it drives, which is what
+concurrency is bounded per.
+
+**One browser per engine at a time**, because the limit is a property of the binary and its
+profile rather than of this library: past it Firefox refuses `session.new` and Chrome exits,
+and both arrive as `the browser exited immediately` — indistinguishable from the site
+refusing us, so a survey built on it records working hosts as blocked. A Firefox solve and a
+Chrome solve may overlap; two Firefox solves may not. Raise it with `set_browser_slots`.
 
 Two defaults are deliberate and worth not changing:
 
-- **Headless, and it costs nothing.** Measured over 46 challenged hosts, headless clears all
-  27 that a headed browser clears. What used to give it away was one substring —
+- **Hidden first, and it costs nothing.** Measured over 46 challenged hosts, headless clears
+  all 27 that a headed browser clears. What used to give it away was one substring —
   `HeadlessChrome` in the User-Agent — and the solver strips that itself. The old reason
   given here, a software WebGL renderer, was refuted directly: forcing it changed nothing.
-  Pass `headless=False` where a person can reach the window, which also buys the interactive
-  solve budget.
+  So a window is worth only the one thing it uniquely provides, a person to finish a
+  challenge the solver could not. `mode="auto"` spends the first part of the budget hidden
+  and opens a window only if that fails; `mode="headless"` never opens one, which is right
+  for a server; `mode="headed"` always does.
 - **WebRTC off.** A STUN request reaches the network directly and reports the host's real
   address even when every HTTP request goes through the proxy — unbinding the identity by
   leaking past it, silently.

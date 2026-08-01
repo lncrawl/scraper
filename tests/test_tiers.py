@@ -473,17 +473,16 @@ class TestHowLongASolveGets:
         tier.send(call_for())
         assert seen[0]["timeout"] == 300.0
 
-    def test_the_window_says_why_it_opened(self, caplog: pytest.LogCaptureFixture):
-        # A browser appearing with nothing said about it reads as the app misbehaving,
-        # and a person who does not know to click will not.
+    def test_the_tier_does_not_guess_when_a_window_appears(self, caplog: pytest.LogCaptureFixture):
+        # It cannot know: an `auto` solver opens one only after an unattended attempt has
+        # failed, and often never. Announcing from here was wrong more often than right,
+        # so the solver says so at the moment it opens one. See test_cdp / test_bidi.
         solver = stub_solver({"cf_clearance": "x"})
         solver.interactive = True
         tier = clearance_tier(solver, FakeTransport([make_response()]))
         with caplog.at_level(logging.INFO):
             tier.send(call_for())
-        assert any("browser window has opened" in r.getMessage() for r in caplog.records), (
-            caplog.text
-        )
+        assert not any("browser window has opened" in r.getMessage() for r in caplog.records)
 
 
 class TestClearanceTier:

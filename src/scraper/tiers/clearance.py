@@ -138,17 +138,11 @@ class ClearanceTier(Tier):
                 if clearance.usable_by(pinned):
                     return clearance, pinned
 
+            # Only the budget is decided here. A solver may open its window at the start,
+            # at the end, or not at all — an `auto` one shows it only after an unattended
+            # attempt has failed — so announcing it from out here would have been a guess,
+            # and usually a wrong one. The solver says so at the moment it opens one.
             interactive = bool(getattr(self.solver, "interactive", False))
-            if interactive:
-                # At info because this is the one moment the library needs a person's
-                # attention, and a window appearing with nothing said about why reads
-                # as the app having done something strange.
-                logger.info(
-                    "A browser window has opened for %s — solve the challenge in it if "
-                    "one is shown. Waiting up to %.0fs.",
-                    origin,
-                    self._interactive_solve_timeout,
-                )
             result = self.solver.solve(
                 url,
                 proxy=proxy,

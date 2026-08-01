@@ -595,3 +595,39 @@ class TestTheDependency:
         monkeypatch.setattr("scraper.cdp.pick_chromium", lambda: None)
         with pytest.raises(Exception, match="executable="):
             CdpSolver().solve("https://site.test/")
+
+
+class TestSayingWhyTheWindowOpened:
+    """A browser appearing with nothing said about it reads as the app misbehaving.
+
+    The announcement belongs to whoever opens the window. The tier that grants the budget
+    cannot know when that happens — an `auto` solver shows one only after the unattended
+    attempt fails, and usually never does — so saying it from there was a guess.
+    """
+
+    def test_a_headed_solve_announces_the_window(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog
+    ):
+        import logging
+
+        install_cdp(monkeypatch, scripted([CLEARED_PAGE]))
+        with caplog.at_level(logging.INFO):
+            CdpSolver(executable="/usr/bin/chrome", mode="headed", settle=0.0).solve(
+                "https://site.test/", profile_dir=tmp_path
+            )
+        assert any("browser window has opened" in r.getMessage() for r in caplog.records), (
+            caplog.text
+        )
+
+    def test_a_hidden_solve_says_nothing(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog
+    ):
+        import logging
+
+        install_cdp(monkeypatch, scripted([CLEARED_PAGE], user_agent=HEADLESS_UA))
+        with caplog.at_level(logging.INFO):
+            CdpSolver(executable="/usr/bin/chrome", mode="headless", settle=0.0).solve(
+                "https://site.test/", profile_dir=tmp_path
+            )
+        # Nothing was shown, so telling someone to go and click would be a lie.
+        assert not any("browser window has opened" in r.getMessage() for r in caplog.records)

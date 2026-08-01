@@ -362,6 +362,12 @@ class CdpSolver(BrowserSolver):
             browser.attach()
             browser.navigate(url, timeout=timeout)
             if show:
+                logger.info(
+                    "A browser window has opened for %s — solve the challenge in it. "
+                    "Waiting up to %.0fs.",
+                    url,
+                    timeout,
+                )
                 # Ask the browser to raise itself first — the only route with any chance
                 # on Wayland — then the platform, which wins where the window manager
                 # refuses a focus change the browser requested for itself.

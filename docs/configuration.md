@@ -34,6 +34,18 @@ brands, since Brave and Edge answer CDP exactly as Chrome does; `BidiSolver()` l
 Firefox, ESR and LibreWolf included. Pass `executable=` to name one, and use
 `find_chromium()` or `find_firefox()` to see everything installed.
 
+`mode=` decides whether a window may appear. `headless` never shows one, which is the
+setting for a server or a container; `headed` always does; `auto` starts hidden and opens a
+window only once the unattended attempt has failed. Hiding costs nothing on its own — a
+corrected headless browser clears every challenged host a headed one does — so a window is
+worth only the person it brings, and `auto` asks for one only when the solver has already
+run out of ideas. Both solvers accept the older `headless=` boolean, where `False` now means
+`auto`.
+
+One browser of each engine runs at a time, since exceeding what the platform allows fails in
+a way that looks like the site refusing the request rather than a local limit. Firefox and
+Chrome do not contend with each other; `set_browser_slots(count, engine)` raises either.
+
 ## Transport
 
 | Field | Notes |
