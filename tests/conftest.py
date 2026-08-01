@@ -21,6 +21,8 @@ import requests
 from requests.cookies import RequestsCookieJar
 from requests.structures import CaseInsensitiveDict
 
+import scraper.bidi
+import scraper.cdp
 from scraper import PacingPolicy, ScraperConfig
 from scraper.transport import Transport
 
@@ -139,6 +141,21 @@ TURNSTILE_BODY = """<!doctype html><html><body>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
 <div class="cf-turnstile" data-sitekey="0x4"></div>
 <script>window.__cf_chl_ = 1</script></body></html>"""
+
+
+@pytest.fixture(autouse=True)
+def assume_a_desktop(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Pin the display the solvers see, so the runner's own desktop decides nothing.
+
+    A solver is only ``interactive``, and only opens a window, where ``has_display()``
+    says somebody would see it — true on macOS and Windows, false on a Linux CI runner
+    with no ``DISPLAY``. Left ambient, every headed and ``auto`` expectation passes on a
+    developer's machine and fails in CI. Tests wanting the other answer patch the same
+    name back to false; ``scraper.browser.has_display`` is left alone, since the tests
+    for the detection itself call it directly.
+    """
+    for module in (scraper.bidi, scraper.cdp):
+        monkeypatch.setattr(module, "has_display", lambda: True)
 
 
 @pytest.fixture

@@ -578,10 +578,11 @@ class TestBrowserModes:
         [("headless", False), ("headed", True), ("auto", True)],
     )
     def test_only_a_showable_mode_is_interactive(self, mode, interactive, monkeypatch):
-        import scraper.browser as browser_mod
+        import scraper.bidi as bidi_mod
         from scraper.bidi import BidiSolver
 
-        monkeypatch.setattr(browser_mod, "has_display", lambda: True)
+        # The solver imported the name, so patching `scraper.browser` reaches nothing.
+        monkeypatch.setattr(bidi_mod, "has_display", lambda: True)
         assert BidiSolver(executable="/x", mode=mode).interactive is interactive
 
     def test_no_display_means_no_window_whatever_the_mode(self, monkeypatch):
