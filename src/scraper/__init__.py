@@ -80,6 +80,17 @@ from .exceptions import (
     TierUnavailable,
 )
 from .exits import ExitKind, ExitPool, ExitSpec, ExitStatus, TorPoolSpec
+from .failure import (
+    FAILURE_KINDS,
+    blocking_layer,
+    failure_kind,
+    headline,
+    is_permanent,
+    reads,
+    status_code,
+    status_note,
+    summarise,
+)
 from .identity import Clearance, Identity
 from .layers import LAYERS, Layer, LayerInfo, Stance, Trait, weakest
 from .links import Link, TopicGuard, safe_links
@@ -114,6 +125,16 @@ __all__ = [
     "Diagnosis",
     "diagnose",
     "edge",
+    # describing a failure in words
+    "FAILURE_KINDS",
+    "blocking_layer",
+    "failure_kind",
+    "headline",
+    "is_permanent",
+    "reads",
+    "status_code",
+    "status_note",
+    "summarise",
     "Capability",
     "Decision",
     "Move",

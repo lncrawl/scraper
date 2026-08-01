@@ -347,3 +347,45 @@ class TestClosingAndClearing:
 def monkeypatch_attr(target: object, name: str, value: object) -> None:
     """`setattr` with a cast, so pyright does not object to replacing a method."""
     setattr(target, name, value)
+
+
+class TestForwardedRequestOptions:
+    """Which caller keywords reach the client, and which are dropped.
+
+    Dropping an unknown keyword is deliberate: a caller passing something requests-only
+    should have it ignored rather than raise from inside the transport. `proxy` is the
+    exception, because it is not foreign — it is curl_cffi's spelling of `proxies`, and
+    this package sits on both clients. Dropped silently, the request goes direct while
+    the caller believes it is proxied, and whatever comes back is then read as evidence
+    about the site rather than about the missing proxy.
+    """
+
+    @staticmethod
+    def _kwargs(**caller):
+        return Transport._call_kwargs(caller)
+
+    def test_a_known_option_is_forwarded(self):
+        assert self._kwargs(timeout=5)["timeout"] == 5
+
+    def test_an_unknown_option_is_dropped_without_raising(self):
+        assert self._kwargs(stream=True, allow_redirects=False) == {"allow_redirects": False}
+
+    def test_curl_cffis_singular_proxy_is_honoured(self):
+        got = self._kwargs(proxy="socks5h://127.0.0.1:9250")
+        assert got["proxies"] == {
+            "http": "socks5h://127.0.0.1:9250",
+            "https": "socks5h://127.0.0.1:9250",
+        }
+
+    def test_a_mapping_passed_as_proxy_is_taken_as_is(self):
+        mapping = {"https": "http://p.test:8080"}
+        assert self._kwargs(proxy=mapping)["proxies"] == mapping
+
+    def test_an_explicit_proxies_wins_over_the_alias(self):
+        # Never override what the caller spelled the way this library documents.
+        got = self._kwargs(proxies={"https": "http://a.test"}, proxy="http://b.test")
+        assert got["proxies"] == {"https": "http://a.test"}
+
+    def test_no_proxy_means_no_proxies_key(self):
+        assert "proxies" not in self._kwargs(timeout=1)
+        assert "proxies" not in self._kwargs(proxy=None)

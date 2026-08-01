@@ -41,7 +41,8 @@ logger = logging.getLogger(__name__)
 
 # Request options forwarded to the underlying client. Anything else is dropped, so
 # a caller passing a requests-only keyword gets it ignored rather than raising
-# from inside the transport.
+# from inside the transport. `proxy` is accepted as an alias for `proxies` — see
+# `Transport._call_kwargs`, where the reason it cannot be dropped is spelled out.
 _FORWARDED = (
     "headers",
     "data",
@@ -152,7 +153,26 @@ class Transport:
 
     @staticmethod
     def _call_kwargs(kwargs: Mapping[str, Any]) -> Dict[str, Any]:
-        return {key: kwargs[key] for key in _FORWARDED if key in kwargs}
+        """The caller's keywords, filtered to what the client accepts.
+
+        `proxy` is honoured as well as `proxies`. It is not a foreign keyword to drop
+        quietly: it is curl_cffi's spelling of the same option, and this package sits on
+        both curl_cffi and requests. Dropped, the request goes direct while the caller
+        believes it is proxied — and the response is then read as evidence about the
+        site rather than about the proxy that was never applied.
+        """
+        forwarded = {key: kwargs[key] for key in _FORWARDED if key in kwargs}
+        single = kwargs.get("proxy")
+        if single and "proxies" not in forwarded:
+            forwarded["proxies"] = (
+                single
+                if isinstance(single, dict)
+                else {
+                    "http": single,
+                    "https": single,
+                }
+            )
+        return forwarded
 
     @staticmethod
     def _adapt(

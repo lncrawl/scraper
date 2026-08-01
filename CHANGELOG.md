@@ -2,6 +2,28 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-08-02
+
+### Added
+
+- **Browser modes — `headless`, `headed`, `auto`.** `auto` starts hidden and shows a window only after the unattended attempt fails, since a corrected headless browser clears everything a headed one does; the window is worth only the person it brings. `headless` forbids one outright, for servers and containers.
+
+- **`set_browser_slots(count, engine="")` — bound concurrent browsers.** Per engine, because a Firefox session cap says nothing about Chrome.
+
+- **`scraper.failure` — render a failure in English.** This package produced `Layer`, `Trait`, `Stance` and an exception taxonomy but no way to say what any of it meant, so every consumer wrote that mapping itself and two would disagree about the same failure. `failure_kind`, `blocking_layer`, `status_code`, `is_permanent`, `headline`, `reads`, `status_note` and `summarise` cover the objective half. Advice is deliberately absent: "configure a proxy in the crawler settings" names one application's UI. `reads` returns a clause, not a sentence, so the consumer completes "It reads {trait}, so {remedy}."
+
+- **`proxy=` is honoured as an alias for `proxies=`.** curl_cffi spells it in the singular and this package sits on both clients, so the near-miss was silently dropped — the request went direct while the caller believed it was proxied, and whatever came back was then read as evidence about the site.
+
+### Fixed
+
+- **Too many browsers at once reported as a site block.** Past the platform's limit Firefox refuses `session.new` and Chrome exits, both surfacing as `the browser exited immediately`. A survey of several hundred hosts recorded four working sites as hostile that way. Concurrency is now bounded, and exhaustion raises `TierUnavailable` against the tier rather than the origin.
+
+- **An interactive solve could open a window nobody saw.** Launched from a background process, a browser gets a taskbar entry without focus. Solvers now raise it — `browsingContext.activate` or `Page.bringToFront` first, then the platform (macOS by application, Windows via `ctypes`, Linux via `wmctrl`/`xdotool`). Both halves are needed: the protocol targets the window, but an OS may refuse focus to a process that lacks it. The protocol still goes first, being the only route on Wayland. Best-effort; it cannot fail a solve.
+
+### Changed
+
+- **`headless=False` now means `auto`, not always-headed.** It asked for a person to be able to help, which `auto` gives without a window on solves that never needed one. Use `mode="headed"` for the old behaviour.
+
 ## [1.5.0] - 2026-08-01
 
 ### Added
