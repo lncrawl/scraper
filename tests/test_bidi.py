@@ -313,10 +313,18 @@ class TestDrivingFirefox:
         assert "--headless" in captured["argv"]
 
         captured = install_bidi(monkeypatch, scripted([CLEARED_PAGE]))
-        BidiSolver(executable="/usr/bin/firefox", headless=False, settle=0.0).solve(
+        BidiSolver(executable="/usr/bin/firefox", mode="headed", settle=0.0).solve(
             "https://site.test/", profile_dir=tmp_path
         )
         assert "--headless" not in captured["argv"]
+
+        # `auto` is not "headed with extra steps": it starts hidden, and only opens a
+        # window once the unattended attempt has failed.
+        captured = install_bidi(monkeypatch, scripted([CLEARED_PAGE]))
+        BidiSolver(executable="/usr/bin/firefox", mode="auto", settle=0.0).solve(
+            "https://site.test/", profile_dir=tmp_path
+        )
+        assert "--headless" in captured["argv"]
 
     def test_it_stays_out_of_a_running_firefox(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path

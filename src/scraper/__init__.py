@@ -52,10 +52,12 @@ from importlib.metadata import PackageNotFoundError, version
 from .bidi import BidiSolver
 from .botauth import BotAuthConfig, BotAuthKey
 from .browser import (
+    BROWSER_MODES,
     BrowserSolver,
     CallableSolver,
     RenderError,
     SolveResult,
+    set_browser_slots,
 )
 from .browsers import (
     find_chromium,
@@ -134,6 +136,7 @@ __all__ = [
     "BotAuthConfig",
     "BotAuthKey",
     "BidiSolver",
+    "BROWSER_MODES",
     "BrowserSolver",
     "CallableSolver",
     "CdpSolver",
@@ -167,5 +170,6 @@ __all__ = [
     "ScraperError",
     "TierUnavailable",
     "default_data_dir",
+    "set_browser_slots",
     "__version__",
 ]

@@ -391,10 +391,21 @@ class TestLaunch:
 
     def test_headed_does_not(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
         captured = install_cdp(monkeypatch, scripted([CLEARED_PAGE]))
-        CdpSolver(executable="/usr/bin/chrome", headless=False, settle=0.0).solve(
+        CdpSolver(executable="/usr/bin/chrome", mode="headed", settle=0.0).solve(
             "https://site.test/", profile_dir=tmp_path
         )
         assert not any("headless" in a for a in captured["argv"])
+
+    def test_auto_starts_hidden_and_only_shows_a_window_if_that_fails(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ):
+        # The point of `auto`: a corrected headless browser clears what a headed one
+        # does, so the window is spent only on the solves that actually needed a person.
+        captured = install_cdp(monkeypatch, scripted([CLEARED_PAGE]))
+        CdpSolver(executable="/usr/bin/chrome", mode="auto", settle=0.0).solve(
+            "https://site.test/", profile_dir=tmp_path
+        )
+        assert "--headless=new" in captured["argv"]
 
     def test_the_browser_is_stopped_even_when_the_solve_raises(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path

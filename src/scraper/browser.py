@@ -67,12 +67,17 @@ is what :meth:`BrowserSolver.render` is for, and why it is not a tier.
 from __future__ import annotations
 
 import logging
+import os
 import re
 import shutil
+import subprocess
+import sys
+import threading
 import time
 import urllib.parse
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Callable, Dict, List, NamedTuple, Optional, Sequence
+from typing import Callable, Dict, Iterator, List, NamedTuple, Optional, Sequence
 
 from .exceptions import ScraperError, TierUnavailable
 from .identity import Clearance, Identity
@@ -108,6 +113,27 @@ _PROFILE_GRACE = 300.0
 
 Two scrapers can share a data dir, and each solver only serialises against itself, so
 the directory being deleted must not be one another process has a browser in.
+"""
+
+_DEFAULT_SLOTS = 1
+_slots: Dict[str, threading.BoundedSemaphore] = {}
+_slots_guard = threading.Lock()
+"""How many browsers of each engine this process may drive at once.
+
+A per-instance lock is not enough. Nothing stops a caller building one solver per thread,
+and a scraper is documented as safe to share between threads, so the shape appears as soon
+as anyone parallelises: each instance launches its own browser and none of them knows about
+the others.
+
+What that costs is worse than slowness. Past the limit Firefox answers `session.new` with
+"Maximum number of active sessions" and Chrome simply exits, and both surface here as
+`ProtocolError: the browser exited immediately` — indistinguishable from a site refusing
+the request. The failure then reads as evidence about the *site*, and a survey built on it
+will confidently record working hosts as blocked.
+
+The limit is per engine rather than global, because the constraint is per browser binary
+and its profile: a Firefox session cap says nothing about Chrome. So a Firefox solve and a
+Chrome solve may run at the same time, and two Firefox solves may not.
 """
 
 _SOLVED_COOKIES = ("cf_clearance", "__cf_bm", "cf_chl_rc_ni")
@@ -183,6 +209,205 @@ def launch_flags(
     return flags
 
 
+BROWSER_MODES = ("auto", "headed", "headless")
+"""How a solver is allowed to put a browser on screen.
+
+``headless``
+    Never show a window, whatever happens. A floor rather than a preference: it also
+    rules out asking a person, which is what makes it the right setting for a server or
+    a container where a window would be opened into a display nobody is attached to.
+
+``headed``
+    Always show one, from the first attempt. Costs a person's attention on every solve,
+    and worth it only when watching the browser work is the point — debugging a site
+    that behaves differently under automation, mostly.
+
+``auto``
+    Start hidden and show a window only if the unattended attempt fails. Measured over
+    46 challenged hosts, a corrected headless browser clears everything a headed one
+    does, so a window buys nothing except the one thing it uniquely provides: somebody
+    to answer a challenge the solver could not.
+"""
+
+HEADLESS_FIRST_SHARE = 0.4
+"""How much of an interactive budget the unattended attempt may spend before escalating.
+
+Escalation is only worth anything if a person still has time to act once the window opens,
+and a headless attempt that has not cleared in forty percent of the budget is not about to.
+The split is here rather than configurable because the two halves are not independent:
+lengthening one shortens the other.
+"""
+
+
+def resolve_mode(mode: Optional[str], headless: bool) -> str:
+    """Settle a solver's browser mode, accepting the older boolean.
+
+    ``headless=True`` has always meant "no window", so it maps to that mode unchanged.
+    ``headless=False`` used to mean "always a window" and now maps to ``auto``, which
+    shows one only when the hidden attempt fails — the same capability, without spending
+    a person's attention on the solves that never needed them. ``headed`` remains
+    reachable by name for callers that genuinely want the window every time.
+    """
+    if mode is None:
+        return "headless" if headless else "auto"
+    if mode not in BROWSER_MODES:
+        raise ValueError(f"browser mode must be one of {BROWSER_MODES}, not {mode!r}")
+    return mode
+
+
+def has_display() -> bool:
+    """Whether a window would be seen by anyone.
+
+    Escalating to a visible window is worse than useless without one: on a server or in a
+    container it trades a fast, honest failure for a slow one, having opened a window into
+    a display nobody is attached to. Windows and macOS are assumed to have a desktop —
+    neither runs headless as a normal deployment the way a Linux container does — while on
+    Linux the X11 or Wayland variable is the only signal there is.
+    """
+    if sys.platform.startswith("win") or sys.platform == "darwin":
+        return True
+    return bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
+
+
+def _run_quietly(argv: List[str]) -> bool:
+    """Run *argv*, returning whether it succeeded. Never raises."""
+    try:
+        completed = subprocess.run(
+            argv,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=5,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return completed.returncode == 0
+
+
+def _raise_darwin(executable: Optional[str]) -> bool:
+    """Activate the owning application by its bundle name."""
+    # /Applications/Firefox.app/Contents/MacOS/firefox -> "Firefox"
+    bundle = next(
+        (part[: -len(".app")] for part in Path(executable or "").parts if part.endswith(".app")),
+        "",
+    )
+    if not bundle:
+        return False
+    return _run_quietly(["osascript", "-e", f'tell application "{bundle}" to activate'])
+
+
+def _raise_windows(pid: Optional[int]) -> bool:
+    """Find the process's top-level window and pull it to the foreground.
+
+    Through ``ctypes`` rather than a dependency, since the whole point is that this must
+    not add one. Restore comes before activation because a minimised window cannot be
+    focused, and that is the state a background-launched browser often starts in.
+    """
+    if not pid:
+        return False
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        # Both are Windows-only attributes, so they are reached dynamically: importing
+        # them by name would fail type checking on every other platform this ships to.
+        user32 = getattr(ctypes, "windll").user32
+        callback = getattr(ctypes, "WINFUNCTYPE")
+        found: List[int] = []
+
+        @callback(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
+        def visit(hwnd, _param):
+            owner = wintypes.DWORD()
+            user32.GetWindowThreadProcessId(hwnd, ctypes.byref(owner))
+            if owner.value == pid and user32.IsWindowVisible(hwnd):
+                found.append(hwnd)
+                return False
+            return True
+
+        user32.EnumWindows(visit, 0)
+        if not found:
+            return False
+        window = found[0]
+        # Already in front: `SetForegroundWindow` would be a no-op, and skipping it avoids
+        # spending a foreground-lock attempt that may not be granted twice.
+        if user32.GetForegroundWindow() == window:
+            return True
+        # Restore before focusing. A minimised window cannot be brought forward, and a
+        # browser launched by a background process often starts in exactly that state.
+        user32.ShowWindow(window, 9)  # SW_RESTORE
+        # Deliberately no AttachThreadInput: pywinauto, the most mature implementation of
+        # this, removed it after it raised "the parameter is incorrect" whenever the
+        # thread ids differed, which under an interpreter is the normal case.
+        return bool(user32.SetForegroundWindow(window))
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def _raise_linux(pid: Optional[int]) -> bool:
+    """Ask the window manager to activate the process's window.
+
+    Only through tools the desktop already has: talking X11 directly would mean binding
+    libX11 by hand and would still say nothing to a Wayland compositor. Where neither tool
+    is installed this does nothing, which is the honest outcome — there is no portable way
+    to raise a window on Linux, and pretending otherwise would be worse than the log line.
+    """
+    if not pid:
+        return False
+    if shutil.which("wmctrl") and _run_quietly(["wmctrl", "-x", "-a", str(pid)]):
+        return True
+    if shutil.which("xdotool"):
+        return _run_quietly(
+            ["xdotool", "search", "--pid", str(pid), "windowactivate", "--sync", "%1"]
+        )
+    return False
+
+
+def raise_window(executable: Optional[str] = None, pid: Optional[int] = None) -> None:
+    """Bring a headed browser to the front, so the person meant to solve it sees it.
+
+    An interactive solve assumes someone notices the window and clicks. That assumption
+    fails quietly when the browser is launched from a background process: it gets a taskbar
+    or dock entry but no focus, so the window opens behind everything and the solve spends
+    its whole budget waiting on a person who was never shown anything. Observed on macOS —
+    a headed Firefox with no ``-headless`` flag, reporting ``interactive`` true, invisible
+    until activated by hand — and the same shape is possible on the other desktops.
+
+    Each platform is addressed the way it actually allows, with no new dependency: macOS
+    activates the owning application, Windows walks its own windows and focuses the first
+    visible one, and Linux defers to ``wmctrl`` or ``xdotool`` if the desktop has them.
+
+    **This is a fallback, not the primary route** — callers should ask the browser first,
+    through ``browsingContext.activate`` (BiDi) or ``Page.bringToFront`` (CDP). Both are
+    specified to raise the window rather than merely switch tab, and Chromium implements
+    the latter as ``WebContents::Activate`` straight onto the native window.
+
+    They are still not sufficient, which was measured: with another application
+    deliberately in front, the BiDi command returned success and left that application
+    frontmost, while the call below moved focus from the identical starting state. The
+    reason is not that the protocol asks for the wrong thing — it is that an operating
+    system may refuse a focus change requested by a process that does not already hold
+    focus. Windows names this (``SetForegroundWindow`` fails against the foreground lock)
+    and macOS behaves the same way; the browser hits it on its own behalf just as we do.
+
+    So the two are complementary rather than alternatives, and the protocol has one place
+    where it is the *only* option: on Wayland a client cannot take focus, only be given
+    it, so ``wmctrl`` and ``xdotool`` do nothing and the browser raising its own surface
+    is the sanctioned path.
+
+    Best-effort and silent throughout. Failing to raise a window must never fail a solve,
+    and on Wayland, or on Linux with neither tool installed, there is nothing this can
+    honestly do beyond what the protocol already tried.
+    """
+    if sys.platform == "darwin":
+        raised = _raise_darwin(executable)
+    elif sys.platform.startswith("win"):
+        raised = _raise_windows(pid)
+    else:
+        raised = _raise_linux(pid)
+    if not raised:
+        logger.debug("could not raise the browser window on %s", sys.platform)
+
+
 def honest_user_agent(reported: str) -> str:
     """*reported* with the headless giveaway taken out.
 
@@ -247,6 +472,53 @@ class RenderError(ScraperError):
     """A browser ran but the page never produced what was asked for."""
 
 
+def set_browser_slots(count: int, engine: str = "") -> None:
+    """Allow *count* browsers of *engine* at once, or of every engine when unnamed.
+
+    Raise it only when the machine can genuinely drive more: each browser is a real
+    process with its own profile directory, and exceeding what the platform allows does
+    not queue — it fails in a way that looks like the site blocking you.
+    """
+    if count < 1:
+        raise ValueError("at least one browser slot is required")
+    global _DEFAULT_SLOTS
+    with _slots_guard:
+        if engine:
+            _slots[engine] = threading.BoundedSemaphore(count)
+        else:
+            _DEFAULT_SLOTS = count
+            _slots.clear()
+
+
+def _slots_for(engine: str) -> threading.BoundedSemaphore:
+    with _slots_guard:
+        if engine not in _slots:
+            _slots[engine] = threading.BoundedSemaphore(_DEFAULT_SLOTS)
+        return _slots[engine]
+
+
+@contextmanager
+def browser_slot(engine: str, timeout: Optional[float] = None) -> Iterator[None]:
+    """Hold one of *engine*'s browser slots for the duration of the block.
+
+    Waits rather than failing, because the caller asked for a solve and queueing is a
+    better answer than an error that reads like a block. *timeout* bounds that wait for
+    callers who would rather give up than hold a worker.
+    """
+    semaphore = _slots_for(engine)
+    acquired = semaphore.acquire(timeout=timeout) if timeout else semaphore.acquire()
+    if not acquired:
+        raise TierUnavailable(
+            engine,
+            f"no {engine} slot came free within {timeout:.0f}s; another solve is holding it",
+            "",
+        )
+    try:
+        yield
+    finally:
+        semaphore.release()
+
+
 class BrowserSolver:
     """Drives a real browser through a challenge, and renders a page on request.
 
@@ -265,6 +537,15 @@ class BrowserSolver:
     buys is :attr:`ScraperConfig.interactive_solve_timeout` instead of the unattended
     budget. True of a visible window on a desktop; false of a server, a container, and
     of a solving service that has no window at all.
+    """
+
+    engine = "browser"
+    """Which browser binary this solver drives, used to bound concurrency.
+
+    Solvers sharing an engine share a slot, because the limit that matters is per binary
+    and its profile directory — two Firefox sessions collide where a Firefox and a Chrome
+    do not. A solver driving something else, or a remote service driving nothing local,
+    should name itself so it is not queued behind a browser it never launches.
     """
 
     impersonation = "chrome"

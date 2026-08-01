@@ -49,12 +49,17 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from .browser import (
+    HEADLESS_FIRST_SHARE,
     BrowserSolver,
     RenderError,
     SolveError,
     SolveResult,
+    browser_slot,
     chrome_proxy,
     clearance_deadline,
+    has_display,
+    raise_window,
+    resolve_mode,
 )
 from .browsers import pick_firefox
 from .diagnosis import is_still_challenged
@@ -182,6 +187,24 @@ class FirefoxBackend:
             time.sleep(0.05)
         raise ProtocolError(f"the browser did not report a BiDi port within {_PORT_WAIT:.0f}s")
 
+    def bring_to_front(self) -> None:
+        """Ask the browser to raise its own window.
+
+        Specified to change the system visibility state rather than merely switch tab, and
+        the only mechanism with any chance on Wayland, where a client cannot take focus
+        and can only be given it. The spec allows `unsupported operation` when the
+        platform cannot comply, so failure here is expected rather than exceptional.
+        """
+        try:
+            self._rpc.send("browsingContext.activate", {"context": self._context})
+        except Exception:  # noqa: BLE001
+            logger.debug("browsingContext.activate was refused", exc_info=True)
+
+    @property
+    def pid(self) -> Optional[int]:
+        """The browser process, so a caller can address its window."""
+        return getattr(self._proc, "pid", None)
+
     @property
     def _rpc(self) -> WsClient:
         if self._client is None:
@@ -296,12 +319,14 @@ class BidiSolver(BrowserSolver):
 
     name = "bidi"
     impersonation = "firefox"
+    engine = "firefox"
 
     def __init__(
         self,
         *,
         executable: Optional[str] = None,
         headless: bool = True,
+        mode: Optional[str] = None,
         args: Optional[List[str]] = None,
         settle: float = 3.0,
     ) -> None:
@@ -310,7 +335,11 @@ class BidiSolver(BrowserSolver):
         self._extra = list(args or [])
         self._settle = settle
         self._lock = threading.Lock()
-        self.interactive = not headless
+        # `headless=True` is a floor, not a preference: it means never put a window on
+        # screen, so it also rules out asking a person. Only an explicitly headed solver
+        # may fall back to one, and even then it starts hidden.
+        self.mode = resolve_mode(mode, headless)
+        self.interactive = self.mode != "headless" and has_display()
 
     def solve(
         self,
@@ -320,17 +349,63 @@ class BidiSolver(BrowserSolver):
         profile_dir: Optional[Path] = None,
         timeout: float = 60.0,
     ) -> SolveResult:
-        with self._lock:
-            with self._browser(proxy, profile_dir) as browser:
-                deadline = time.monotonic() + timeout
-                browser.attach()
-                browser.navigate(url, timeout=timeout)
-                while time.monotonic() < deadline:
-                    time.sleep(self._settle)
-                    if not is_still_challenged(browser.content()):
-                        break
-                user_agent = browser.user_agent()
-                cookies, expires_at = browser.cookies()
+        with browser_slot(self.engine), self._lock:
+            if self.mode == "headless" or not self.interactive:
+                return self._attempt(url, proxy, profile_dir, headless=True, timeout=timeout)
+            if self.mode == "headed":
+                return self._attempt(
+                    url, proxy, profile_dir, headless=False, timeout=timeout, show=True
+                )
+
+            # auto: unattended first. Over 46 challenged hosts a corrected headless
+            # browser cleared everything a headed one did, so a window up front spends a
+            # person's attention to buy nothing. It earns its place only when the solver
+            # has already failed and someone else could answer.
+            unattended = max(1.0, timeout * HEADLESS_FIRST_SHARE)
+            deadline = time.monotonic() + timeout
+            try:
+                result = self._attempt(url, proxy, profile_dir, headless=True, timeout=unattended)
+                if result.cleared:
+                    return result
+            except SolveError:
+                pass
+
+            remaining = max(1.0, deadline - time.monotonic())
+            logger.info(
+                "opening a browser window for %s — solve the challenge in it. Waiting up to %.0fs.",
+                url,
+                remaining,
+            )
+            return self._attempt(
+                url, proxy, profile_dir, headless=False, timeout=remaining, show=True
+            )
+
+    def _attempt(
+        self,
+        url: str,
+        proxy: Optional[str],
+        profile_dir: Optional[Path],
+        *,
+        headless: bool,
+        timeout: float,
+        show: bool = False,
+    ) -> SolveResult:
+        with self._browser(proxy, profile_dir, headless=headless) as browser:
+            deadline = time.monotonic() + timeout
+            browser.attach()
+            browser.navigate(url, timeout=timeout)
+            if show:
+                # Ask the browser to raise itself first — the only route that works on
+                # Wayland — then the platform, which wins where the window manager
+                # refuses a focus change the browser requested for itself.
+                browser.bring_to_front()
+                raise_window(self._executable, browser.pid)
+            while time.monotonic() < deadline:
+                time.sleep(self._settle)
+                if not is_still_challenged(browser.content()):
+                    break
+            user_agent = browser.user_agent()
+            cookies, expires_at = browser.cookies()
 
         if not user_agent:
             raise SolveError(
@@ -348,7 +423,7 @@ class BidiSolver(BrowserSolver):
         profile_dir: Optional[Path] = None,
         timeout: float = 60.0,
     ) -> str:
-        with self._lock:
+        with browser_slot(self.engine), self._lock:
             with self._browser(proxy, profile_dir) as browser:
                 deadline = time.monotonic() + timeout
                 browser.attach()
@@ -372,14 +447,19 @@ class BidiSolver(BrowserSolver):
 
     # --------------------------------------------------------------------- #
 
-    def _browser(self, proxy: Optional[str], profile_dir: Optional[Path]) -> "_Session":
+    def _browser(
+        self,
+        proxy: Optional[str],
+        profile_dir: Optional[Path],
+        headless: Optional[bool] = None,
+    ) -> "_Session":
         executable = self._resolve_executable()
         # Settled before the browser starts, as in the Chrome backend: a proxy it
         # cannot use is not worth launching one to discover.
         chrome_proxy(proxy or "")
         return _Session(
             executable=executable,
-            headless=self._headless,
+            headless=self._headless if headless is None else headless,
             profile_dir=profile_dir,
             proxy=proxy,
             extra=self._extra,
