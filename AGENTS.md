@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 Guidance for Claude Code working in this repository.
 
@@ -92,7 +92,7 @@ Each of these is a place where a plausible change is wrong.
 10. **`diagnosis` and `planner` stay pure** — primitives in, dataclasses out, no I/O, no
     clock beyond `time` in the modules that must have one.
 11. **Where fidelity and measurement disagree, measurement wins — and the comment says
-    so.** Two behaviours here are deliberately *not* what a browser does: a first
+    so.** Two behaviours here are deliberately _not_ what a browser does: a first
     request carries a synthesised `Referer`, and the default profile is Firefox rather
     than the commonest browser. Both were argued the other way from the model and both
     lost to `livetest/compare.py`. Do not "correct" them back toward fidelity without
@@ -120,7 +120,7 @@ layer above them.
   single newline into a line break — so never hard-wrap, or the paragraph arrives as a
   ragged column with its indentation showing. (Blank lines still separate paragraphs, and
   a continuation paragraph inside a bullet still needs its indent. The line-length limit
-  above is for code.) An entry is a bold lead sentence plus the shortest *why* that would
+  above is for code.) An entry is a bold lead sentence plus the shortest _why_ that would
   stop someone undoing it — not the investigation that produced it. Reasoning at length
   belongs in the code comment or the docstring, where the reader is already looking at the
   thing it explains.
