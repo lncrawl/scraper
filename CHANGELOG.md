@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **The interstitial's own wording matched a novel's prose.** `just a moment`, `checking your browser` and `enable javascript and cookies to continue` were matched anywhere in the body, so a chapter narrating "wait just a moment longer" was diagnosed as a challenge behind a `200`: the retrieval re-solved and re-fetched the page it already had until its attempt budget ran out, and the caller lost that chapter while the rest of the book downloaded fine. The three now count only in the `<title>` of a document too small to have a page on it — the title alone is not enough, since a novel site puts the chapter title there.
+
+- **A stale cookie in a reused profile made every clearance born expired.** `clearance_deadline` took the soonest expiry among the clearance cookies including ones already in the past, and a profile directory persists between runs — so the `__cf_bm` left by a visit half an hour earlier dated the clearance behind `cf_clearance`'s real expiry by hours. `usable_by` then refused it immediately and the tier re-solved on every single request: measured against a live host, five browser launches and a dropped chapter. Past expiries are ignored, and a solver that returns an already-expired clearance now raises `TierUnavailable` instead of handing back one that cannot be used.
+
+- **A throttled origin stayed throttled forever.** The learned interval grew on every `429` and nothing ever narrowed it, and because the widened value was what each success reported to the origin profile, the penalty rate outlived the process — a site that rate-limited once was crawled at up to `max_interval` in every later run. `Pacer.eased()` walks it back after a run of successes, never below `PacingPolicy.interval`; `recover_factor` and `recover_after` tune it.
+
 ## [1.6.0] - 2026-08-02
 
 ### Added

@@ -14,6 +14,7 @@ domain, which is the detection property the module exists to keep.
 from __future__ import annotations
 
 import json
+import time
 from collections import deque
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
@@ -254,14 +255,30 @@ class TestSharedHelpers:
         assert honest_user_agent("") == ""
 
     def test_the_clearance_deadline_is_the_soonest_of_the_cookies_that_matter(self):
-        deadline = clearance_deadline({"cf_clearance": 500.0, "__cf_bm": 200.0, "other": 10.0})
-        assert deadline == 200.0, "an unrelated cookie expiring sooner must not shorten it"
+        now = time.time()
+        deadline = clearance_deadline(
+            {"cf_clearance": now + 500.0, "__cf_bm": now + 200.0, "other": now + 10.0}
+        )
+        assert deadline == now + 200.0, "an unrelated cookie expiring sooner must not shorten it"
 
     def test_a_session_cookie_contributes_no_deadline(self):
         # Overstating the lifetime is the expensive direction: every request after the
         # real expiry carries a dead cookie and the challenge reads as solver failure.
         assert clearance_deadline({"cf_clearance": 0.0}) == 0.0
         assert clearance_deadline({}) == 0.0
+
+    def test_a_cookie_that_has_already_expired_does_not_bound_a_fresh_clearance(self):
+        # Found live. A profile directory persists between runs, so a solve reads back
+        # the `__cf_bm` a visit half an hour ago left in it. Taking that as the deadline
+        # made the clearance born expired, and the tier then re-solved on every request
+        # until the attempt budget ran out and the chapter was dropped.
+        now = time.time()
+        deadline = clearance_deadline({"cf_clearance": now + 3600.0, "__cf_bm": now - 1800.0})
+        assert deadline == now + 3600.0
+
+    def test_a_jar_of_only_dead_cookies_falls_back_to_the_default_lifetime(self):
+        now = time.time()
+        assert clearance_deadline({"__cf_bm": now - 10.0}) == 0.0
 
 
 class TestWsClient:
@@ -483,16 +500,17 @@ class TestSolve:
     def test_the_soonest_clearance_expiry_wins(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ):
+        now = time.time()
         cookies = [
-            {"name": "cf_clearance", "value": "x", "expires": 900.0},
-            {"name": "__cf_bm", "value": "y", "expires": 300.0},
-            {"name": "session", "value": "z", "expires": 10.0},
+            {"name": "cf_clearance", "value": "x", "expires": now + 900.0},
+            {"name": "__cf_bm", "value": "y", "expires": now + 300.0},
+            {"name": "session", "value": "z", "expires": now + 10.0},
         ]
         install_cdp(monkeypatch, scripted([CLEARED_PAGE], cookies=cookies))
         result = CdpSolver(executable="/usr/bin/chrome", settle=0.0).solve(
             "https://site.test/", profile_dir=tmp_path
         )
-        assert result.expires_at == 300.0
+        assert result.expires_at == now + 300.0
 
 
 class TestRender:

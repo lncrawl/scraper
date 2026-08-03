@@ -156,6 +156,12 @@ class ClearanceTier(Tier):
                     url,
                 )
             clearance = result.as_clearance(origin, identity)
+            if clearance.expired:
+                raise TierUnavailable(
+                    self.name,
+                    f"{self.solver.name} returned a clearance that had already expired",
+                    url,
+                )
             pinned = identity.pin(result.user_agent)
             self._prune_locked()
             self._held[origin] = (clearance, pinned)

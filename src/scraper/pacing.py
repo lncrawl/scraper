@@ -24,7 +24,9 @@ from, tracked per origin.
 
 Rate limiting is handled here rather than in the proxy layer, and that placement is
 the point: a ``429`` says the address works and is being asked for too much, so the
-remedy is arithmetic in this module, not a new address.
+remedy is arithmetic in this module, not a new address. That arithmetic has to run in
+both directions — see :meth:`Pacer.eased`, without which one throttled minute costs an
+origin its speed permanently, including in every later run that reads the profile.
 """
 
 from __future__ import annotations
@@ -64,6 +66,13 @@ class PacingPolicy:
         backoff_factor: Multiplier applied to the learned interval on a throttle.
         max_interval: Cap on the learned interval, so a hostile site cannot
             ratchet a run to a standstill.
+        recover_factor: Multiplier applied to a widened interval once a run of
+            successes says the throttle is behind us. Never narrows past
+            ``interval``, which is what the caller asked for in the first place.
+        recover_after: Consecutive successes one narrowing step costs. Deliberately
+            not every success: a widened interval is *why* those requests are
+            getting through, so probing back down has to be slower than the site's
+            throttle window or the run just re-earns the 429.
     """
 
     interval: float = 3.0
@@ -76,12 +85,16 @@ class PacingPolicy:
     warmup_ttl: float = 1800.0
     backoff_factor: float = 2.0
     max_interval: float = 120.0
+    recover_factor: float = 0.9
+    recover_after: int = 10
 
     def __post_init__(self) -> None:
         if self.interval <= 0:
             self.interval = 0.0
         self.shape = max(0.5, self.shape)
         self.ceiling = max(self.ceiling, self.floor)
+        self.recover_factor = min(1.0, max(0.1, self.recover_factor))
+        self.recover_after = max(1, self.recover_after)
 
 
 def _seeded_random(seed: Optional[int]) -> random.Random:
@@ -110,6 +123,7 @@ class Pacer:
         self._lock = threading.Lock()
         self._last: Dict[str, float] = {}
         self._interval: Dict[str, float] = {}
+        self._streak: Dict[str, int] = {}
 
     def interval_for(self, origin: str) -> float:
         """The current target mean for *origin*."""
@@ -139,7 +153,39 @@ class Pacer:
                 widened = current * policy.backoff_factor
             widened = min(widened, policy.max_interval)
             self._interval[origin] = widened
+            self._streak[origin] = 0
             return widened
+
+    def eased(self, origin: str) -> float:
+        """Record a success and return the interval now in force.
+
+        The counterpart to :meth:`throttled`, and the reason it exists is that
+        without it the learned interval only ever grows. One 429 burst widened an
+        origin for the rest of the process, and — because the widened value is what
+        gets written to :class:`~scraper.memory.OriginProfile` — for every run after
+        it too, so a site that rate-limited once was crawled at up to
+        ``max_interval`` for good. The profile's own decay could not undo that: it
+        averages towards whatever this pacer reports, which was the widened number.
+
+        Narrowing is bounded below by ``policy.interval``. Going faster than the
+        caller asked for is not this module's decision, and an origin already at or
+        under that target is left alone.
+        """
+        policy = self.policy
+        with self._lock:
+            current = self._interval.get(origin, policy.interval)
+            if current <= policy.interval:
+                return current
+
+            streak = self._streak.get(origin, 0) + 1
+            if streak < policy.recover_after:
+                self._streak[origin] = streak
+                return current
+
+            self._streak[origin] = 0
+            narrowed = max(current * policy.recover_factor, policy.interval)
+            self._interval[origin] = narrowed
+            return narrowed
 
     def gap(self, origin: str) -> float:
         """Draw one inter-request gap for *origin*, ignoring elapsed time.

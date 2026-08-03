@@ -12,6 +12,7 @@ hosts with `navigator.webdriver` hidden, none without.
 from __future__ import annotations
 
 import json
+import time
 from collections import deque
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
@@ -235,15 +236,20 @@ class TestDrivingFirefox:
     def test_the_soonest_clearance_expiry_wins(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ):
+        now = time.time()
         cookies = [
-            {"name": "cf_clearance", "value": {"type": "string", "value": "x"}, "expiry": 900.0},
-            {"name": "__cf_bm", "value": {"type": "string", "value": "y"}, "expiry": 300.0},
+            {
+                "name": "cf_clearance",
+                "value": {"type": "string", "value": "x"},
+                "expiry": now + 900.0,
+            },
+            {"name": "__cf_bm", "value": {"type": "string", "value": "y"}, "expiry": now + 300.0},
         ]
         install_bidi(monkeypatch, scripted([CLEARED_PAGE], cookies=cookies))
         result = BidiSolver(executable="/usr/bin/firefox", settle=0.0).solve(
             "https://site.test/", profile_dir=tmp_path
         )
-        assert result.expires_at == 300.0
+        assert result.expires_at == now + 300.0
 
     def test_the_loop_waits_for_the_interstitial_to_go(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path

@@ -504,7 +504,10 @@ class Scraper:
         # A 3xx counts as reached — it is a real answer through this tier — so the bar
         # is "the site responded", not "the response was 200".
         if response.status_code < 400:
-            self.memory.record_success(url, tier=tier, interval=self.pacer.interval_for(key))
+            # `eased` rather than `interval_for`, so a run of successes is what walks a
+            # throttled origin back towards its target. Reporting the interval without
+            # narrowing it made the widening permanent and the profile's decay a no-op.
+            self.memory.record_success(url, tier=tier, interval=self.pacer.eased(key))
         elif response.status_code in _HOSTILE_STATUSES:
             self.memory.record_failure(url, None)
         if navigation:

@@ -8,7 +8,7 @@ from email.utils import formatdate
 
 import pytest
 
-from scraper.diagnosis import Action, diagnose, diagnose_transport, edge
+from scraper.diagnosis import Action, diagnose, diagnose_transport, edge, is_challenge
 from scraper.layers import Layer, Trait
 
 from .conftest import BLOCK_BODY, CHALLENGE_BODY, TURNSTILE_BODY
@@ -80,6 +80,44 @@ class TestChallengeWithASuccessStatus:
             "</script></body></html>"
         )
         assert diagnose(status=200, body=interstitial).action is Action.SOLVE
+
+    def test_the_interstitials_own_wording_in_the_prose_is_not_a_challenge(self):
+        """Found live, and it cost a chapter every time it happened.
+
+        `Just a moment...` is the interstitial's title, but it is also ordinary English.
+        Matched anywhere in the body, a chapter whose narration ran "wait just a moment
+        longer" was diagnosed as a challenge behind a 200 — so the retrieval re-solved
+        and re-fetched the page it already had until the attempt budget ran out. Five
+        browser launches, chapter dropped, and the rest of the book fine, which is what
+        made it read as an intermittent browser fault rather than a detection bug.
+        """
+        page = (
+            "<!doctype html><html><head><title>Chapter 96 - A Novel</title></head><body>"
+            '<p>"Wait just a moment longer," she said.</p>' + "<p>Prose.</p>" * 4000
+        )
+        assert len(page) > 32 * 1024
+        assert diagnose(status=200, body=page).ok
+        assert not is_challenge(page)
+
+    def test_the_wording_in_a_titles_is_not_enough_on_a_page_of_content(self):
+        # A novel site puts the chapter title in <title>, so a chapter actually called
+        # "Just a Moment" would match on the title alone. An interstitial is a document
+        # with no page on it; this is a page.
+        page = (
+            "<!doctype html><html><head><title>Chapter 96: Just a Moment</title></head>"
+            "<body>" + "<p>Prose.</p>" * 4000
+        )
+        assert diagnose(status=200, body=page).ok
+
+    def test_a_small_document_titled_like_the_interstitial_is_one(self):
+        # The other direction: an interstitial variant carrying none of the machine
+        # markers is still an interstitial, and missing it abandons a solvable page.
+        interstitial = (
+            "<!doctype html><html><head><title>Just a moment...</title></head>"
+            "<body><div>Enable JavaScript and cookies to continue</div></body></html>"
+        )
+        assert diagnose(status=200, body=interstitial).action is Action.SOLVE
+        assert is_challenge(interstitial)
 
 
 class TestAJavaScriptOnlyRedirect:

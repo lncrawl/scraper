@@ -95,6 +95,43 @@ class TestLearningTheLimit:
         assert pacer.interval_for("example.com") == 1.0
 
 
+class TestRecoveringFromAThrottle:
+    def test_a_run_of_successes_narrows_a_widened_interval(self):
+        # Without this the widening is permanent: it reaches the origin profile and
+        # every later run starts from it, so one 429 burst costs the site its speed
+        # for good.
+        pacer = Pacer(PacingPolicy(interval=2.0, recover_factor=0.5, recover_after=3))
+        assert pacer.throttled("example.com") == 4.0
+        assert pacer.eased("example.com") == 4.0
+        assert pacer.eased("example.com") == 4.0
+        assert pacer.eased("example.com") == 2.0
+
+    def test_narrowing_stops_at_the_interval_that_was_asked_for(self):
+        pacer = Pacer(PacingPolicy(interval=2.0, recover_factor=0.5, recover_after=1))
+        pacer.throttled("example.com")
+        for _ in range(10):
+            pacer.eased("example.com")
+        assert pacer.interval_for("example.com") == 2.0
+
+    def test_a_success_never_widens_an_origin_paced_faster_than_the_target(self):
+        # A profile may carry in a value below the policy target; easing towards the
+        # target would be a widening, which is not what a success means.
+        pacer = Pacer(PacingPolicy(interval=5.0, recover_after=1))
+        pacer.learn("example.com", 1.0)
+        assert pacer.eased("example.com") == 1.0
+
+    def test_a_fresh_throttle_restarts_the_run_of_successes(self):
+        # Otherwise successes accumulated before the throttle pay for a narrowing
+        # immediately after it, which is how a run re-earns the 429 it just backed off.
+        policy = PacingPolicy(interval=2.0, recover_factor=0.5, recover_after=2)
+        pacer = Pacer(policy)
+        pacer.throttled("example.com")
+        pacer.eased("example.com")
+        assert pacer.throttled("example.com") == 8.0
+        assert pacer.eased("example.com") == 8.0
+        assert pacer.eased("example.com") == 4.0
+
+
 class TestWaiting:
     def test_time_already_spent_counts_towards_the_gap(self):
         # A caller doing its own work between fetches should not be made to wait

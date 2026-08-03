@@ -51,6 +51,11 @@ this library guessed. The widened value is capped by `max_interval` so a hostile
 ratchet a run to a standstill, and it is written to `scraper.memory` so the next run starts
 there.
 
+`Pacer.eased` narrows it again once `recover_after` consecutive successes say the throttle is
+behind us, multiplying by `recover_factor` and stopping at `PacingPolicy.interval` — going
+faster than the caller asked for is not this module's decision. Without it the widening was
+permanent in both senses: for the process, and for every later run that read the profile.
+
 Convergence downward is slow on purpose. A site that let one request through quickly has not
 necessarily raised its limit, and snapping straight to the fast value is how a run earns a
 throttle it then blames on the address.

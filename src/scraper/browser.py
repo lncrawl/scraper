@@ -420,17 +420,28 @@ def honest_user_agent(reported: str) -> str:
 
 
 def clearance_deadline(expiries: Dict[str, float]) -> float:
-    """The soonest expiry among the cookies a clearance actually rests on, or ``0``.
+    """The soonest *future* expiry among the cookies a clearance rests on, or ``0``.
 
     Shared between solvers because disagreeing here gives the clearance the wrong
     lifetime, and the expensive direction is quiet: too long, and every request after
     the real expiry goes out with a dead cookie, so the challenge that comes back
     reads as the solver having failed rather than as the clock having run out.
+
+    Expiries already in the past are ignored, and that is not a tidiness rule. A solve
+    reads the whole jar for the origin out of a profile directory that persists between
+    runs, so a ``__cf_bm`` left there by a visit half an hour ago is still in it — dead,
+    and sooner than the ``cf_clearance`` the solve just earned. Adopting it made every
+    clearance from a reused profile born expired: `usable_by` refused it immediately, the
+    tier re-solved on the very next request, and the retrieval spent its whole attempt
+    budget launching browsers before reporting the site as an unsolvable challenge.
+    Measured against a live host, one stale cookie cost five solves and a lost chapter.
     """
+    now = time.time()
     soonest = 0.0
     for name, expires in expiries.items():
-        if name in _SOLVED_COOKIES and expires > 0:
-            soonest = expires if soonest == 0.0 else min(soonest, expires)
+        if name not in _SOLVED_COOKIES or expires <= now:
+            continue
+        soonest = expires if soonest == 0.0 else min(soonest, expires)
     return soonest
 
 

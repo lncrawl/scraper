@@ -332,6 +332,31 @@ class TestRotationIsEarned:
             scraper.get(URL)
             assert scraper.pacer.interval_for("example.com") > 1.0
 
+    def test_the_pages_after_a_throttle_walk_the_interval_back(self):
+        # The widened interval used to be what every success reported to memory, so a
+        # site that rate-limited once was crawled at the penalty rate for the rest of
+        # the process and in every run that read the profile afterwards.
+        from scraper import PacingPolicy
+
+        pacing = PacingPolicy(
+            interval=1.0,
+            floor=0.0,
+            warmup=False,
+            pause_chance=0.0,
+            recover_factor=0.5,
+            recover_after=3,
+        )
+        transport = FakeTransport(
+            [make_response(429, "slow", url=URL, headers={"retry-after": "0"})]
+            + [make_response(body=PAGE, url=URL) for _ in range(3)]
+        )
+        with scraper_for(transport, pacing=pacing) as scraper:
+            scraper.get(URL)
+            assert scraper.pacer.interval_for("example.com") > 1.0
+            scraper.get(URL)
+            scraper.get(URL)
+            assert scraper.pacer.interval_for("example.com") == 1.0
+
     def test_a_firewall_block_rotates_when_a_better_address_exists(self):
         transport = FakeTransport(
             [make_response(403, BLOCK_BODY, url=URL), make_response(body=PAGE, url=URL)]

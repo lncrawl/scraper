@@ -618,14 +618,41 @@ class TestClearanceTier:
 
         def solve(url: str, *, proxy=None, profile_dir=None, timeout=60.0) -> SolveResult:
             seen.append({"url": url})
-            return SolveResult(cookies={"cf_clearance": "abc"}, user_agent="UA", expires_at=1.0)
+            return SolveResult(
+                cookies={"cf_clearance": "abc"},
+                user_agent="UA",
+                expires_at=time.time() + 0.05,
+            )
 
         tier = clearance_tier(CallableSolver(solve, name="stub"), FakeTransport([make_response()]))
 
         tier.send(call_for())
+        time.sleep(0.06)
         tier.send(call_for())
 
         assert len(seen) == 2
+
+    def test_a_clearance_that_arrives_already_expired_is_a_failed_solve(self):
+        # Found live: a stale cookie in a reused profile dated the clearance into the
+        # past, and returning it meant `_cleared` re-solved on every request until the
+        # attempt budget was gone — a browser launch each time, reported as a challenge
+        # nothing can pass. One launch and a tier failure is the honest answer.
+        seen: List[Dict[str, Any]] = []
+
+        def solve(url: str, *, proxy=None, profile_dir=None, timeout=60.0) -> SolveResult:
+            seen.append({"url": url})
+            return SolveResult(
+                cookies={"cf_clearance": "abc"},
+                user_agent="UA",
+                expires_at=time.time() - 1.0,
+            )
+
+        tier = clearance_tier(CallableSolver(solve, name="stub"), FakeTransport([make_response()]))
+
+        with pytest.raises(TierUnavailable, match="already expired"):
+            tier.send(call_for())
+
+        assert len(seen) == 1
 
     def test_closing_the_tier_closes_the_solver(self):
         closed: List[bool] = []

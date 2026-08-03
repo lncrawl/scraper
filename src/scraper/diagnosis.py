@@ -42,10 +42,35 @@ _CHALLENGE_MARKERS = (
     "__cf_chl_",
     "cf_chl_opt",
     "/cdn-cgi/challenge-platform/h/",
+)
+
+# The interstitial's own visible copy, held apart from the markers above because unlike
+# them it is ordinary English and content can contain it. Found live: a novel chapter
+# whose prose ran "wait just a moment longer" was diagnosed as a challenge, so the
+# retrieval re-solved and re-fetched the page it already had until the attempt budget was
+# gone — five browser launches and a dropped chapter, reproducibly, for every chapter
+# unlucky enough to contain the phrase. The rest of the book downloaded fine, which is
+# what made it read as an intermittent browser fault.
+#
+# So this copy counts only where an interstitial puts it and content does not: in the
+# <title>, and only of a document small enough to have no page on it. The title alone is
+# not enough on this corpus — a novel site puts the chapter title in <title>, so a
+# chapter actually called "Just a Moment" would match.
+_CHALLENGE_COPY = (
     "checking your browser",
     "just a moment",
     "enable javascript and cookies to continue",
 )
+
+_TITLE = re.compile(r"<title[^>]*>(.*?)</title>", re.IGNORECASE | re.DOTALL)
+
+_INTERSTITIAL_BYTES = 32 * 1024
+"""How big a document may be and still be an interstitial.
+
+A bound rather than a measurement: a challenge page is a standalone document with no site
+content on it — a few kilobytes plus an inline script — and this leaves it several times
+that much room while staying well under any real page carrying a chapter of a novel.
+"""
 _TURNSTILE_MARKERS = (
     "challenges.cloudflare.com/turnstile",
     "cf-turnstile",
@@ -403,6 +428,18 @@ def edge(
     return head.get("server", "").split("/")[0]
 
 
+def _titled_challenge(peek: str) -> bool:
+    """Whether *peek* is a small document whose title is an interstitial's.
+
+    Both halves are load-bearing; see :data:`_CHALLENGE_COPY`. *peek* is expected
+    already lowered and truncated.
+    """
+    if len(peek) > _INTERSTITIAL_BYTES:
+        return False
+    match = _TITLE.search(peek)
+    return bool(match and _has(match.group(1), _CHALLENGE_COPY))
+
+
 def is_challenge(body: str) -> bool:
     """Whether *body* is an interstitial rather than the page that was asked for.
 
@@ -410,7 +447,8 @@ def is_challenge(body: str) -> bool:
     the two questions this module answers about a challenge page. A false positive here
     costs a browser launch on a page that had already arrived.
     """
-    return bool(_has((body or "")[:_BODY_PEEK].lower(), _CHALLENGE_MARKERS))
+    peek = (body or "")[:_BODY_PEEK].lower()
+    return bool(_has(peek, _CHALLENGE_MARKERS)) or _titled_challenge(peek)
 
 
 def is_still_challenged(body: str) -> bool:
@@ -426,7 +464,9 @@ def is_still_challenged(body: str) -> bool:
     it is more than enough to say a page being solved is not finished.
     """
     peek = (body or "")[:_BODY_PEEK].lower()
-    return bool(_has(peek, _CHALLENGE_MARKERS) or _has(peek, _TURNSTILE_MARKERS))
+    return bool(_has(peek, _CHALLENGE_MARKERS) or _has(peek, _TURNSTILE_MARKERS)) or (
+        _titled_challenge(peek)
+    )
 
 
 def _cf_code(body: str) -> Optional[int]:
@@ -498,6 +538,7 @@ def diagnose(
     challenged = (
         mitigated == "challenge"
         or bool(_has(peek, _CHALLENGE_MARKERS))
+        or _titled_challenge(peek)
         or bool(vendor is not None and _has(peek, vendor.challenge))
         # A bare captcha widget only counts on a refusal. See _CAPTCHA_MARKERS.
         or bool(status >= 400 and _has(peek, _CAPTCHA_MARKERS))
