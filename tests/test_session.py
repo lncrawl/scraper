@@ -33,6 +33,7 @@ from scraper.exceptions import (
 )
 from scraper.exits import TorPoolSpec
 from scraper.layers import Layer
+from scraper.memory import DECOY_TTL
 
 from .conftest import BLOCK_BODY, CHALLENGE_BODY, FakeTransport, make_response
 
@@ -497,13 +498,32 @@ class TestDecoyContent:
             with pytest.raises(Poisoned):
                 scraper.get("https://example.com/maze/1")
 
-    def test_a_known_decoy_is_not_fetched_again(self):
+    def test_a_known_decoy_is_not_fetched_again_when_told_to_raise(self):
         transport = FakeTransport([make_response(body=PAGE, url=URL)])
-        with scraper_for(transport) as scraper:
+        with scraper_for(transport, on_decoy="raise") as scraper:
             scraper.knows(URL).note_decoy(URL)
             with pytest.raises(Poisoned):
                 scraper.get(URL)
         assert transport.calls == []
+
+    def test_a_known_decoy_is_still_fetched_when_only_warning(self):
+        # `warn` reports and remembers; it does not refuse. The guard learns an origin's
+        # topic from whatever it has seen, so prose that shares little vocabulary with
+        # the table of contents it was found on reads as off-topic — and a refusal there
+        # loses a chapter that was fetched successfully a moment earlier.
+        transport = FakeTransport([make_response(body=PAGE, url=URL)])
+        with scraper_for(transport) as scraper:
+            scraper.knows(URL).note_decoy(URL)
+            assert scraper.get(URL).status_code == 200
+        assert len(transport.calls) == 1
+
+    def test_a_decoy_verdict_stops_refusing_once_it_expires(self):
+        transport = FakeTransport([make_response(body=PAGE, url=URL)])
+        with scraper_for(transport, on_decoy="raise") as scraper:
+            profile = scraper.knows(URL)
+            profile.note_decoy(URL)
+            profile.decoys[URL] = time.time() - DECOY_TTL - 1
+            assert scraper.get(URL).status_code == 200
 
     def test_the_guard_is_off_by_configuration(self):
         transport = FakeTransport([make_response(body="totally unrelated words", url=URL)])
@@ -1480,7 +1500,7 @@ class TestRenderingWhatHttpCannotReach:
             assert time.monotonic() - started < 1.0
 
     def test_a_url_recorded_as_a_decoy_is_not_rendered_either(self):
-        with scraper_for(FakeTransport(), browser=RenderingSolver()) as scraper:
+        with scraper_for(FakeTransport(), browser=RenderingSolver(), on_decoy="raise") as scraper:
             scraper.knows(URL).note_decoy(URL)
             with pytest.raises(Poisoned):
                 scraper.render(URL)

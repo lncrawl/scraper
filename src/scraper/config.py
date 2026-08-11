@@ -123,7 +123,10 @@ class ScraperConfig:
         on_decoy: ``"warn"``, ``"raise"`` or ``"ignore"``. Warning is the default
             because the check is a heuristic and a false positive should not be
             able to fail a job; ``"raise"`` is right for anything that trains on
-            or republishes what it collects.
+            or republishes what it collects. Only ``"raise"`` refuses: under
+            ``"warn"`` a flagged page is reported and remembered but still
+            returned, including on a later run. Either way the record expires,
+            so a wrong verdict costs a re-check rather than the URL.
         raise_for_status: Raise :class:`requests.HTTPError` on a non-2xx that
             survived the ladder. A 404 reaches the caller either way; this only
             decides whether it arrives as a return value or an exception.

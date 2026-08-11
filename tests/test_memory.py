@@ -9,7 +9,7 @@ from pathlib import Path
 
 from scraper.identity import Clearance, Identity
 from scraper.layers import Layer
-from scraper.memory import SCHEMA, Memory, OriginProfile
+from scraper.memory import DECOY_TTL, SCHEMA, Memory, OriginProfile
 
 
 def test_an_origin_is_keyed_by_host_not_by_url():
@@ -142,7 +142,23 @@ class TestEndpointsAndDecoys:
         profile = Memory().profile("https://example.com/")
         for _ in range(5):
             profile.note_decoy("https://example.com/maze/1")
-        assert profile.decoys == ["https://example.com/maze/1"]
+        assert list(profile.decoys) == ["https://example.com/maze/1"]
+
+    def test_a_decoy_verdict_expires(self):
+        # A wrong verdict must cost a re-check rather than the URL. Nothing else in the
+        # store forgets a conclusion this specific, so it is worth pinning.
+        profile = Memory().profile("https://example.com/")
+        profile.note_decoy("https://example.com/maze/1")
+        assert profile.is_decoy("https://example.com/maze/1")
+
+        profile.decoys["https://example.com/maze/1"] = time.time() - DECOY_TTL - 1
+        assert not profile.is_decoy("https://example.com/maze/1")
+
+    def test_noting_a_decoy_drops_the_ones_that_expired(self):
+        profile = Memory().profile("https://example.com/")
+        profile.decoys["https://example.com/old"] = time.time() - DECOY_TTL - 1
+        profile.note_decoy("https://example.com/new")
+        assert list(profile.decoys) == ["https://example.com/new"]
 
 
 class TestValidators:

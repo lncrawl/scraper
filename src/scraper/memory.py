@@ -44,11 +44,22 @@ from .utils.url_tools import extract_host
 
 logger = logging.getLogger(__name__)
 
-SCHEMA = 1
+SCHEMA = 2
 """Bumped when a field changes meaning. An unknown schema is discarded, not guessed at."""
 
 MAX_ENDPOINTS = 32
 MAX_DECOYS = 256
+
+DECOY_TTL = 7 * 24 * 60 * 60
+"""How long a decoy verdict stands before the URL is judged again.
+
+The check is a heuristic over vocabulary overlap, so a verdict is a guess about a page
+at a moment: it can be wrong, and a site that was reorganised can turn a right one
+stale. Kept permanently, one wrong guess removes a URL from every future run with no
+signal that it happened and no way back except editing the store by hand.
+
+A week is long enough that a live trap stays remembered across a job and its retries,
+and short enough that a mistake costs a re-check rather than a chapter."""
 
 MAX_VALIDATORS = 64
 """Endpoints per origin to keep an ``ETag``/``Last-Modified`` pair for.
@@ -98,7 +109,9 @@ class OriginProfile:
     last_seen: float = field(default_factory=time.time)
     warmed_at: float = 0.0
     endpoints: List[str] = field(default_factory=list)
-    decoys: List[str] = field(default_factory=list)
+    #: URL to the time it was judged a decoy. A time rather than a bare list because a
+    #: verdict expires; see DECOY_TTL.
+    decoys: Dict[str, float] = field(default_factory=dict)
     clearance: Optional[Dict[str, Any]] = None
     validators: Dict[str, Dict[str, str]] = field(default_factory=dict)
 
@@ -170,12 +183,19 @@ class OriginProfile:
         return dict(self.validators.get(url) or {})
 
     def note_decoy(self, url: str) -> None:
-        if url not in self.decoys:
-            self.decoys.append(url)
-            del self.decoys[:-MAX_DECOYS]
+        self.decoys[url] = time.time()
+        for stale in self._expired_decoys():
+            self.decoys.pop(stale, None)
+        for oldest in sorted(self.decoys, key=lambda key: self.decoys[key])[:-MAX_DECOYS]:
+            self.decoys.pop(oldest, None)
 
     def is_decoy(self, url: str) -> bool:
-        return url in self.decoys
+        noted = self.decoys.get(url)
+        return noted is not None and (time.time() - noted) < DECOY_TTL
+
+    def _expired_decoys(self) -> List[str]:
+        cutoff = time.time() - DECOY_TTL
+        return [url for url, noted in self.decoys.items() if noted < cutoff]
 
 
 class Memory:

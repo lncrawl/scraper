@@ -215,8 +215,7 @@ class Scraper:
         profile = self.memory.profile(url)
         self.pacer.learn(key, profile.interval)
 
-        if profile.is_decoy(url):
-            raise Poisoned(url, "this URL was recorded as decoy content on an earlier run")
+        self._refuse_known_decoy(url, profile)
 
         start = self.planner.start(
             binding=profile.binding,
@@ -567,6 +566,23 @@ class Scraper:
             return
         self._inspect_text(url, key, profile, self._peek(response))
 
+    def _refuse_known_decoy(self, url: str, profile: OriginProfile) -> None:
+        """Stop a retrieval of a URL an earlier run judged a decoy, under `raise` only.
+
+        `warn` records and reports; it does not refuse. The distinction matters because
+        the guard learns an origin's topic from whatever it has seen, so a novel whose
+        prose shares little vocabulary with its own table of contents reads as off-topic
+        — and under a mode named "warn" that turned into a permanent refusal of pages
+        the caller had already read successfully.
+
+        Only a retrieval the caller asked for by name is exempt. `links` still drops
+        recorded decoys, because there the URL is one this package proposed and the
+        whole point of the record is not to propose it again.
+        """
+        if self.config.on_decoy != "raise" or not profile.is_decoy(url):
+            return
+        raise Poisoned(url, "this URL was recorded as decoy content on an earlier run")
+
     def _inspect_text(
         self,
         url: str,
@@ -854,8 +870,7 @@ class Scraper:
         key = self.memory.key(url)
         profile = self.memory.profile(url)
         self.pacer.learn(key, profile.interval)
-        if profile.is_decoy(url):
-            raise Poisoned(url, "this URL was recorded as decoy content on an earlier run")
+        self._refuse_known_decoy(url, profile)
 
         lease = self.exits.lease(key)
         identity = self._identity(key, lease)

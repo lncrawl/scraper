@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-08-11
+
+### Changed
+
+- **`on_decoy: "warn"` no longer refuses a page.** A flagged URL was recorded and then refused on every later retrieval, including the explicit ones, so the mode named "warn" was a permanent block with a warning attached. The guard learns an origin's topic from what it has already seen, so a chapter whose prose shares little vocabulary with the table of contents it was found on reads as off-topic — and three chapters measured at 13,403, 11,210 and 13,190 characters of real prose were refused on the run after they were read successfully. Only `"raise"` refuses now. `links` still drops recorded decoys, because there the URL is one this package proposed rather than one the caller asked for.
+
+- **A decoy verdict expires after a week.** The check is a heuristic over vocabulary overlap, so a verdict is a guess about a page at a moment: it can be wrong, and a site that was reorganised can turn a right one stale. Kept forever, one wrong guess removed a URL from every future run with no way back except editing the store by hand. `DECOY_TTL` is the constant.
+
+- **`OriginProfile.decoys` is a mapping of URL to the time it was judged, not a list.** The store's schema is bumped, so an existing `origins.json` is discarded and relearned rather than guessed at.
+
 ## [1.7.0] - 2026-08-03
 
 ### Fixed
