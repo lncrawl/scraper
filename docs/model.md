@@ -41,9 +41,9 @@ from scraper import Layer, weakest
 from scraper.layers import marginal_gain
 
 odds = {Layer.IP_REPUTATION: 0.05, Layer.TLS_FINGERPRINT: 0.99}
-weakest(odds)                                        # (L1 IP reputation, 0.05)
-marginal_gain(odds, Layer.TLS_FINGERPRINT, 1.0)      # 0.0  — nothing to gain
-marginal_gain(odds, Layer.IP_REPUTATION, 0.9)        # 0.85 — this is the one
+weakest(odds)  # (L1 IP reputation, 0.05)
+marginal_gain(odds, Layer.TLS_FINGERPRINT, 1.0)  # 0.0  — nothing to gain
+marginal_gain(odds, Layer.IP_REPUTATION, 0.9)  # 0.85 — this is the one
 ```
 
 ## Emit versus possess

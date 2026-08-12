@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "lncrawl-scraper"
-version = "1.8.0"
+version = "1.9.0"
 description = "A scraper that diagnoses which detection layer is blocking it and escalates only as far as that layer requires."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -71,9 +71,7 @@ dev = [
     "cryptography>=47.0.0",
     "websockets>=13",
 ]
-docs = [
-    "mkdocs-material>=9.7.0",
-]
+docs = ["mkdocs-material>=9.7.0"]
 
 [tool.poe.tasks]
 lint = [
@@ -81,21 +79,11 @@ lint = [
     { cmd = "ruff format --check" },
     { cmd = "pyright" },
 ]
-lint-fix = [
-    { cmd = "ruff check --fix" },
-    { cmd = "ruff format" },
-]
+lint-fix = [{ cmd = "ruff check --fix" }, { cmd = "ruff format" }]
 test = "pytest"
 cov = "pytest --cov --cov-branch --cov-report=term-missing --cov-report=html --cov-report=xml"
-build = [
-    { ref = "lint" },
-    { ref = "test" },
-    { cmd = "uv build" },
-]
-publish = [
-    { ref = "build" },
-    { cmd = "uv publish" },
-]
+build = [{ ref = "lint" }, { ref = "test" }, { cmd = "uv build" }]
+publish = [{ ref = "build" }, { cmd = "uv publish" }]
 
 # The docs site published to https://lncrawl.github.io/scraper/. Both tasks must run
 # from the project root — pymdownx.snippets pulls README.md, CHANGELOG.md and
@@ -119,9 +107,7 @@ live-all = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-filterwarnings = [
-    "ignore:urllib3 v2 only supports OpenSSL:Warning",
-]
+filterwarnings = ["ignore:urllib3 v2 only supports OpenSSL:Warning"]
 
 [tool.coverage.run]
 branch = true

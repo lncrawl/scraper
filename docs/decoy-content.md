@@ -45,7 +45,7 @@ indistinguishable from a page that had no links:
 ```python
 for link in safe_links(html, base, include_rejected=True):
     if not link.followable:
-        print(link.rejected, link.url)     # rel=nofollow, hidden by inline style, …
+        print(link.rejected, link.url)  # rel=nofollow, hidden by inline style, …
 ```
 
 `Scraper.links()` wraps this and additionally drops URLs recorded as decoys on an earlier run.
@@ -94,5 +94,5 @@ when a crawl frontier suddenly grows.
 from scraper.links import looks_like_maze
 
 if looks_like_maze(newly_discovered):
-    ...   # stop expanding and look at what was just added
+    ...  # stop expanding and look at what was just added
 ```

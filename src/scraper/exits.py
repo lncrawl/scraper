@@ -315,6 +315,48 @@ class ExitPool:
                 self._slots[lease.exit_id] = gate
             return gate
 
+    def browser_proxy(self, lease: ExitLease) -> Optional[str]:
+        """*lease*'s address in a form a browser can be launched with.
+
+        Empty for a direct connection, which is exactly what a browser wants there.
+        ``None`` means this address cannot be handed to a browser at all, which is a
+        reason to skip the browser rather than to launch it leaving from somewhere
+        else.
+
+        A pool lease is why this is not just :attr:`ExitLease.proxies`. That URL
+        carries the session key as SOCKS5 userinfo, and Chrome rejects
+        ``--proxy-server`` outright when the URL has any — while dropping the
+        credential is worse than failing, because the pool then keys by client
+        address and the browser leaves by a different instance than the requests
+        that go on to replay its clearance. tor-pool answers that with one
+        credential-free listener per instance (``SESSION_PORT_BASE``) and reports
+        the port this session's instance is on, so the address is asked for rather
+        than assembled from a setting only the pool can see.
+
+        Asked fresh every time. A solve is a browser launch, so one request to the
+        pool is free by comparison — and the instance behind a session is not ours
+        to assume, since draining or quarantining one moves the sessions pinned to
+        it without telling us.
+        """
+        spec = lease.spec
+        if not isinstance(spec, TorPoolSpec):
+            return spec.url
+        path = f"/api/sessions/{urllib.parse.quote(lease.session_key, safe='')}"
+        body = self._pool_request(spec, path, method="GET") or {}
+        try:
+            port = int(body.get("session_port") or 0)
+        except (TypeError, ValueError):
+            port = 0
+        if port <= 0:
+            logger.warning(
+                "tor-pool offers no credential-free port for session %s, so no browser can "
+                "leave by this exit: either SESSION_PORT_BASE is off, or the pool has not "
+                "pinned this session yet because nothing has been fetched through it.",
+                lease.session_key,
+            )
+            return None
+        return _at_port(spec.url, port)
+
     def rotate(self, origin: str, layer: Optional[Layer] = None) -> ExitLease:
         """Move *origin* to a different address, reporting why first.
 
@@ -465,7 +507,13 @@ class ExitPool:
         method: str = "POST",
     ) -> Optional[dict]:
         url = spec.api_url.rstrip("/") + path
-        data = json.dumps(payload).encode() if payload is not None else b""
+        # A bodyless POST is a documented signal to the pool, so it keeps its empty
+        # body; a GET must not carry one at all, or urllib sends a Content-Length on a
+        # request that has nothing to declare.
+        if payload is not None:
+            data: Optional[bytes] = json.dumps(payload).encode()
+        else:
+            data = b"" if method == "POST" else None
         headers = {"content-type": "application/json"}
         if spec.token:
             headers["authorization"] = f"Bearer {spec.token}"
@@ -505,6 +553,22 @@ pool of one, with nothing on either side reporting a fault. A pool with
 authentication off ignores this; one with it on rejects it exactly as it already
 rejects an absent token.
 """
+
+
+def _at_port(url: str, port: int) -> str:
+    """*url*'s host at *port*, as a credential-free SOCKS5 endpoint.
+
+    The scheme is not carried over, deliberately. A pool's per-instance listeners
+    speak SOCKS5 whatever endpoint the requests half was pointed at, so an operator
+    who configured the HTTP proxy would otherwise be handed an ``http://`` URL for a
+    port that does not speak it. Userinfo goes with the scheme, which is the point of
+    the exercise.
+    """
+    parsed = urllib.parse.urlsplit(url)
+    host = parsed.hostname or ""
+    if ":" in host:  # IPv6 literals must stay bracketed
+        host = f"[{host}]"
+    return urllib.parse.urlunsplit(("socks5h", f"{host}:{port}", "", "", ""))
 
 
 def with_credentials(url: str, username: str, password: str) -> str:

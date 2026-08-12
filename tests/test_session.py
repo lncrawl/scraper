@@ -1467,6 +1467,19 @@ class TestRenderingWhatHttpCannotReach:
             }
         ]
 
+    def test_an_address_no_browser_can_use_is_unavailable_rather_than_dropped(self):
+        # A pool lease's URL carries the session key as its SOCKS5 username, and a
+        # browser cannot send one. Launching without it would leave by whichever
+        # instance the pool picks for an unnamed caller, so the render would read a
+        # different address than the origin is being paced and held on — and the pool
+        # here cannot be asked for a credential-free port, so there is nothing to use.
+        solver = RenderingSolver()
+        exits = [TorPoolSpec(api_url="http://127.0.0.1:1", token="tp_x")]
+        with scraper_for(FakeTransport(), browser=solver, exits=exits) as scraper:
+            with pytest.raises(TierUnavailable, match="cannot send"):
+                scraper.render(URL)
+        assert solver.calls == []
+
     def test_a_render_is_not_recorded_as_a_tier_that_works(self):
         # A page the browser rendered is no evidence that the HTTP ladder works, and
         # recording it as a success would zero the failures that promote a diagnosis.

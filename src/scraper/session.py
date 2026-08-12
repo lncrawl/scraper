@@ -672,6 +672,10 @@ class Scraper:
             identity=identity,
             headers=merged,
             proxies=lease.proxies,
+            # Deferred, not resolved here: a pool has to be asked which of its
+            # instances this session is on, and all but the browser tier gets through
+            # without ever needing to know.
+            browser_proxy=lambda: self.exits.browser_proxy(lease),
             clearance=clearance,
             timeout=timeout if timeout is not None else self.config.timeout,
             options=options,
@@ -874,12 +878,23 @@ class Scraper:
 
         lease = self.exits.lease(key)
         identity = self._identity(key, lease)
-        proxies = lease.proxies or {}
+        # Not `lease.proxies`: a pool endpoint carries a credential a browser cannot
+        # send. Unlike a solve, nothing here is bound to the address afterwards — but
+        # the browser still has to be launchable, and it is the pool that knows which
+        # of its addresses one can be pointed at.
+        proxy = self.exits.browser_proxy(lease)
+        if proxy is None:
+            raise TierUnavailable(
+                "render",
+                "no address a browser can leave by: this exit needs a credential and a "
+                "browser cannot send one",
+                url,
+            )
         with self._paced(key, abort):
             html = solver.render(
                 url,
                 wait_for=wait_for,
-                proxy=proxies.get("https") or proxies.get("http"),
+                proxy=proxy,
                 profile_dir=profile_dir_for(self.config.profile_root, identity.exit_id),
                 timeout=timeout if timeout is not None else self.config.solve_timeout,
             )

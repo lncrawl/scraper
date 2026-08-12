@@ -106,7 +106,12 @@ class ClearanceTier(Tier):
         if existing is not None:
             logger.debug("re-solving %s: %s", call.url, existing.why_not(call.identity))
 
-        clearance, identity = self.solve(call.url, call.identity, proxies=call.proxies)
+        clearance, identity = self.solve(
+            call.url,
+            call.identity,
+            proxies=call.proxies,
+            browser_proxy=call.browser_proxy,
+        )
         call.clearance = clearance
         # The identity changed, because the browser's User-Agent is now part of it.
         # Handing back the old one would send the clearance under a token it was not
@@ -120,6 +125,7 @@ class ClearanceTier(Tier):
         identity: Identity,
         *,
         proxies: Optional[dict] = None,
+        browser_proxy: Optional[Callable[[], Optional[str]]] = None,
     ) -> Tuple[Clearance, Identity]:
         """Run the browser and return the clearance with the identity it belongs to.
 
@@ -127,7 +133,7 @@ class ClearanceTier(Tier):
         it, and the profile is what carries accumulated history forward.
         """
         origin = extract_base(url)
-        proxy = (proxies or {}).get("https") or (proxies or {}).get("http")
+        proxy = self._browser_address(url, proxies, browser_proxy)
 
         with self._lock:
             # Another thread may have solved this origin while this one waited, and
@@ -176,6 +182,40 @@ class ClearanceTier(Tier):
             pinned.describe(),
         )
         return clearance, pinned
+
+    def _browser_address(
+        self,
+        url: str,
+        proxies: Optional[dict],
+        resolve: Optional[Callable[[], Optional[str]]],
+    ) -> Optional[str]:
+        """Where the browser leaves from, or a refusal to launch one.
+
+        The lease's own proxy URL is not always usable: a pool endpoint carries the
+        session key as userinfo and no browser can send one. Asking the exit pool is
+        what turns that into a credential-free address *on the same instance*, which
+        is the part that matters — an address that merely works would earn a
+        clearance the requests replaying it cannot use.
+
+        So when there is no such address, this tier is unavailable rather than
+        launched anyway. Solving from somewhere the clearance will not be replayed
+        from produces a cookie rejected on first use, which reads as a broken solver
+        and provokes re-solving forever.
+        """
+        if resolve is None:
+            # Nobody offered to answer — `solve()` called directly, or a caller
+            # assembling its own Call. The lease URL is the honest best guess, and
+            # `chrome_proxy` refuses it if it carries a credential.
+            return (proxies or {}).get("https") or (proxies or {}).get("http")
+        address = resolve()
+        if address is None:
+            raise TierUnavailable(
+                self.name,
+                "no address a browser can leave by: this exit needs a credential and a "
+                "browser cannot send one",
+                url,
+            )
+        return address
 
     def _prune_locked(self) -> None:
         """Forget expired clearances, then the oldest, until under the cap."""

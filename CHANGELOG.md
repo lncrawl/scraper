@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-08-12
+
+### Fixed
+
+- **A browser can now be launched on a tor-pool exit.** The lease's proxy URL carries the session key as its SOCKS5 username, and no browser can send one — Chrome rejects `--proxy-server` outright when the URL has userinfo — so every challenged host held on a pool endpoint failed the solve it needed, and `render()` raised on the first call. Dropping the credential would have been worse: the pool keys an unnamed caller by client address, so the browser would leave by a different instance than the requests replaying its clearance, and a clearance from an address that did not earn it reads as the site refusing you. The address now comes from `ExitPool.browser_proxy`, which asks the pool for the credential-free port its session's instance is on — tor-pool's `SESSION_PORT_BASE`, which needs the pool's authentication off. A pool without those listeners, or one that has not pinned the session yet, makes the browser tier `TierUnavailable` rather than launching it somewhere the clearance cannot be replayed from.
+
 ## [1.8.0] - 2026-08-11
 
 ### Changed
@@ -355,6 +361,8 @@ Initial public release of `lncrawl-scraper`, extracted from [lightnovel-crawler]
 - Stealth mode, proxy rotation with Tor identity refresh, TLS cipher rotation, rate limiting, and cooperative `abort()`.
 - `py.typed` marker (PEP 561) and full type coverage.
 
+[1.9.0]: https://github.com/lncrawl/scraper/compare/v1.8.0...v1.9.0
+[1.8.0]: https://github.com/lncrawl/scraper/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/lncrawl/scraper/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/lncrawl/scraper/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/lncrawl/scraper/compare/v1.4.0...v1.5.0

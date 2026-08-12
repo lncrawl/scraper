@@ -131,7 +131,7 @@ memory = Memory(path, max_origins=4096, forget_after=7 * 86400)
 
 ```python
 if scraper.unchanged(toc_url):
-    return                      # nothing to do; skip the whole job
+    return  # nothing to do; skip the whole job
 ```
 
 Every parsed response's `ETag` and `Last-Modified` are recorded per endpoint. **Sending them
@@ -202,8 +202,8 @@ carry its own switch:
 ```python
 job = threading.Event()
 
-scraper.get(url, signal=job)          # cancelled by job, or by abort()
-job.set()                             # stops that retrieval, nothing else
+scraper.get(url, signal=job)  # cancelled by job, or by abort()
+job.set()  # stops that retrieval, nothing else
 ```
 
 Anything with `is_set()` works. It is *combined* with the scraper's own signal rather than

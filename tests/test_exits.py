@@ -6,7 +6,7 @@ import json
 import threading
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import pytest
 
@@ -293,6 +293,28 @@ class _PoolHandler(BaseHTTPRequestHandler):
     calls: List[Tuple[str, Dict]] = []
     auth: List[str] = []
     status = 200
+    session_port: Optional[int] = 19602
+    """What `GET /api/sessions/{key}` reports. ``None`` omits the field, as a real
+    pool does when `SESSION_PORT_BASE` is unset — absent means "not available"
+    rather than "port zero"."""
+
+    def do_GET(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
+        type(self).calls.append((f"GET {self.path}", {}))
+        type(self).auth.append(self.headers.get("authorization") or "")
+        if type(self).status != 200:
+            self.send_response(type(self).status)
+            self.send_header("content-length", "0")
+            self.end_headers()
+            return
+        body: Dict[str, object] = {"session": "s", "instance": 2}
+        if type(self).session_port is not None:
+            body["session_port"] = type(self).session_port
+        payload = json.dumps(body).encode()
+        self.send_response(200)
+        self.send_header("content-type", "application/json")
+        self.send_header("content-length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
 
     def do_POST(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
         length = int(self.headers.get("content-length") or 0)
@@ -322,6 +344,7 @@ def pool_api():
     _PoolHandler.calls = []
     _PoolHandler.auth = []
     _PoolHandler.status = 200
+    _PoolHandler.session_port = 19602
     server = HTTPServer(("127.0.0.1", 0), _PoolHandler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
@@ -438,6 +461,79 @@ class TestTorPool:
         pool = tor_pool(api_url, report_failures=False)
         pool.report(pool.lease("example.com"), Layer.IP_REPUTATION)
         assert handler.calls == []
+
+
+class TestAnAddressABrowserCanUse:
+    """Chrome rejects `--proxy-server` outright when the URL carries userinfo, and a
+    pool lease's URL always does — the session key travels as the SOCKS5 username.
+
+    Dropping the credential is not the fix: the pool then keys by client address, so
+    the browser leaves by a different instance than the requests replaying its
+    clearance, and a clearance from an address that did not earn it reads as the site
+    refusing us. tor-pool's answer is one credential-free listener per instance, whose
+    port it reports per session.
+    """
+
+    def test_the_pools_credential_free_port_is_asked_for_not_assembled(self, pool_api):
+        api_url, handler = pool_api
+        pool = tor_pool(api_url)
+        lease = pool.lease("example.com")
+        assert pool.browser_proxy(lease) == "socks5h://127.0.0.1:19602"
+        # Asked per session, because which instance a session sits on is the pool's
+        # to know: SESSION_PORT_BASE is not visible from here, and draining moves a
+        # session without telling us.
+        assert any(
+            path.startswith(f"GET /api/sessions/{lease.session_key}") for path, _ in handler.calls
+        )
+
+    def test_it_carries_no_credential(self, pool_api):
+        api_url, _ = pool_api
+        pool = tor_pool(api_url)
+        lease = pool.lease("example.com")
+        address = pool.browser_proxy(lease)
+        assert address is not None
+        parsed = urllib.parse.urlsplit(address)
+        assert not parsed.username and not parsed.password
+        # And the credentialed URL the requests half uses is unchanged.
+        assert urllib.parse.urlsplit((lease.proxies or {})["https"]).username
+
+    def test_a_pool_without_the_listeners_offers_nothing(self, pool_api):
+        # SESSION_PORT_BASE unset. None means "skip the browser", and the tier turns
+        # that into TierUnavailable — launching anyway would earn a clearance on an
+        # address the requests cannot replay it from.
+        api_url, handler = pool_api
+        handler.session_port = None
+        pool = tor_pool(api_url)
+        assert pool.browser_proxy(pool.lease("example.com")) is None
+
+    def test_a_session_the_pool_has_not_pinned_yet_offers_nothing(self, pool_api):
+        # A 404: nothing has been fetched through this session, so there is no
+        # instance to name a port on.
+        api_url, handler = pool_api
+        handler.status = 404
+        pool = tor_pool(api_url)
+        assert pool.browser_proxy(pool.lease("example.com")) is None
+
+    def test_a_pool_that_is_down_offers_nothing(self):
+        pool = ExitPool([TorPoolSpec(api_url="http://127.0.0.1:1", token=TOKEN)])
+        assert pool.browser_proxy(pool.lease("example.com")) is None
+
+    def test_the_listener_is_socks_whatever_the_endpoint_was(self, pool_api):
+        # An operator who pointed the exit at the pool's HTTP proxy still gets a
+        # socks5h:// URL, because the per-instance listeners only speak SOCKS.
+        api_url, _ = pool_api
+        pool = ExitPool([TorPoolSpec(url="http://127.0.0.1:9251", api_url=api_url, token=TOKEN)])
+        assert pool.browser_proxy(pool.lease("example.com")) == "socks5h://127.0.0.1:19602"
+
+    def test_a_direct_exit_needs_no_proxy_at_all(self):
+        pool = ExitPool()
+        assert pool.browser_proxy(pool.lease("example.com")) == ""
+
+    def test_a_plain_proxy_is_handed_over_as_configured(self):
+        # Nothing to look up: it has no session, and if it needs a credential the
+        # browser layer refuses it with a message naming that.
+        pool = ExitPool([ExitSpec(url="socks5h://p.test:1080", kind=ExitKind.DATACENTER)])
+        assert pool.browser_proxy(pool.lease("example.com")) == "socks5h://p.test:1080"
 
     def test_a_pool_that_is_down_never_breaks_the_scrape(self):
         pool = ExitPool([TorPoolSpec(api_url="http://127.0.0.1:1", token=TOKEN)])

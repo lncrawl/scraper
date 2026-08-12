@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any, Dict, FrozenSet, Iterator, Optional, Tuple
+from typing import Any, Callable, Dict, FrozenSet, Iterator, Optional, Tuple
 
 import requests
 
@@ -34,6 +34,13 @@ class Call:
         proxies: Already carrying the lease's credentials. ``None`` is a direct
             connection, which is a decision the exit pool made, not a fallback the
             tier may take on its own.
+        browser_proxy: The same address described so a browser can be launched with
+            it, which is not always the same string — a pool endpoint carries a
+            credential no browser can send. A thunk rather than a value because
+            learning it costs a round-trip to the exit provider and only the one tier
+            that launches a browser ever needs it. ``None`` from the call means
+            nobody offered to answer; ``None`` from the thunk means there is no such
+            address, and a tier that needs one is then unavailable.
         clearance: Only ever set when it is valid for *identity*. A tier does not
             re-check the binding; the caller has, and passing a mismatched pair
             here would send a cookie that cannot work.
@@ -44,6 +51,7 @@ class Call:
     identity: Identity
     headers: Dict[str, str] = field(default_factory=dict)
     proxies: Optional[Dict[str, str]] = None
+    browser_proxy: Optional[Callable[[], Optional[str]]] = None
     clearance: Optional[Clearance] = None
     timeout: Any = None
     options: Dict[str, Any] = field(default_factory=dict)

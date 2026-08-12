@@ -146,10 +146,10 @@ rescues this host" cannot be tested while the archive is unreachable.
 @scenario(
     "S29",
     "One sentence, in the present tense, describing the behaviour",
-    ["L9"],                      # layers exercised, for the report
+    ["L9"],  # layers exercised, for the report
     "What a pass actually proves — not what the code does.",
     pick(layer=9) or SOME_HOST,  # look the target up where you can
-    requires=pool.ready,         # omit unless it needs infrastructure
+    requires=pool.ready,  # omit unless it needs infrastructure
 )
 def s30(result: Result) -> None:
     result.check("the specific claim", condition, "the observed value")

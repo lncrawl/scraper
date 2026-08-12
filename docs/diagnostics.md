@@ -47,12 +47,12 @@ from scraper.exceptions import Exhausted, Impassable
 try:
     response = scraper.get(url)
 except Impassable as exc:
-    print("no bypass:", exc.detail)          # register, or authenticate
+    print("no bypass:", exc.detail)  # register, or authenticate
 except Exhausted as exc:
     if exc.layer is Layer.IP_REPUTATION:
-        ...                                   # a better address is the only fix
+        ...  # a better address is the only fix
     elif exc.layer in (Layer.MANAGED_CHALLENGE, Layer.TURNSTILE, Layer.CDP):
-        ...                                   # configure a browser solver
+        ...  # configure a browser solver
 ```
 
 `Exhausted.detail` carries the full decision trail, so the message shows every move the
@@ -67,11 +67,11 @@ thinks of something you saw in a browser.
 ```python
 from scraper import diagnose
 
-diagnose(status=200, body=saved_html)     # solve (L9 …): challenge served with a success status
+diagnose(status=200, body=saved_html)  # solve (L9 …): challenge served with a success status
 diagnose(status=429, headers={"retry-after": "30"})
-diagnose(status=403, body="<p>Error 1020</p>")   # rotate (L1 …)
-diagnose(status=403, body="<p>Error 1010</p>")   # escalate (L7 …) — not the address
-diagnose(status=404)                             # accept — the site's answer about a path
+diagnose(status=403, body="<p>Error 1020</p>")  # rotate (L1 …)
+diagnose(status=403, body="<p>Error 1010</p>")  # escalate (L7 …) — not the address
+diagnose(status=404)  # accept — the site's answer about a path
 ```
 
 Three of those are worth internalising because they are where the conventional reading goes
@@ -90,7 +90,7 @@ wrong:
 ```python
 from scraper import edge
 
-edge(response.headers, response.text)     # "DataDome", "Cloudflare", "nginx", ""
+edge(response.headers, response.text)  # "DataDome", "Cloudflare", "nginx", ""
 ```
 
 The layer numbers are organised around Cloudflare's mechanisms, but the classifier is
@@ -137,11 +137,11 @@ this thing learned overall, and what is it doing with the addresses it was given
 and `ExitPool` both enumerate.
 
 ```python
-scraper.memory.count                     # how many origins are known
-scraper.memory.origins()                 # keys, most recently seen first
-scraper.memory.profiles()                # copies of every OriginProfile
-scraper.memory.export()                  # the same, JSON-safe, no clearance cookies
-scraper.memory.forget("https://example.com/")   # drop one conclusion
+scraper.memory.count  # how many origins are known
+scraper.memory.origins()  # keys, most recently seen first
+scraper.memory.profiles()  # copies of every OriginProfile
+scraper.memory.export()  # the same, JSON-safe, no clearance cookies
+scraper.memory.forget("https://example.com/")  # drop one conclusion
 ```
 
 `profiles()` hands back copies, so a status page iterating the store cannot edit what the

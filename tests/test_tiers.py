@@ -524,6 +524,41 @@ class TestClearanceTier:
 
         assert seen[0]["proxy"] == "http://user:pw@exit.test:8000"
 
+    def test_the_browsers_own_address_is_used_when_one_is_offered(self):
+        # A pool endpoint's URL carries the session key as userinfo and no browser can
+        # send one, so the exit pool answers with a credential-free port on the same
+        # instance. Same exit, launchable browser.
+        seen: List[Dict[str, Any]] = []
+        tier = clearance_tier(
+            stub_solver({"cf_clearance": "abc"}, seen=seen), FakeTransport([make_response()])
+        )
+
+        tier.send(
+            call_for(
+                proxies={"https": "socks5h://s-1:tok@127.0.0.1:9250"},
+                browser_proxy=lambda: "socks5h://127.0.0.1:19602",
+            )
+        )
+
+        assert seen[0]["proxy"] == "socks5h://127.0.0.1:19602"
+
+    def test_no_launchable_address_makes_the_tier_unavailable(self):
+        # Not Blocked: the site said nothing. And not launched anyway — solving from an
+        # address the requests will not replay the clearance from produces a cookie
+        # rejected on first use, which reads as a broken solver and re-solves forever.
+        seen: List[Dict[str, Any]] = []
+        tier = clearance_tier(
+            stub_solver({"cf_clearance": "abc"}, seen=seen), FakeTransport([make_response()])
+        )
+
+        call = call_for(
+            proxies={"https": "socks5h://s-1:tok@127.0.0.1:9250"},
+            browser_proxy=lambda: None,
+        )
+        with pytest.raises(TierUnavailable, match="cannot send"):
+            tier.send(call)
+        assert seen == []
+
     def test_a_second_call_to_the_same_origin_does_not_re_launch_a_browser(self):
         # A solve is the most expensive thing this library does; another thread having
         # already paid for this origin is worth the branch.

@@ -25,12 +25,12 @@ from scraper import BotAuthConfig, BotAuthKey, Scraper, ScraperConfig
 
 key_path = Path("botauth.key")
 key = BotAuthKey.load(key_path) if key_path.exists() else BotAuthKey.generate()
-key.save(key_path)                     # written 0600
+key.save(key_path)  # written 0600
 
 config = ScraperConfig(
     botauth=BotAuthConfig(
         key=key,
-        agent="https://crawler.example/",   # a URL identifying who is crawling
+        agent="https://crawler.example/",  # a URL identifying who is crawling
     )
 )
 ```
@@ -47,6 +47,7 @@ signatures.
 
 ```python
 from scraper.botauth import DIRECTORY_PATH
+
 app.route(DIRECTORY_PATH)(lambda: key.directory())
 ```
 
@@ -74,8 +75,8 @@ not:
 
 ```python
 signed = key.sign("https://example.com/page", agent="https://crawler.example/")
-key.verify("https://example.com/page", signed, agent="https://crawler.example/")   # True
-key.verify("https://elsewhere.test/page", signed)                                  # False
+key.verify("https://example.com/page", signed, agent="https://crawler.example/")  # True
+key.verify("https://elsewhere.test/page", signed)  # False
 ```
 
 The second call failing is the property that matters: the authority is covered, so a captured

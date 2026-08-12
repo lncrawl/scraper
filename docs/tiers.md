@@ -121,6 +121,32 @@ One browser profile directory per address
 profile reused across a run accumulates the history that makes the session look established
 — and sharing one between addresses is how a clean exit inherits a burnt one's session.
 
+### The address a browser can be launched with
+
+Held addresses and browsers disagree about credentials. No browser implements SOCKS5
+username/password authentication, and userinfo in the proxy flag makes Chrome reject the
+whole thing — so `ExitPool.browser_proxy` is asked for the address rather than
+`ExitLease.proxies` being reused, and `None` from it means this tier is unavailable rather
+than launched.
+
+It matters most for a pool endpoint, whose URL always carries a credential: the SOCKS5
+username *is* the session key. Dropping it is worse than failing, because the pool then keys
+by client address and the browser leaves by a different instance than the requests that go
+on to replay its clearance — which is the dead-on-arrival clearance this whole tier is shaped
+to prevent, arrived at from the other direction. tor-pool's answer is one credential-free
+listener per instance (`SESSION_PORT_BASE`, which needs its authentication off and therefore
+a pool nothing else can reach); it reports the port a session's instance is on, so the
+address is asked for rather than computed from a setting only the pool can see.
+
+The port is looked up per solve, not cached against the lease. A solve is a browser launch,
+so one request to the pool is free by comparison — and which instance serves a session is not
+ours to assume, since draining or quarantining one moves the sessions pinned to it without
+telling us.
+
+A pool that has those listeners off, or has not pinned the session yet because nothing has
+been fetched through it, offers nothing — and a challenged host is then reported as
+unsolvable rather than solved from the wrong address.
+
 The bundled solver does not synthesise mouse, scroll or keystroke dynamics, so both clear the
 control-channel layer and leaves the behavioural one entirely to `scraper.pacing`. That
 division is why they are separate modules.
@@ -144,6 +170,11 @@ any other request and leaves from the address the origin is already held on. Wha
 *not* do is touch the tier or the success counters: a page the browser rendered is no evidence
 that the HTTP ladder works, and recording it as one would zero the consecutive failures that
 promote a diagnosis.
+
+The address is resolved the same way a solve resolves it, so an exit no browser can be
+launched with stops a render too. Nothing here is bound to the address afterwards, but the
+browser still has to be pointed somewhere, and pointing it past the held address would present
+a site being paced as one visitor with a second one.
 
 No solver, or a solver that only solves, raises `TierUnavailable` — never `Blocked`, which
 would be a claim about defences that are not there.
@@ -219,13 +250,14 @@ and an honest reach, and pass an instance in `ScraperConfig.tiers`:
 from scraper import Layer, Scraper, ScraperConfig
 from scraper.tiers import Call, Tier
 
-class CacheTier(Tier):
-    name = "cache"                                  # what OriginProfile.tier records
-    cost = 5                                        # cheaper than direct, so tried first
-    reach = frozenset({Layer.IP_REPUTATION})        # what it can actually get past
 
-    def send(self, call: Call) -> requests.Response:
-        ...
+class CacheTier(Tier):
+    name = "cache"  # what OriginProfile.tier records
+    cost = 5  # cheaper than direct, so tried first
+    reach = frozenset({Layer.IP_REPUTATION})  # what it can actually get past
+
+    def send(self, call: Call) -> requests.Response: ...
+
 
 scraper = Scraper(config=ScraperConfig(tiers=[CacheTier()]))
 ```
